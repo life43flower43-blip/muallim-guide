@@ -5,15 +5,18 @@ import { Toaster } from "@/components/ui/toaster";
 export const metadata: Metadata = {
   title: "تربوي | رفيق طالب التربية",
   description:
-    "تطبيق تعليمي تفاعلي لطلبة التربية الجامعيين: المفاهيم، الاختبارات الذكية، التوجيه بعد الخطأ، وتعديل السلوك",
-  keywords: [
-    "تعديل السلوك",
-    "التربية",
-    "طلبة الجامعة",
-    "المفاهيم التربوية",
-    "اختبارات تفاعلية",
-  ],
-  icons: { icon: "/logo.svg" },
+    "تطبيق تعليمي لطلاب كليات التربية: مفاهيم، اختبارات تفاعلية، توجيه بعد الخطأ، ومراجعة متباعدة.",
+  applicationName: "تربوي",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "تربوي",
+  },
+  icons: {
+    icon: "/favicon-app.png",
+    apple: "/icons/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -21,7 +24,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#0F766E",
+  viewportFit: "cover",
+  themeColor: "#1B4332",
 };
 
 export default function RootLayout({

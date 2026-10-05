@@ -1,355 +1,337 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, X, Brain, Lightbulb, KeyRound, AlertTriangle, Link2 } from "lucide-react";
-import { CONCEPTS, CAT_MAP, CATEGORIES, CONCEPT_MAP } from "@/lib/content";
-import type { CategoryId, Concept } from "@/lib/types";
-import { useAppStore } from "@/lib/store";
-import { useNav } from "@/lib/nav";
-import { CategoryChip, AppCard } from "./shared";
-import { cn } from "@/lib/utils";
+import {
+  ChevronDown,
+  BookOpen,
+  CheckCircle2,
+  Circle,
+  Dumbbell,
+  FileText,
+  Lightbulb,
+  X,
+  Layers,
+  List,
+  Search,
+} from "lucide-react";
+import {
+  COURSES,
+  CONCEPTS,
+  chaptersOfCourse,
+  conceptsOfCourse,
+  questionsOfConcept,
+  COURSE_COLOR,
+  shuffle,
+} from "@/lib/qbank";
+import type { Concept, Course } from "@/lib/types";
+import { useApp } from "@/lib/store";
+import { useUi } from "@/lib/ui-store";
+import { Button } from "@/components/ui/button";
+import FlashcardsView from "./FlashcardsView";
 
-export default function ConceptsView() {
-  const [query, setQuery] = useState("");
-  const [cat, setCat] = useState<CategoryId | "all">("all");
-  const explored = useAppStore((s) => s.exploredConcepts);
-  const { openConcept, startQuiz } = useNav();
+function ConceptDetail({
+  conceptId,
+  onClose,
+}: {
+  conceptId: string;
+  onClose: () => void;
+}) {
+  const readConcept = useApp((s) => s.readConcept);
+  const conceptReads = useApp((s) => s.conceptReads);
+  const startQuiz = useUi((s) => s.startQuiz);
 
-  const filtered = CONCEPTS.filter((c) => {
-    const inCat = cat === "all" || c.category === cat;
-    const q = query.trim();
-    const inQuery =
-      !q || c.title.includes(q) || c.en.toLowerCase().includes(q.toLowerCase()) || c.simple.includes(q);
-    return inCat && inQuery;
-  });
+  let concept: { concept: Concept; course: Course } | null = null;
+  for (const c of COURSES) {
+    const found = conceptsOfCourse(c.id).find((x) => x.id === conceptId);
+    if (found) {
+      concept = { concept: found, course: c };
+      break;
+    }
+  }
+
+  if (!concept) return null;
+  const { concept: c, course } = concept;
+  const qs = questionsOfConcept(c.id);
+  const isRead = !!conceptReads[c.id];
 
   return (
-    <div className="px-5 pt-6 pb-4">
-      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-xl font-extrabold text-stone-900">مكتبة المفاهيم</h1>
-        <p className="text-[11px] text-stone-400 mt-0.5">
-          {explored.length} من {CONCEPTS.length} مفهوماً مستكشفاً — المس المفهوم لتفاصيله
-        </p>
-      </motion.div>
+    <motion.div
+      initial={{ y: "100%" }}
+      animate={{ y: 0 }}
+      exit={{ y: "100%" }}
+      transition={{ type: "spring", damping: 30, stiffness: 300 }}
+      className="fixed inset-0 z-50 flex flex-col bg-background"
+    >
+      <div
+        className="safe-top px-4 pb-4 pt-3 text-white"
+        style={{ background: COURSE_COLOR[course.id] ?? "#1B4332" }}
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1">
+            <p className="text-[11px] font-bold opacity-80">{course.name}</p>
+            <h2 className="mt-1 text-xl font-black leading-8">{c.title}</h2>
+            <p className="mt-1 text-[11px] opacity-80">{c.chapter}</p>
+          </div>
+          <button onClick={onClose} className="rounded-full bg-white/20 p-2" aria-label="إغلاق">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
 
-      {/* Search */}
-      <div className="relative mt-4">
-        <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+      <div className="no-scrollbar flex-1 overflow-y-auto px-4 py-4">
+        <div className="card-soft space-y-4 rounded-3xl border border-border bg-white p-5">
+          <div>
+            <p className="mb-1 flex items-center gap-2 text-sm font-black text-primary">
+              <BookOpen className="h-4 w-4" /> الشرح
+            </p>
+            <p className="text-sm leading-8 text-foreground">{c.explanation}</p>
+          </div>
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+            <p className="mb-1 flex items-center gap-2 text-sm font-black text-emerald-800">
+              <Lightbulb className="h-4 w-4" /> مثال تطبيقي
+            </p>
+            <p className="text-sm leading-7 text-emerald-950">{c.example}</p>
+          </div>
+          <div className="rounded-2xl bg-muted p-3">
+            <p className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
+              <FileText className="h-4 w-4" /> يوجد {qs.length} أسئلة مرتبطة بهذا المفهوم في بنك الأسئلة
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="safe-bottom space-y-2 border-t border-border bg-white px-4 pt-3">
+        <Button
+          className="h-13 w-full rounded-2xl bg-primary py-3.5 text-base font-black text-primary-foreground"
+          onClick={() => {
+            readConcept(c.id);
+            startQuiz({
+              mode: "training",
+              label: `تدريب: ${c.title}`,
+              qids: shuffle(qs).map((q) => q.id),
+              conceptId: c.id,
+            });
+          }}
+        >
+          <Dumbbell className="ml-2 h-5 w-5" /> تدريب على هذا المفهوم
+        </Button>
+        {!isRead && (
+          <Button
+            variant="outline"
+            className="w-full rounded-2xl border-2 text-sm font-bold"
+            onClick={() => {
+              readConcept(c.id);
+              onClose();
+            }}
+          >
+            <CheckCircle2 className="ml-1 h-4 w-4 text-emerald-600" /> تعليم كمقروء
+          </Button>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+export default function ConceptsView() {
+  const { conceptReads } = useApp();
+  const [mode, setMode] = useState<"cards" | "list">("cards");
+  const [openCourse, setOpenCourse] = useState<string | null>("M1");
+  const [detailId, setDetailId] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+
+  // طلب فتح مفهوم من خارج الشاشة (مثل «مفهوم اليوم» في الرئيسية)
+  const pendingConceptId = useUi((s) => s.pendingConceptId);
+  const clearPendingConcept = useUi((s) => s.clearPendingConcept);
+  useEffect(() => {
+    if (pendingConceptId) {
+      setMode("list");
+      setQuery("");
+      setDetailId(pendingConceptId);
+      clearPendingConcept();
+    }
+  }, [pendingConceptId, clearPendingConcept]);
+
+  // البحث الفوري في العنوان والفصل
+  const searchResults = useMemo(() => {
+    const q = query.trim();
+    if (!q) return null;
+    return CONCEPTS.filter((c) => c.title.includes(q) || c.chapter.includes(q)).slice(0, 40);
+  }, [query]);
+
+  const totalConcepts = CONCEPTS.length;
+
+  return (
+    <div className="space-y-3 pb-6">
+      {/* مبدّل العرض: بطاقات / قائمة */}
+      <div className="mx-4 flex items-center gap-2 rounded-2xl border border-border bg-white p-1.5">
+        <button
+          onClick={() => setMode("cards")}
+          className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-black transition-colors ${
+            mode === "cards" ? "bg-primary text-primary-foreground" : "text-foreground/60"
+          }`}
+        >
+          <Layers className="h-4 w-4" /> بطاقات
+        </button>
+        <button
+          onClick={() => setMode("list")}
+          className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-black transition-colors ${
+            mode === "list" ? "bg-primary text-primary-foreground" : "text-foreground/60"
+          }`}
+        >
+          <List className="h-4 w-4" /> قائمة
+        </button>
+      </div>
+
+      {/* البحث في كل المفاهيم */}
+      <div className="mx-4 flex items-center gap-2 rounded-2xl border border-border bg-white px-3">
+        <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="ابحث عن مفهوم..."
-          className="w-full h-11 rounded-2xl bg-white shadow-soft pr-10 pl-10 text-[13px] outline-none border border-transparent focus:border-teal-300 transition-colors placeholder:text-stone-400"
+          placeholder={`ابحث في ${totalConcepts} مفهوماً...`}
+          className="w-full bg-transparent py-3 text-sm font-bold text-foreground outline-none placeholder:text-muted-foreground/70"
         />
         {query && (
-          <button
-            onClick={() => setQuery("")}
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-stone-100 flex items-center justify-center"
-          >
-            <X className="w-3 h-3 text-stone-500" />
+          <button onClick={() => setQuery("")} aria-label="مسح البحث" className="rounded-full bg-muted p-1.5">
+            <X className="h-3.5 w-3.5 text-muted-foreground" />
           </button>
         )}
       </div>
 
-      {/* Category chips */}
-      <div className="flex gap-2 overflow-x-auto no-scrollbar mt-4 pb-1 -mx-5 px-5">
-        <CatChip active={cat === "all"} onClick={() => setCat("all")} color="#1c2422" label="الكل" />
-        {CATEGORIES.map((c) => (
-          <CatChip
-            key={c.id}
-            active={cat === c.id}
-            onClick={() => setCat(c.id)}
-            color={c.color}
-            label={c.short}
-          />
-        ))}
-      </div>
-
-      {/* Concept cards */}
-      <div className="mt-4 space-y-3">
-        <AnimatePresence mode="popLayout">
-          {filtered.map((c, i) => (
-            <motion.div
+      {searchResults !== null ? (
+        // نتائج البحث فوق أي وضع
+        <div className="space-y-2 px-4">
+          <p className="text-xs font-bold text-muted-foreground">
+            {searchResults.length > 0
+              ? `${searchResults.length} نتيجة مطابقة`
+              : "لا نتائج مطابقة — جرّب كلمة أقصر أو مختلفة"}
+          </p>
+          {searchResults.map((c) => (
+            <button
               key={c.id}
-              layout
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ delay: Math.min(i * 0.03, 0.3) }}
+              onClick={() => setDetailId(c.id)}
+              className="flex w-full items-center gap-3 rounded-2xl border border-border bg-white px-3 py-3 text-right transition-colors active:bg-accent"
             >
-              <AppCard
-                className="p-4 flex items-center gap-3.5"
-                onClick={() => openConcept(c.id)}
+              <span
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl font-black text-white ${
+                  c.courseId === "G1" ? "text-[9px]" : "text-sm"
+                }`}
+                style={{ background: COURSE_COLOR[c.courseId] ?? "#1B4332" }}
               >
-                <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0 relative"
-                  style={{ backgroundColor: CAT_MAP[c.category].soft }}
-                >
-                  {c.icon}
-                  {explored.includes(c.id) && (
-                    <span className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
-                      <svg viewBox="0 0 12 12" className="w-2.5 h-2.5 text-white">
-                        <path
-                          d="M2.5 6.5 5 9l4.5-6"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                    </span>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="text-[14px] font-extrabold text-stone-800">{c.title}</p>
-                    <CategoryChip id={c.category} small />
-                  </div>
-                  <p className="text-[11px] text-stone-400 leading-relaxed line-clamp-2">{c.simple}</p>
-                </div>
-              </AppCard>
-            </motion.div>
+                {c.courseId === "G1" ? "مكتبة" : c.courseId.replace("M", "")}
+              </span>
+              <span className="flex-1">
+                <span className="block text-sm font-bold leading-6">{c.title}</span>
+                <span className="text-[10px] text-muted-foreground">
+                  {c.chapter} • {questionsOfConcept(c.id).length} أسئلة متاحة
+                </span>
+              </span>
+            </button>
           ))}
-        </AnimatePresence>
-        {filtered.length === 0 && (
-          <p className="text-center text-xs text-stone-400 py-10">لا نتائج مطابقة — جرّب كلمة أخرى</p>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function CatChip({
-  active,
-  onClick,
-  color,
-  label,
-}: {
-  active: boolean;
-  onClick: () => void;
-  color: string;
-  label: string;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "shrink-0 px-3.5 py-2 rounded-full text-[11px] font-bold transition-all",
-        active ? "text-white shadow" : "bg-white text-stone-500 shadow-soft"
-      )}
-      style={active ? { backgroundColor: color } : undefined}
-    >
-      {label}
-    </button>
-  );
-}
-
-/** ===== طبقة تفاصيل المفهوم ===== */
-export function ConceptDetail() {
-  const conceptId = useNav((s) => s.conceptId);
-  const close = useNav((s) => s.closeConcept);
-  const startQuiz = useNav((s) => s.startQuiz);
-  const openConcept = useNav((s) => s.openConcept);
-  const markExplored = useAppStore((s) => s.markExplored);
-
-  if (!conceptId) return null;
-  const c: Concept = CONCEPT_MAP[conceptId];
-  if (!c) return null;
-  const cat = CAT_MAP[c.category];
-
-  return (
-    <AnimatePresence>
-      <motion.div
-        key="overlay"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="absolute inset-0 z-[60] bg-stone-900/40 backdrop-blur-[2px]"
-        onClick={close}
-      >
-        <motion.div
-          initial={{ y: "100%" }}
-          animate={{ y: 0 }}
-          exit={{ y: "100%" }}
-          transition={{ type: "spring", stiffness: 300, damping: 32 }}
-          className="absolute inset-x-0 bottom-0 top-10 bg-background rounded-t-[2rem] overflow-hidden flex flex-col"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* header */}
-          <div
-            className="shrink-0 px-5 pt-4 pb-5 relative overflow-hidden"
-            style={{ background: `linear-gradient(135deg, ${cat.color}14, ${cat.color}05)` }}
-          >
-            <button
-              onClick={close}
-              className="absolute top-4 left-4 w-8 h-8 rounded-full bg-white/80 shadow flex items-center justify-center"
-            >
-              <X className="w-4 h-4 text-stone-500" />
-            </button>
-            <div className="flex items-center gap-3">
-              <div
-                className="w-14 h-14 rounded-2xl bg-white shadow-soft flex items-center justify-center text-3xl"
-              >
-                {c.icon}
-              </div>
-              <div>
-                <h2 className="text-lg font-extrabold text-stone-900">{c.title}</h2>
-                <p className="text-[11px] text-stone-400 font-medium" dir="ltr">
-                  {c.en}
-                </p>
-              </div>
-            </div>
-            <div className="mt-3">
-              <CategoryChip id={c.category} />
-            </div>
-          </div>
-
-          {/* body */}
-          <div className="flex-1 overflow-y-auto nice-scroll px-5 py-4 space-y-4">
-            <Block
-              icon={<BookOpenIcon />}
-              color="#0f766e"
-              title="التعريف العلمي"
-              body={c.definition}
-            />
-            <Block
-              icon={<Lightbulb className="w-4 h-4" />}
-              color="#f59e0b"
-              title="التبسيط"
-              body={c.simple}
-              bg="#fdf8ec"
-            />
-            <Block
-              icon={<FlaskIcon />}
-              color="#8b5cf6"
-              title="مثال من الصف"
-              body={c.example}
-              bg="#f6f2fe"
-            />
-
-            {/* keys */}
-            <div className="bg-white rounded-3xl shadow-soft p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 rounded-lg bg-teal-50 flex items-center justify-center">
-                  <KeyRound className="w-4 h-4 text-teal-700" />
-                </div>
-                <p className="text-[13px] font-extrabold text-stone-800">نقاط مفتاحية</p>
-              </div>
-              <ul className="space-y-2">
-                {c.keys.map((k, i) => (
-                  <li key={i} className="flex gap-2.5 text-[12px] text-stone-600 leading-relaxed">
-                    <span className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-teal-500" />
-                    {k}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {c.mistake && (
-              <div className="bg-rose-50 rounded-3xl p-4 border border-rose-100">
-                <div className="flex items-center gap-2 mb-2">
-                  <AlertTriangle className="w-4 h-4 text-rose-500" />
-                  <p className="text-[13px] font-extrabold text-rose-600">احذر الخلط</p>
-                </div>
-                <p className="text-[12px] text-rose-700/90 leading-relaxed">{c.mistake}</p>
-              </div>
-            )}
-
-            {/* related */}
-            {c.related.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-2.5">
-                  <Link2 className="w-4 h-4 text-stone-400" />
-                  <p className="text-[12px] font-bold text-stone-500">مفاهيم مرتبطة</p>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {c.related
-                    .map((r) => CONCEPT_MAP[r])
-                    .filter(Boolean)
-                    .map((rc) => (
-                      <button
-                        key={rc.id}
-                        onClick={() => openConcept(rc.id)}
-                        className="px-3 py-2 rounded-2xl bg-white shadow-soft text-[11px] font-bold text-stone-600 flex items-center gap-1.5 active:scale-95 transition-transform"
-                      >
-                        <span>{rc.icon}</span>
-                        {rc.title}
-                      </button>
-                    ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* CTA */}
-          <div className="shrink-0 p-4 bg-white/80 backdrop-blur border-t border-stone-100">
-            <button
-              onClick={() => {
-                markExplored(c.id);
-                close();
-                startQuiz({
-                  category: "all",
-                  count: 5,
-                  mode: "concept",
-                  conceptId: c.id,
-                  title: `اختبار: ${c.title}`,
-                });
-              }}
-              className="w-full h-12 rounded-2xl text-white text-sm font-bold flex items-center justify-center gap-2 shadow-lift active:scale-[0.98] transition-transform"
-              style={{ backgroundColor: cat.color }}
-            >
-              <Brain className="w-4 h-4" />
-              اختبرني في هذا المفهوم
-            </button>
-          </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
-  );
-}
-
-function Block({
-  icon,
-  color,
-  title,
-  body,
-  bg = "#ffffff",
-}: {
-  icon: React.ReactNode;
-  color: string;
-  title: string;
-  body: string;
-  bg?: string;
-}) {
-  return (
-    <div className="rounded-3xl shadow-soft p-4" style={{ backgroundColor: bg }}>
-      <div className="flex items-center gap-2 mb-2">
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: color + "14", color }}>
-          {icon}
         </div>
-        <p className="text-[13px] font-extrabold text-stone-800">{title}</p>
+      ) : mode === "cards" ? (
+        <FlashcardsView />
+      ) : (
+      <div className="space-y-3 px-4">
+      <div className="card-soft flex items-center gap-3 rounded-3xl border border-border bg-white p-4">
+        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent text-primary">
+          <BookOpen className="h-6 w-6" />
+        </span>
+        <div>
+          <h2 className="text-lg font-black">مكتبة المفاهيم</h2>
+          <p className="text-xs text-muted-foreground">
+            {totalConcepts} مفهوماً — اضغط أي مفهوم للشرح والمثال والتدريب
+          </p>
+        </div>
       </div>
-      <p className="text-[12.5px] text-stone-600 leading-6">{body}</p>
+
+      {COURSES.map((course) => {
+        const open = openCourse === course.id;
+        const concepts = conceptsOfCourse(course.id);
+        const readCount = concepts.filter((c) => conceptReads[c.id]).length;
+        const color = COURSE_COLOR[course.id] ?? "#1B4332";
+        return (
+          <div key={course.id} className="card-soft overflow-hidden rounded-3xl border border-border bg-white">
+            <button
+              className="flex w-full items-center gap-3 p-4 text-right"
+              onClick={() => setOpenCourse((o) => (o === course.id ? null : course.id))}
+            >
+              <span
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl font-black text-white ${
+                  course.id === "G1" ? "text-[10px]" : "text-base"
+                }`}
+                style={{ background: color }}
+              >
+                {course.id === "G1" ? "مكتبة" : course.id.replace("M", "")}
+              </span>
+              <span className="flex-1">
+                <span className="block text-sm font-black leading-6 text-foreground">{course.name}</span>
+                <span className="mt-0.5 block text-[11px] text-muted-foreground">
+                  {concepts.length} مفاهيم • قُرئ {readCount}/{concepts.length}
+                </span>
+              </span>
+              <ChevronDown
+                className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            <AnimatePresence initial={false}>
+              {open && (
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: "auto" }}
+                  exit={{ height: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="space-y-2 border-t border-border px-4 py-3">
+                    {chaptersOfCourse(course.id).map((chapter) => {
+                      const chapterConcepts = concepts.filter((c) => c.chapter === chapter);
+                      return (
+                        <div key={chapter}>
+                          <p className="mb-1.5 mt-2 flex items-center gap-1.5 text-[11px] font-extrabold text-muted-foreground">
+                            <span className="h-1.5 w-1.5 rounded-full" style={{ background: color }} />
+                            {chapter}
+                          </p>
+                          {chapterConcepts.map((c) => {
+                            const isRead = !!conceptReads[c.id];
+                            return (
+                              <button
+                                key={c.id}
+                                onClick={() => setDetailId(c.id)}
+                                className="mb-1.5 flex w-full items-center gap-3 rounded-2xl border border-border bg-background px-3 py-3 text-right transition-colors active:bg-accent"
+                              >
+                                {isRead ? (
+                                  <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" />
+                                ) : (
+                                  <Circle className="h-5 w-5 shrink-0 text-border" />
+                                )}
+                                <span className="flex-1">
+                                  <span className="block text-sm font-bold leading-6">{c.title}</span>
+                                  <span className="text-[10px] text-muted-foreground">
+                                    {questionsOfConcept(c.id).length} أسئلة متاحة
+                                  </span>
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })}
+      </div>
+      )}
+
+      {/* التفاصيل تُعرض فوق أي وضع (بطاقات أو قائمة) */}
+      <AnimatePresence>
+        {detailId && <ConceptDetail conceptId={detailId} onClose={() => setDetailId(null)} />}
+      </AnimatePresence>
     </div>
-  );
-}
-
-function BookOpenIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-    </svg>
-  );
-}
-
-function FlaskIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M10 2v7.5L4.5 19a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 9.5V2" />
-      <path d="M8.5 2h7" />
-      <path d="M7 16h10" />
-    </svg>
   );
 }

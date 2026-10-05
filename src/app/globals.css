@@ -39,24 +39,24 @@
 
 :root {
   --radius: 1rem;
-  --background: #f6f7f4;
-  --foreground: #1c2422;
+  --background: #FAFAF4;
+  --foreground: #22302A;
   --card: #ffffff;
-  --card-foreground: #1c2422;
+  --card-foreground: #22302A;
   --popover: #ffffff;
-  --popover-foreground: #1c2422;
-  --primary: #0f766e;
-  --primary-foreground: #ffffff;
-  --secondary: #e8f0ee;
-  --secondary-foreground: #0f4a45;
-  --muted: #eef1ed;
-  --muted-foreground: #6b7a76;
-  --accent: #e6f2f0;
-  --accent-foreground: #0f4a45;
+  --popover-foreground: #22302A;
+  --primary: #1B4332;
+  --primary-foreground: #F7FAF6;
+  --secondary: #E7ECE6;
+  --secondary-foreground: #1B4332;
+  --muted: #EEF1EC;
+  --muted-foreground: #6B7A74;
+  --accent: #E9F3EC;
+  --accent-foreground: #1B4332;
   --destructive: #dc2626;
-  --border: #e3e8e4;
-  --input: #dfe5e1;
-  --ring: #14b8a6;
+  --border: #E4E9E2;
+  --input: #DFE5DF;
+  --ring: #2D6A4F;
   --success: #16a34a;
   --warning: #f59e0b;
   --teal: #0d9488;
@@ -192,4 +192,63 @@ body {
 }
 .animate-pulse-soft {
   animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* ============ تربوي — أصناف التطبيق المخصصة ============ */
+
+/* ظل ناعم للبطاقات */
+.card-soft {
+  box-shadow:
+    0 1px 2px rgba(28, 36, 34, 0.05),
+    0 12px 32px -16px rgba(27, 67, 50, 0.18);
+}
+
+/* أشرطة التقدم */
+.progress-track {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--muted);
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--primary);
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* هوامش آمنة للهواتف ذات النوتش */
+.safe-top {
+  padding-top: max(env(safe-area-inset-top), 6px);
+}
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 6px);
+}
+
+/* تعطيل تظليل اللمس */
+.tap-none {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* أزرار الخيارات */
+.opt-btn {
+  transition:
+    transform 0.12s ease,
+    border-color 0.12s ease,
+    background-color 0.12s ease;
+}
+.opt-btn:active {
+  transform: scale(0.98);
+}
+
+/* حركات قصيرة بأسماء مباشرة (تستخدمها المكونات) */
+.shake {
+  animation: shake-x 0.45s ease-in-out;
+}
+.pop-in {
+  animation: pop-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.pulse-ring {
+  animation: pulse-soft 1s ease-in-out infinite;
 }
