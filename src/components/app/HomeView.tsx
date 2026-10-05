@@ -11,8 +11,24 @@ import {
   GraduationCap,
   Lightbulb,
   RotateCcw,
+  School,
+  Presentation,
+  Dumbbell,
+  Rocket,
+  BadgeCheck,
 } from "lucide-react";
-import { CONCEPTS, QUESTIONS, shuffle, levelFromXp, levelTitle, xpInLevel, LEVEL_XP } from "@/lib/qbank";
+import {
+  CONCEPTS,
+  QUESTIONS,
+  conceptsOfCourse,
+  questionsOfCourse,
+  shuffle,
+  levelFromXp,
+  levelTitle,
+  xpInLevel,
+  LEVEL_XP,
+} from "@/lib/qbank";
+import { SCENARIOS } from "@/lib/scenarios";
 import { buildReviewSet, buildRedoSet } from "@/lib/srs";
 import { DAILY_GOAL_XP, useApp, xpToday } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
@@ -48,10 +64,76 @@ function DailyTip({ onOpen }: { onOpen: (id: string) => void }) {
   );
 }
 
+// ---------- رحلة المعلم: العوالم الستة ----------
+interface World {
+  id: string;
+  name: string;
+  icon: React.ElementType;
+  color: string;
+  tagline: string;
+  chip: string;
+  badge?: string;
+  hint?: string;
+  action: () => void;
+}
+
+function WorldRow({ world, index, isLast }: { world: World; index: number; isLast: boolean }) {
+  const Icon = world.icon;
+  return (
+    <div className="flex items-stretch gap-3">
+      {/* عمود المسار: رقم العالم وخط الرحلة */}
+      <div className="flex flex-col items-center">
+        <span
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-lg font-black text-white shadow-sm"
+          style={{ background: world.color }}
+        >
+          {index + 1}
+        </span>
+        {!isLast && <span className="w-0.5 flex-1 rounded-full bg-border" />}
+      </div>
+
+      <motion.button
+        whileTap={{ scale: 0.98 }}
+        onClick={world.action}
+        className={`card-soft mb-3 flex flex-1 items-center gap-3 rounded-3xl border border-border bg-white p-4 text-right ${
+          isLast ? "" : "mb-3"
+        }`}
+      >
+        <span
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-white"
+          style={{ background: world.color }}
+        >
+          <Icon className="h-6 w-6" />
+        </span>
+        <span className="flex-1">
+          <span className="flex flex-wrap items-center gap-1.5">
+            <span className="text-base font-black">{world.name}</span>
+            {world.badge && (
+              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-black text-emerald-700">
+                {world.badge}
+              </span>
+            )}
+            <span className="rounded-full bg-accent px-2.5 py-0.5 text-[10px] font-black text-primary">
+              {world.chip}
+            </span>
+          </span>
+          <span className="mt-1 block text-xs leading-6 text-muted-foreground">{world.tagline}</span>
+          {world.hint && (
+            <span className="mt-1 block text-[10px] font-bold text-amber-600">{world.hint}</span>
+          )}
+        </span>
+        <ArrowLeft className="h-5 w-5 shrink-0 text-muted-foreground" />
+      </motion.button>
+    </div>
+  );
+}
+
 export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) {
   const { name, xp, attempts, sessions } = useApp();
   const startQuiz = useUi((s) => s.startQuiz);
   const openConcept = useUi((s) => s.openConcept);
+  const openCourseTab = useUi((s) => s.openCourseTab);
+  const startScenarios = useUi((s) => s.startScenarios);
 
   const handleOpenConcept = (id: string) => {
     openConcept(id);
@@ -76,6 +158,79 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const bankPct = Math.round((answered / QUESTIONS.length) * 100);
   const xpToNext = LEVEL_XP - xpInLevel(xp);
 
+  const g1Count = conceptsOfCourse("G1").length;
+  const m5Count = questionsOfCourse("M5").length;
+
+  const worlds: World[] = [
+    {
+      id: "university",
+      name: "الجامعة",
+      icon: GraduationCap,
+      color: "#2D6A4F",
+      tagline: "مساقاتك الجامعية: علم النفس التربوي، النمو، التعلم، القياس والتقويم، طرق التدريس",
+      chip: `${CONCEPTS.length - g1Count} مفهوماً`,
+      action: () => {
+        openCourseTab("M1");
+        onGoTab("concepts");
+      },
+    },
+    {
+      id: "know",
+      name: "أعرف",
+      icon: Brain,
+      color: "#7C3AED",
+      tagline: "المكتبة التربوية: مفاهيم ونظريات حديثة تقرأها ببطاقات وأمثلة تطبيقية",
+      chip: `${g1Count} مفهوماً`,
+      action: () => {
+        openCourseTab("G1");
+        onGoTab("concepts");
+      },
+    },
+    {
+      id: "teach",
+      name: "أُدرّس",
+      icon: Presentation,
+      color: "#0E7490",
+      tagline: "استراتيجيات التدريس وطرقه وتدريب عملي على أسئلتها",
+      chip: `${m5Count} سؤالاً`,
+      hint: "منشئ خطط الدروس: قريباً",
+      action: () =>
+        startQuiz({
+          mode: "training",
+          label: "تدريب أُدرّس: استراتيجيات وطرق التدريس",
+          qids: shuffle(questionsOfCourse("M5")).slice(0, 15).map((q) => q.id),
+        }),
+    },
+    {
+      id: "face",
+      name: "أواجه",
+      icon: School,
+      color: "#EA580C",
+      tagline: "محاكاة الصف: موقف حقيقي وقرار بيدك — فترى نتيجته وتفسيره التربوي",
+      chip: `${SCENARIOS.length} مواقف`,
+      badge: "جديد",
+      action: startScenarios,
+    },
+    {
+      id: "train",
+      name: "أتدرّب",
+      icon: Dumbbell,
+      color: "#F59E0B",
+      tagline: "مراجعة ذكية متباعدة وإعادة أخطائك حتى تثبت في ذاكرتك",
+      chip: reviewSet.length > 0 ? `${reviewSet.length} سؤال مستحق` : "المراجعة",
+      action: () => onGoTab("quiz"),
+    },
+    {
+      id: "become",
+      name: "أصبح معلّمًا",
+      icon: Rocket,
+      color: "#B45309",
+      tagline: "مستواك وإنجازاتك ولوحة تقدمك نحو «معلم جاهز»",
+      chip: `المستوى ${level}`,
+      action: () => onGoTab("account"),
+    },
+  ];
+
   const greeting = (() => {
     const h = new Date().getHours();
     if (h < 12) return "صباح المعرفة";
@@ -85,7 +240,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
 
   return (
     <div className="space-y-4 px-4 pb-6">
-      {/* ١. بطاقة الترحيب المبسطة: تحية + حلقة الهدف الوحيدة */}
+      {/* ١. بطاقة الترحيب: تحية + حلقة الهدف الوحيدة */}
       <div className="card-soft rounded-3xl border border-border bg-gradient-to-l from-[#1B4332] to-[#2D6A4F] p-5 text-white">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
@@ -140,7 +295,20 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
         <Target className="h-5 w-5" /> ابدأ جلسة اليوم
       </motion.button>
 
-      {/* ٣. تقدمك: شريطان واضحان منفصلان */}
+      {/* ٣. رحلتك إلى الاحتراف: العوالم الستة */}
+      <div className="pt-1">
+        <p className="mb-0.5 flex items-center gap-2 text-sm font-black">
+          <BadgeCheck className="h-4 w-4 text-primary" /> رحلتك إلى الاحتراف
+        </p>
+        <p className="mb-3 text-[11px] font-semibold leading-5 text-muted-foreground">
+          طالب تربية ← يتعلم ← يُدرّس ← يواجه المواقف ← يتدرّب ميدانياً ← معلم جاهز
+        </p>
+        {worlds.map((w, i) => (
+          <WorldRow key={w.id} world={w} index={i} isLast={i === worlds.length - 1} />
+        ))}
+      </div>
+
+      {/* ٤. تقدمك: شريطان واضحان منفصلان */}
       <div className="card-soft rounded-3xl border border-border bg-white p-4">
         <div className="mb-3 flex items-center justify-between">
           <p className="text-sm font-black">تقدمك</p>
@@ -181,7 +349,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
         )}
       </div>
 
-      {/* ٤. إجراءات سريعة في صف واحد */}
+      {/* ٥. إجراءات سريعة في صف واحد */}
       <div className="grid grid-cols-3 gap-2">
         <motion.button
           whileTap={{ scale: 0.96 }}
@@ -213,7 +381,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
             reviewSet.length === 0 ? "opacity-60" : ""
           }`}
         >
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0E7490] text-white">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#7C3AED] text-white">
             <Brain className="h-5 w-5" />
           </span>
           <span className="text-[11px] font-black">مراجعة ذكية</span>
@@ -245,10 +413,10 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
         </motion.button>
       </div>
 
-      {/* ٥. مفهوم اليوم */}
+      {/* ٦. مفهوم اليوم */}
       <DailyTip onOpen={handleOpenConcept} />
 
-      {/* ٦. مكتبة المفاهيم */}
+      {/* ٧. مكتبة المفاهيم */}
       <motion.button
         whileTap={{ scale: 0.98 }}
         onClick={() => onGoTab("concepts")}
@@ -260,14 +428,14 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
         <span className="flex-1">
           <span className="block text-sm font-black">مكتبة المفاهيم</span>
           <span className="text-xs font-semibold text-foreground/60">
-            {CONCEPTS.length} مفهوماً في {QUESTIONS.length} سؤالاً — الكتاب والمكتبة التربوية
+            {CONCEPTS.length} مفهوماً و{QUESTIONS.length} سؤالاً — الكتاب والمكتبة التربوية
           </span>
         </span>
         <ArrowLeft className="h-5 w-5 shrink-0 text-muted-foreground" />
       </motion.button>
 
       <p className="pt-1 text-center text-[10px] leading-5 text-muted-foreground">
-        <GraduationCap className="mb-1 inline h-3.5 w-3.5" /> المحتوى مبني على كتاب علم النفس التربوي ومكتبة تربوية عامة شاملة
+        <GraduationCap className="mb-1 inline h-3.5 w-3.5" /> تربوي — مساعد إعداد المعلم: من أول سنة جامعية إلى التدريب العملي والتخرج
       </p>
     </div>
   );

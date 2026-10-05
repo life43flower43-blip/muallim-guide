@@ -135,22 +135,26 @@ function ConceptDetail({
 
 export default function ConceptsView() {
   const { conceptReads } = useApp();
-  const [mode, setMode] = useState<"cards" | "list">("cards");
-  const [openCourse, setOpenCourse] = useState<string | null>("M1");
-  const [detailId, setDetailId] = useState<string | null>(null);
+
+  // طلبات فتح من خارج الشاشة (مفهوم اليوم / عوالم الجامعة وأعرف في الرئيسية)
+  // تُستهلك عند التحميل الأول لتهيئة الحالة مباشرة — بلا setState داخل التأثيرات
+  const pendingConceptId = useUi((s) => s.pendingConceptId);
+  const pendingCourseId = useUi((s) => s.pendingCourseId);
+  const clearPendingConcept = useUi((s) => s.clearPendingConcept);
+  const clearPendingCourse = useUi((s) => s.clearPendingCourse);
+
+  const [mode, setMode] = useState<"cards" | "list">(
+    pendingConceptId || pendingCourseId ? "list" : "cards"
+  );
+  const [openCourse, setOpenCourse] = useState<string | null>(pendingCourseId ?? "M1");
+  const [detailId, setDetailId] = useState<string | null>(pendingConceptId);
   const [query, setQuery] = useState("");
 
-  // طلب فتح مفهوم من خارج الشاشة (مثل «مفهوم اليوم» في الرئيسية)
-  const pendingConceptId = useUi((s) => s.pendingConceptId);
-  const clearPendingConcept = useUi((s) => s.clearPendingConcept);
+  // مسح الطلب المعلق بعد الاستهلاك (تحديث مخزن خارجي فقط — لا حالة محلية هنا)
   useEffect(() => {
-    if (pendingConceptId) {
-      setMode("list");
-      setQuery("");
-      setDetailId(pendingConceptId);
-      clearPendingConcept();
-    }
-  }, [pendingConceptId, clearPendingConcept]);
+    if (pendingConceptId) clearPendingConcept();
+    if (pendingCourseId) clearPendingCourse();
+  }, [pendingConceptId, pendingCourseId, clearPendingConcept, clearPendingCourse]);
 
   // البحث الفوري في العنوان والفصل
   const searchResults = useMemo(() => {

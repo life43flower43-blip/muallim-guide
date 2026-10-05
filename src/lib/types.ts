@@ -42,7 +42,7 @@ export interface Attempt {
 
 export interface SessionRecord {
   id: string;
-  mode: "training" | "exam" | "quick" | "review" | "redo";
+  mode: "training" | "exam" | "quick" | "review" | "redo" | "scenarios";
   label: string;
   total: number;
   correctCount: number;

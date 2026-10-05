@@ -4,6 +4,12 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { Attempt, SessionRecord } from "./types";
 import { nextBox } from "./srs";
+import { SCENARIOS } from "./scenarios";
+
+export interface ScenarioChoice {
+  opt: number; // فهرس الخيار المختار
+  ts: number;
+}
 
 interface AppState {
   name: string;
@@ -15,12 +21,14 @@ interface AppState {
   attempts: Record<string, Attempt>;
   conceptReads: Record<string, number>;
   sessions: SessionRecord[];
+  scenarioChoices: Record<string, ScenarioChoice>; // قرارات محاكاة الصف
   onboarded: boolean;
 
   setName: (n: string) => void;
   setOnboarded: () => void;
   readConcept: (cid: string) => void;
   recordAttempt: (qid: string, correct: boolean) => void;
+  recordScenarioChoice: (sid: string, opt: number) => void;
   finishSession: (s: Omit<SessionRecord, "id" | "ts">) => void;
   resetAll: () => void;
 }
@@ -61,6 +69,7 @@ export const useApp = create<AppState>()(
       attempts: {},
       conceptReads: {},
       sessions: [],
+      scenarioChoices: {},
       onboarded: false,
 
       setName: (n) => set({ name: n }),
@@ -76,6 +85,11 @@ export const useApp = create<AppState>()(
           const at: Attempt = { qid, correct, ts: Date.now(), box };
           return { attempts: { ...st.attempts, [qid]: at } };
         }),
+
+      recordScenarioChoice: (sid, opt) =>
+        set((st) => ({
+          scenarioChoices: { ...st.scenarioChoices, [sid]: { opt, ts: Date.now() } },
+        })),
 
       finishSession: ({ mode, label, total, correctCount, xp, durationSec }) => {
         const st = get();
@@ -119,6 +133,7 @@ export const useApp = create<AppState>()(
           attempts: {},
           conceptReads: {},
           sessions: [],
+          scenarioChoices: {},
           onboarded: false,
         }),
     }),
@@ -130,6 +145,7 @@ export const useApp = create<AppState>()(
 );
 
 // ---------- الإنجازات ----------
+
 export interface Achievement {
   id: string;
   title: string;
@@ -141,6 +157,7 @@ export interface Achievement {
     attempts: Record<string, Attempt>;
     sessions: SessionRecord[];
     conceptReads: Record<string, number>;
+    scenarioChoices: Record<string, ScenarioChoice>;
   }) => boolean;
 }
 
@@ -212,6 +229,22 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: "Brain",
     earned: (s) =>
       Object.values(s.attempts).filter((a) => a.box >= 4).length >= 10,
+  },
+  {
+    id: "firstscenario",
+    title: "أول قرار صفّي",
+    desc: "أكمل أول جولة من محاكاة الصف",
+    icon: "MessageSquare",
+    earned: (s) => s.sessions.some((x) => x.mode === "scenarios"),
+  },
+  {
+    id: "scenall",
+    title: "خبير المواقف التربوية",
+    desc: "اتخذ قراراً في كل مواقف الصف المتاحة",
+    icon: "MessagesSquare",
+    earned: (s) =>
+      SCENARIOS.length > 0 &&
+      Object.keys(s.scenarioChoices ?? {}).length >= SCENARIOS.length,
   },
   {
     id: "xp1500",

@@ -20,6 +20,8 @@ import {
   TrendingUp,
   History,
   Crown,
+  MessageSquare,
+  MessagesSquare,
 } from "lucide-react";
 import { levelFromXp, levelTitle, xpInLevel, LEVEL_XP, COURSES, questionsOfCourse, QUESTIONS, conceptById, questionById } from "@/lib/qbank";
 import { ACHIEVEMENTS, useApp } from "@/lib/store";
@@ -49,6 +51,8 @@ const ACH_ICONS: Record<string, React.ElementType> = {
   Timer,
   Brain,
   Crown,
+  MessageSquare,
+  MessagesSquare,
 };
 
 const DIFF_COLORS: Record<string, string> = {
@@ -59,7 +63,7 @@ const DIFF_COLORS: Record<string, string> = {
 
 // ---------- صفحة حسابي الموحدة: المستوى + التقدم + الإنجازات + السجل ----------
 export default function AccountView() {
-  const { name, xp, streak, attempts, sessions, conceptReads, setName } = useApp();
+  const { name, xp, streak, attempts, sessions, conceptReads, scenarioChoices, setName } = useApp();
   const startQuiz = useUi((s) => s.startQuiz);
   const resetAll = useApp((s) => s.resetAll);
   const [editing, setEditing] = useState(false);
@@ -128,9 +132,9 @@ export default function AccountView() {
     () =>
       ACHIEVEMENTS.map((a) => ({
         ...a,
-        ok: a.earned({ xp, streak, attempts, sessions, conceptReads }),
+        ok: a.earned({ xp, streak, attempts, sessions, conceptReads, scenarioChoices }),
       })),
-    [xp, streak, attempts, sessions, conceptReads]
+    [xp, streak, attempts, sessions, conceptReads, scenarioChoices]
   );
   const earnedCount = earned.filter((e) => e.ok).length;
 
@@ -415,7 +419,7 @@ export default function AccountView() {
       </div>
 
       <p className="pb-2 text-center text-[10px] text-muted-foreground">
-        تربوي — نسخة 1.3 • مبني على كتاب علم النفس التربوي والمكتبة التربوية العامة
+        تربوي — نسخة 1.4 • مساعد إعداد المعلم: من أول سنة جامعية إلى التدريب العملي والتخرج
       </p>
     </div>
   );

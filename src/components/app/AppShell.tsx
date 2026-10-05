@@ -6,11 +6,13 @@ import { Home, BookOpen, Target, User, GraduationCap, Flame } from "lucide-react
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { CONCEPTS, QUESTIONS } from "@/lib/qbank";
+import { SCENARIOS } from "@/lib/scenarios";
 import QuizSession from "./QuizSession";
 import HomeView from "./HomeView";
 import ConceptsView from "./ConceptsView";
 import QuizHome from "./QuizHome";
 import AccountView from "./AccountView";
+import ScenariosView from "./ScenariosView";
 import { Button } from "@/components/ui/button";
 
 const TABS = [
@@ -46,8 +48,8 @@ function Onboarding() {
         </motion.div>
         <h1 className="text-4xl font-black">تربوي</h1>
         <p className="mt-3 max-w-xs text-sm leading-7 text-emerald-100">
-          رفيقك في التربية وعلم النفس التربوي: {CONCEPTS.length} مفهوماً و{QUESTIONS.length} سؤالاً من الكتاب والمكتبة التربوية، توجيه ذكي بعد كل خطأ،
-          ومراجعة متباعدة تثبّت المعرفة في ذاكرتك.
+          مساعد إعداد المعلم يرافقك من أول سنة جامعية حتى التخرج: {CONCEPTS.length} مفهوماً و{QUESTIONS.length} سؤالاً
+          و{SCENARIOS.length} موقفاً صفياً للمحاكاة، مع مراجعة ذكية تثبّت المعرفة في ذاكرتك.
         </p>
 
         <div className="mt-10 w-full max-w-sm">
@@ -90,6 +92,7 @@ export default function AppShell() {
   const hydrated = useHydrated();
   const { onboarded, streak } = useApp();
   const quizConfig = useUi((s) => s.quizConfig);
+  const scenariosOpen = useUi((s) => s.scenariosOpen);
   const [tab, setTab] = useState("home");
 
   // تسجيل عامل الخدمة للعمل دون اتصال
@@ -189,6 +192,9 @@ export default function AppShell() {
           })}
         </div>
       </nav>
+
+      {/* شاشة محاكاة الصف الدراسي */}
+      <AnimatePresence>{scenariosOpen && <ScenariosView key="scenarios" />}</AnimatePresence>
     </div>
   );
 }
