@@ -14,8 +14,10 @@ import {
   Sparkles,
   ArrowLeft,
   Trophy,
+  Gem,
 } from "lucide-react";
 import { questionById, conceptById, OPTION_LETTERS } from "@/lib/qbank";
+import { gemsForSession } from "@/lib/shop";
 import { useApp } from "@/lib/store";
 import { useUi, type QuizConfig } from "@/lib/ui-store";
 import { buildSocraticSteps, type SocraticStep } from "@/lib/socratic";
@@ -327,12 +329,15 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
           <div className="pop-in flex flex-col items-center gap-3 py-4">
             <ScoreRing pct={pct} />
             <h2 className="text-xl font-black">{msg}</h2>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap justify-center gap-3">
               <div className="flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-2 text-sm font-bold text-emerald-800">
                 <Sparkles className="h-4 w-4" /> +{sessionXp} نقطة خبرة
               </div>
               <div className="flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-bold text-primary">
                 <CheckCircle2 className="h-4 w-4" /> {correctCount} من {questions.length}
+              </div>
+              <div className="flex items-center gap-2 rounded-full bg-cyan-100 px-4 py-2 text-sm font-bold text-cyan-700">
+                <Gem className="h-4 w-4" /> +{gemsForSession(questions.length, correctCount)} جواهر
               </div>
             </div>
             {review.length < questions.length && (

@@ -15,6 +15,7 @@ import {
   ShieldAlert,
   ThumbsUp,
   Award,
+  Gem,
 } from "lucide-react";
 import {
   SCENARIOS,
@@ -26,6 +27,7 @@ import {
   type ScenarioScore,
 } from "@/lib/scenarios";
 import { buildScenarioRun } from "@/lib/scenarios";
+import { gemsForSession } from "@/lib/shop";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { Button } from "@/components/ui/button";
@@ -257,9 +259,15 @@ function ResultScreen({ scores, run, onAgain, onExit }: { scores: ScenarioScore[
         </div>
       </div>
 
-      <div className="mt-4 flex items-center gap-2 rounded-full bg-amber-100 px-5 py-2.5">
-        <Zap className="h-5 w-5 text-amber-600" />
-        <span className="text-sm font-black text-amber-800">+{xp} نقطة خبرة</span>
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+        <div className="flex items-center gap-2 rounded-full bg-amber-100 px-5 py-2.5">
+          <Zap className="h-5 w-5 text-amber-600" />
+          <span className="text-sm font-black text-amber-800">+{xp} نقطة خبرة</span>
+        </div>
+        <div className="flex items-center gap-2 rounded-full bg-cyan-100 px-5 py-2.5">
+          <Gem className="h-5 w-5 text-cyan-600" />
+          <span className="text-sm font-black text-cyan-700">+{gemsForSession(run.length, bestCount)} جواهر</span>
+        </div>
       </div>
 
       <div className="mt-8 w-full max-w-sm space-y-2">

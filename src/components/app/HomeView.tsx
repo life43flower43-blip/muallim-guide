@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Zap,
@@ -16,6 +16,7 @@ import {
   Dumbbell,
   Rocket,
   BadgeCheck,
+  Gem,
 } from "lucide-react";
 import {
   CONCEPTS,
@@ -27,11 +28,14 @@ import {
   levelTitle,
   xpInLevel,
   LEVEL_XP,
+  conceptById,
 } from "@/lib/qbank";
 import { SCENARIOS } from "@/lib/scenarios";
 import { buildReviewSet, buildRedoSet } from "@/lib/srs";
+import { SHOP_ITEMS } from "@/lib/shop";
 import { DAILY_GOAL_XP, useApp, xpToday } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
+import ShopDialog, { FairyAvatar } from "./ShopDialog";
 
 function DailyTip({ onOpen }: { onOpen: (id: string) => void }) {
   const conceptReads = useApp((s) => s.conceptReads);
@@ -77,11 +81,25 @@ interface World {
   action: () => void;
 }
 
-function WorldRow({ world, index, isLast }: { world: World; index: number; isLast: boolean }) {
+function WorldRow({
+  world,
+  index,
+  isLast,
+  fairyHere,
+  fairyEquipped,
+  onFairyTap,
+}: {
+  world: World;
+  index: number;
+  isLast: boolean;
+  fairyHere: boolean;
+  fairyEquipped: Record<string, boolean>;
+  onFairyTap: () => void;
+}) {
   const Icon = world.icon;
   return (
     <div className="flex items-stretch gap-3">
-      {/* عمود المسار: رقم العالم وخط الرحلة */}
+      {/* عمود المسار: رقم العالم وخط الرحلة + الجنية عند التقدم الحالي */}
       <div className="flex flex-col items-center">
         <span
           className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-lg font-black text-white shadow-sm"
@@ -89,6 +107,18 @@ function WorldRow({ world, index, isLast }: { world: World; index: number; isLas
         >
           {index + 1}
         </span>
+        {fairyHere && (
+          <motion.button
+            whileTap={{ scale: 0.92 }}
+            onClick={onFairyTap}
+            aria-label="الجنية — افتح متجر الجواهر"
+            animate={{ y: [0, -4, 0] }}
+            transition={{ repeat: Infinity, duration: 2.4, ease: "easeInOut" }}
+            className="relative z-10 my-1"
+          >
+            <FairyAvatar equipped={fairyEquipped} size={46} />
+          </motion.button>
+        )}
         {!isLast && <span className="w-0.5 flex-1 rounded-full bg-border" />}
       </div>
 
@@ -129,11 +159,12 @@ function WorldRow({ world, index, isLast }: { world: World; index: number; isLas
 }
 
 export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) {
-  const { name, xp, attempts, sessions } = useApp();
+  const { name, xp, attempts, sessions, conceptReads, scenarioChoices, gems, equipped } = useApp();
   const startQuiz = useUi((s) => s.startQuiz);
   const openConcept = useUi((s) => s.openConcept);
   const openCourseTab = useUi((s) => s.openCourseTab);
   const startScenarios = useUi((s) => s.startScenarios);
+  const [shopOpen, setShopOpen] = useState(false);
 
   const handleOpenConcept = (id: string) => {
     openConcept(id);
@@ -160,6 +191,31 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
 
   const g1Count = conceptsOfCourse("G1").length;
   const m5Count = questionsOfCourse("M5").length;
+
+  // ---- موضع الجنية على المسار: تقف عند أول عالم لم تُنجز مهامه بعد ----
+  const courseOfQid = useMemo(() => {
+    const cmap = new Map(CONCEPTS.map((c) => [c.id, c.courseId]));
+    return new Map(QUESTIONS.map((q) => [q.conceptId, cmap.get(q.conceptId)]));
+  }, []);
+
+  const fairyWorldIdx = useMemo(() => {
+    const att = Object.keys(attempts);
+    const done = [
+      att.some((qid) => courseOfQid.get(qid) && courseOfQid.get(qid) !== "G1"), // الجامعة
+      Object.keys(conceptReads).some((cid) => conceptById(cid)?.courseId === "G1"), // أعرف
+      att.some((qid) => courseOfQid.get(qid) === "M5"), // أُدرّس
+      Object.keys(scenarioChoices).length > 0, // أواجه
+      sessions.some((s) => s.mode === "review" || s.mode === "redo"), // أتدرّب
+      xp >= 300, // أصبح معلّماً: بلوغ المستوى الثاني
+    ];
+    const i = done.findIndex((d) => !d);
+    return i === -1 ? 5 : i;
+  }, [attempts, conceptReads, scenarioChoices, sessions, xp, courseOfQid]);
+
+  const equippedBadges = useMemo(
+    () => SHOP_ITEMS.filter((i) => equipped[i.id]),
+    [equipped]
+  );
 
   const worlds: World[] = [
     {
@@ -253,6 +309,12 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
               <span className="flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold">
                 <Zap className="h-3 w-3 text-amber-300" /> {xp} نقطة
               </span>
+              <button
+                onClick={() => setShopOpen(true)}
+                className="flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold transition-colors active:bg-white/25"
+              >
+                <Gem className="h-3 w-3 text-cyan-300" /> {gems} جوهرة
+              </button>
             </div>
             <p className="mt-2 text-[11px] font-semibold text-emerald-200">
               باقي {xpToNext} نقطة للمستوى {level + 1}
@@ -302,9 +364,18 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
         </p>
         <p className="mb-3 text-[11px] font-semibold leading-5 text-muted-foreground">
           طالب تربية ← يتعلم ← يُدرّس ← يواجه المواقف ← يتدرّب ميدانياً ← معلم جاهز
+          {equippedBadges.length > 0 && " — الجنية ترافقك بكل ما تلبسينها"}
         </p>
         {worlds.map((w, i) => (
-          <WorldRow key={w.id} world={w} index={i} isLast={i === worlds.length - 1} />
+          <WorldRow
+            key={w.id}
+            world={w}
+            index={i}
+            isLast={i === worlds.length - 1}
+            fairyHere={i === fairyWorldIdx}
+            fairyEquipped={equipped}
+            onFairyTap={() => setShopOpen(true)}
+          />
         ))}
       </div>
 
@@ -437,6 +508,8 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       <p className="pt-1 text-center text-[10px] leading-5 text-muted-foreground">
         <GraduationCap className="mb-1 inline h-3.5 w-3.5" /> تربوي — مساعد إعداد المعلم: من أول سنة جامعية إلى التدريب العملي والتخرج
       </p>
+
+      <ShopDialog open={shopOpen} onOpenChange={setShopOpen} />
     </div>
   );
 }

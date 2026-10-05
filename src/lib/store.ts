@@ -5,6 +5,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import type { Attempt, SessionRecord } from "./types";
 import { nextBox } from "./srs";
 import { SCENARIOS } from "./scenarios";
+import { gemsForSession, shopItemById } from "./shop";
 
 export interface ScenarioChoice {
   opt: number; // فهرس الخيار المختار
@@ -22,6 +23,9 @@ interface AppState {
   conceptReads: Record<string, number>;
   sessions: SessionRecord[];
   scenarioChoices: Record<string, ScenarioChoice>; // قرارات محاكاة الصف
+  gems: number; // جواهر المتجر
+  ownedItems: Record<string, number>; // قطع المتجر المقتناة: المعرف -> وقت الشراء
+  equipped: Record<string, boolean>; // القطع الملبسة على الجنية
   onboarded: boolean;
 
   setName: (n: string) => void;
@@ -30,6 +34,9 @@ interface AppState {
   recordAttempt: (qid: string, correct: boolean) => void;
   recordScenarioChoice: (sid: string, opt: number) => void;
   finishSession: (s: Omit<SessionRecord, "id" | "ts">) => void;
+  addGems: (n: number) => void;
+  buyItem: (id: string) => boolean;
+  toggleEquip: (id: string) => void;
   resetAll: () => void;
 }
 
@@ -70,6 +77,9 @@ export const useApp = create<AppState>()(
       conceptReads: {},
       sessions: [],
       scenarioChoices: {},
+      gems: 0,
+      ownedItems: {},
+      equipped: {},
       onboarded: false,
 
       setName: (n) => set({ name: n }),
@@ -119,8 +129,28 @@ export const useApp = create<AppState>()(
           streak,
           lastActiveDay: today,
           sessions: [rec, ...st.sessions].slice(0, 100),
+          gems: st.gems + gemsForSession(total, correctCount),
         });
       },
+
+      addGems: (n) => set((st) => ({ gems: Math.max(0, st.gems + n) })),
+
+      buyItem: (id) => {
+        const item = shopItemById(id);
+        if (!item) return false;
+        const st = get();
+        if (st.ownedItems[id]) return true; // مقتناة سابقاً
+        if (st.gems < item.price) return false; // الجواهر لا تكفي
+        set({
+          gems: st.gems - item.price,
+          ownedItems: { ...st.ownedItems, [id]: Date.now() },
+          equipped: { ...st.equipped, [id]: true }, // تُلبس تلقائياً عند الشراء
+        });
+        return true;
+      },
+
+      toggleEquip: (id) =>
+        set((st) => ({ equipped: { ...st.equipped, [id]: !st.equipped[id] } })),
 
       resetAll: () =>
         set({
@@ -134,6 +164,9 @@ export const useApp = create<AppState>()(
           conceptReads: {},
           sessions: [],
           scenarioChoices: {},
+          gems: 0,
+          ownedItems: {},
+          equipped: {},
           onboarded: false,
         }),
     }),
@@ -158,6 +191,7 @@ export interface Achievement {
     sessions: SessionRecord[];
     conceptReads: Record<string, number>;
     scenarioChoices: Record<string, ScenarioChoice>;
+    ownedItems: Record<string, number>;
   }) => boolean;
 }
 
@@ -252,5 +286,12 @@ export const ACHIEVEMENTS: Achievement[] = [
     desc: "اجمع 1500 نقطة خبرة",
     icon: "Crown",
     earned: (s) => s.xp >= 1500,
+  },
+  {
+    id: "shopfirst",
+    title: "صديق الجنية",
+    desc: "اشترِ أول قطعة من متجر الجواهر",
+    icon: "ShoppingBag",
+    earned: (s) => Object.keys(s.ownedItems ?? {}).length >= 1,
   },
 ];

@@ -22,10 +22,14 @@ import {
   Crown,
   MessageSquare,
   MessagesSquare,
+  Gem,
+  ShoppingBag,
 } from "lucide-react";
 import { levelFromXp, levelTitle, xpInLevel, LEVEL_XP, COURSES, questionsOfCourse, QUESTIONS, conceptById, questionById } from "@/lib/qbank";
 import { ACHIEVEMENTS, useApp } from "@/lib/store";
+import { SHOP_ITEMS } from "@/lib/shop";
 import { useUi } from "@/lib/ui-store";
+import ShopDialog from "./ShopDialog";
 import { buildRedoSet } from "@/lib/srs";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,6 +57,7 @@ const ACH_ICONS: Record<string, React.ElementType> = {
   Crown,
   MessageSquare,
   MessagesSquare,
+  ShoppingBag,
 };
 
 const DIFF_COLORS: Record<string, string> = {
@@ -63,11 +68,12 @@ const DIFF_COLORS: Record<string, string> = {
 
 // ---------- صفحة حسابي الموحدة: المستوى + التقدم + الإنجازات + السجل ----------
 export default function AccountView() {
-  const { name, xp, streak, attempts, sessions, conceptReads, scenarioChoices, setName } = useApp();
+  const { name, xp, streak, attempts, sessions, conceptReads, scenarioChoices, gems, ownedItems, equipped, setName } = useApp();
   const startQuiz = useUi((s) => s.startQuiz);
   const resetAll = useApp((s) => s.resetAll);
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(name);
+  const [shopOpen, setShopOpen] = useState(false);
 
   const level = levelFromXp(xp);
 
@@ -132,11 +138,12 @@ export default function AccountView() {
     () =>
       ACHIEVEMENTS.map((a) => ({
         ...a,
-        ok: a.earned({ xp, streak, attempts, sessions, conceptReads, scenarioChoices }),
+        ok: a.earned({ xp, streak, attempts, sessions, conceptReads, scenarioChoices, ownedItems }),
       })),
-    [xp, streak, attempts, sessions, conceptReads, scenarioChoices]
+    [xp, streak, attempts, sessions, conceptReads, scenarioChoices, ownedItems]
   );
   const earnedCount = earned.filter((e) => e.ok).length;
+  const ownedList = SHOP_ITEMS.filter((i) => ownedItems[i.id]);
 
   return (
     <div className="space-y-4 px-4 pb-6">
@@ -343,6 +350,47 @@ export default function AccountView() {
         </div>
       </div>
 
+      {/* متجر الجنية والجواهر */}
+      <div className="card-soft rounded-3xl border border-cyan-100 bg-cyan-50/50 p-5">
+        <div className="flex items-center justify-between">
+          <p className="flex items-center gap-2 text-sm font-black">
+            <Gem className="h-4 w-4 text-cyan-600" /> متجر الجنية
+          </p>
+          <span
+            dir="ltr"
+            className="flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-black text-cyan-700"
+          >
+            <Gem className="h-3.5 w-3.5" /> {gems}
+          </span>
+        </div>
+        <p className="mt-2 text-xs leading-6 text-foreground/70">
+          تكسب الجواهر بإكمال أي جلسة (+5)، والجلسة الكاملة بلا خطأ (+10). صرفها على قطع
+          تظهر كشارات صغيرة بجانب الجنية على مسار رحلتك في الرئيسية.
+        </p>
+        {ownedList.length > 0 && (
+          <div className="mt-3 flex items-center gap-2">
+            <span className="text-[10px] font-bold text-muted-foreground">قطعك:</span>
+            {ownedList.map((i) => (
+              <span
+                key={i.id}
+                className={`flex h-8 w-8 items-center justify-center rounded-full border bg-white text-base shadow-sm ${
+                  equipped?.[i.id] ? "border-amber-300" : "border-border opacity-60"
+                }`}
+                title={i.name}
+              >
+                {i.emoji}
+              </span>
+            ))}
+          </div>
+        )}
+        <button
+          onClick={() => setShopOpen(true)}
+          className="mt-4 w-full rounded-2xl bg-cyan-600 py-3 text-sm font-black text-white transition-transform active:scale-[0.98]"
+        >
+          فتح متجر الجواهر
+        </button>
+      </div>
+
       {/* سجل الجلسات */}
       <div className="card-soft rounded-3xl border border-border bg-white p-5">
         <p className="mb-3 flex items-center gap-2 text-sm font-black">
@@ -419,8 +467,10 @@ export default function AccountView() {
       </div>
 
       <p className="pb-2 text-center text-[10px] text-muted-foreground">
-        تربوي — نسخة 1.4 • مساعد إعداد المعلم: من أول سنة جامعية إلى التدريب العملي والتخرج
+        تربوي — نسخة 1.5 • مساعد إعداد المعلم: من أول سنة جامعية إلى التدريب العملي والتخرج
       </p>
+
+      <ShopDialog open={shopOpen} onOpenChange={setShopOpen} />
     </div>
   );
 }
