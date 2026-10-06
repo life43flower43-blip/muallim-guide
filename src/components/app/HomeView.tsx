@@ -14,8 +14,6 @@ import {
   Dumbbell,
   Rocket,
   BadgeCheck,
-  Gem,
-  Flame,
   Brain,
   Play,
   Lock,
@@ -32,18 +30,8 @@ import {
   conceptById,
 } from "@/lib/qbank";
 import { buildReviewSet, buildRedoSet, orderUnseenFirst } from "@/lib/srs";
-import { DAILY_GOAL_XP, useApp, xpToday } from "@/lib/store";
+import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import {
-  arCount,
-  ad,
-  CONCEPT_FORMS,
-  QUESTION_FORMS,
-  QUESTION_DUE_FORMS,
-  QUESTION_OBJ_FORMS,
-  GEM_FORMS,
-  POINT_FORMS,
-} from "@/lib/arabic";
 import ShopDialog, { FairyAvatar } from "./ShopDialog";
 
 // ---------- مفهوم اليوم: مختصر بسطرين مع «اقرأ المزيد» ----------
@@ -116,7 +104,7 @@ interface World {
 }
 
 export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) {
-  const { name, xp, streak, attempts, sessions, conceptReads, scenarioChoices, gems, equipped } =
+  const { name, xp, attempts, sessions, conceptReads, scenarioChoices, equipped } =
     useApp();
   const startQuiz = useUi((s) => s.startQuiz);
   const openConcept = useUi((s) => s.openConcept);
@@ -131,23 +119,9 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
 
   const reviewSet = useMemo(() => buildReviewSet(attempts), [attempts]);
   const redoSet = useMemo(() => buildRedoSet(attempts), [attempts]);
-  const todayXp = useMemo(() => xpToday(sessions), [sessions]);
   const level = levelFromXp(xp);
   const answered = Object.keys(attempts).length;
   const started = answered > 0;
-  const readCount = Object.keys(conceptReads).length;
-
-  // الدقة تُعرض فقط بعد 10 إجابات مسجلة (نقد البنود 3-4)
-  const accuracy = useMemo(() => {
-    const vals = Object.values(attempts);
-    if (vals.length === 0) return null;
-    return Math.round((vals.filter((a) => a.correct).length / vals.length) * 100);
-  }, [attempts]);
-  const showAccuracy = answered >= 10 && accuracy !== null;
-
-  const goalPct = Math.min(100, (todayXp / DAILY_GOAL_XP) * 100);
-  const goalDone = todayXp >= DAILY_GOAL_XP;
-  const libPct = Math.round((readCount / CONCEPTS.length) * 100);
 
   // ---- موضع التقدم على المسار: أول عالم لم تُنجز مهامه بعد (من المحاولات والجلسات) ----
   const courseOfQid = useMemo(() => {
@@ -230,7 +204,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       name: "أصبح معلّمًا",
       icon: Rocket,
       color: "#B45309",
-      hint: "مستواك وإنجازاتك",
+      hint: "مرحلتك وإنجازاتك",
       action: () => onGoTab("account"),
     },
   ];
@@ -248,7 +222,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const startDailySession = () => {
     startQuiz({
       mode: "quick",
-      label: "جلسة اليوم — 10 دقائق",
+      label: "جلسة اليوم — ١٠ دقائق",
       qids: orderUnseenFirst(
         QUESTIONS.map((q) => q.id),
         attempts
@@ -267,7 +241,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
               {name || "طالب التربية"}
             </h2>
             <p className="mt-0.5 text-[11px] font-bold text-gray-700">
-              المستوى {ad(level)} • {levelTitle(level)}
+              {levelTitle(level)}
             </p>
           </div>
           {/* الجنية ترافقك — انقرها لفتح متجر الجواهر */}
@@ -282,39 +256,6 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
             <FairyAvatar equipped={equipped} size={52} />
           </motion.button>
         </div>
-
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          <span
-            className="flex items-center gap-1.5 rounded-full border border-border bg-white px-3 py-1.5 text-xs font-black text-gray-900"
-            title="أيام متتالية من النشاط"
-          >
-            <Flame className="h-4 w-4 text-orange-500" />
-            {ad(streak)}
-            <span className="text-[10px] font-bold text-gray-600">أيام متتالية</span>
-          </span>
-          <span
-            className="flex items-center gap-1.5 rounded-full border border-border bg-white px-3 py-1.5 text-xs font-black text-gray-900"
-            title="نقاط الخبرة"
-          >
-            <Zap className="h-4 w-4 text-amber-500" />
-            {arCount(xp, POINT_FORMS)}
-          </span>
-          <button
-            onClick={() => setShopOpen(true)}
-            title="تكتسبها من الجلسات وتصرفها في متجر الجنية"
-            className="flex items-center gap-1.5 rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1.5 text-xs font-black text-cyan-900 transition-colors active:bg-cyan-100"
-          >
-            <Gem className="h-4 w-4 text-cyan-600" />
-            {gems === 0 ? (
-              <span className="text-[10px] font-bold text-cyan-700">لا جواهر بعد</span>
-            ) : (
-              arCount(gems, GEM_FORMS)
-            )}
-          </button>
-        </div>
-        <p className="mt-1.5 text-[10px] font-semibold leading-5 text-gray-600">
-          الجوهرة تكتسبها من الجلسات وتصرفها في متجر الجنية — انقرها لفتح المتجر.
-        </p>
       </header>
 
       {/* ٢. بطاقة جلسة اليوم — داكنة عالية التباين (بند 7) */}
@@ -334,27 +275,10 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
           </span>
         </div>
 
-        <div className="mt-4">
-          <div className="flex items-center justify-between text-[11px] font-bold">
-            <span className="text-gray-100">
-              هدف اليوم: {ad(todayXp)} من {ad(DAILY_GOAL_XP)} نقطة
-            </span>
-            <span className={goalDone ? "text-emerald-300" : "text-gray-300"}>
-              {goalDone ? "أُنجز الهدف" : "الهدف بالنقاط لا بالأسئلة"}
-            </span>
-          </div>
-          <div className="mt-1.5 h-2.5 overflow-hidden rounded-full bg-white/20">
-            <div
-              className="h-full rounded-full bg-amber-400 transition-[width] duration-500"
-              style={{ width: `${Math.max(goalPct, 2)}%` }}
-            />
-          </div>
-        </div>
-
         <motion.button
           whileTap={{ scale: 0.98 }}
           onClick={startDailySession}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-amber-400 py-3.5 text-base font-black text-amber-950 shadow-md active:bg-amber-300"
+          className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-amber-400 py-3.5 text-base font-black text-amber-950 shadow-md active:bg-amber-300"
         >
           <Play className="h-5 w-5" /> ابدأ الآن
         </motion.button>
@@ -398,9 +322,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
           </span>
           <span className="text-[11px] font-black text-gray-900">مراجعة ذكية</span>
           <span className="text-[9px] font-bold text-gray-600">
-            {reviewSet.length > 0
-              ? arCount(reviewSet.length, QUESTION_DUE_FORMS)
-              : "لا مراجعات الآن"}
+            {reviewSet.length > 0 ? "لديك مراجعات مستحقة" : "لا مراجعات الآن"}
           </span>
         </motion.button>
 
@@ -422,7 +344,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
           </span>
           <span className="text-[11px] font-black text-gray-900">أخطائي</span>
           <span className="text-[9px] font-bold text-gray-600">
-            {redoSet.length > 0 ? arCount(redoSet.length, QUESTION_FORMS) : "لا أخطاء بعد"}
+            {redoSet.length > 0 ? "أخطاء تنتظر إصلاحك" : "لا أخطاء بعد"}
           </span>
         </motion.button>
       </div>
@@ -462,60 +384,8 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
         </motion.button>
       </section>
 
-      {/* ٥. مفهوم اليوم — مختصر مع «اقرأ المزيد» (بند 7) */}
+      {/* ٥. مفهوم اليوم — مختصر مع «اقرأ المزيد» */}
       <DailyTip onOpen={handleOpenConcept} />
-
-      {/* ٦. تقدمك — التقدم والدقة صفّان مستقلان بعنوانين صريحين (بنود 3-4) */}
-      <div className="card-soft rounded-3xl border border-border bg-white p-4">
-        <div className="mb-3 flex items-center justify-between">
-          <p className="text-sm font-black text-gray-900">تقدمك</p>
-          <button
-            onClick={() => onGoTab("account")}
-            className="flex items-center text-xs font-bold text-primary"
-          >
-            التفاصيل في حسابي <ArrowLeft className="h-3.5 w-3.5" />
-          </button>
-        </div>
-
-        <div className="space-y-3.5">
-          <div>
-            <p className="mb-1 text-[11px] font-bold text-gray-900">
-              تقدمك في المكتبة:{" "}
-              <span className="font-black">
-                {ad(readCount)} من {arCount(CONCEPTS.length, CONCEPT_FORMS)}
-              </span>
-            </p>
-            <div className="progress-track h-2.5">
-              <div className="progress-fill h-full" style={{ width: `${Math.max(libPct, 2)}%` }} />
-            </div>
-          </div>
-
-          <div>
-            <p className="mb-1 text-[11px] font-bold text-gray-900">دقة إجاباتك</p>
-            {showAccuracy ? (
-              <>
-                <div className="flex items-center justify-between text-[11px] font-bold text-gray-700">
-                  <span>الصحيح من إجمالي ما أجبت عنه</span>
-                  <span className="font-black text-gray-900">{ad(accuracy)}٪</span>
-                </div>
-                <div className="progress-track mt-1 h-2.5">
-                  <div
-                    className="h-full rounded-full bg-amber-400"
-                    style={{ width: `${Math.max(accuracy ?? 0, 2)}%` }}
-                  />
-                </div>
-              </>
-            ) : (
-              <p className="rounded-xl bg-muted/60 px-3 py-2 text-[11px] font-semibold leading-5 text-gray-700">
-                تُظهر الدقة بعد ١٠ أسئلة
-                {answered > 0
-                  ? ` — أجبت عن ${arCount(answered, QUESTION_OBJ_FORMS)} حتى الآن.`
-                  : " — ابدأ أول جلسة الآن."}
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
 
       {/* ٧. رحلتك إلى الاحتراف — رقائق أفقية قابلة للتمرير، والعالم الحالي مبرز (بند 7) */}
       <section>

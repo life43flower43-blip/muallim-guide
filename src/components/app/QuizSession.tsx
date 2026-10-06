@@ -11,14 +11,11 @@ import {
   Timer as TimerIcon,
   X,
   Brain,
-  Sparkles,
   ArrowLeft,
   Trophy,
-  Gem,
   Flag,
 } from "lucide-react";
 import { questionById, conceptById, OPTION_LETTERS } from "@/lib/qbank";
-import { gemsForSession } from "@/lib/shop";
 import { useApp } from "@/lib/store";
 import { useUi, type QuizConfig } from "@/lib/ui-store";
 import { buildSocraticSteps, type SocraticStep } from "@/lib/socratic";
@@ -322,7 +319,6 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
   if (finished) {
     const correctCount = review.filter((r) => r.ok).length;
     const pct = (correctCount / questions.length) * 100;
-    const sessionGems = gemsForSession(questions.length, correctCount);
     const msg =
       pct === 100
         ? "إتقان كامل! أنت أسطورة"
@@ -344,16 +340,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
             <ScoreRing pct={pct} />
             <h2 className="text-xl font-black">{msg}</h2>
             <div className="flex flex-wrap justify-center gap-3">
-              <div className="flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-2 text-sm font-bold text-emerald-800">
-                <Sparkles className="h-4 w-4" />{" "}
-                {sessionXp > 0 ? `أضافت لك ${ad(sessionXp)} نقطة خبرة` : "لا نقاط خبرة هذه الجلسة"}
-              </div>
               <div className="flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-bold text-primary">
-                <CheckCircle2 className="h-4 w-4" /> {ad(correctCount)} من {ad(questions.length)}
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-cyan-100 px-4 py-2 text-sm font-bold text-cyan-700">
-                <Gem className="h-4 w-4" />{" "}
-                {sessionGems > 0 ? `أضافت لك ${ad(sessionGems)} جواهر` : "لا جواهر هذه الجلسة"}
+                <CheckCircle2 className="h-4 w-4" /> {ad(correctCount)} من {ad(questions.length)} إجابة صحيحة
               </div>
             </div>
             {review.length < questions.length && (
@@ -548,11 +536,6 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                         </p>
                       )}
                     </div>
-                    {graded && (
-                      <span className="mr-auto text-sm font-black text-emerald-700">
-                        أضافت لك {ad(q.difficulty === "صعب" ? 15 : q.difficulty === "متوسط" ? 10 : 8)} نقطة
-                      </span>
-                    )}
                   </div>
 
                   {!graded && (

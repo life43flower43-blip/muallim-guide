@@ -16,7 +16,7 @@ import { COURSES, questionsOfCourse, QUESTIONS, conceptById, shuffle } from "@/l
 import { buildReviewSet, buildRedoSet, orderUnseenFirst } from "@/lib/srs";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { arCount, QUESTION_FORMS, QUESTION_DUE_FORMS, ERROR_FORMS } from "@/lib/arabic";
+import { ad } from "@/lib/arabic";
 
 function ModeCard({
   icon: Icon,
@@ -83,8 +83,9 @@ export default function QuizHome() {
           <div>
             <h2 className="text-lg font-black">مركز الاختبارات</h2>
             <p className="text-xs text-gray-100">
-              {arCount(QUESTIONS.length, QUESTION_FORMS)} من الكتاب والمكتبة التربوية •{" "}
-              {seenCount > 0 ? `واجهت ${seenCount} منها` : "لم تبدأ بعد"}
+              {seenCount > 0
+                ? "راجع بذكاء، صحّح أخطاءك، وتحدّ نفسك — الجديد يأتي أولاً"
+                : "ابدأ أول جلسة — أسئلة من محاور الرحلة كلها مع توجيه فوري"}
             </p>
           </div>
         </div>
@@ -94,7 +95,7 @@ export default function QuizHome() {
         icon={Brain}
         title="المراجعة الذكية"
         desc="تكرار متباعد: نعيد السؤال قبل أن تنساه — في وقته المثالي وفق منحنى النسيان"
-        badge={reviewSet.length > 0 ? arCount(reviewSet.length, QUESTION_DUE_FORMS) : undefined}
+        badge={reviewSet.length > 0 ? "مستحقة الآن" : undefined}
         disabled={reviewSet.length === 0}
         color="#7C3AED"
         onClick={() =>
@@ -106,7 +107,7 @@ export default function QuizHome() {
         icon={RotateCcw}
         title="إعادة أخطائي"
         desc="الأسئلة التي أخطأت فيها سابقاً — صحّح مفاهيمك الآن"
-        badge={redoSet.length > 0 ? arCount(redoSet.length, ERROR_FORMS) : undefined}
+        badge={redoSet.length > 0 ? "تنتظر إصلاحك" : undefined}
         disabled={redoSet.length === 0}
         color="#DC2626"
         onClick={() => startQuiz({ mode: "redo", label: "إعادة الأسئلة الخاطئة", qids: redoSet })}
@@ -115,12 +116,12 @@ export default function QuizHome() {
       <ModeCard
         icon={Zap}
         title="اختبار سريع"
-        desc="10 أسئلة عشوائية من كل المساقات مع توجيه فوري"
+        desc="١٠ أسئلة عشوائية من كل المحاور مع توجيه فوري"
         color="#F59E0B"
         onClick={() =>
           startQuiz({
             mode: "quick",
-            label: "اختبار سريع — 10 أسئلة",
+            label: "اختبار سريع — ١٠ أسئلة",
             qids: shuffle(QUESTIONS).slice(0, 10).map((q) => q.id),
           })
         }
@@ -129,19 +130,19 @@ export default function QuizHome() {
       <ModeCard
         icon={Timer}
         title="اختبار محاكاة"
-        desc="20 سؤالاً في 15 دقيقة — بلا توجيه فوري، والنتيجة في النهاية (كالامتحان الحقيقي)"
+        desc="٢٠ سؤالًا في ١٥ دقيقة — بلا توجيه فوري، والنتيجة في النهاية (كالامتحان الحقيقي)"
         color="#0E7490"
         onClick={() =>
           startQuiz({
             mode: "exam",
-            label: "اختبار محاكاة — 20 سؤالاً",
+            label: "اختبار محاكاة — ٢٠ سؤالًا",
             qids: shuffle(QUESTIONS).slice(0, 20).map((q) => q.id),
             timeLimitSec: 15 * 60,
           })
         }
       />
 
-      {/* تدريب حسب المساق */}
+      {/* تدريب حسب المحور */}
       <div className="card-soft rounded-3xl border border-border bg-white p-4">
         <button
           className="flex w-full items-center gap-4 text-right"
@@ -151,9 +152,9 @@ export default function QuizHome() {
             <Dumbbell className="h-7 w-7" />
           </span>
           <span className="flex-1">
-            <span className="text-lg font-black">تدريب حسب المساق</span>
+            <span className="text-lg font-black">تدريب حسب المحور</span>
             <span className="mt-1 block text-xs leading-5 text-muted-foreground">
-              اختر مساقاً ثم فصلاً لتتدرب على أسئلته مع توجيه فوري بعد كل سؤال — الجديد يأتي أولاً
+              اختر محورًا ثم موضوعًا لتتدرب على أسئلته مع توجيه فوري بعد كل سؤال — الجديد يأتي أولاً
             </span>
           </span>
           <ChevronLeft
@@ -168,7 +169,6 @@ export default function QuizHome() {
             className="mt-3 space-y-2 overflow-hidden border-t border-border pt-3"
           >
             {COURSES.map((course) => {
-              const qs = questionsOfCourse(course.id);
               return (
                 <div key={course.id} className="rounded-2xl bg-muted/60 p-3">
                   <button
@@ -177,7 +177,6 @@ export default function QuizHome() {
                   >
                     <span className="text-sm font-extrabold leading-6 text-primary">{course.name}</span>
                     <span className="flex items-center gap-1 text-xs font-bold text-muted-foreground">
-                      {arCount(qs.length, QUESTION_FORMS)}
                       <ChevronLeft
                         className={`h-4 w-4 transition-transform ${
                           expanded === course.id ? "-rotate-90" : ""
@@ -188,16 +187,17 @@ export default function QuizHome() {
                   {expanded === course.id && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-2 space-y-1.5">
                       <button
-                        onClick={() =>
+                        onClick={() => {
+                          const qs = questionsOfCourse(course.id);
                           startQuiz({
                             mode: "training",
                             label: course.name,
                             qids: orderUnseenFirst(qs.map((q) => q.id), attempts),
-                          })
-                        }
+                          });
+                        }}
                         className="w-full rounded-xl bg-primary py-2.5 text-sm font-black text-primary-foreground"
                       >
-                        تدريب شامل على المساق ({arCount(qs.length, QUESTION_FORMS)})
+                        تدريب شامل على المحور
                       </button>
                       <ChaptersGrid courseId={course.id} />
                     </motion.div>
@@ -250,9 +250,7 @@ function ChaptersGrid({ courseId }: { courseId: string }) {
           className="flex items-center justify-between rounded-xl border border-border bg-white px-3 py-2 text-right text-xs font-bold text-foreground"
         >
           <span className="leading-5">{chapter}</span>
-          <span className="shrink-0 rounded-full bg-accent px-2 py-0.5 text-[10px] font-black text-primary">
-            {arCount(qids.length, QUESTION_FORMS)}
-          </span>
+          <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground" />
         </button>
       ))}
     </div>

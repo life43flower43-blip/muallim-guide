@@ -18,6 +18,16 @@ export const COURSE_COLOR: Record<string, string> = {
   G1: "#1D4ED8",
 };
 
+// أسماء مختصرة للمحاور — للشرائح والشارات الصغيرة (بلا أرقام مساقات — قرار المستخدم)
+export const COURSE_SHORT: Record<string, string> = {
+  M1: "نمو الطلاب",
+  M2: "المشاعر والذكاء",
+  M3: "كيف يتعلمون",
+  M4: "التقويم",
+  M5: "التدريس",
+  G1: "المكتبة",
+};
+
 export const courseById = (id: string) => COURSES.find((c) => c.id === id);
 
 // خرائط بحث فوري O(1) — الأداء مع مئات المفاهيم والأسئلة
@@ -26,6 +36,10 @@ const QUESTION_MAP = new Map(QUESTIONS.map((q) => [q.id, q]));
 
 export const conceptById = (id: string) => CONCEPT_MAP.get(id);
 export const questionById = (id: string) => QUESTION_MAP.get(id);
+
+/** أمثلة المفهوم الواقعية — الأمثلة المتعددة الجديدة، وإن غابت رجع بالمثال الأصلي المفرد */
+export const examplesOf = (c: Concept): string[] =>
+  c.examples && c.examples.length > 0 ? c.examples : c.example ? [c.example] : [];
 
 export const conceptsOfCourse = (courseId: string) =>
   CONCEPTS.filter((c) => c.courseId === courseId);

@@ -25,16 +25,12 @@ import {
   Gem,
   ShoppingBag,
 } from "lucide-react";
-import { levelFromXp, levelTitle, xpInLevel, LEVEL_XP, COURSES, questionsOfCourse, QUESTIONS, conceptById, questionById } from "@/lib/qbank";
+import { levelFromXp, levelTitle, COURSES, questionsOfCourse, conceptById, questionById } from "@/lib/qbank";
 import { ACHIEVEMENTS, useApp } from "@/lib/store";
 import { SHOP_ITEMS } from "@/lib/shop";
 import { useUi } from "@/lib/ui-store";
 import {
   ad,
-  arCount,
-  QUESTION_FORMS,
-  QUESTION_OBJ_FORMS,
-  QUESTION_MISTAKE_FORMS,
 } from "@/lib/arabic";
 import ShopDialog from "./ShopDialog";
 import { buildRedoSet } from "@/lib/srs";
@@ -184,45 +180,16 @@ export default function AccountView() {
             ) : (
               <button className="text-right" onClick={() => setEditing(true)}>
                 <p className="text-lg font-black">{name || "اضغط لضبط اسمك"}</p>
-                <p className="mt-1 text-xs text-emerald-100">
-                  المستوى {ad(level)} • {levelTitle(level)}
-                </p>
+                <p className="mt-1 text-xs text-emerald-100">{levelTitle(level)}</p>
               </button>
             )}
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-4 gap-2 text-center">
-          <div className="rounded-2xl bg-white/10 p-2.5">
-            <Zap className="mx-auto h-4 w-4 text-amber-300" />
-            <p className="mt-1 text-base font-black">{ad(xp)}</p>
-            <p className="text-[10px] text-emerald-100">نقطة</p>
-          </div>
-          <div className="rounded-2xl bg-white/10 p-2.5">
-            <Flame className="mx-auto h-4 w-4 text-orange-400" />
-            <p className="mt-1 text-base font-black">{ad(streak)}</p>
-            <p className="text-[10px] text-emerald-100">يوم متتالي</p>
-          </div>
-          <div className="rounded-2xl bg-white/10 p-2.5">
-            <Trophy className="mx-auto h-4 w-4 text-yellow-300" />
-            <p className="mt-1 text-base font-black">
-              {ad(earnedCount)} من {ad(ACHIEVEMENTS.length)}
-            </p>
-            <p className="text-[10px] text-emerald-100">إنجاز</p>
-          </div>
-          <div className="rounded-2xl bg-white/10 p-2.5">
-            <Target className="mx-auto h-4 w-4 text-emerald-200" />
-            <p className="mt-1 text-base font-black">{showAccuracy ? `${ad(accuracy)}٪` : "—"}</p>
-            <p className="text-[10px] text-emerald-100">الدقة</p>
-          </div>
-        </div>
-
-        <div className="mt-3">
-          <div className="progress-track h-2 bg-white/20">
-            <div className="h-full rounded-full bg-amber-400" style={{ width: `${(xpInLevel(xp) / LEVEL_XP) * 100}%` }} />
-          </div>
-          <p className="mt-1 text-center text-[10px] text-emerald-100">
-            باقي {ad(LEVEL_XP - xpInLevel(xp))} نقطة للمستوى التالي
+        <div className="mt-4">
+          <p className="flex items-center gap-2 rounded-2xl bg-white/10 px-3 py-2.5 text-xs font-bold leading-6 text-emerald-100">
+            <Trophy className="h-4 w-4 shrink-0 text-yellow-300" />
+            رحلتك من طالب تربية إلى معلّم جاهز — تتقدّم مراحلها كلما قرأت وتدرّبت
           </p>
         </div>
       </div>
@@ -238,9 +205,9 @@ export default function AccountView() {
               <span>{showAccuracy ? `${ad(accuracy)}٪` : "—"}</span>
             </p>
             <p className="text-xs text-muted-foreground">
-              {!showAccuracy
-                ? `تُظهر دقتك بعد ١٠ أسئلة${totalAnswered > 0 ? ` — أجبت عن ${arCount(totalAnswered, QUESTION_OBJ_FORMS)} حتى الآن` : ""}`
-                : `${ad(totalCorrect)} صحيحة من ${arCount(totalAnswered, QUESTION_FORMS)}`}
+              {showAccuracy
+                ? "نسبة إجاباتك الصحيحة في كل ما تدربت عليه"
+                : "أجب عن عشرة أسئلة فتصحّ الدقة — النسبة المبكرة خادعة"}
             </p>
           </div>
           <div className="relative flex h-24 w-24 items-center justify-center">
@@ -266,33 +233,28 @@ export default function AccountView() {
             onClick={() => startQuiz({ mode: "redo", label: "إعادة الأسئلة الخاطئة", qids: redoSet })}
             className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-red-500 py-3 text-sm font-black text-white"
           >
-            <RotateCcw className="h-4 w-4" /> إعادة {arCount(redoSet.length, QUESTION_MISTAKE_FORMS)}
+            <RotateCcw className="h-4 w-4" /> إعادة أسئلتي الخاطئة
           </button>
         )}
       </div>
 
-      {/* حسب المساق */}
+      {/* الدقة حسب المحور */}
       <div className="card-soft rounded-3xl border border-border bg-white p-5">
         <p className="mb-4 flex items-center gap-2 text-sm font-black">
-          <BarChart3 className="h-4 w-4 text-primary" /> الدقة حسب المساق
+          <BarChart3 className="h-4 w-4 text-primary" /> الدقة حسب المحور
         </p>
         <div className="space-y-4">
           {perCourse.map((row) => (
             <div key={row.course.id}>
               <div className="mb-1.5 flex items-center justify-between text-xs font-bold">
-                <span className="leading-5">{row.course.name.replace("المساق", "مساق")}</span>
+                <span className="leading-5">{row.course.name}</span>
                 <span className="shrink-0 text-muted-foreground">
-                  {`${ad(row.correct)} من ${ad(row.answered)} • ${ad(row.pct)}٪`}
+                  {row.answered > 0 ? `${ad(row.pct)}٪` : "لم تبدأ بعد"}
                 </span>
               </div>
               <div className="progress-track h-2.5">
                 <div className="progress-fill h-full" style={{ width: `${row.pct}%` }} />
               </div>
-              <p className="mt-1 text-[10px] text-muted-foreground">
-                {row.answered > 0
-                  ? `واجهت ${arCount(row.answered, QUESTION_OBJ_FORMS)} من ${ad(row.total)}`
-                  : `لم تواجه أي سؤال من ${ad(row.total)} للمساق`}
-              </p>
             </div>
           ))}
         </div>
@@ -312,9 +274,6 @@ export default function AccountView() {
                   {s.total ? <span>{`${ad(pct)}٪`}</span> : "—"}
                 </p>
                 <p className="text-xs font-bold">{diff}</p>
-                <p className="text-[10px] text-muted-foreground">
-                  {s.total > 0 ? arCount(s.total, QUESTION_FORMS) : "لا أسئلة بعد"}
-                </p>
               </div>
             );
           })}
@@ -369,13 +328,10 @@ export default function AccountView() {
           <p className="flex items-center gap-2 text-sm font-black">
             <Gem className="h-4 w-4 text-cyan-600" /> متجر الجنية
           </p>
-          <span className="flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-black text-cyan-700">
-            <Gem className="h-3.5 w-3.5" /> {ad(gems)}
-          </span>
         </div>
         <p className="mt-2 text-xs leading-6 text-foreground/70">
-          تكسب الجواهر بإكمال أي جلسة (٥ جواهر)، والجلسة الكاملة بلا خطأ (١٠ جواهر). صرفها على قطع
-          تظهر كشارات صغيرة بجانب الجنية على مسار رحلتك في الرئيسية.
+          تكسب الجواهر بإكمال أي جلسة، وأكثر إذا أنهيتها كاملة بلا خطأ. صرفها على قطع تظهر
+          كشارات صغيرة بجانب الجنية على مسار رحلتك في الرئيسية.
         </p>
         {ownedList.length > 0 && (
           <div className="mt-3 flex items-center gap-2">
@@ -431,8 +387,7 @@ export default function AccountView() {
                         month: "long",
                         hour: "2-digit",
                         minute: "2-digit",
-                      })}{" "}
-                      • {ad(s.correctCount)} من {ad(s.total)} • {s.xp > 0 ? `أضافت لك ${ad(s.xp)} نقطة` : "بلا نقاط"}
+                      })}
                     </p>
                   </div>
                 </div>
@@ -477,7 +432,7 @@ export default function AccountView() {
       </div>
 
       <p className="pb-2 text-center text-[10px] text-muted-foreground">
-        تربوي — نسخة 1.5 • مساعد إعداد المعلم: من أول سنة جامعية إلى التدريب العملي والتخرج
+        تربوي — مساعد إعداد المعلم: من أول سنة جامعية إلى التدريب العملي والتخرج
       </p>
 
       <ShopDialog open={shopOpen} onOpenChange={setShopOpen} />

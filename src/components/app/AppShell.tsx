@@ -5,9 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Home, BookOpen, User, GraduationCap, Dumbbell } from "lucide-react";
 import { useApp, useAppHydrated } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { CONCEPTS, QUESTIONS } from "@/lib/qbank";
-import { SCENARIOS } from "@/lib/scenarios";
-import { arCount, CONCEPT_FORMS, QUESTION_FORMS, SCENARIO_FORMS } from "@/lib/arabic";
 import QuizSession from "./QuizSession";
 import HomeView from "./HomeView";
 import ConceptsView from "./ConceptsView";
@@ -105,9 +102,8 @@ function Onboarding() {
         </motion.div>
         <h1 className="text-4xl font-black">تربوي</h1>
         <p className="mt-3 max-w-xs text-sm leading-7 text-gray-100">
-          مساعد إعداد المعلم يرافقك من أول سنة جامعية حتى التخرج:{" "}
-          {arCount(CONCEPTS.length, CONCEPT_FORMS)} و{arCount(QUESTIONS.length, QUESTION_FORMS)} و
-          {arCount(SCENARIOS.length, SCENARIO_FORMS)} للمحاكاة، مع مراجعة ذكية تثبّت المعرفة في
+          مساعد إعداد المعلم يرافقك من أول سنة جامعية حتى التخرج: مفاهيم مشروحة بأمثلة واقعية من
+          الميدان، تدريب بتوجيه فوري، مواقف صفّية تحاكي الصف الحقيقي، ومراجعة ذكية تثبّت المعرفة في
           ذاكرتك.
         </p>
 

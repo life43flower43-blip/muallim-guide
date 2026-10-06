@@ -96,8 +96,8 @@ export default function ShopDialog({
         <div className="flex items-start gap-2 rounded-2xl bg-muted/60 p-3">
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
           <p className="text-[11px] font-semibold leading-6 text-foreground/80">
-            اكسب الجواهر: أكمل أي جلسة تدريب أو اختبار أو محاكاة (+5 جواهر)، وإن أنهيتها
-            كاملة بلا خطأ فستربح (+10). تصرفها على قطع تظهر بجانب الجنية في المسار.
+            اكسب الجواهر بإكمال أي جلسة تدريب أو اختبار أو محاكاة، وأكثر إذا أنهيتها كاملة بلا
+            خطأ. تصرفها على قطع تظهر بجانب الجنية في المسار.
           </p>
         </div>
 
@@ -174,13 +174,13 @@ export default function ShopDialog({
                 onClick={() => addGems(10)}
                 className="rounded-xl bg-white py-2 text-xs font-black text-amber-900 shadow-sm transition-transform active:scale-95"
               >
-                +10 جواهر
+                +١٠ جواهر
               </button>
               <button
                 onClick={() => addGems(50)}
                 className="rounded-xl bg-white py-2 text-xs font-black text-amber-900 shadow-sm transition-transform active:scale-95"
               >
-                +50 جوهرة
+                +٥٠ جوهرة
               </button>
               <button
                 onClick={() => addGems(-gems)}

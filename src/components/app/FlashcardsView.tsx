@@ -12,10 +12,10 @@ import {
   Layers,
   GraduationCap,
 } from "lucide-react";
-import { COURSES, CONCEPTS, COURSE_COLOR, shuffle, questionsOfConcept } from "@/lib/qbank";
+import { COURSES, CONCEPTS, COURSE_COLOR, COURSE_SHORT, examplesOf, shuffle, questionsOfConcept } from "@/lib/qbank";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { ad, arCount, CARD_FORMS } from "@/lib/arabic";
+import { ad } from "@/lib/arabic";
 import { Button } from "@/components/ui/button";
 
 // ---------- وضع البطاقات: بطاقة تنقلب باللمس لعرض الشرح والمثال ----------
@@ -70,7 +70,7 @@ export default function FlashcardsView() {
             courseFilter === "all" ? "bg-primary text-primary-foreground" : "bg-white text-foreground/70 border border-border"
           }`}
         >
-          الكل ({ad(CONCEPTS.length)})
+          الكل
         </button>
         {COURSES.map((c) => {
           const active = courseFilter === c.id;
@@ -87,7 +87,7 @@ export default function FlashcardsView() {
               }`}
               style={active ? { background: COURSE_COLOR[c.id] ?? "#1B4332" } : undefined}
             >
-              {c.id === "G1" ? "المكتبة" : `مساق ${ad(c.id.replace("M", ""))}` } ({ad(CONCEPTS.filter((x) => x.courseId === c.id).length)})
+              {COURSE_SHORT[c.id] ?? c.name}
             </button>
           );
         })}
@@ -118,12 +118,10 @@ export default function FlashcardsView() {
           <div className="absolute inset-0 flex flex-col rounded-3xl border border-border bg-white p-5 shadow-lg [backface-visibility:hidden]">
             <div className="flex items-center justify-between">
               <span
-                className={`flex h-10 w-10 items-center justify-center rounded-2xl font-black text-white ${
-                  card.courseId === "G1" ? "text-[10px]" : "text-sm"
-                }`}
+                className="flex h-10 w-10 items-center justify-center rounded-2xl px-2 text-center text-[10px] font-black leading-tight text-white"
                 style={{ background: color }}
               >
-                {card.courseId === "G1" ? "مكتبة" : ad(card.courseId.replace("M", ""))}
+                {COURSE_SHORT[card.courseId] ?? ""}
               </span>
               {isRead && (
                 <span className="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-black text-emerald-700">
@@ -156,11 +154,15 @@ export default function FlashcardsView() {
                 </p>
                 <p className="text-[13px] leading-7 text-foreground">{card.explanation}</p>
               </div>
-              <div className="rounded-2xl bg-amber-50 p-3">
-                <p className="mb-1 flex items-center gap-1.5 text-xs font-black text-amber-800">
-                  <Lightbulb className="h-3.5 w-3.5" /> مثال تطبيقي
+              <div className="space-y-2">
+                <p className="flex items-center gap-1.5 text-xs font-black text-amber-800">
+                  <Lightbulb className="h-3.5 w-3.5" /> أمثلة واقعية من الميدان
                 </p>
-                <p className="text-[12px] leading-6 text-amber-950/90">{card.example}</p>
+                {examplesOf(card).map((ex, i) => (
+                  <div key={i} className="rounded-2xl bg-amber-50 p-3">
+                    <p className="text-[12px] leading-6 text-amber-950/90">{ex}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -198,8 +200,7 @@ export default function FlashcardsView() {
       </div>
 
       <p className="flex items-center justify-center gap-1.5 pt-1 text-center text-[10px] text-muted-foreground">
-        <Layers className="h-3.5 w-3.5" /> {arCount(deck.length, CARD_FORMS)} — قلب البطاقة يعلمها
-        كمقروءة تلقائياً
+        <Layers className="h-3.5 w-3.5" /> قلب البطاقة يعلمها كمقروءة تلقائياً
       </p>
     </div>
   );

@@ -8,12 +8,17 @@ import {
   CheckCircle2,
   Circle,
   Dumbbell,
-  FileText,
   Lightbulb,
   X,
   Layers,
   List,
   Search,
+  Dna,
+  Brain,
+  Heart,
+  ClipboardList,
+  School,
+  Library,
 } from "lucide-react";
 import {
   COURSES,
@@ -21,15 +26,30 @@ import {
   chaptersOfCourse,
   conceptsOfCourse,
   questionsOfConcept,
+  examplesOf,
   COURSE_COLOR,
+  COURSE_SHORT,
   shuffle,
 } from "@/lib/qbank";
 import type { Concept, Course } from "@/lib/types";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { ad, arCount, CONCEPT_FORMS, QUESTION_FORMS } from "@/lib/arabic";
 import { Button } from "@/components/ui/button";
 import FlashcardsView from "./FlashcardsView";
+
+// أيقونة كل محور — بدل أرقام المساقات (قرار المستخدم: بلا شكل «مساقات جامعية»)
+const COURSE_ICONS: Record<string, React.ElementType> = {
+  M1: Dna,
+  M2: Heart,
+  M3: Brain,
+  M4: ClipboardList,
+  M5: School,
+  G1: Library,
+};
+const CourseIcon = ({ id, className }: { id: string; className?: string }) => {
+  const Icon = COURSE_ICONS[id] ?? BookOpen;
+  return <Icon className={className} />;
+};
 
 function ConceptDetail({
   conceptId,
@@ -55,6 +75,7 @@ function ConceptDetail({
   const { concept: c, course } = concept;
   const qs = questionsOfConcept(c.id);
   const isRead = !!conceptReads[c.id];
+  const examples = examplesOf(c);
 
   return (
     <motion.div
@@ -70,7 +91,9 @@ function ConceptDetail({
       >
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
-            <p className="text-[11px] font-bold opacity-80">{course.name}</p>
+            <p className="flex items-center gap-1.5 text-[11px] font-bold opacity-90">
+              <CourseIcon id={course.id} className="h-3.5 w-3.5" /> {course.name}
+            </p>
             <h2 className="mt-1 text-xl font-black leading-8">{c.title}</h2>
             <p className="mt-1 text-[11px] opacity-80">{c.chapter}</p>
           </div>
@@ -88,16 +111,18 @@ function ConceptDetail({
             </p>
             <p className="text-sm leading-8 text-foreground">{c.explanation}</p>
           </div>
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
-            <p className="mb-1 flex items-center gap-2 text-sm font-black text-emerald-800">
-              <Lightbulb className="h-4 w-4" /> مثال تطبيقي
+          <div className="space-y-2">
+            <p className="flex items-center gap-2 text-sm font-black text-emerald-800">
+              <Lightbulb className="h-4 w-4" /> أمثلة واقعية من الميدان
             </p>
-            <p className="text-sm leading-7 text-emerald-950">{c.example}</p>
-          </div>
-          <div className="rounded-2xl bg-muted p-3">
-            <p className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
-              <FileText className="h-4 w-4" /> أسئلة هذا المفهوم في بنك الأسئلة: {qs.length}
-            </p>
+            {examples.map((ex, i) => (
+              <div
+                key={i}
+                className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4"
+              >
+                <p className="text-sm leading-7 text-emerald-950">{ex}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -194,7 +219,7 @@ export default function ConceptsView() {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={`ابحث في ${arCount(totalConcepts, CONCEPT_FORMS)}...`}
+          placeholder="ابحث عن مفهوم..."
           className="w-full bg-transparent py-3 text-sm font-bold text-foreground outline-none placeholder:text-muted-foreground/70"
         />
         {query && (
@@ -209,7 +234,7 @@ export default function ConceptsView() {
         <div className="space-y-2 px-4">
           <p className="text-xs font-bold text-muted-foreground">
             {searchResults.length > 0
-              ? `${ad(searchResults.length)} نتيجة مطابقة`
+              ? "نتائج البحث"
               : "لا نتائج مطابقة — جرّب كلمة أقصر أو مختلفة"}
           </p>
           {searchResults.map((c) => (
@@ -219,18 +244,14 @@ export default function ConceptsView() {
               className="flex w-full items-center gap-3 rounded-2xl border border-border bg-white px-3 py-3 text-right transition-colors active:bg-accent"
             >
               <span
-                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl font-black text-white ${
-                  c.courseId === "G1" ? "text-[9px]" : "text-sm"
-                }`}
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white"
                 style={{ background: COURSE_COLOR[c.courseId] ?? "#1B4332" }}
               >
-                {c.courseId === "G1" ? "مكتبة" : c.courseId.replace("M", "")}
+                <CourseIcon id={c.courseId} className="h-4.5 w-4.5" />
               </span>
               <span className="flex-1">
                 <span className="block text-sm font-bold leading-6">{c.title}</span>
-                <span className="text-[10px] text-muted-foreground">
-                  {c.chapter} • {arCount(questionsOfConcept(c.id).length, QUESTION_FORMS)}
-                </span>
+                <span className="text-[10px] text-muted-foreground">{c.chapter}</span>
               </span>
             </button>
           ))}
@@ -246,7 +267,7 @@ export default function ConceptsView() {
         <div>
           <h2 className="text-lg font-black">مكتبة المفاهيم</h2>
           <p className="text-xs text-muted-foreground">
-            {arCount(totalConcepts, CONCEPT_FORMS)} — اضغط أي مفهوم للشرح والمثال والتدريب
+            اضغط أي مفهوم لقراءة شرحه وأمثلته الواقعية والتدريب عليه
           </p>
         </div>
       </div>
@@ -254,7 +275,6 @@ export default function ConceptsView() {
       {COURSES.map((course) => {
         const open = openCourse === course.id;
         const concepts = conceptsOfCourse(course.id);
-        const readCount = concepts.filter((c) => conceptReads[c.id]).length;
         const color = COURSE_COLOR[course.id] ?? "#1B4332";
         return (
           <div key={course.id} className="card-soft overflow-hidden rounded-3xl border border-border bg-white">
@@ -263,17 +283,15 @@ export default function ConceptsView() {
               onClick={() => setOpenCourse((o) => (o === course.id ? null : course.id))}
             >
               <span
-                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl font-black text-white ${
-                  course.id === "G1" ? "text-[10px]" : "text-base"
-                }`}
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-white"
                 style={{ background: color }}
               >
-                {course.id === "G1" ? "مكتبة" : ad(course.id.replace("M", ""))}
+                <CourseIcon id={course.id} className="h-5 w-5" />
               </span>
               <span className="flex-1">
                 <span className="block text-sm font-black leading-6 text-foreground">{course.name}</span>
                 <span className="mt-0.5 block text-[11px] text-muted-foreground">
-                  {arCount(concepts.length, CONCEPT_FORMS)} • قُرئ {ad(readCount)} من {ad(concepts.length)}
+                  {COURSE_SHORT[course.id]}
                 </span>
               </span>
               <ChevronDown
@@ -313,9 +331,6 @@ export default function ConceptsView() {
                                 )}
                                 <span className="flex-1">
                                   <span className="block text-sm font-bold leading-6">{c.title}</span>
-                                  <span className="text-[10px] text-muted-foreground">
-                                    {arCount(questionsOfConcept(c.id).length, QUESTION_FORMS)}
-                                  </span>
                                 </span>
                               </button>
                             );

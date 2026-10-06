@@ -25,6 +25,8 @@ export interface Concept {
   title: string;
   explanation: string;
   example: string;
+  /** أمثلة واقعية متعددة (٥ لكل مفهوم) — تُولَّد من ميدان المدرسة وتغطي زوايا مختلفة للمفهوم */
+  examples?: string[];
 }
 
 export interface Course {

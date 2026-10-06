@@ -228,28 +228,28 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: "read5",
     title: "قارئ النوادر",
-    desc: "اطلع على 5 مفاهيم",
+    desc: "اطلع على ٥ مفاهيم",
     icon: "BookOpen",
     earned: (s) => Object.keys(s.conceptReads).length >= 5,
   },
   {
     id: "streak3",
     title: "ثلاثة أيام",
-    desc: "سلسلة نشاط 3 أيام متتالية",
+    desc: "سلسلة نشاط ٣ أيام متتالية",
     icon: "Flame",
     earned: (s) => s.streak >= 3,
   },
   {
     id: "q25",
     title: "مثابر",
-    desc: "أجب عن 25 سؤالاً",
+    desc: "أجب عن ٢٥ سؤالًا",
     icon: "Target",
     earned: (s) => Object.keys(s.attempts).length >= 25,
   },
   {
     id: "perfect",
     title: "علامة كاملة",
-    desc: "جلسة بلا خطأ واحدة (10 أسئلة فأكثر)",
+    desc: "جلسة بلا خطأ واحدة (١٠ أسئلة فأكثر)",
     icon: "Star",
     earned: (s) =>
       s.sessions.some((x) => x.total >= 10 && x.correctCount === x.total),
@@ -257,7 +257,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: "xp500",
     title: "جامع النقاط",
-    desc: "اجمع 500 نقطة خبرة",
+    desc: "اجمع ٥٠٠ نقطة خبرة",
     icon: "Zap",
     earned: (s) => s.xp >= 500,
   },
@@ -281,7 +281,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: "srs10",
     title: "ذاكرة حديدية",
-    desc: "10 أسئلة في الصناديق العليا للمراجعة",
+    desc: "١٠ أسئلة في الصناديق العليا للمراجعة",
     icon: "Brain",
     earned: (s) =>
       Object.values(s.attempts).filter((a) => a.box >= 4).length >= 10,
@@ -305,7 +305,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: "xp1500",
     title: "أسطورة تربوي",
-    desc: "اجمع 1500 نقطة خبرة",
+    desc: "اجمع ١٥٠٠ نقطة خبرة",
     icon: "Crown",
     earned: (s) => s.xp >= 1500,
   },

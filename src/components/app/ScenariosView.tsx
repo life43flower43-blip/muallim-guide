@@ -10,12 +10,10 @@ import {
   ChevronLeft,
   Lightbulb,
   Target,
-  Zap,
   RotateCcw,
   ShieldAlert,
   ThumbsUp,
   Award,
-  Gem,
 } from "lucide-react";
 import {
   SCENARIOS,
@@ -27,10 +25,9 @@ import {
   type ScenarioScore,
 } from "@/lib/scenarios";
 import { buildScenarioRun } from "@/lib/scenarios";
-import { gemsForSession } from "@/lib/shop";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { ad, arCount, SCENARIO_FORMS, SCENARIO_ADJ_FORMS } from "@/lib/arabic";
+import { ad, arCount, SCENARIO_FORMS } from "@/lib/arabic";
 import { Button } from "@/components/ui/button";
 
 const LETTERS = ["أ", "ب", "ج", "د"];
@@ -186,9 +183,6 @@ function RunScreen({
                 <div className={`flex items-center gap-2 ${banner.cls} px-4 py-3 text-white`}>
                   <BannerIcon className="h-5 w-5" />
                   <p className="text-sm font-black">{banner.text}</p>
-                  <span className="mr-auto rounded-full bg-white/25 px-2.5 py-0.5 text-[10px] font-black">
-                    {ad(SCENARIO_XP[chosenScore(sc, choice)])} نقطة
-                  </span>
                 </div>
                 <div className="p-4">
                   <p className="text-sm leading-8 text-foreground">{sc.options[choice].feedback}</p>
@@ -225,7 +219,6 @@ function ResultScreen({ scores, run, onAgain, onExit }: { scores: ScenarioScore[
   const bestCount = scores.filter((s) => s === "best").length;
   const okCount = scores.filter((s) => s === "ok").length;
   const poorCount = scores.filter((s) => s === "poor").length;
-  const xp = scores.reduce((a, s) => a + SCENARIO_XP[s], 0);
   const pct = Math.round((bestCount / run.length) * 100);
 
   const headline =
@@ -242,7 +235,7 @@ function ResultScreen({ scores, run, onAgain, onExit }: { scores: ScenarioScore[
       </motion.div>
       <h2 className="mt-4 text-2xl font-black">{headline}</h2>
       <p className="mt-2 text-sm font-semibold text-muted-foreground">
-        أكملت جولة من {arCount(run.length, SCENARIO_ADJ_FORMS)}
+        أكملت جولة قرارات في مواقف صفّية واقعية
       </p>
 
       <div className="mt-6 grid w-full max-w-sm grid-cols-3 gap-2">
@@ -260,23 +253,6 @@ function ResultScreen({ scores, run, onAgain, onExit }: { scores: ScenarioScore[
         </div>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-        <div className="flex items-center gap-2 rounded-full bg-amber-100 px-5 py-2.5">
-          <Zap className="h-5 w-5 text-amber-600" />
-          <span className="text-sm font-black text-amber-800">
-            {xp > 0 ? `أضافت لك ${ad(xp)} نقطة خبرة` : "لا نقاط خبرة هذه الجولة"}
-          </span>
-        </div>
-        <div className="flex items-center gap-2 rounded-full bg-cyan-100 px-5 py-2.5">
-          <Gem className="h-5 w-5 text-cyan-600" />
-          <span className="text-sm font-black text-cyan-700">
-            {gemsForSession(run.length, bestCount) > 0
-              ? `أضافت لك ${ad(gemsForSession(run.length, bestCount))} جواهر`
-              : "لا جواهر هذه الجولة"}
-          </span>
-        </div>
-      </div>
-
       <div className="mt-8 w-full max-w-sm space-y-2">
         <Button onClick={onAgain} className="h-13 w-full rounded-2xl bg-primary py-3.5 text-base font-black text-primary-foreground">
           <RotateCcw className="ml-2 h-5 w-5" /> جولة جديدة
@@ -291,23 +267,13 @@ function ResultScreen({ scores, run, onAgain, onExit }: { scores: ScenarioScore[
   );
 }
 
-// ---------- الشاشة الرئيسية للمواقف: قائمة + إحصاءات ----------
+// ---------- الشاشة الرئيسية للمواقف ----------
 export default function ScenariosView() {
   const clearScenarios = useUi((s) => s.clearScenarios);
   const scenarioChoices = useApp((s) => s.scenarioChoices);
   const [run, setRun] = useState<Scenario[] | null>(null);
   const [lastScores, setLastScores] = useState<ScenarioScore[] | null>(null);
   const [showAll, setShowAll] = useState(false);
-
-  const solvedCount = Object.keys(scenarioChoices).length;
-  const bestRate = useMemo(() => {
-    const scores = Object.entries(scenarioChoices)
-      .map(([sid, c]) => scenarioByIdSafe(sid, c.opt))
-      .filter((x): x is { id: string; score: ScenarioScore } => x !== null)
-      .map((x) => x.score);
-    if (scores.length === 0) return null;
-    return Math.round((scores.filter((s) => s === "best").length / scores.length) * 100);
-  }, [scenarioChoices]);
 
   const startRun = (list: Scenario[]) => {
     setLastScores(null);
@@ -381,22 +347,8 @@ export default function ScenariosView() {
             className="mt-4 h-13 w-full rounded-2xl bg-orange-600 py-3.5 text-base font-black text-white hover:bg-orange-500"
           >
             <Target className="ml-2 h-5 w-5" />
-            ابدأ جولة ({arCount(Math.min(10, SCENARIOS.length), SCENARIO_FORMS)})
+            ابدأ جولة القرارات
           </Button>
-        </div>
-
-        {/* إحصاءات المستخدم */}
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <div className="card-soft rounded-2xl border border-border bg-white p-4 text-center">
-            <p className="text-xl font-black text-primary">
-              {ad(solvedCount)} من {ad(SCENARIOS.length)}
-            </p>
-            <p className="text-[10px] font-bold text-muted-foreground">مواقف اتخذت فيها قراراً</p>
-          </div>
-          <div className="card-soft rounded-2xl border border-border bg-white p-4 text-center">
-            <p className="text-xl font-black text-emerald-600">{bestRate === null ? "—" : `${ad(bestRate)}٪`}</p>
-            <p className="text-[10px] font-bold text-muted-foreground">نسبة قراراتك الممتازة</p>
-          </div>
         </div>
 
         {/* القائمة حسب التصنيف */}
@@ -419,7 +371,7 @@ export default function ScenariosView() {
                 {grouped.map(({ cat, items }) => (
                   <div key={cat}>
                     <p className="mb-1.5 flex items-center gap-1.5 text-[11px] font-extrabold text-muted-foreground">
-                      <span className="h-1.5 w-1.5 rounded-full bg-orange-500" /> {cat} ({items.length})
+                      <span className="h-1.5 w-1.5 rounded-full bg-orange-500" /> {cat}
                     </p>
                     {items.map((s) => {
                       const rec = scenarioChoices[s.id];
