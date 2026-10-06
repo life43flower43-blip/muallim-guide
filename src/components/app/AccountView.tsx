@@ -30,6 +30,7 @@ import { ACHIEVEMENTS, useApp } from "@/lib/store";
 import { SHOP_ITEMS } from "@/lib/shop";
 import { useUi } from "@/lib/ui-store";
 import {
+  ad,
   arCount,
   QUESTION_FORMS,
   QUESTION_OBJ_FORMS,
@@ -183,8 +184,8 @@ export default function AccountView() {
             ) : (
               <button className="text-right" onClick={() => setEditing(true)}>
                 <p className="text-lg font-black">{name || "اضغط لضبط اسمك"}</p>
-                <p className="text-xs text-emerald-100">
-                  المستوى {level} • {levelTitle(level)}
+                <p className="mt-1 text-xs text-emerald-100">
+                  المستوى {ad(level)} • {levelTitle(level)}
                 </p>
               </button>
             )}
@@ -194,24 +195,24 @@ export default function AccountView() {
         <div className="mt-4 grid grid-cols-4 gap-2 text-center">
           <div className="rounded-2xl bg-white/10 p-2.5">
             <Zap className="mx-auto h-4 w-4 text-amber-300" />
-            <p className="mt-1 text-base font-black">{xp}</p>
+            <p className="mt-1 text-base font-black">{ad(xp)}</p>
             <p className="text-[10px] text-emerald-100">نقطة</p>
           </div>
           <div className="rounded-2xl bg-white/10 p-2.5">
             <Flame className="mx-auto h-4 w-4 text-orange-400" />
-            <p className="mt-1 text-base font-black">{streak}</p>
+            <p className="mt-1 text-base font-black">{ad(streak)}</p>
             <p className="text-[10px] text-emerald-100">يوم متتالي</p>
           </div>
           <div className="rounded-2xl bg-white/10 p-2.5">
             <Trophy className="mx-auto h-4 w-4 text-yellow-300" />
             <p className="mt-1 text-base font-black">
-              {earnedCount}/{ACHIEVEMENTS.length}
+              {ad(earnedCount)} من {ad(ACHIEVEMENTS.length)}
             </p>
             <p className="text-[10px] text-emerald-100">إنجاز</p>
           </div>
           <div className="rounded-2xl bg-white/10 p-2.5">
             <Target className="mx-auto h-4 w-4 text-emerald-200" />
-            <p className="mt-1 text-base font-black">{showAccuracy ? `${accuracy}%` : "—"}</p>
+            <p className="mt-1 text-base font-black">{showAccuracy ? `${ad(accuracy)}٪` : "—"}</p>
             <p className="text-[10px] text-emerald-100">الدقة</p>
           </div>
         </div>
@@ -221,7 +222,7 @@ export default function AccountView() {
             <div className="h-full rounded-full bg-amber-400" style={{ width: `${(xpInLevel(xp) / LEVEL_XP) * 100}%` }} />
           </div>
           <p className="mt-1 text-center text-[10px] text-emerald-100">
-            {xpInLevel(xp)}/{LEVEL_XP} نقطة للمستوى التالي
+            باقي {ad(LEVEL_XP - xpInLevel(xp))} نقطة للمستوى التالي
           </p>
         </div>
       </div>
@@ -234,12 +235,12 @@ export default function AccountView() {
               <Target className="h-4 w-4 text-primary" /> الدقة العامة
             </p>
             <p className="mt-1 text-3xl font-black text-primary">
-              <span dir="ltr">{showAccuracy ? `${accuracy}%` : "—"}</span>
+              <span>{showAccuracy ? `${ad(accuracy)}٪` : "—"}</span>
             </p>
             <p className="text-xs text-muted-foreground">
               {!showAccuracy
-                ? `تُظهر دقتك بعد 10 أسئلة${totalAnswered > 0 ? ` — أجبت عن ${arCount(totalAnswered, QUESTION_OBJ_FORMS)} حتى الآن` : ""}`
-                : `${totalCorrect} صحيحة من ${arCount(totalAnswered, QUESTION_FORMS)}`}
+                ? `تُظهر دقتك بعد ١٠ أسئلة${totalAnswered > 0 ? ` — أجبت عن ${arCount(totalAnswered, QUESTION_OBJ_FORMS)} حتى الآن` : ""}`
+                : `${ad(totalCorrect)} صحيحة من ${arCount(totalAnswered, QUESTION_FORMS)}`}
             </p>
           </div>
           <div className="relative flex h-24 w-24 items-center justify-center">
@@ -280,8 +281,8 @@ export default function AccountView() {
             <div key={row.course.id}>
               <div className="mb-1.5 flex items-center justify-between text-xs font-bold">
                 <span className="leading-5">{row.course.name.replace("المساق", "مساق")}</span>
-                <span className="shrink-0 text-muted-foreground" dir="ltr">
-                  {`${row.correct}/${row.answered} • ${row.pct}%`}
+                <span className="shrink-0 text-muted-foreground">
+                  {`${ad(row.correct)} من ${ad(row.answered)} • ${ad(row.pct)}٪`}
                 </span>
               </div>
               <div className="progress-track h-2.5">
@@ -289,8 +290,8 @@ export default function AccountView() {
               </div>
               <p className="mt-1 text-[10px] text-muted-foreground">
                 {row.answered > 0
-                  ? `واجهت ${arCount(row.answered, QUESTION_OBJ_FORMS)} من ${row.total}`
-                  : `لم تواجه أي سؤال من ${row.total} للمساق`}
+                  ? `واجهت ${arCount(row.answered, QUESTION_OBJ_FORMS)} من ${ad(row.total)}`
+                  : `لم تواجه أي سؤال من ${ad(row.total)} للمساق`}
               </p>
             </div>
           ))}
@@ -308,7 +309,7 @@ export default function AccountView() {
             return (
               <div key={diff} className="rounded-2xl bg-muted/60 p-3 text-center">
                 <p className="text-lg font-black" style={{ color: DIFF_COLORS[diff] }}>
-                  {s.total ? <span dir="ltr">{`${pct}%`}</span> : "—"}
+                  {s.total ? <span>{`${ad(pct)}٪`}</span> : "—"}
                 </p>
                 <p className="text-xs font-bold">{diff}</p>
                 <p className="text-[10px] text-muted-foreground">
@@ -327,7 +328,7 @@ export default function AccountView() {
           </p>
           <p className="mt-2 font-extrabold text-foreground">{weakestConcept.concept.title}</p>
           <p className="mt-1 text-xs leading-6 text-amber-900/80">
-            دقتك فيه <span dir="ltr">{weakestConcept.pct}%</span> — راجع شرحه ثم تدرب على أسئلته من مكتبة المفاهيم.
+            دقتك فيه <span>{ad(weakestConcept.pct)}٪</span> — راجع شرحه ثم تدرب على أسئلته من مكتبة المفاهيم.
           </p>
         </div>
       )}
@@ -368,15 +369,12 @@ export default function AccountView() {
           <p className="flex items-center gap-2 text-sm font-black">
             <Gem className="h-4 w-4 text-cyan-600" /> متجر الجنية
           </p>
-          <span
-            dir="ltr"
-            className="flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-black text-cyan-700"
-          >
-            <Gem className="h-3.5 w-3.5" /> {gems}
+          <span className="flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-black text-cyan-700">
+            <Gem className="h-3.5 w-3.5" /> {ad(gems)}
           </span>
         </div>
         <p className="mt-2 text-xs leading-6 text-foreground/70">
-          تكسب الجواهر بإكمال أي جلسة (+5)، والجلسة الكاملة بلا خطأ (+10). صرفها على قطع
+          تكسب الجواهر بإكمال أي جلسة (٥ جواهر)، والجلسة الكاملة بلا خطأ (١٠ جواهر). صرفها على قطع
           تظهر كشارات صغيرة بجانب الجنية على مسار رحلتك في الرئيسية.
         </p>
         {ownedList.length > 0 && (
@@ -423,7 +421,7 @@ export default function AccountView() {
                       pct >= 80 ? "bg-emerald-600" : pct >= 50 ? "bg-amber-500" : "bg-red-500"
                     }`}
                   >
-                    <span dir="ltr">{pct}%</span>
+                    <span>{ad(pct)}٪</span>
                   </span>
                   <div className="flex-1 overflow-hidden">
                     <p className="truncate text-xs font-bold">{s.label}</p>
@@ -434,7 +432,7 @@ export default function AccountView() {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}{" "}
-                      • {s.correctCount}/{s.total} • +{s.xp} نقطة
+                      • {ad(s.correctCount)} من {ad(s.total)} • {s.xp > 0 ? `أضافت لك ${ad(s.xp)} نقطة` : "بلا نقاط"}
                     </p>
                   </div>
                 </div>

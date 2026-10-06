@@ -30,7 +30,7 @@ import { buildScenarioRun } from "@/lib/scenarios";
 import { gemsForSession } from "@/lib/shop";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { arCount, SCENARIO_FORMS, SCENARIO_ADJ_FORMS } from "@/lib/arabic";
+import { ad, arCount, SCENARIO_FORMS, SCENARIO_ADJ_FORMS } from "@/lib/arabic";
 import { Button } from "@/components/ui/button";
 
 const LETTERS = ["أ", "ب", "ج", "د"];
@@ -115,8 +115,8 @@ function RunScreen({
               />
             </div>
           </div>
-          <span className="text-xs font-black" dir="ltr">
-            {idx + 1}/{run.length}
+          <span className="text-xs font-black">
+            {ad(idx + 1)} من {ad(run.length)}
           </span>
         </div>
       </div>
@@ -187,7 +187,7 @@ function RunScreen({
                   <BannerIcon className="h-5 w-5" />
                   <p className="text-sm font-black">{banner.text}</p>
                   <span className="mr-auto rounded-full bg-white/25 px-2.5 py-0.5 text-[10px] font-black">
-                    +{SCENARIO_XP[chosenScore(sc, choice)]} نقطة
+                    {ad(SCENARIO_XP[chosenScore(sc, choice)])} نقطة
                   </span>
                 </div>
                 <div className="p-4">
@@ -247,15 +247,15 @@ function ResultScreen({ scores, run, onAgain, onExit }: { scores: ScenarioScore[
 
       <div className="mt-6 grid w-full max-w-sm grid-cols-3 gap-2">
         <div className="rounded-2xl bg-emerald-50 p-3">
-          <p className="text-xl font-black text-emerald-700">{bestCount}</p>
+          <p className="text-xl font-black text-emerald-700">{ad(bestCount)}</p>
           <p className="text-[10px] font-bold text-emerald-800">قرار ممتاز</p>
         </div>
         <div className="rounded-2xl bg-amber-50 p-3">
-          <p className="text-xl font-black text-amber-600">{okCount}</p>
+          <p className="text-xl font-black text-amber-600">{ad(okCount)}</p>
           <p className="text-[10px] font-bold text-amber-700">مقبول</p>
         </div>
         <div className="rounded-2xl bg-red-50 p-3">
-          <p className="text-xl font-black text-red-500">{poorCount}</p>
+          <p className="text-xl font-black text-red-500">{ad(poorCount)}</p>
           <p className="text-[10px] font-bold text-red-600">فيه مخاطرة</p>
         </div>
       </div>
@@ -263,11 +263,17 @@ function ResultScreen({ scores, run, onAgain, onExit }: { scores: ScenarioScore[
       <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
         <div className="flex items-center gap-2 rounded-full bg-amber-100 px-5 py-2.5">
           <Zap className="h-5 w-5 text-amber-600" />
-          <span className="text-sm font-black text-amber-800">+{xp} نقطة خبرة</span>
+          <span className="text-sm font-black text-amber-800">
+            {xp > 0 ? `أضافت لك ${ad(xp)} نقطة خبرة` : "لا نقاط خبرة هذه الجولة"}
+          </span>
         </div>
         <div className="flex items-center gap-2 rounded-full bg-cyan-100 px-5 py-2.5">
           <Gem className="h-5 w-5 text-cyan-600" />
-          <span className="text-sm font-black text-cyan-700">+{gemsForSession(run.length, bestCount)} جواهر</span>
+          <span className="text-sm font-black text-cyan-700">
+            {gemsForSession(run.length, bestCount) > 0
+              ? `أضافت لك ${ad(gemsForSession(run.length, bestCount))} جواهر`
+              : "لا جواهر هذه الجولة"}
+          </span>
         </div>
       </div>
 
@@ -383,12 +389,12 @@ export default function ScenariosView() {
         <div className="mt-3 grid grid-cols-2 gap-2">
           <div className="card-soft rounded-2xl border border-border bg-white p-4 text-center">
             <p className="text-xl font-black text-primary">
-              {solvedCount}/{SCENARIOS.length}
+              {ad(solvedCount)} من {ad(SCENARIOS.length)}
             </p>
             <p className="text-[10px] font-bold text-muted-foreground">مواقف اتخذت فيها قراراً</p>
           </div>
           <div className="card-soft rounded-2xl border border-border bg-white p-4 text-center">
-            <p className="text-xl font-black text-emerald-600">{bestRate === null ? "—" : `${bestRate}%`}</p>
+            <p className="text-xl font-black text-emerald-600">{bestRate === null ? "—" : `${ad(bestRate)}٪`}</p>
             <p className="text-[10px] font-bold text-muted-foreground">نسبة قراراتك الممتازة</p>
           </div>
         </div>

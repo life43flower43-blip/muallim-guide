@@ -4,6 +4,10 @@ import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "تربوي | رفيق طالب التربية",
+  other: {
+    // حظر نهائي على ترجمة الصفحة آليًا — المترجم التلقائي يشوّه النص العربي تمامًا
+    google: "notranslate",
+  },
   description:
     "تطبيق تعليمي لطلاب كليات التربية: مفاهيم، اختبارات تفاعلية، توجيه بعد الخطأ، ومراجعة متباعدة.",
   applicationName: "تربوي",
@@ -34,8 +38,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" suppressHydrationWarning>
+    <html lang="ar" dir="rtl" translate="no" className="notranslate" suppressHydrationWarning>
       <head>
+        <meta name="google" content="notranslate" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

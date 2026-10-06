@@ -15,7 +15,7 @@ import {
 import { COURSES, CONCEPTS, COURSE_COLOR, shuffle, questionsOfConcept } from "@/lib/qbank";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { arCount, CARD_FORMS } from "@/lib/arabic";
+import { ad, arCount, CARD_FORMS } from "@/lib/arabic";
 import { Button } from "@/components/ui/button";
 
 // ---------- وضع البطاقات: بطاقة تنقلب باللمس لعرض الشرح والمثال ----------
@@ -70,7 +70,7 @@ export default function FlashcardsView() {
             courseFilter === "all" ? "bg-primary text-primary-foreground" : "bg-white text-foreground/70 border border-border"
           }`}
         >
-          الكل ({CONCEPTS.length})
+          الكل ({ad(CONCEPTS.length)})
         </button>
         {COURSES.map((c) => {
           const active = courseFilter === c.id;
@@ -87,7 +87,7 @@ export default function FlashcardsView() {
               }`}
               style={active ? { background: COURSE_COLOR[c.id] ?? "#1B4332" } : undefined}
             >
-              {c.id === "G1" ? "المكتبة" : `مساق ${c.id.replace("M", "")}` } ({CONCEPTS.filter((x) => x.courseId === c.id).length})
+              {c.id === "G1" ? "المكتبة" : `مساق ${ad(c.id.replace("M", ""))}` } ({ad(CONCEPTS.filter((x) => x.courseId === c.id).length)})
             </button>
           );
         })}
@@ -102,7 +102,7 @@ export default function FlashcardsView() {
           />
         </div>
         <p className="mt-1.5 text-center text-[11px] font-bold text-foreground/60">
-          البطاقة {safeIndex + 1} من {deck.length}
+          البطاقة {ad(safeIndex + 1)} من {ad(deck.length)}
         </p>
       </div>
 
@@ -123,7 +123,7 @@ export default function FlashcardsView() {
                 }`}
                 style={{ background: color }}
               >
-                {card.courseId === "G1" ? "مكتبة" : card.courseId.replace("M", "")}
+                {card.courseId === "G1" ? "مكتبة" : ad(card.courseId.replace("M", ""))}
               </span>
               {isRead && (
                 <span className="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-black text-emerald-700">

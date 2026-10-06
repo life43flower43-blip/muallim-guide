@@ -22,7 +22,7 @@ import { gemsForSession } from "@/lib/shop";
 import { useApp } from "@/lib/store";
 import { useUi, type QuizConfig } from "@/lib/ui-store";
 import { buildSocraticSteps, type SocraticStep } from "@/lib/socratic";
-import { arCount, QUESTION_OBJ_FORMS, QUESTION_GEN_FORMS } from "@/lib/arabic";
+import { ad, arCount, QUESTION_OBJ_FORMS, QUESTION_GEN_FORMS } from "@/lib/arabic";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -63,7 +63,7 @@ function ScoreRing({ pct, size = 150 }: { pct: number; size?: number }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-3xl font-black" style={{ color }}>
-          {Math.round(pct)}%
+          {ad(Math.round(pct))}٪
         </span>
       </div>
     </div>
@@ -100,7 +100,7 @@ function Timer({ seconds, onTimeout }: { seconds: number; onTimeout: () => void 
     >
       <TimerIcon className="h-4 w-4" />
       <span dir="ltr">
-        {m}:{String(s).padStart(2, "0")}
+        {ad(m)}:{ad(String(s).padStart(2, "0"))}
       </span>
     </div>
   );
@@ -322,6 +322,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
   if (finished) {
     const correctCount = review.filter((r) => r.ok).length;
     const pct = (correctCount / questions.length) * 100;
+    const sessionGems = gemsForSession(questions.length, correctCount);
     const msg =
       pct === 100
         ? "إتقان كامل! أنت أسطورة"
@@ -344,13 +345,15 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
             <h2 className="text-xl font-black">{msg}</h2>
             <div className="flex flex-wrap justify-center gap-3">
               <div className="flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-2 text-sm font-bold text-emerald-800">
-                <Sparkles className="h-4 w-4" /> +{sessionXp} نقطة خبرة
+                <Sparkles className="h-4 w-4" />{" "}
+                {sessionXp > 0 ? `أضافت لك ${ad(sessionXp)} نقطة خبرة` : "لا نقاط خبرة هذه الجلسة"}
               </div>
               <div className="flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-bold text-primary">
-                <CheckCircle2 className="h-4 w-4" /> {correctCount} من {questions.length}
+                <CheckCircle2 className="h-4 w-4" /> {ad(correctCount)} من {ad(questions.length)}
               </div>
               <div className="flex items-center gap-2 rounded-full bg-cyan-100 px-4 py-2 text-sm font-bold text-cyan-700">
-                <Gem className="h-4 w-4" /> +{gemsForSession(questions.length, correctCount)} جواهر
+                <Gem className="h-4 w-4" />{" "}
+                {sessionGems > 0 ? `أضافت لك ${ad(sessionGems)} جواهر` : "لا جواهر هذه الجلسة"}
               </div>
             </div>
             {review.length < questions.length && (
@@ -417,7 +420,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
             <Timer seconds={config.timeLimitSec} onTimeout={() => setFinished(true)} />
           ) : (
             <span className="rounded-full bg-secondary px-3 py-1 text-sm font-bold tabular-nums text-primary">
-              {idx + 1}/{questions.length}
+              {ad(idx + 1)} من {ad(questions.length)}
             </span>
           )}
         </div>
@@ -547,7 +550,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                     </div>
                     {graded && (
                       <span className="mr-auto text-sm font-black text-emerald-700">
-                        +{q.difficulty === "صعب" ? 15 : q.difficulty === "متوسط" ? 10 : 8}
+                        أضافت لك {ad(q.difficulty === "صعب" ? 15 : q.difficulty === "متوسط" ? 10 : 8)} نقطة
                       </span>
                     )}
                   </div>

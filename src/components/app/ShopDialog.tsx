@@ -5,6 +5,7 @@ import { Gem, Info, ShoppingBag, Sparkles, FlaskConical } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { SHOP_ITEMS } from "@/lib/shop";
 import { useApp } from "@/lib/store";
+import { ad } from "@/lib/arabic";
 
 // ---------- صورة الجنية مع شارات القطع الملبسة (تُستخدم في المسار والمتجر) ----------
 export function FairyAvatar({
@@ -72,7 +73,7 @@ export default function ShopDialog({
               dir="ltr"
               className="flex items-center gap-1 rounded-full bg-cyan-50 px-3 py-1 text-sm font-black text-cyan-700"
             >
-              <Gem className="h-4 w-4" /> {gems}
+              <Gem className="h-4 w-4" /> {ad(gems)}
             </span>
           </DialogTitle>
         </DialogHeader>
@@ -151,7 +152,7 @@ export default function ShopDialog({
                     }`}
                   >
                     <Gem className="h-3 w-3" />
-                    {affordable ? item.price : `تحتاج ${item.price - gems}`}
+                    {affordable ? ad(item.price) : `تحتاج ${ad(item.price - gems)} جوهرة`}
                   </button>
                 )}
               </div>

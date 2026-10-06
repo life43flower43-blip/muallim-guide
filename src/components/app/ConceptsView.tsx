@@ -27,7 +27,7 @@ import {
 import type { Concept, Course } from "@/lib/types";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { arCount, CONCEPT_FORMS, QUESTION_FORMS } from "@/lib/arabic";
+import { ad, arCount, CONCEPT_FORMS, QUESTION_FORMS } from "@/lib/arabic";
 import { Button } from "@/components/ui/button";
 import FlashcardsView from "./FlashcardsView";
 
@@ -209,7 +209,7 @@ export default function ConceptsView() {
         <div className="space-y-2 px-4">
           <p className="text-xs font-bold text-muted-foreground">
             {searchResults.length > 0
-              ? `${searchResults.length} نتيجة مطابقة`
+              ? `${ad(searchResults.length)} نتيجة مطابقة`
               : "لا نتائج مطابقة — جرّب كلمة أقصر أو مختلفة"}
           </p>
           {searchResults.map((c) => (
@@ -268,12 +268,12 @@ export default function ConceptsView() {
                 }`}
                 style={{ background: color }}
               >
-                {course.id === "G1" ? "مكتبة" : course.id.replace("M", "")}
+                {course.id === "G1" ? "مكتبة" : ad(course.id.replace("M", ""))}
               </span>
               <span className="flex-1">
                 <span className="block text-sm font-black leading-6 text-foreground">{course.name}</span>
                 <span className="mt-0.5 block text-[11px] text-muted-foreground">
-                  {arCount(concepts.length, CONCEPT_FORMS)} • قُرئ {readCount}/{concepts.length}
+                  {arCount(concepts.length, CONCEPT_FORMS)} • قُرئ {ad(readCount)} من {ad(concepts.length)}
                 </span>
               </span>
               <ChevronDown

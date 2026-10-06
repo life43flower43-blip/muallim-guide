@@ -25,26 +25,22 @@ import {
 import {
   CONCEPTS,
   QUESTIONS,
-  conceptsOfCourse,
   questionsOfCourse,
   shuffle,
   levelFromXp,
   levelTitle,
-  xpInLevel,
-  LEVEL_XP,
   conceptById,
 } from "@/lib/qbank";
-import { SCENARIOS } from "@/lib/scenarios";
 import { buildReviewSet, buildRedoSet, orderUnseenFirst } from "@/lib/srs";
 import { DAILY_GOAL_XP, useApp, xpToday } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import {
   arCount,
+  ad,
   CONCEPT_FORMS,
   QUESTION_FORMS,
   QUESTION_DUE_FORMS,
   QUESTION_OBJ_FORMS,
-  SCENARIO_FORMS,
   GEM_FORMS,
   POINT_FORMS,
 } from "@/lib/arabic";
@@ -114,7 +110,7 @@ interface World {
   name: string;
   icon: React.ElementType;
   color: string;
-  count: string; // سطر العدد بصيغة عربية صحيحة
+  hint: string; // وصف وظيفي قصير — لا أرقام (قرار المستخدم: أرقام بلا علاقة تُحذف)
   planLocked?: boolean; // منشئ خطط الدروس: قيد البناء (بند 9)
   action: () => void;
 }
@@ -152,10 +148,6 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const goalPct = Math.min(100, (todayXp / DAILY_GOAL_XP) * 100);
   const goalDone = todayXp >= DAILY_GOAL_XP;
   const libPct = Math.round((readCount / CONCEPTS.length) * 100);
-  const xpToNext = LEVEL_XP - xpInLevel(xp);
-
-  const g1Count = conceptsOfCourse("G1").length;
-  const m5Count = questionsOfCourse("M5").length;
 
   // ---- موضع التقدم على المسار: أول عالم لم تُنجز مهامه بعد (من المحاولات والجلسات) ----
   const courseOfQid = useMemo(() => {
@@ -183,7 +175,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       name: "الجامعة",
       icon: GraduationCap,
       color: "#2D6A4F",
-      count: arCount(CONCEPTS.length - g1Count, CONCEPT_FORMS),
+      hint: "مفاهيم موادك الجامعية",
       action: () => {
         openCourseTab("M1");
         onGoTab("concepts");
@@ -194,7 +186,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       name: "أعرف",
       icon: Brain,
       color: "#7C3AED",
-      count: arCount(g1Count, CONCEPT_FORMS),
+      hint: "مكتبة المفاهيم العامة",
       action: () => {
         openCourseTab("G1");
         onGoTab("concepts");
@@ -205,7 +197,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       name: "أُدرّس",
       icon: Presentation,
       color: "#0E7490",
-      count: `التدريب متاح — ${arCount(m5Count, QUESTION_FORMS)}`,
+      hint: "تدريب على طرق التدريس",
       planLocked: true,
       action: () =>
         startQuiz({
@@ -219,7 +211,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       name: "أواجه",
       icon: School,
       color: "#EA580C",
-      count: arCount(SCENARIOS.length, SCENARIO_FORMS),
+      hint: "محاكاة مواقف الصف",
       action: startScenarios,
     },
     {
@@ -227,10 +219,10 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       name: "أتدرّب",
       icon: Dumbbell,
       color: "#F59E0B",
-      count:
+      hint:
         reviewSet.length > 0
-          ? arCount(reviewSet.length, QUESTION_DUE_FORMS)
-          : "المراجعة الذكية",
+          ? "لديك مراجعات مستحقة الآن"
+          : "المراجعة الذكية وأخطاؤك",
       action: () => onGoTab("quiz"),
     },
     {
@@ -238,7 +230,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       name: "أصبح معلّمًا",
       icon: Rocket,
       color: "#B45309",
-      count: `المستوى ${level}`,
+      hint: "مستواك وإنجازاتك",
       action: () => onGoTab("account"),
     },
   ];
@@ -275,7 +267,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
               {name || "طالب التربية"}
             </h2>
             <p className="mt-0.5 text-[11px] font-bold text-gray-700">
-              المستوى {level} • {levelTitle(level)} • باقي {xpToNext} نقطة للمستوى {level + 1}
+              المستوى {ad(level)} • {levelTitle(level)}
             </p>
           </div>
           {/* الجنية ترافقك — انقرها لفتح متجر الجواهر */}
@@ -297,7 +289,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
             title="أيام متتالية من النشاط"
           >
             <Flame className="h-4 w-4 text-orange-500" />
-            {streak}
+            {ad(streak)}
             <span className="text-[10px] font-bold text-gray-600">أيام متتالية</span>
           </span>
           <span
@@ -335,7 +327,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <h3 className="text-lg font-black text-white">ابدأ جلسة اليوم</h3>
-            <p className="mt-1 text-sm font-bold text-gray-100">10 دقائق: 5 أسئلة + مفهوم + موقف</p>
+            <p className="mt-1 text-sm font-bold text-gray-100">١٠ دقائق: ٥ أسئلة + مفهوم + موقف</p>
           </div>
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15">
             <Play className="h-6 w-6 text-white" />
@@ -345,7 +337,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
         <div className="mt-4">
           <div className="flex items-center justify-between text-[11px] font-bold">
             <span className="text-gray-100">
-              هدف اليوم: {todayXp}/{DAILY_GOAL_XP} نقطة
+              هدف اليوم: {ad(todayXp)} من {ad(DAILY_GOAL_XP)} نقطة
             </span>
             <span className={goalDone ? "text-emerald-300" : "text-gray-300"}>
               {goalDone ? "أُنجز الهدف" : "الهدف بالنقاط لا بالأسئلة"}
@@ -385,7 +377,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
             <Zap className="h-5 w-5" />
           </span>
           <span className="text-[11px] font-black text-gray-900">سريع</span>
-          <span className="text-[9px] font-bold text-gray-600">10 أسئلة</span>
+          <span className="text-[9px] font-bold text-gray-600">١٠ أسئلة</span>
         </motion.button>
 
         <motion.button
@@ -461,7 +453,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
           <span className="min-w-0 flex-1">
             <span className="block text-base font-black text-gray-900">{currentWorld.name}</span>
             <span className="mt-0.5 block text-xs font-bold text-gray-600">
-              {currentWorld.count}
+              {currentWorld.hint}
             </span>
           </span>
           <span className="flex shrink-0 items-center gap-1 text-sm font-black text-primary">
@@ -490,7 +482,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
             <p className="mb-1 text-[11px] font-bold text-gray-900">
               تقدمك في المكتبة:{" "}
               <span className="font-black">
-                {readCount} من {arCount(CONCEPTS.length, CONCEPT_FORMS)}
+                {ad(readCount)} من {arCount(CONCEPTS.length, CONCEPT_FORMS)}
               </span>
             </p>
             <div className="progress-track h-2.5">
@@ -504,9 +496,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
               <>
                 <div className="flex items-center justify-between text-[11px] font-bold text-gray-700">
                   <span>الصحيح من إجمالي ما أجبت عنه</span>
-                  <span className="font-black text-gray-900" dir="ltr">
-                    {accuracy}%
-                  </span>
+                  <span className="font-black text-gray-900">{ad(accuracy)}٪</span>
                 </div>
                 <div className="progress-track mt-1 h-2.5">
                   <div
@@ -517,7 +507,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
               </>
             ) : (
               <p className="rounded-xl bg-muted/60 px-3 py-2 text-[11px] font-semibold leading-5 text-gray-700">
-                تُظهر الدقة بعد 10 أسئلة
+                تُظهر الدقة بعد ١٠ أسئلة
                 {answered > 0
                   ? ` — أجبت عن ${arCount(answered, QUESTION_OBJ_FORMS)} حتى الآن.`
                   : " — ابدأ أول جلسة الآن."}
@@ -554,12 +544,9 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
                   >
                     <Icon className="h-5 w-5" />
                   </span>
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-[11px] font-black text-gray-700">
-                    {i + 1}
-                  </span>
                 </span>
                 <span className="text-sm font-black leading-5 text-gray-900">{w.name}</span>
-                <span className="text-[10px] font-bold leading-4 text-gray-600">{w.count}</span>
+                <span className="text-[10px] font-bold leading-4 text-gray-600">{w.hint}</span>
                 {w.planLocked && (
                   <span
                     className="flex cursor-not-allowed items-center gap-1 rounded-lg bg-muted px-2 py-1 text-[9px] font-bold text-gray-500 opacity-70"
