@@ -29,6 +29,12 @@ import { levelFromXp, levelTitle, xpInLevel, LEVEL_XP, COURSES, questionsOfCours
 import { ACHIEVEMENTS, useApp } from "@/lib/store";
 import { SHOP_ITEMS } from "@/lib/shop";
 import { useUi } from "@/lib/ui-store";
+import {
+  arCount,
+  QUESTION_FORMS,
+  QUESTION_OBJ_FORMS,
+  QUESTION_MISTAKE_FORMS,
+} from "@/lib/arabic";
 import ShopDialog from "./ShopDialog";
 import { buildRedoSet } from "@/lib/srs";
 import { Button } from "@/components/ui/button";
@@ -82,6 +88,8 @@ export default function AccountView() {
   const totalAnswered = vals.length;
   const totalCorrect = vals.filter((a) => a.correct).length;
   const accuracy = totalAnswered ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
+  // الدقة لا تُعرض قبل 10 إجابات مسجلة (نقد البند 4)
+  const showAccuracy = totalAnswered >= 10;
 
   const perCourse = useMemo(() => {
     return COURSES.map((c) => {
@@ -203,7 +211,7 @@ export default function AccountView() {
           </div>
           <div className="rounded-2xl bg-white/10 p-2.5">
             <Target className="mx-auto h-4 w-4 text-emerald-200" />
-            <p className="mt-1 text-base font-black">{totalAnswered ? `${accuracy}%` : "—"}</p>
+            <p className="mt-1 text-base font-black">{showAccuracy ? `${accuracy}%` : "—"}</p>
             <p className="text-[10px] text-emerald-100">الدقة</p>
           </div>
         </div>
@@ -226,12 +234,12 @@ export default function AccountView() {
               <Target className="h-4 w-4 text-primary" /> الدقة العامة
             </p>
             <p className="mt-1 text-3xl font-black text-primary">
-              <span dir="ltr">{totalAnswered ? `${accuracy}%` : "—"}</span>
+              <span dir="ltr">{showAccuracy ? `${accuracy}%` : "—"}</span>
             </p>
             <p className="text-xs text-muted-foreground">
-              {totalAnswered === 0
-                ? "أجب عن أول جلسة لتظهر دقتك هنا"
-                : `${totalCorrect} صحيحة من ${totalAnswered} سؤالاً واجهته`}
+              {!showAccuracy
+                ? `تُظهر دقتك بعد 10 أسئلة${totalAnswered > 0 ? ` — أجبت عن ${arCount(totalAnswered, QUESTION_OBJ_FORMS)} حتى الآن` : ""}`
+                : `${totalCorrect} صحيحة من ${arCount(totalAnswered, QUESTION_FORMS)}`}
             </p>
           </div>
           <div className="relative flex h-24 w-24 items-center justify-center">
@@ -257,7 +265,7 @@ export default function AccountView() {
             onClick={() => startQuiz({ mode: "redo", label: "إعادة الأسئلة الخاطئة", qids: redoSet })}
             className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-red-500 py-3 text-sm font-black text-white"
           >
-            <RotateCcw className="h-4 w-4" /> إعادة {redoSet.length} سؤالاً أخطأت فيها
+            <RotateCcw className="h-4 w-4" /> إعادة {arCount(redoSet.length, QUESTION_MISTAKE_FORMS)}
           </button>
         )}
       </div>
@@ -280,7 +288,9 @@ export default function AccountView() {
                 <div className="progress-fill h-full" style={{ width: `${row.pct}%` }} />
               </div>
               <p className="mt-1 text-[10px] text-muted-foreground">
-                واجهت {row.answered} من {row.total} أسئلة المساق
+                {row.answered > 0
+                  ? `واجهت ${arCount(row.answered, QUESTION_OBJ_FORMS)} من ${row.total}`
+                  : `لم تواجه أي سؤال من ${row.total} للمساق`}
               </p>
             </div>
           ))}
@@ -301,7 +311,9 @@ export default function AccountView() {
                   {s.total ? <span dir="ltr">{`${pct}%`}</span> : "—"}
                 </p>
                 <p className="text-xs font-bold">{diff}</p>
-                <p className="text-[10px] text-muted-foreground">{s.total} سؤال</p>
+                <p className="text-[10px] text-muted-foreground">
+                  {s.total > 0 ? arCount(s.total, QUESTION_FORMS) : "لا أسئلة بعد"}
+                </p>
               </div>
             );
           })}

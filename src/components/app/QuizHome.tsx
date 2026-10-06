@@ -16,6 +16,7 @@ import { COURSES, questionsOfCourse, QUESTIONS, conceptById, shuffle } from "@/l
 import { buildReviewSet, buildRedoSet, orderUnseenFirst } from "@/lib/srs";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
+import { arCount, QUESTION_FORMS, QUESTION_DUE_FORMS, ERROR_FORMS } from "@/lib/arabic";
 
 function ModeCard({
   icon: Icon,
@@ -81,8 +82,9 @@ export default function QuizHome() {
           <BookOpenCheck className="h-8 w-8" />
           <div>
             <h2 className="text-lg font-black">مركز الاختبارات</h2>
-            <p className="text-xs text-emerald-100">
-              {QUESTIONS.length} سؤالاً من الكتاب والمكتبة التربوية • {seenCount} مواجه منها
+            <p className="text-xs text-gray-100">
+              {arCount(QUESTIONS.length, QUESTION_FORMS)} من الكتاب والمكتبة التربوية •{" "}
+              {seenCount > 0 ? `واجهت ${seenCount} منها` : "لم تبدأ بعد"}
             </p>
           </div>
         </div>
@@ -91,8 +93,8 @@ export default function QuizHome() {
       <ModeCard
         icon={Brain}
         title="المراجعة الذكية"
-        desc="أسئلة يستدعيها منحنى النسيان في وقته المثالي (مراجعة متباعدة)"
-        badge={reviewSet.length > 0 ? `${reviewSet.length} سؤال مستحق` : undefined}
+        desc="تكرار متباعد: نعيد السؤال قبل أن تنساه — في وقته المثالي وفق منحنى النسيان"
+        badge={reviewSet.length > 0 ? arCount(reviewSet.length, QUESTION_DUE_FORMS) : undefined}
         disabled={reviewSet.length === 0}
         color="#7C3AED"
         onClick={() =>
@@ -104,7 +106,7 @@ export default function QuizHome() {
         icon={RotateCcw}
         title="إعادة أخطائي"
         desc="الأسئلة التي أخطأت فيها سابقاً — صحّح مفاهيمك الآن"
-        badge={redoSet.length > 0 ? `${redoSet.length} خطأ` : undefined}
+        badge={redoSet.length > 0 ? arCount(redoSet.length, ERROR_FORMS) : undefined}
         disabled={redoSet.length === 0}
         color="#DC2626"
         onClick={() => startQuiz({ mode: "redo", label: "إعادة الأسئلة الخاطئة", qids: redoSet })}
@@ -175,7 +177,7 @@ export default function QuizHome() {
                   >
                     <span className="text-sm font-extrabold leading-6 text-primary">{course.name}</span>
                     <span className="flex items-center gap-1 text-xs font-bold text-muted-foreground">
-                      {qs.length} سؤالاً
+                      {arCount(qs.length, QUESTION_FORMS)}
                       <ChevronLeft
                         className={`h-4 w-4 transition-transform ${
                           expanded === course.id ? "-rotate-90" : ""
@@ -195,7 +197,7 @@ export default function QuizHome() {
                         }
                         className="w-full rounded-xl bg-primary py-2.5 text-sm font-black text-primary-foreground"
                       >
-                        تدريب شامل على المساق ({qs.length} سؤالاً)
+                        تدريب شامل على المساق ({arCount(qs.length, QUESTION_FORMS)})
                       </button>
                       <ChaptersGrid courseId={course.id} />
                     </motion.div>
@@ -249,7 +251,7 @@ function ChaptersGrid({ courseId }: { courseId: string }) {
         >
           <span className="leading-5">{chapter}</span>
           <span className="shrink-0 rounded-full bg-accent px-2 py-0.5 text-[10px] font-black text-primary">
-            {qids.length} سؤال
+            {arCount(qids.length, QUESTION_FORMS)}
           </span>
         </button>
       ))}

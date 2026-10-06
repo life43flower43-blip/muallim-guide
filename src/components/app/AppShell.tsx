@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, BookOpen, Target, User, GraduationCap, Flame } from "lucide-react";
-import { useApp } from "@/lib/store";
+import { Home, BookOpen, User, GraduationCap, Dumbbell } from "lucide-react";
+import { useApp, useAppHydrated } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { CONCEPTS, QUESTIONS } from "@/lib/qbank";
 import { SCENARIOS } from "@/lib/scenarios";
+import { arCount, CONCEPT_FORMS, QUESTION_FORMS, SCENARIO_FORMS } from "@/lib/arabic";
 import QuizSession from "./QuizSession";
 import HomeView from "./HomeView";
 import ConceptsView from "./ConceptsView";
@@ -15,19 +16,75 @@ import AccountView from "./AccountView";
 import ScenariosView from "./ScenariosView";
 import { Button } from "@/components/ui/button";
 
-const TABS = [
-  { id: "home", label: "الرئيسية", icon: Home },
-  { id: "concepts", label: "المفاهيم", icon: BookOpen },
-  { id: "quiz", label: "الاختبار", icon: Target },
-  { id: "account", label: "حسابي", icon: User },
-];
-
 const TAB_TITLES: Record<string, string> = {
   home: "تربوي",
-  concepts: "المفاهيم",
+  concepts: "المكتبة",
   quiz: "الاختبارات",
   account: "حسابي",
 };
+
+// ---------- شريط التنقل السفلي الثابت (نقد البند 6) ----------
+// الرئيسية / المكتبة / تدريب / حسابي — أهداف لمس ≥44px مع safe-area،
+// والتمييز بالأيقونة واللون معًا.
+function BottomNav({
+  tab,
+  onHome,
+  onConcepts,
+  onTrain,
+  onAccount,
+}: {
+  tab: string;
+  onHome: () => void;
+  onConcepts: () => void;
+  onTrain: () => void;
+  onAccount: () => void;
+}) {
+  const scenariosOpen = useUi((s) => s.scenariosOpen);
+  const items = [
+    { id: "home", label: "الرئيسية", icon: Home, active: tab === "home", onClick: onHome },
+    { id: "library", label: "المكتبة", icon: BookOpen, active: tab === "concepts", onClick: onConcepts },
+    { id: "train", label: "تدريب", icon: Dumbbell, active: scenariosOpen, onClick: onTrain },
+    { id: "account", label: "حسابي", icon: User, active: tab === "account", onClick: onAccount },
+  ];
+  return (
+    <nav className="safe-bottom border-t border-border bg-white px-2 pt-1.5" aria-label="التنقل الرئيسي">
+      <div className="flex items-stretch justify-around">
+        {items.map((t) => {
+          const Icon = t.icon;
+          return (
+            <button
+              key={t.id}
+              onClick={t.onClick}
+              aria-label={t.label}
+              aria-current={t.active ? "page" : undefined}
+              className="relative flex min-h-[48px] min-w-[64px] flex-col items-center justify-center gap-0.5 rounded-2xl px-3 pb-1.5 pt-1.5"
+            >
+              {t.active && (
+                <motion.span
+                  layoutId="tab-pill"
+                  className="absolute inset-x-2 -top-0.5 h-1 rounded-full bg-primary"
+                />
+              )}
+              <Icon
+                className={`h-6 w-6 transition-colors ${
+                  t.active ? "text-primary" : "text-muted-foreground"
+                }`}
+                strokeWidth={t.active ? 2.6 : 2}
+              />
+              <span
+                className={`text-[11px] font-bold transition-colors ${
+                  t.active ? "text-primary" : "text-muted-foreground"
+                }`}
+              >
+                {t.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}
 
 // ---------- شاشة الترحيب الأولى ----------
 function Onboarding() {
@@ -47,13 +104,15 @@ function Onboarding() {
           <GraduationCap className="h-16 w-16" />
         </motion.div>
         <h1 className="text-4xl font-black">تربوي</h1>
-        <p className="mt-3 max-w-xs text-sm leading-7 text-emerald-100">
-          مساعد إعداد المعلم يرافقك من أول سنة جامعية حتى التخرج: {CONCEPTS.length} مفهوماً و{QUESTIONS.length} سؤالاً
-          و{SCENARIOS.length} موقفاً صفياً للمحاكاة، مع مراجعة ذكية تثبّت المعرفة في ذاكرتك.
+        <p className="mt-3 max-w-xs text-sm leading-7 text-gray-100">
+          مساعد إعداد المعلم يرافقك من أول سنة جامعية حتى التخرج:{" "}
+          {arCount(CONCEPTS.length, CONCEPT_FORMS)} و{arCount(QUESTIONS.length, QUESTION_FORMS)} و
+          {arCount(SCENARIOS.length, SCENARIO_FORMS)} للمحاكاة، مع مراجعة ذكية تثبّت المعرفة في
+          ذاكرتك.
         </p>
 
         <div className="mt-10 w-full max-w-sm">
-          <label className="mb-2 block text-right text-xs font-bold text-emerald-100">
+          <label className="mb-2 block text-right text-xs font-bold text-gray-100">
             ما اسمك يا معلم المستقبل؟
           </label>
           <input
@@ -78,21 +137,51 @@ function Onboarding() {
   );
 }
 
-// انتظار إعادة ترطيب المتجر من التخزين المحلي (يمنع عدم تطابق الترطيب)
-function useHydrated() {
-  return useSyncExternalStore(
-    (cb) => useApp.persist.onFinishHydration(cb),
-    () => useApp.persist.hasHydrated(),
-    () => false
+// ---------- هيكل الترحيب (skeleton) حتى جهوزية المخزن — بدل البطاقة الباهتة ----------
+function ShellSkeleton() {
+  return (
+    <div
+      className="mx-auto flex h-dvh max-w-[480px] flex-col bg-background shadow-xl"
+      aria-busy="true"
+      aria-label="جارٍ تحميل بياناتك"
+    >
+      <div className="safe-top px-4 pb-3 pt-4">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="h-4 w-24 animate-pulse rounded-full bg-muted" />
+            <div className="h-6 w-40 animate-pulse rounded-xl bg-muted" />
+          </div>
+          <div className="h-13 w-13 animate-pulse rounded-full bg-muted" />
+        </div>
+        <div className="mt-3 flex gap-2">
+          <div className="h-8 w-32 animate-pulse rounded-full bg-muted" />
+          <div className="h-8 w-24 animate-pulse rounded-full bg-muted" />
+          <div className="h-8 w-28 animate-pulse rounded-full bg-muted" />
+        </div>
+      </div>
+      <div className="no-scrollbar flex-1 space-y-4 overflow-hidden px-4 pt-2">
+        <div className="h-40 animate-pulse rounded-3xl bg-muted" />
+        <div className="grid grid-cols-3 gap-2">
+          <div className="h-24 animate-pulse rounded-2xl bg-muted" />
+          <div className="h-24 animate-pulse rounded-2xl bg-muted" />
+          <div className="h-24 animate-pulse rounded-2xl bg-muted" />
+        </div>
+        <div className="h-20 animate-pulse rounded-3xl bg-muted" />
+        <div className="h-28 animate-pulse rounded-3xl bg-muted" />
+      </div>
+      <BottomNav tab="home" onHome={() => {}} onConcepts={() => {}} onTrain={() => {}} onAccount={() => {}} />
+    </div>
   );
 }
 
 // ---------- الهيكل الرئيسي ----------
 export default function AppShell() {
-  const hydrated = useHydrated();
-  const { onboarded, streak } = useApp();
+  const hydrated = useAppHydrated();
+  const { onboarded } = useApp();
   const quizConfig = useUi((s) => s.quizConfig);
   const scenariosOpen = useUi((s) => s.scenariosOpen);
+  const startScenarios = useUi((s) => s.startScenarios);
+  const clearScenarios = useUi((s) => s.clearScenarios);
   const [tab, setTab] = useState("home");
 
   // تسجيل عامل الخدمة للعمل دون اتصال
@@ -102,13 +191,7 @@ export default function AppShell() {
     }
   }, []);
 
-  if (!hydrated) {
-    return (
-      <div className="flex h-dvh items-center justify-center bg-background">
-        <GraduationCap className="h-12 w-12 animate-pulse text-primary" />
-      </div>
-    );
-  }
+  if (!hydrated) return <ShellSkeleton />;
 
   if (!onboarded) return <Onboarding />;
 
@@ -116,26 +199,17 @@ export default function AppShell() {
 
   return (
     <div className="mx-auto flex h-dvh max-w-[480px] flex-col bg-background shadow-xl">
-      {/* شريط علوي */}
-      <header className="safe-top flex items-center justify-between border-b border-border bg-white/90 px-4 pb-2 pt-3 backdrop-blur">
-        <div className="flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <GraduationCap className="h-5 w-5" />
-          </span>
-          <h1 className="text-lg font-black text-primary">{TAB_TITLES[tab]}</h1>
-        </div>
-        {streak > 0 && (
-          <motion.span
-            key={streak}
-            initial={{ scale: 1.3 }}
-            animate={{ scale: 1 }}
-            className="flex items-center gap-1 rounded-full bg-orange-100 px-3 py-1 text-xs font-black text-orange-600"
-          >
-            <Flame className="h-3.5 w-3.5" />
-            {streak}
-          </motion.span>
-        )}
-      </header>
+      {/* شريط علوي — الرئيسية ترويستها مدمجة داخل الصفحة (نقد البند 7) */}
+      {tab !== "home" && (
+        <header className="safe-top flex items-center justify-between border-b border-border bg-white/90 px-4 pb-2 pt-3 backdrop-blur">
+          <div className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+              <GraduationCap className="h-5 w-5" />
+            </span>
+            <h1 className="text-lg font-black text-primary">{TAB_TITLES[tab]}</h1>
+          </div>
+        </header>
+      )}
 
       {/* المحتوى */}
       <main className="no-scrollbar flex-1 overflow-y-auto pt-3">
@@ -155,43 +229,17 @@ export default function AppShell() {
         </AnimatePresence>
       </main>
 
-      {/* شريط التنقل السفلي */}
-      <nav className="safe-bottom border-t border-border bg-white px-2 pt-1.5">
-        <div className="flex items-stretch justify-around">
-          {TABS.map((t) => {
-            const active = tab === t.id;
-            const Icon = t.icon;
-            return (
-              <button
-                key={t.id}
-                onClick={() => setTab(t.id)}
-                className="relative flex min-w-[56px] flex-col items-center gap-0.5 rounded-2xl px-2 pb-1.5 pt-1"
-                aria-label={t.label}
-              >
-                {active && (
-                  <motion.span
-                    layoutId="tab-pill"
-                    className="absolute inset-x-1 -top-0.5 h-1 rounded-full bg-primary"
-                  />
-                )}
-                <Icon
-                  className={`h-6 w-6 transition-colors ${
-                    active ? "text-primary" : "text-muted-foreground"
-                  }`}
-                  strokeWidth={active ? 2.5 : 2}
-                />
-                <span
-                  className={`text-[10px] font-bold transition-colors ${
-                    active ? "text-primary" : "text-muted-foreground"
-                  }`}
-                >
-                  {t.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </nav>
+      {/* شريط التنقل السفلي الثابت */}
+      <BottomNav
+        tab={tab}
+        onHome={() => {
+          clearScenarios(); // يغلق الطبقات المفتوحة ويعود للرئيسية
+          setTab("home");
+        }}
+        onConcepts={() => setTab("concepts")}
+        onTrain={startScenarios}
+        onAccount={() => setTab("account")}
+      />
 
       {/* شاشة محاكاة الصف الدراسي */}
       <AnimatePresence>{scenariosOpen && <ScenariosView key="scenarios" />}</AnimatePresence>

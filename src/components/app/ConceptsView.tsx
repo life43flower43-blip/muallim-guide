@@ -27,6 +27,7 @@ import {
 import type { Concept, Course } from "@/lib/types";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
+import { arCount, CONCEPT_FORMS, QUESTION_FORMS } from "@/lib/arabic";
 import { Button } from "@/components/ui/button";
 import FlashcardsView from "./FlashcardsView";
 
@@ -95,7 +96,7 @@ function ConceptDetail({
           </div>
           <div className="rounded-2xl bg-muted p-3">
             <p className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
-              <FileText className="h-4 w-4" /> يوجد {qs.length} أسئلة مرتبطة بهذا المفهوم في بنك الأسئلة
+              <FileText className="h-4 w-4" /> أسئلة هذا المفهوم في بنك الأسئلة: {qs.length}
             </p>
           </div>
         </div>
@@ -193,7 +194,7 @@ export default function ConceptsView() {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={`ابحث في ${totalConcepts} مفهوماً...`}
+          placeholder={`ابحث في ${arCount(totalConcepts, CONCEPT_FORMS)}...`}
           className="w-full bg-transparent py-3 text-sm font-bold text-foreground outline-none placeholder:text-muted-foreground/70"
         />
         {query && (
@@ -228,7 +229,7 @@ export default function ConceptsView() {
               <span className="flex-1">
                 <span className="block text-sm font-bold leading-6">{c.title}</span>
                 <span className="text-[10px] text-muted-foreground">
-                  {c.chapter} • {questionsOfConcept(c.id).length} أسئلة متاحة
+                  {c.chapter} • {arCount(questionsOfConcept(c.id).length, QUESTION_FORMS)}
                 </span>
               </span>
             </button>
@@ -245,7 +246,7 @@ export default function ConceptsView() {
         <div>
           <h2 className="text-lg font-black">مكتبة المفاهيم</h2>
           <p className="text-xs text-muted-foreground">
-            {totalConcepts} مفهوماً — اضغط أي مفهوم للشرح والمثال والتدريب
+            {arCount(totalConcepts, CONCEPT_FORMS)} — اضغط أي مفهوم للشرح والمثال والتدريب
           </p>
         </div>
       </div>
@@ -272,7 +273,7 @@ export default function ConceptsView() {
               <span className="flex-1">
                 <span className="block text-sm font-black leading-6 text-foreground">{course.name}</span>
                 <span className="mt-0.5 block text-[11px] text-muted-foreground">
-                  {concepts.length} مفاهيم • قُرئ {readCount}/{concepts.length}
+                  {arCount(concepts.length, CONCEPT_FORMS)} • قُرئ {readCount}/{concepts.length}
                 </span>
               </span>
               <ChevronDown
@@ -313,7 +314,7 @@ export default function ConceptsView() {
                                 <span className="flex-1">
                                   <span className="block text-sm font-bold leading-6">{c.title}</span>
                                   <span className="text-[10px] text-muted-foreground">
-                                    {questionsOfConcept(c.id).length} أسئلة متاحة
+                                    {arCount(questionsOfConcept(c.id).length, QUESTION_FORMS)}
                                   </span>
                                 </span>
                               </button>

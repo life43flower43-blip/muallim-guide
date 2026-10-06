@@ -15,12 +15,15 @@ import {
   ArrowLeft,
   Trophy,
   Gem,
+  Flag,
 } from "lucide-react";
 import { questionById, conceptById, OPTION_LETTERS } from "@/lib/qbank";
 import { gemsForSession } from "@/lib/shop";
 import { useApp } from "@/lib/store";
 import { useUi, type QuizConfig } from "@/lib/ui-store";
 import { buildSocraticSteps, type SocraticStep } from "@/lib/socratic";
+import { arCount, QUESTION_OBJ_FORMS, QUESTION_GEN_FORMS } from "@/lib/arabic";
+import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -204,6 +207,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
   const recordAttempt = useApp((s) => s.recordAttempt);
   const finishSession = useApp((s) => s.finishSession);
   const attempts = useApp((s) => s.attempts);
+  const reportedQuestions = useApp((s) => s.reportedQuestions);
+  const reportQuestion = useApp((s) => s.reportQuestion);
 
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
@@ -305,6 +310,14 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     }
   };
 
+  // زر «أبلغ عن خطأ» — يُحفظ معرف السؤال محليًا ويختفي الزر للسؤال المبلّغ عنه
+  const reported = q ? reportedQuestions.includes(q.id) : false;
+  const handleReport = () => {
+    if (!q || reported) return;
+    reportQuestion(q.id);
+    toast({ title: "شكرًا — سيُراجع السؤال" });
+  };
+
   // ---------- شاشة النتائج ----------
   if (finished) {
     const correctCount = review.filter((r) => r.ok).length;
@@ -342,7 +355,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
             </div>
             {review.length < questions.length && (
               <p className="rounded-2xl bg-red-50 px-4 py-2 text-xs font-bold leading-6 text-red-700">
-                لم تُجب عن {questions.length - review.length} سؤالاً قبل انتهاء الوقت — احتُسبت خطأً كالامتحان الحقيقي.
+                لم تُجب عن {arCount(questions.length - review.length, QUESTION_OBJ_FORMS)} قبل انتهاء
+                الوقت — احتُسبت خطأً كالامتحان الحقيقي.
               </p>
             )}
           </div>
@@ -552,6 +566,20 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                     </>
                   )}
                   {graded && <ReasonBox q={q} />}
+
+                  {/* زر أبلغ عن خطأ داخل منطقة الشرح بعد الإجابة (نقد البند 11) */}
+                  {reported ? (
+                    <span className="flex items-center gap-1.5 self-start rounded-full bg-muted px-3 py-1.5 text-[11px] font-bold text-muted-foreground">
+                      <Flag className="h-3.5 w-3.5" /> تم الإبلاغ عن هذا السؤال
+                    </span>
+                  ) : (
+                    <button
+                      onClick={handleReport}
+                      className="flex items-center gap-1.5 self-start rounded-full px-3 py-1.5 text-[11px] font-bold text-muted-foreground transition-colors hover:bg-muted"
+                    >
+                      <Flag className="h-3.5 w-3.5" /> أبلغ عن خطأ
+                    </button>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -591,7 +619,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
           <AlertDialogHeader>
             <AlertDialogTitle>الخروج من الجلسة؟</AlertDialogTitle>
             <AlertDialogDescription>
-              تقدمك في هذه الجلسة سيُهدر. أنجزت {review.length} من {questions.length} أسئلة.
+              تقدمك في هذه الجلسة سيُهدر. أنجزت {review.length} من{" "}
+              {arCount(questions.length, QUESTION_GEN_FORMS)}.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

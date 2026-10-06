@@ -15,6 +15,7 @@ import {
 import { COURSES, CONCEPTS, COURSE_COLOR, shuffle, questionsOfConcept } from "@/lib/qbank";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
+import { arCount, CARD_FORMS } from "@/lib/arabic";
 import { Button } from "@/components/ui/button";
 
 // ---------- وضع البطاقات: بطاقة تنقلب باللمس لعرض الشرح والمثال ----------
@@ -197,7 +198,8 @@ export default function FlashcardsView() {
       </div>
 
       <p className="flex items-center justify-center gap-1.5 pt-1 text-center text-[10px] text-muted-foreground">
-        <Layers className="h-3.5 w-3.5" /> {deck.length} بطاقة تعليمية — قلب البطاقة يعلمها كمقروءة تلقائياً
+        <Layers className="h-3.5 w-3.5" /> {arCount(deck.length, CARD_FORMS)} — قلب البطاقة يعلمها
+        كمقروءة تلقائياً
       </p>
     </div>
   );

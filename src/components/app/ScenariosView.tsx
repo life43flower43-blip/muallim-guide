@@ -30,6 +30,7 @@ import { buildScenarioRun } from "@/lib/scenarios";
 import { gemsForSession } from "@/lib/shop";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
+import { arCount, SCENARIO_FORMS, SCENARIO_ADJ_FORMS } from "@/lib/arabic";
 import { Button } from "@/components/ui/button";
 
 const LETTERS = ["أ", "ب", "ج", "د"];
@@ -76,7 +77,7 @@ function RunScreen({
       const bestCount = results.filter((s) => s === "best").length;
       finishSession({
         mode: "scenarios",
-        label: `محاكاة الصف — ${run.length} موقفاً`,
+        label: `محاكاة الصف — ${arCount(run.length, SCENARIO_FORMS)}`,
         total: run.length,
         correctCount: bestCount,
         xp,
@@ -241,7 +242,7 @@ function ResultScreen({ scores, run, onAgain, onExit }: { scores: ScenarioScore[
       </motion.div>
       <h2 className="mt-4 text-2xl font-black">{headline}</h2>
       <p className="mt-2 text-sm font-semibold text-muted-foreground">
-        أكملت جولة من {run.length} مواقف صفية
+        أكملت جولة من {arCount(run.length, SCENARIO_ADJ_FORMS)}
       </p>
 
       <div className="mt-6 grid w-full max-w-sm grid-cols-3 gap-2">
@@ -374,7 +375,7 @@ export default function ScenariosView() {
             className="mt-4 h-13 w-full rounded-2xl bg-orange-600 py-3.5 text-base font-black text-white hover:bg-orange-500"
           >
             <Target className="ml-2 h-5 w-5" />
-            ابدأ جولة ({Math.min(10, SCENARIOS.length)} مواقف)
+            ابدأ جولة ({arCount(Math.min(10, SCENARIOS.length), SCENARIO_FORMS)})
           </Button>
         </div>
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { Attempt, SessionRecord } from "./types";
@@ -26,6 +27,7 @@ interface AppState {
   gems: number; // جواهر المتجر
   ownedItems: Record<string, number>; // قطع المتجر المقتناة: المعرف -> وقت الشراء
   equipped: Record<string, boolean>; // القطع الملبسة على الجنية
+  reportedQuestions: string[]; // معرفات الأسئلة التي أبلغ عنها المستخدم (نقد البند 11)
   onboarded: boolean;
 
   setName: (n: string) => void;
@@ -37,6 +39,7 @@ interface AppState {
   addGems: (n: number) => void;
   buyItem: (id: string) => boolean;
   toggleEquip: (id: string) => void;
+  reportQuestion: (qid: string) => void;
   resetAll: () => void;
 }
 
@@ -80,6 +83,7 @@ export const useApp = create<AppState>()(
       gems: 0,
       ownedItems: {},
       equipped: {},
+      reportedQuestions: [],
       onboarded: false,
 
       setName: (n) => set({ name: n }),
@@ -152,6 +156,13 @@ export const useApp = create<AppState>()(
       toggleEquip: (id) =>
         set((st) => ({ equipped: { ...st.equipped, [id]: !st.equipped[id] } })),
 
+      reportQuestion: (qid) =>
+        set((st) => ({
+          reportedQuestions: st.reportedQuestions.includes(qid)
+            ? st.reportedQuestions
+            : [...st.reportedQuestions, qid],
+        })),
+
       resetAll: () =>
         set({
           name: "",
@@ -167,6 +178,7 @@ export const useApp = create<AppState>()(
           gems: 0,
           ownedItems: {},
           equipped: {},
+          reportedQuestions: [],
           onboarded: false,
         }),
     }),
@@ -176,6 +188,16 @@ export const useApp = create<AppState>()(
     }
   )
 );
+
+// ---------- انتظار ترطيب المخزن من التخزين المحلي ----------
+// يُستخدم لعرض هيكل skeleton صريح حتى جهوزية البيانات بدل البطاقة الباهتة
+export function useAppHydrated(): boolean {
+  return useSyncExternalStore(
+    (cb) => useApp.persist.onFinishHydration(cb),
+    () => useApp.persist.hasHydrated(),
+    () => false
+  );
+}
 
 // ---------- الإنجازات ----------
 
