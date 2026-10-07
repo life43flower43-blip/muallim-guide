@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   User,
   Trophy,
@@ -20,6 +20,8 @@ import {
   Moon,
   Download,
   Upload,
+  Type,
+  Smartphone,
 } from "lucide-react";
 import { conceptById, questionById } from "@/lib/qbank";
 import { ACHIEVEMENTS, useApp } from "@/lib/store";
@@ -51,16 +53,48 @@ const ACH_ICONS: Record<string, React.ElementType> = {
   MessagesSquare,
 };
 
+type FontScale = "normal" | "large" | "bigger";
+
+// حدث تثبيت التطبيق — يمنحه المتصفح مرة واحدة لكل زيارة
+interface InstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+}
+
 // ---------- صفحة حسابي: الملف الشخصي + تثبيت الفهم + السجل — بلا أرقام ولا إحصاءات (قرار المستخدم) ----------
 export default function AccountView() {
   const { name, attempts, sessions, conceptReads, scenarioChoices, setName } = useApp();
   const dark = useApp((s) => s.dark);
   const setDark = useApp((s) => s.setDark);
+  const fontScale = useApp((s) => s.fontScale);
+  const setFontScale = useApp((s) => s.setFontScale);
   const startQuiz = useUi((s) => s.startQuiz);
   const resetAll = useApp((s) => s.resetAll);
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(name);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // تثبيت التطبيق على الشاشة الرئيسية — زر يظهر فقط حين يسمح المتصفح بذلك
+  const [installEvt, setInstallEvt] = useState<InstallPromptEvent | null>(null);
+  // الوضع المستقل (مثبّت) — يُقرأ مرة عند أول رسم عميل، ثم يُحدّث بحدث التثبيت
+  const [standalone, setStandalone] = useState(
+    () => window.matchMedia("(display-mode: standalone)").matches
+  );
+  useEffect(() => {
+    const onPrompt = (e: Event) => {
+      e.preventDefault();
+      setInstallEvt(e as InstallPromptEvent);
+    };
+    const onInstalled = () => {
+      setStandalone(true);
+      setInstallEvt(null);
+    };
+    window.addEventListener("beforeinstallprompt", onPrompt);
+    window.addEventListener("appinstalled", onInstalled);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", onPrompt);
+      window.removeEventListener("appinstalled", onInstalled);
+    };
+  }, []);
 
   // ---- نسخ احتياطي واستعادة (ميزة تقرير المنافسين) — ينتقل بها التقدم بين الأجهزة ----
   const exportBackup = () => {
@@ -83,6 +117,7 @@ export default function AccountView() {
           studentExamples: s.studentExamples,
           onboarded: s.onboarded,
           dark: s.dark,
+          fontScale: s.fontScale,
         },
       };
       const blob = new Blob([JSON.stringify(payload, null, 1)], { type: "application/json" });
@@ -119,6 +154,7 @@ export default function AccountView() {
           studentExamples: rec(d.studentExamples, {}) as NonNullable<ReturnType<typeof useApp.getState>["studentExamples"]>,
           onboarded: !!d.onboarded,
           dark: !!d.dark,
+          fontScale: (d.fontScale === "large" || d.fontScale === "bigger" ? d.fontScale : "normal") as FontScale,
         });
         toast({ title: "تمت استعادة تقدمك بنجاح" });
       })
@@ -316,6 +352,52 @@ export default function AccountView() {
             />
           </span>
         </button>
+
+        {/* حجم الخط — ثلاث درجات تضبط قراءة الشرح والأمثلة */}
+        <div className="mt-2 rounded-2xl border border-border bg-muted/40 px-4 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="flex items-center gap-2 text-sm font-black text-foreground">
+              <Type className="h-4 w-4 text-primary" />
+              حجم الخط
+            </span>
+            <div className="flex gap-1.5" role="group" aria-label="حجم الخط">
+              {(
+                [
+                  ["normal", "عادي"],
+                  ["large", "كبير"],
+                  ["bigger", "أكبر"],
+                ] as const
+              ).map(([v, lbl]) => (
+                <button
+                  key={v}
+                  onClick={() => setFontScale(v)}
+                  aria-pressed={fontScale === v}
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-black transition-colors ${
+                    fontScale === v
+                      ? "bg-primary text-primary-foreground"
+                      : "border border-border bg-white text-muted-foreground"
+                  }`}
+                >
+                  {lbl}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* تثبيت التطبيق على الشاشة الرئيسية — يظهر فقط حين يسمح المتصفح */}
+        {installEvt && !standalone && (
+          <button
+            onClick={() => {
+              installEvt.prompt();
+              setInstallEvt(null);
+            }}
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl border border-primary/30 bg-primary/10 py-3 text-xs font-black text-primary"
+          >
+            <Smartphone className="h-4 w-4" />
+            أضف التطبيق إلى شاشتك الرئيسية
+          </button>
+        )}
 
         {/* نسخ احتياطي واستعادة التقدم — للانتقال بين الأجهزة بلا فقدان */}
         <div className="mt-2 grid grid-cols-2 gap-2">

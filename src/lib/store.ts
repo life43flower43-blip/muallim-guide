@@ -25,6 +25,7 @@ interface AppState {
   studentExamples: Record<string, StudentExample[]>; // أمثلة مجتمع الطلاب لكل مفهوم
   onboarded: boolean;
   dark: boolean; // الوضع الليلي — تفضيل عرض محفوظ مع بقية البيانات
+  fontScale: "normal" | "large" | "bigger"; // حجم خط القراءة — تفضيل عرض كالوضع الليلي
 
   setName: (n: string) => void;
   setOnboarded: () => void;
@@ -36,6 +37,7 @@ interface AppState {
   addStudentExample: (cid: string, text: string, specialty: string) => void;
   removeStudentExample: (cid: string, id: string) => void;
   setDark: (v: boolean) => void;
+  setFontScale: (v: "normal" | "large" | "bigger") => void;
   resetAll: () => void;
 }
 
@@ -78,6 +80,7 @@ export const useApp = create<AppState>()(
       studentExamples: {},
       onboarded: false,
       dark: false,
+      fontScale: "normal",
 
       setName: (n) => set({ name: n }),
       setOnboarded: () => set({ onboarded: true }),
@@ -149,6 +152,9 @@ export const useApp = create<AppState>()(
 
       // الوضع الليلي — لا يُصفّر مع التقدم (تفضيل عرض لا بيانات تدريب)
       setDark: (v) => set({ dark: v }),
+
+      // حجم الخط — كذلك تفضيل عرض لا يُمسّ عند تصفير التقدم
+      setFontScale: (v) => set({ fontScale: v }),
 
       resetAll: () =>
         set({

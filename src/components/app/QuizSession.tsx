@@ -22,6 +22,7 @@ import { useUi, type QuizConfig } from "@/lib/ui-store";
 import { saveSnapshot, loadSnapshot, clearSnapshot, RESUME_FLAG } from "@/lib/session-snapshot";
 import { buildSocraticSteps, type SocraticStep } from "@/lib/socratic";
 import { ad } from "@/lib/arabic";
+import SpeakButton from "./SpeakButton";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -310,6 +311,10 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     if (!q || selected === null) return;
     const ok = selected === q.correct;
     setGraded(ok);
+    // اهتزاز لطيف يؤكد القرار لمسيًا — نجاح قصير واحد، خطأ نبضتان متقطعتان
+    try {
+      if ("vibrate" in navigator) navigator.vibrate(ok ? 35 : [60, 40, 60]);
+    } catch {}
     if (!ok) setWrongShake(true);
     setTimeout(() => setWrongShake(false), 450);
     recordAttempt(q.id, ok, selected ?? undefined);
@@ -488,7 +493,10 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               )}
             </div>
 
-            <h2 className="text-xl font-extrabold leading-9">{q.question}</h2>
+            <div className="flex items-start justify-between gap-2">
+              <h2 className="text-xl font-extrabold leading-9">{q.question}</h2>
+              <SpeakButton text={q.question} label="استمع إلى السؤال" tone="sky" />
+            </div>
 
             {q.type === "tf" ? (
               <div className="grid grid-cols-2 gap-3">

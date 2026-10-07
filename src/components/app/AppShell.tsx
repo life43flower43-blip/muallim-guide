@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, BookOpen, User, School, Dumbbell, Target } from "lucide-react";
+import { Home, BookOpen, User, School, Dumbbell, Target, WifiOff } from "lucide-react";
 import { useApp, useAppHydrated } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import QuizSession from "./QuizSession";
@@ -21,6 +21,16 @@ const TAB_TITLES: Record<string, string> = {
   quiz: "الاختبارات",
   account: "حسابي",
 };
+
+// اشتراك أحداث الاتصال — لاستخدام useSyncExternalStore
+function subscribeOnline(cb: () => void) {
+  window.addEventListener("online", cb);
+  window.addEventListener("offline", cb);
+  return () => {
+    window.removeEventListener("online", cb);
+    window.removeEventListener("offline", cb);
+  };
+}
 
 // ---------- شريط التنقل السفلي الثابت (نقد البند 6) ----------
 // الرئيسية / المكتبة / تدريب / حسابي — أهداف لمس ≥44px مع safe-area،
@@ -178,18 +188,33 @@ function ShellSkeleton() {
 // ---------- الهيكل الرئيسي ----------
 export default function AppShell() {
   const hydrated = useAppHydrated();
-  const { onboarded, dark } = useApp();
+  const { onboarded, dark, fontScale } = useApp();
   const quizConfig = useUi((s) => s.quizConfig);
   const scenariosOpen = useUi((s) => s.scenariosOpen);
   const startScenarios = useUi((s) => s.startScenarios);
   const clearScenarios = useUi((s) => s.clearScenarios);
   const [tab, setTab] = useState("home");
 
+  // حالة الاتصال — قراءة مباشرة من المتصفح بلا setState داخل الأثر
+  const isOnline = useSyncExternalStore(
+    subscribeOnline,
+    () => navigator.onLine,
+    () => true
+  );
+  const offline = !isOnline;
+
   // الوضع الليلي — يُطبق على الجذر كي تغطي متغيرات الثيم كل الواجهة
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
   }, [dark]);
 
+  // حجم الخط — يضبط خط الجذر فتكبر كل النصوص المتناسبة معه (وحدة rem) بانسجام
+  useEffect(() => {
+    document.documentElement.style.fontSize =
+      fontScale === "large" ? "17.5px" : fontScale === "bigger" ? "19px" : "";
+  }, [fontScale]);
+
+  // مؤشر عدم الاتصال — اشتراك أحداث الشبكة (الاستماع فقط، لا حالة تُضبط يدويًا)
   // تسجيل عامل الخدمة للعمل دون اتصال
   useEffect(() => {
     if ("serviceWorker" in navigator) {
@@ -215,6 +240,17 @@ export default function AppShell() {
             <h1 className="text-lg font-black text-primary">{TAB_TITLES[tab]}</h1>
           </div>
         </header>
+      )}
+
+      {/* مؤشر عدم الاتصال — بلا إزعاج، يختفي تلقائيًا عند عودة الشبكة */}
+      {offline && (
+        <div
+          role="status"
+          className="flex items-center justify-center gap-2 border-b border-amber-200 bg-amber-50 px-4 py-1.5 text-center text-xs font-bold text-amber-800"
+        >
+          <WifiOff className="h-3.5 w-3.5 shrink-0" />
+          أنت الآن دون اتصال — التطبيق يواصل العمل كالمعتاد
+        </div>
       )}
 
       {/* المحتوى */}
