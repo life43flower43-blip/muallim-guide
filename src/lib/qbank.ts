@@ -18,7 +18,7 @@ export const COURSE_COLOR: Record<string, string> = {
   G1: "#1D4ED8",
 };
 
-// أسماء مختصرة للمحاور — للشرائح والشارات الصغيرة (بلا أرقام مساقات — قرار المستخدم)
+// أسماء مختصرة للمحاور — للشرائح والشارات الصغيرة (بلا أرقام — قرار المستخدم)
 export const COURSE_SHORT: Record<string, string> = {
   M1: "نمو الطلاب",
   M2: "المشاعر والذكاء",
@@ -52,7 +52,7 @@ export const questionsOfCourse = (courseId: string) => {
   return QUESTIONS.filter((q) => cids.has(q.conceptId));
 };
 
-// فصول مرتبة حسب ظهورها في المساق
+// الموضوعات مرتبة حسب ظهورها في المحور
 export const chaptersOfCourse = (courseId: string) => {
   const seen: string[] = [];
   for (const c of conceptsOfCourse(courseId)) {

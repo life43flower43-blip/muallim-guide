@@ -222,7 +222,7 @@ export default function QuizHome() {
 function ChaptersGrid({ courseId }: { courseId: string }) {
   const startQuiz = useUi((s) => s.startQuiz);
   const attempts = useApp((s) => s.attempts);
-  // نجمع الفصول من بنك المفاهيم مباشرة
+  // نجمع الموضوعات من بنك المفاهيم مباشرة
   const chaptersList = useMemo(() => {
     const map = new Map<string, string[]>();
     for (const q of questionsOfCourse(courseId)) {

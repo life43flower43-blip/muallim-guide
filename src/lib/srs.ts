@@ -1,4 +1,4 @@
-// المراجعة المتباعدة — مبني على فكرة صناديق ليتمر، ومستوحى من فصل «التذكر والنسيان»
+// المراجعة المتباعدة — مبني على فكرة صناديق ليتمر، ومستوحى من موضوع «التذكر والنسيان»
 // كلما أجاب الطالب صحيحاً تباعدت مراجعة السؤال، والخطأ يعيده إلى البداية فوراً.
 
 import { QUESTIONS, questionById, shuffle } from "./qbank";
@@ -46,7 +46,7 @@ export function buildRedoSet(attempts: Record<string, Attempt>, max = 20): strin
     .map(([qid]) => qid);
 }
 
-/** أسئلة لم يواجهها المستخدم بعد — للتدريب على مفهوم/مساق */
+/** أسئلة لم يواجهها المستخدم بعد — للتدريب على مفهوم/محور */
 export function unseenIn(ids: string[], attempts: Record<string, Attempt>): string[] {
   return ids.filter((qid) => !attempts[qid]);
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, BookOpen, User, GraduationCap, Dumbbell } from "lucide-react";
+import { Home, BookOpen, User, School, Dumbbell } from "lucide-react";
 import { useApp, useAppHydrated } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import QuizSession from "./QuizSession";
@@ -98,11 +98,11 @@ function Onboarding() {
           transition={{ type: "spring", damping: 12 }}
           className="mb-6 flex h-28 w-28 items-center justify-center rounded-[2rem] bg-white/15"
         >
-          <GraduationCap className="h-16 w-16" />
+          <School className="h-16 w-16" />
         </motion.div>
         <h1 className="text-4xl font-black">تربوي</h1>
         <p className="mt-3 max-w-xs text-sm leading-7 text-gray-100">
-          مساعد إعداد المعلم يرافقك من أول سنة جامعية حتى التخرج: مفاهيم مشروحة بأمثلة واقعية من
+          مساعد إعداد المعلم يرافقك من طالب تربية إلى معلم جاهز: مفاهيم مشروحة بأمثلة واقعية من
           الميدان، تدريب بتوجيه فوري، مواقف صفّية تحاكي الصف الحقيقي، ومراجعة ذكية تثبّت المعرفة في
           ذاكرتك.
         </p>
@@ -200,7 +200,7 @@ export default function AppShell() {
         <header className="safe-top flex items-center justify-between border-b border-border bg-white/90 px-4 pb-2 pt-3 backdrop-blur">
           <div className="flex items-center gap-2">
             <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <GraduationCap className="h-5 w-5" />
+              <School className="h-5 w-5" />
             </span>
             <h1 className="text-lg font-black text-primary">{TAB_TITLES[tab]}</h1>
           </div>

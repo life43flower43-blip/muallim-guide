@@ -6,7 +6,7 @@ import {
   Zap,
   Target,
   ArrowLeft,
-  GraduationCap,
+  Sprout,
   Lightbulb,
   RotateCcw,
   School,
@@ -132,7 +132,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const currentWorldIdx = useMemo(() => {
     const att = Object.keys(attempts);
     const done = [
-      att.some((qid) => courseOfQid.get(qid) && courseOfQid.get(qid) !== "G1"), // الجامعة
+      att.some((qid) => courseOfQid.get(qid) && courseOfQid.get(qid) !== "G1"), // الأساس
       Object.keys(conceptReads).some((cid) => conceptById(cid)?.courseId === "G1"), // أعرف
       att.some((qid) => courseOfQid.get(qid) === "M5"), // أُدرّس
       Object.keys(scenarioChoices).length > 0, // أواجه
@@ -146,10 +146,10 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const worlds: World[] = [
     {
       id: "university",
-      name: "الجامعة",
-      icon: GraduationCap,
+      name: "الأساس",
+      icon: Sprout,
       color: "#2D6A4F",
-      hint: "مفاهيم موادك الجامعية",
+      hint: "فهم الطالب ونموه — أساس المهنة",
       action: () => {
         openCourseTab("M1");
         onGoTab("concepts");
@@ -440,8 +440,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       </section>
 
       <p className="pt-1 text-center text-[10px] leading-5 text-gray-500">
-        <GraduationCap className="mb-1 inline h-3.5 w-3.5" /> تربوي — مساعد إعداد المعلم: من أول
-        سنة جامعية إلى التدريب العملي والتخرج
+        تربوي — مساعد إعداد المعلم: من طالب تربية إلى معلم جاهز
       </p>
 
       <ShopDialog open={shopOpen} onOpenChange={setShopOpen} />

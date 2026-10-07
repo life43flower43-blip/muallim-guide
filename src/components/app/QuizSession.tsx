@@ -7,7 +7,7 @@ import {
   XCircle,
   ChevronDown,
   Lightbulb,
-  GraduationCap,
+  BookOpen,
   Timer as TimerIcon,
   X,
   Brain,
@@ -173,7 +173,7 @@ function ReasonBox({ q }: { q: Question }) {
         className="flex w-full items-center justify-between rounded-xl bg-secondary px-4 py-3 text-sm font-bold text-primary"
       >
         <span className="flex items-center gap-2">
-          <GraduationCap className="h-4 w-4" />
+          <BookOpen className="h-4 w-4" />
           سبب الإجابة ومصدر المفهوم
         </span>
         <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />

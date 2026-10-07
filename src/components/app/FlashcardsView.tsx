@@ -10,7 +10,6 @@ import {
   RotateCw,
   Dumbbell,
   Layers,
-  GraduationCap,
 } from "lucide-react";
 import { COURSES, CONCEPTS, COURSE_COLOR, COURSE_SHORT, examplesOf, shuffle, questionsOfConcept } from "@/lib/qbank";
 import { useApp } from "@/lib/store";
@@ -32,7 +31,7 @@ export default function FlashcardsView() {
     [courseFilter]
   );
 
-  // إعادة ضبط المؤشر عند تغيير المساق
+  // إعادة ضبط المؤشر عند تغيير المحور
   const safeIndex = Math.min(index, deck.length - 1);
   const card = deck[safeIndex];
   const course = COURSES.find((c) => c.id === card?.courseId);
@@ -58,7 +57,7 @@ export default function FlashcardsView() {
 
   return (
     <div className="space-y-3 px-4 pb-6">
-      {/* مرشح المساقات */}
+      {/* مرشّح المحاور */}
       <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
         <button
           onClick={() => {
@@ -131,7 +130,7 @@ export default function FlashcardsView() {
             </div>
             <div className="flex flex-1 flex-col items-center justify-center text-center">
               <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent">
-                <GraduationCap className="h-6 w-6" style={{ color }} />
+                <BookOpen className="h-6 w-6" style={{ color }} />
               </span>
               <h2 className="text-2xl font-black leading-10 text-foreground">{card.title}</h2>
               <p className="mt-3 text-[11px] font-bold text-foreground/50">{card.chapter}</p>

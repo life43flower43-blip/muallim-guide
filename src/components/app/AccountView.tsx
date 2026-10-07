@@ -432,7 +432,7 @@ export default function AccountView() {
       </div>
 
       <p className="pb-2 text-center text-[10px] text-muted-foreground">
-        تربوي — مساعد إعداد المعلم: من أول سنة جامعية إلى التدريب العملي والتخرج
+        تربوي — مساعد إعداد المعلم: من طالب تربية إلى معلم جاهز
       </p>
 
       <ShopDialog open={shopOpen} onOpenChange={setShopOpen} />

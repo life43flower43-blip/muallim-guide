@@ -13,7 +13,7 @@ export interface QuizConfig {
 interface UiState {
   quizConfig: QuizConfig | null;
   pendingConceptId: string | null; // مفهوم مطلوب فتح تفاصيله (من «مفهوم اليوم» في الرئيسية)
-  pendingCourseId: string | null; // مساق مطلوب فتحه في المفاهيم (عوالم «الجامعة» و«أعرف»)
+  pendingCourseId: string | null; // محور مطلوب فتحه في المفاهيم (عوالم «الأساس» و«أعرف»)
   scenariosOpen: boolean; // شاشة محاكاة الصف الدراسي
   startQuiz: (c: QuizConfig) => void;
   clearQuiz: () => void;

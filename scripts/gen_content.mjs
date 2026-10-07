@@ -12,7 +12,7 @@ const N_EXAMPLES = 5;
 const ASK_EX = 6;
 const N_QUESTIONS = 16;
 const BATCH = 10; // أسئلة لكل نداء (نداءان)
-const CONCURRENCY = 3;
+const CONCURRENCY = Number(process.env.GEN_CONC || 3);
 // سقف زمني لكل دفعة (بالميلي ثانية) — يخرج بنعومة قبل مهلة القوقعة، ويستأنف لاحقاً من checkpoints
 const DEADLINE_MS = Number(process.env.GEN_DEADLINE_MS || 0);
 
@@ -225,7 +225,7 @@ async function main() {
   if (from > 0 || to > 0) slice = slice.slice(from, to > 0 ? to : undefined);
   const todo = slice;
   log(`START — مفاهيم: ${todo.length}، توازي: ${CONCURRENCY}`);
-  let done = 0, failed = 0, skipped = 0, processed = 0;
+  let done = 0, failed = 0, skipped = 0, processed = 0, consecutiveFail = 0;
   const started = Date.now();
   const queue = [...todo];
   const workers = Array.from({ length: CONCURRENCY }, async () => {
@@ -236,8 +236,13 @@ async function main() {
       const r = await genConcept(zai, c);
       processed++;
       if (r.skipped) skipped++;
-      else if (r.failed) failed++;
-      else done++;
+      else if (r.failed) {
+        failed++;
+        consecutiveFail++;
+        // قاطع دائرة: ٣ مفاهيم متتالية تفشل بلا أي نجاح — غالبًا حصة المنصة (429) منتهية
+        if (consecutiveFail >= 3) { log(`CIRCUIT — ${consecutiveFail} إخفاقات متتالية، خروج مبكر (المتبقي: ${queue.length})`); break; }
+      }
+      else { done++; consecutiveFail = 0; }
       if (processed % 5 === 0 || processed === todo.length) {
         log(`PROGRESS ${processed}/${todo.length} (${Math.round((processed / todo.length) * 100)}%) — ok=${done} failed=${failed} skipped=${skipped}`);
       }

@@ -37,7 +37,7 @@ import { useUi } from "@/lib/ui-store";
 import { Button } from "@/components/ui/button";
 import FlashcardsView from "./FlashcardsView";
 
-// أيقونة كل محور — بدل أرقام المساقات (قرار المستخدم: بلا شكل «مساقات جامعية»)
+// أيقونة كل محور — بديل أرقام المحاور (قرار المستخدم: بلا شكل كتاب مدرسي)
 const COURSE_ICONS: Record<string, React.ElementType> = {
   M1: Dna,
   M2: Heart,
@@ -162,7 +162,7 @@ function ConceptDetail({
 export default function ConceptsView() {
   const { conceptReads } = useApp();
 
-  // طلبات فتح من خارج الشاشة (مفهوم اليوم / عوالم الجامعة وأعرف في الرئيسية)
+  // طلبات فتح من خارج الشاشة (مفهوم اليوم / عوالم الأساس وأعرف في الرئيسية)
   // تُستهلك عند التحميل الأول لتهيئة الحالة مباشرة — بلا setState داخل التأثيرات
   const pendingConceptId = useUi((s) => s.pendingConceptId);
   const pendingCourseId = useUi((s) => s.pendingCourseId);
@@ -182,7 +182,7 @@ export default function ConceptsView() {
     if (pendingCourseId) clearPendingCourse();
   }, [pendingConceptId, pendingCourseId, clearPendingConcept, clearPendingCourse]);
 
-  // البحث الفوري في العنوان والفصل
+  // البحث الفوري في العنوان والموضوع
   const searchResults = useMemo(() => {
     const q = query.trim();
     if (!q) return null;
