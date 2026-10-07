@@ -1,5 +1,5 @@
 // عامل خدمة بسيط: يخزن الهيكل الثابت ليعمل التطبيق دون اتصال بعد أول زيارة
-const CACHE = "turbawy-v8";
+const CACHE = "turbawy-v9";
 const SHELL = ["/", "/manifest.json", "/icons/icon-192.png", "/icons/icon-512.png"];
 
 self.addEventListener("install", (e) => {
