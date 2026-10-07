@@ -19,11 +19,13 @@ import {
   Users,
   Plus,
   Trash2,
+  ChevronRight,
 } from "lucide-react";
 import {
   COURSES,
   CONCEPTS,
   conceptsOfCourse,
+  chaptersOfCourse,
   questionsOfConcept,
   examplesOf,
   COURSE_COLOR,
@@ -47,6 +49,19 @@ const COURSE_ICONS: Record<string, React.ElementType> = {
 const CourseIcon = ({ id, className }: { id: string; className?: string }) => {
   const Icon = COURSE_ICONS[id] ?? BookOpen;
   return <Icon className={className} />;
+};
+
+// عرض أسماء الموضوعات — تُنظّف من حروف الترقيم الكتابية (أ. ب. ج.) حتى لا تشبه فهرس كتاب
+const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
+
+// وصف موجز لكل محور في بطاقات المكتبة — مستمد من موضوعاته نفسها
+const COURSE_SUBTITLE: Record<string, string> = {
+  M1: "الوراثة والجهاز العصبي والسلوك",
+  M2: "الغرائز والعواطف والذكاء",
+  M3: "التعلم ونظرياته والذاكرة والدافعية",
+  M4: "القياس وأدوات التقويم والاختبارات",
+  M5: "طرق تدريس المواد الدراسية",
+  G1: "مفاهيم عامة في التربية والتعليم",
 };
 
 // ---------- مجتمع الطلاب: أمثلة يضيفها الطلاب من واقع تخصصاتهم ----------
@@ -194,10 +209,9 @@ function ConceptDetail({
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
             <p className="flex items-center gap-1.5 text-[11px] font-bold opacity-90">
-              <CourseIcon id={course.id} className="h-3.5 w-3.5" /> {course.name}
+              <CourseIcon id={course.id} className="h-3.5 w-3.5" /> {chapterLabel(c.chapter)}
             </p>
             <h2 className="mt-1 text-xl font-black leading-8">{c.title}</h2>
-            <p className="mt-1 text-[11px] opacity-80">{c.chapter}</p>
           </div>
           <button onClick={onClose} className="rounded-full bg-white/20 p-2" aria-label="إغلاق">
             <X className="h-5 w-5" />
@@ -263,6 +277,40 @@ function ConceptDetail({
   );
 }
 
+// ---------- ترويسة المستويات الداخلية: زر عودة + عنوان ملون بنقطة المحور ----------
+function SubHeader({
+  title,
+  hint,
+  accent,
+  onBack,
+}: {
+  title: string;
+  hint?: string;
+  accent: string;
+  onBack: () => void;
+}) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <button
+        onClick={onBack}
+        aria-label="عودة"
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-border bg-white text-gray-700 transition-colors active:bg-accent"
+      >
+        <ChevronRight className="h-5 w-5" />
+      </button>
+      <div className="min-w-0">
+        <h2 className="flex items-center gap-1.5 text-base font-black leading-6 text-gray-900">
+          <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: accent }} />
+          <span className="truncate">{title}</span>
+        </h2>
+        {hint && (
+          <p className="truncate text-[10px] font-bold text-muted-foreground">{hint}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function ConceptsView() {
   const { conceptReads } = useApp();
 
@@ -273,7 +321,9 @@ export default function ConceptsView() {
   const clearPendingConcept = useUi((s) => s.clearPendingConcept);
   const clearPendingCourse = useUi((s) => s.clearPendingCourse);
 
-  const [filterCourse, setFilterCourse] = useState<string | null>(pendingCourseId);
+  // التنقل البطاقي ثلاثي المستويات (نموذج المستخدم): بطاقة محور ← بطاقات موضوعاته ← بطاقات مفاهيمه
+  const [openCourseId, setOpenCourseId] = useState<string | null>(pendingCourseId);
+  const [openChapter, setOpenChapter] = useState<string | null>(null);
   const [detailId, setDetailId] = useState<string | null>(pendingConceptId);
   const [query, setQuery] = useState("");
 
@@ -283,19 +333,30 @@ export default function ConceptsView() {
     if (pendingCourseId) clearPendingCourse();
   }, [pendingConceptId, pendingCourseId, clearPendingConcept, clearPendingCourse]);
 
-  // البحث الفوري في العنوان والموضوع
+  // البحث الفوري في العنوان والموضوع — فوق أي مستوى
   const searchResults = useMemo(() => {
     const q = query.trim();
     if (!q) return null;
-    return CONCEPTS.filter((c) => c.title.includes(q) || c.chapter.includes(q)).slice(0, 40);
+    return CONCEPTS.filter(
+      (c) => c.title.includes(q) || chapterLabel(c.chapter).includes(q)
+    ).slice(0, 40);
   }, [query]);
 
-  const totalConcepts = CONCEPTS.length;
+  const openCourse = COURSES.find((c) => c.id === openCourseId) ?? null;
 
-  // مفاهيم القائمة حسب الفلتر المختار — بلا تجزئة فصول
-  const listConcepts = useMemo(
-    () => (filterCourse ? conceptsOfCourse(filterCourse) : CONCEPTS),
-    [filterCourse]
+  // موضوعات المحور المفتوح بترتيب ظهورها فيه
+  const chapters = useMemo(
+    () => (openCourse ? chaptersOfCourse(openCourse.id) : []),
+    [openCourse]
+  );
+
+  // مفاهيم الموضوع المفتوح
+  const chapterConcepts = useMemo(
+    () =>
+      openCourse && openChapter
+        ? conceptsOfCourse(openCourse.id).filter((c) => c.chapter === openChapter)
+        : [],
+    [openCourse, openChapter]
   );
 
   return (
@@ -317,7 +378,7 @@ export default function ConceptsView() {
       </div>
 
       {searchResults !== null ? (
-        // نتائج البحث فوق أي وضع
+        // نتائج البحث فوق أي مستوى
         <div className="space-y-2 px-4">
           <p className="text-xs font-bold text-muted-foreground">
             {searchResults.length > 0
@@ -338,100 +399,139 @@ export default function ConceptsView() {
               </span>
               <span className="flex-1">
                 <span className="block text-sm font-bold leading-6">{c.title}</span>
-                <span className="text-[10px] text-muted-foreground">{c.chapter}</span>
+                <span className="text-[10px] text-muted-foreground">
+                  {chapterLabel(c.chapter)}
+                </span>
               </span>
             </button>
           ))}
         </div>
-      ) : (
-      <div className="space-y-3 px-4">
-      <div className="card-soft flex items-center gap-3 rounded-3xl border border-border bg-white p-4">
-        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent text-primary">
-          <BookOpen className="h-6 w-6" />
-        </span>
-        <div>
-          <h2 className="text-lg font-black">مكتبة المفاهيم</h2>
-          <p className="text-xs text-muted-foreground">
-            اضغط أي مفهوم لقراءة شرحه وأمثلته الواقعية والتدريب عليه
-          </p>
-        </div>
-      </div>
-
-      {/* رقائق فلترة حسب المحور — بلا فصول كتاب ولا أكورديون */}
-      <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
-        <button
-          onClick={() => setFilterCourse(null)}
-          className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-black transition-colors ${
-            filterCourse === null
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border bg-white text-gray-700"
-          }`}
+      ) : !openCourse ? (
+        // المستوى الأول: بطاقة لكل محور — الضغط عليها يفتح موضوعاته (نموذج بطاقات المستخدم)
+        <motion.div
+          key="library-roots"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.18 }}
+          className="grid grid-cols-2 gap-2.5 px-4"
         >
-          <Library className="h-3.5 w-3.5" /> الكل
-        </button>
-        {COURSES.map((course) => {
-          const active = filterCourse === course.id;
-          const color = COURSE_COLOR[course.id] ?? "#1B4332";
-          return (
-            <button
-              key={course.id}
-              onClick={() => setFilterCourse(course.id)}
-              className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-black transition-colors ${
-                active ? "text-white" : "border-border bg-white text-gray-700"
-              }`}
-              style={active ? { background: color, borderColor: color } : undefined}
-            >
-              <CourseIcon id={course.id} className="h-3.5 w-3.5" />
-              {COURSE_SHORT[course.id]}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* شبكة بطاقات المفاهيم — كل مفهوم بطاقة مستقلة، بلا ترتيب فصول */}
-      <div className="grid grid-cols-2 gap-2">
-        {listConcepts.map((c) => {
-          const isRead = !!conceptReads[c.id];
-          const color = COURSE_COLOR[c.courseId] ?? "#1B4332";
-          return (
-            <button
-              key={c.id}
-              onClick={() => setDetailId(c.id)}
-              className="card-soft relative flex min-h-[104px] flex-col justify-between rounded-2xl border border-border bg-white p-3 text-right transition-transform active:scale-[0.98]"
-            >
-              <span
-                className="flex h-8 w-8 items-center justify-center rounded-xl text-white"
-                style={{ background: color }}
+          {COURSES.map((course) => {
+            const color = COURSE_COLOR[course.id] ?? "#1B4332";
+            return (
+              <button
+                key={course.id}
+                onClick={() => {
+                  setOpenCourseId(course.id);
+                  setOpenChapter(null);
+                }}
+                className="card-soft flex min-h-[104px] flex-col rounded-3xl border border-border bg-white p-3.5 text-right transition-transform active:scale-[0.98]"
               >
-                <CourseIcon id={c.courseId} className="h-4 w-4" />
-              </span>
-              <span className="mt-2 line-clamp-2 text-[13px] font-black leading-5 text-gray-900">
-                {c.title}
-              </span>
-              <span className="mt-1 flex items-center gap-1 text-[9px] font-bold text-muted-foreground">
-                {isRead ? (
-                  <>
-                    <CheckCircle2 className="h-3 w-3 text-emerald-600" /> تمت القراءة
-                  </>
-                ) : (
-                  <>
-                    <Circle className="h-3 w-3 text-border" /> {COURSE_SHORT[c.courseId]}
-                  </>
-                )}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-      {listConcepts.length === 0 && (
-        <p className="py-6 text-center text-xs font-bold text-muted-foreground">
-          لا مفاهيم في هذا المحور بعد
-        </p>
-      )}
-      </div>
+                <span
+                  className="flex h-11 w-11 items-center justify-center rounded-2xl text-white"
+                  style={{ background: color }}
+                >
+                  <CourseIcon id={course.id} className="h-5 w-5" />
+                </span>
+                <span className="mt-2.5 text-sm font-black leading-6 text-gray-900">
+                  {COURSE_SHORT[course.id]}
+                </span>
+                <span className="mt-0.5 line-clamp-2 text-[10px] font-bold leading-4 text-muted-foreground">
+                  {COURSE_SUBTITLE[course.id]}
+                </span>
+              </button>
+            );
+          })}
+        </motion.div>
+      ) : !openChapter ? (
+        // المستوى الثاني: بطاقات الموضوعات داخل المحور — كل موضوع بطاقة تفتح مفاهيمه
+        <motion.div
+          key={`course-${openCourse.id}`}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.18 }}
+          className="space-y-3 px-4"
+        >
+          <SubHeader
+            title={COURSE_SHORT[openCourse.id]}
+            hint={COURSE_SUBTITLE[openCourse.id]}
+            accent={COURSE_COLOR[openCourse.id] ?? "#1B4332"}
+            onBack={() => {
+              setOpenCourseId(null);
+              setOpenChapter(null);
+            }}
+          />
+          <div className="grid grid-cols-2 gap-2.5">
+            {chapters.map((ch) => (
+              <button
+                key={ch}
+                onClick={() => setOpenChapter(ch)}
+                className="card-soft flex min-h-[88px] flex-col justify-center rounded-3xl border border-border bg-white p-3.5 text-right transition-transform active:scale-[0.98]"
+              >
+                <span
+                  className="flex h-8 w-8 items-center justify-center rounded-xl text-white"
+                  style={{ background: COURSE_COLOR[openCourse.id] ?? "#1B4332" }}
+                >
+                  <CourseIcon id={openCourse.id} className="h-4 w-4" />
+                </span>
+                <span className="mt-2 line-clamp-2 text-[13px] font-black leading-5 text-gray-900">
+                  {chapterLabel(ch)}
+                </span>
+              </button>
+            ))}
+          </div>
+        </motion.div>
+      ) : (
+        // المستوى الثالث: بطاقات المفاهيم داخل الموضوع — كل مفهوم وحده
+        <motion.div
+          key={`chapter-${openCourse.id}-${openChapter}`}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.18 }}
+          className="space-y-3 px-4"
+        >
+          <SubHeader
+            title={chapterLabel(openChapter)}
+            hint={COURSE_SHORT[openCourse.id]}
+            accent={COURSE_COLOR[openCourse.id] ?? "#1B4332"}
+            onBack={() => setOpenChapter(null)}
+          />
+          <div className="grid grid-cols-2 gap-2">
+            {chapterConcepts.map((c) => {
+              const isRead = !!conceptReads[c.id];
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => setDetailId(c.id)}
+                  className="card-soft relative flex min-h-[104px] flex-col justify-between rounded-2xl border border-border bg-white p-3 text-right transition-transform active:scale-[0.98]"
+                >
+                  <span
+                    className="flex h-8 w-8 items-center justify-center rounded-xl text-white"
+                    style={{ background: COURSE_COLOR[c.courseId] ?? "#1B4332" }}
+                  >
+                    <CourseIcon id={c.courseId} className="h-4 w-4" />
+                  </span>
+                  <span className="mt-2 line-clamp-2 text-[13px] font-black leading-5 text-gray-900">
+                    {c.title}
+                  </span>
+                  <span className="mt-1 flex items-center gap-1 text-[9px] font-bold text-muted-foreground">
+                    {isRead ? (
+                      <>
+                        <CheckCircle2 className="h-3 w-3 text-emerald-600" /> تمت القراءة
+                      </>
+                    ) : (
+                      <>
+                        <Circle className="h-3 w-3 text-border" /> جديد
+                      </>
+                    )}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </motion.div>
       )}
 
-      {/* التفاصيل تُعرض فوق أي وضع (بطاقات أو قائمة) */}
+      {/* التفاصيل تُعرض فوق أي مستوى */}
       <AnimatePresence>
         {detailId && <ConceptDetail conceptId={detailId} onClose={() => setDetailId(null)} />}
       </AnimatePresence>

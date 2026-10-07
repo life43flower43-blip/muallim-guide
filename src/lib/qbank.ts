@@ -25,7 +25,7 @@ export const COURSE_SHORT: Record<string, string> = {
   M3: "كيف يتعلمون",
   M4: "التقويم",
   M5: "التدريس",
-  G1: "المكتبة",
+  G1: "ثقافة تربوية",
 };
 
 export const courseById = (id: string) => COURSES.find((c) => c.id === id);

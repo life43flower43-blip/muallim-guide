@@ -20,7 +20,7 @@ import {
   MessageSquare,
   MessagesSquare,
 } from "lucide-react";
-import { COURSES, questionsOfCourse, conceptById, questionById } from "@/lib/qbank";
+import { COURSES, COURSE_SHORT, questionsOfCourse, conceptById, questionById } from "@/lib/qbank";
 import { ACHIEVEMENTS, useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import {
@@ -231,7 +231,7 @@ export default function AccountView() {
           {perCourse.map((row) => (
             <div key={row.course.id}>
               <div className="mb-1.5 flex items-center justify-between text-xs font-bold">
-                <span className="leading-5">{row.course.name}</span>
+                <span className="leading-5">{COURSE_SHORT[row.course.id]}</span>
                 <span className="shrink-0 text-muted-foreground">
                   {row.answered > 0 ? `${ad(row.pct)}٪` : "لم تبدأ بعد"}
                 </span>
@@ -271,7 +271,7 @@ export default function AccountView() {
           </p>
           <p className="mt-2 font-extrabold text-foreground">{weakestConcept.concept.title}</p>
           <p className="mt-1 text-xs leading-6 text-amber-900/80">
-            دقتك فيه <span>{ad(weakestConcept.pct)}٪</span> — راجع شرحه ثم تدرب على أسئلته من مكتبة المفاهيم.
+            دقتك فيه <span>{ad(weakestConcept.pct)}٪</span> — راجع شرحه ثم تدرب على أسئلته من صفحة المكتبة.
           </p>
         </div>
       )}

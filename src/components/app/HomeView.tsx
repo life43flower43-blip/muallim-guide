@@ -150,7 +150,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       name: "أعرف",
       icon: Brain,
       color: "#7C3AED",
-      hint: "مكتبة المفاهيم العامة",
+      hint: "مفاهيم تربوية عامة",
       action: () => {
         openCourseTab("G1");
         onGoTab("concepts");

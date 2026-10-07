@@ -13,7 +13,7 @@ import {
   AlertTriangle,
   Target,
 } from "lucide-react";
-import { COURSES, questionsOfCourse, QUESTIONS, conceptById, shuffle } from "@/lib/qbank";
+import { COURSES, COURSE_SHORT, questionsOfCourse, QUESTIONS, conceptById, shuffle } from "@/lib/qbank";
 import { buildReviewSet, buildRedoSet, orderUnseenFirst } from "@/lib/srs";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
@@ -200,7 +200,7 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
                     className="flex w-full items-center justify-between text-right"
                     onClick={() => setExpanded((e) => (e === course.id ? null : course.id))}
                   >
-                    <span className="text-sm font-extrabold leading-6 text-primary">{course.name}</span>
+                    <span className="text-sm font-extrabold leading-6 text-primary">{COURSE_SHORT[course.id]}</span>
                     <span className="flex items-center gap-1 text-xs font-bold text-muted-foreground">
                       <ChevronLeft
                         className={`h-4 w-4 transition-transform ${
@@ -216,7 +216,7 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
                           const qs = questionsOfCourse(course.id);
                           startQuiz({
                             mode: "training",
-                            label: course.name,
+                            label: COURSE_SHORT[course.id],
                             qids: orderUnseenFirst(qs.map((q) => q.id), attempts),
                           });
                         }}
