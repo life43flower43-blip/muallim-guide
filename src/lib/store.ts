@@ -6,7 +6,6 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import type { Attempt, SessionRecord } from "./types";
 import { nextBox } from "./srs";
 import { SCENARIOS } from "./scenarios";
-import { gemsForSession, shopItemById } from "./shop";
 
 export interface ScenarioChoice {
   opt: number; // فهرس الخيار المختار
@@ -16,17 +15,12 @@ export interface ScenarioChoice {
 interface AppState {
   name: string;
   xp: number;
-  streak: number;
-  lastActiveDay: string; // YYYY-MM-DD
   weeklyXp: number;
   weekStart: string; // YYYY-MM-DD لأول يوم (الاثنين)
   attempts: Record<string, Attempt>;
   conceptReads: Record<string, number>;
   sessions: SessionRecord[];
   scenarioChoices: Record<string, ScenarioChoice>; // قرارات محاكاة الصف
-  gems: number; // جواهر المتجر
-  ownedItems: Record<string, number>; // قطع المتجر المقتناة: المعرف -> وقت الشراء
-  equipped: Record<string, boolean>; // القطع الملبسة على الجنية
   reportedQuestions: string[]; // معرفات الأسئلة التي أبلغ عنها المستخدم (نقد البند 11)
   onboarded: boolean;
 
@@ -36,9 +30,6 @@ interface AppState {
   recordAttempt: (qid: string, correct: boolean) => void;
   recordScenarioChoice: (sid: string, opt: number) => void;
   finishSession: (s: Omit<SessionRecord, "id" | "ts">) => void;
-  addGems: (n: number) => void;
-  buyItem: (id: string) => boolean;
-  toggleEquip: (id: string) => void;
   reportQuestion: (qid: string) => void;
   resetAll: () => void;
 }
@@ -72,17 +63,12 @@ export const useApp = create<AppState>()(
     (set, get) => ({
       name: "",
       xp: 0,
-      streak: 0,
-      lastActiveDay: "",
       weeklyXp: 0,
       weekStart: mondayStr(),
       attempts: {},
       conceptReads: {},
       sessions: [],
       scenarioChoices: {},
-      gems: 0,
-      ownedItems: {},
-      equipped: {},
       reportedQuestions: [],
       onboarded: false,
 
@@ -107,13 +93,6 @@ export const useApp = create<AppState>()(
 
       finishSession: ({ mode, label, total, correctCount, xp, durationSec }) => {
         const st = get();
-        const today = dayStr();
-        let streak = st.streak;
-        if (st.lastActiveDay !== today) {
-          const y = new Date();
-          y.setDate(y.getDate() - 1);
-          streak = st.lastActiveDay === dayStr(y) ? st.streak + 1 : 1;
-        }
         const ws = mondayStr();
         const weeklyXp = st.weekStart === ws ? st.weeklyXp + xp : xp;
         const rec: SessionRecord = {
@@ -130,31 +109,9 @@ export const useApp = create<AppState>()(
           xp: st.xp + xp,
           weeklyXp,
           weekStart: ws,
-          streak,
-          lastActiveDay: today,
           sessions: [rec, ...st.sessions].slice(0, 100),
-          gems: st.gems + gemsForSession(total, correctCount),
         });
       },
-
-      addGems: (n) => set((st) => ({ gems: Math.max(0, st.gems + n) })),
-
-      buyItem: (id) => {
-        const item = shopItemById(id);
-        if (!item) return false;
-        const st = get();
-        if (st.ownedItems[id]) return true; // مقتناة سابقاً
-        if (st.gems < item.price) return false; // الجواهر لا تكفي
-        set({
-          gems: st.gems - item.price,
-          ownedItems: { ...st.ownedItems, [id]: Date.now() },
-          equipped: { ...st.equipped, [id]: true }, // تُلبس تلقائياً عند الشراء
-        });
-        return true;
-      },
-
-      toggleEquip: (id) =>
-        set((st) => ({ equipped: { ...st.equipped, [id]: !st.equipped[id] } })),
 
       reportQuestion: (qid) =>
         set((st) => ({
@@ -167,17 +124,12 @@ export const useApp = create<AppState>()(
         set({
           name: "",
           xp: 0,
-          streak: 0,
-          lastActiveDay: "",
           weeklyXp: 0,
           weekStart: mondayStr(),
           attempts: {},
           conceptReads: {},
           sessions: [],
           scenarioChoices: {},
-          gems: 0,
-          ownedItems: {},
-          equipped: {},
           reportedQuestions: [],
           onboarded: false,
         }),
@@ -207,13 +159,10 @@ export interface Achievement {
   desc: string;
   icon: string; // اسم أيقونة lucide نعرضها ونربطها في الواجهة
   earned: (st: {
-    xp: number;
-    streak: number;
     attempts: Record<string, Attempt>;
     sessions: SessionRecord[];
     conceptReads: Record<string, number>;
     scenarioChoices: Record<string, ScenarioChoice>;
-    ownedItems: Record<string, number>;
   }) => boolean;
 }
 
@@ -227,17 +176,10 @@ export const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: "read5",
-    title: "قارئ النوادر",
-    desc: "اطلع على ٥ مفاهيم",
+    title: "بداية الاطلاع",
+    desc: "اطلعت على ٥ مفاهيم",
     icon: "BookOpen",
     earned: (s) => Object.keys(s.conceptReads).length >= 5,
-  },
-  {
-    id: "streak3",
-    title: "ثلاثة أيام",
-    desc: "سلسلة نشاط ٣ أيام متتالية",
-    icon: "Flame",
-    earned: (s) => s.streak >= 3,
   },
   {
     id: "q25",
@@ -255,13 +197,6 @@ export const ACHIEVEMENTS: Achievement[] = [
       s.sessions.some((x) => x.total >= 10 && x.correctCount === x.total),
   },
   {
-    id: "xp500",
-    title: "جامع النقاط",
-    desc: "اجمع ٥٠٠ نقطة خبرة",
-    icon: "Zap",
-    earned: (s) => s.xp >= 500,
-  },
-  {
     id: "allwrong",
     title: "صحّحت أخطائي",
     desc: "أنجز جلسة إعادة أخطاء ولم تخطئ فيها",
@@ -273,14 +208,14 @@ export const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: "exam",
-    title: "عابر الامتحان",
+    title: "محاكاة امتحان مكتملة",
     desc: "أكمل اختبار محاكاة كاملاً",
     icon: "Timer",
     earned: (s) => s.sessions.some((x) => x.mode === "exam"),
   },
   {
     id: "srs10",
-    title: "ذاكرة حديدية",
+    title: "تثبيت في الذاكرة",
     desc: "١٠ أسئلة في الصناديق العليا للمراجعة",
     icon: "Brain",
     earned: (s) =>
@@ -301,19 +236,5 @@ export const ACHIEVEMENTS: Achievement[] = [
     earned: (s) =>
       SCENARIOS.length > 0 &&
       Object.keys(s.scenarioChoices ?? {}).length >= SCENARIOS.length,
-  },
-  {
-    id: "xp1500",
-    title: "أسطورة تربوي",
-    desc: "اجمع ١٥٠٠ نقطة خبرة",
-    icon: "Crown",
-    earned: (s) => s.xp >= 1500,
-  },
-  {
-    id: "shopfirst",
-    title: "صديق الجنية",
-    desc: "اشترِ أول قطعة من متجر الجواهر",
-    icon: "ShoppingBag",
-    earned: (s) => Object.keys(s.ownedItems ?? {}).length >= 1,
   },
 ];

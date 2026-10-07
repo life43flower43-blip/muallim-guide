@@ -89,13 +89,6 @@ export const POINT_FORMS: CountForms = {
   many: "نقطة",
 };
 
-export const GEM_FORMS: CountForms = {
-  one: "جوهرة واحدة",
-  two: "جوهرتان",
-  few: "جواهر",
-  many: "جوهرة",
-};
-
 export const DAY_FORMS: CountForms = {
   one: "يوم واحد",
   two: "يومان",

@@ -25,14 +25,11 @@ import {
   QUESTIONS,
   questionsOfCourse,
   shuffle,
-  levelFromXp,
-  levelTitle,
   conceptById,
 } from "@/lib/qbank";
 import { buildReviewSet, buildRedoSet, orderUnseenFirst } from "@/lib/srs";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import ShopDialog, { FairyAvatar } from "./ShopDialog";
 
 // ---------- مفهوم اليوم: مختصر بسطرين مع «اقرأ المزيد» ----------
 function DailyTip({ onOpen }: { onOpen: (id: string) => void }) {
@@ -104,13 +101,12 @@ interface World {
 }
 
 export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) {
-  const { name, xp, attempts, sessions, conceptReads, scenarioChoices, equipped } =
+  const { name, xp, attempts, sessions, conceptReads, scenarioChoices } =
     useApp();
   const startQuiz = useUi((s) => s.startQuiz);
   const openConcept = useUi((s) => s.openConcept);
   const openCourseTab = useUi((s) => s.openCourseTab);
   const startScenarios = useUi((s) => s.startScenarios);
-  const [shopOpen, setShopOpen] = useState(false);
 
   const handleOpenConcept = (id: string) => {
     openConcept(id);
@@ -119,7 +115,6 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
 
   const reviewSet = useMemo(() => buildReviewSet(attempts), [attempts]);
   const redoSet = useMemo(() => buildRedoSet(attempts), [attempts]);
-  const level = levelFromXp(xp);
   const answered = Object.keys(attempts).length;
   const started = answered > 0;
 
@@ -241,20 +236,9 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
               {name || "طالب التربية"}
             </h2>
             <p className="mt-0.5 text-[11px] font-bold text-gray-700">
-              {levelTitle(level)}
+              رحلتك الآن: {currentWorld.name}
             </p>
           </div>
-          {/* الجنية ترافقك — انقرها لفتح متجر الجواهر */}
-          <motion.button
-            whileTap={{ scale: 0.92 }}
-            onClick={() => setShopOpen(true)}
-            aria-label="الجنية — افتح متجر الجواهر"
-            animate={{ y: [0, -4, 0] }}
-            transition={{ repeat: Infinity, duration: 2.4, ease: "easeInOut" }}
-            className="shrink-0"
-          >
-            <FairyAvatar equipped={equipped} size={52} />
-          </motion.button>
         </div>
       </header>
 
@@ -442,8 +426,6 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       <p className="pt-1 text-center text-[10px] leading-5 text-gray-500">
         تربوي — مساعد إعداد المعلم: من طالب تربية إلى معلم جاهز
       </p>
-
-      <ShopDialog open={shopOpen} onOpenChange={setShopOpen} />
     </div>
   );
 }
