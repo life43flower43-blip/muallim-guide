@@ -34,6 +34,14 @@ export interface Course {
   name: string;
 }
 
+// ---------- مجتمع الطلاب: أمثلة يضيفها الطلاب من واقع تخصصاتهم ----------
+export interface StudentExample {
+  id: string;
+  text: string;
+  specialty: string; // هندسة / طب / إنسانيات / تربية / أخرى
+  ts: number;
+}
+
 // ---------- تقدم المستخدم ----------
 export interface Attempt {
   qid: string;

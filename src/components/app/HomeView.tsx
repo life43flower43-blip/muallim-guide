@@ -3,12 +3,9 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Zap,
-  Target,
   ArrowLeft,
   Sprout,
   Lightbulb,
-  RotateCcw,
   School,
   Presentation,
   Dumbbell,
@@ -16,6 +13,7 @@ import {
   BadgeCheck,
   Brain,
   Play,
+  Target,
   ChevronDown,
   ChevronUp,
   CircleCheck,
@@ -25,7 +23,6 @@ import {
   QUESTIONS,
   conceptById,
   questionById,
-  shuffle,
 } from "@/lib/qbank";
 import { buildReviewSet, orderUnseenFirst } from "@/lib/srs";
 import { useApp } from "@/lib/store";
@@ -106,7 +103,6 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const openConcept = useUi((s) => s.openConcept);
   const openCourseTab = useUi((s) => s.openCourseTab);
   const startScenarios = useUi((s) => s.startScenarios);
-  const openMistakes = useUi((s) => s.openMistakes);
 
   const handleOpenConcept = (id: string) => {
     openConcept(id);
@@ -288,62 +284,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
         </motion.button>
       </motion.section>
 
-      {/* ٣. ثلاثة اختصارات: سريع / مراجعة ذكية / أخطائي (صفحة تفصيلية) */}
-      <div className="grid grid-cols-3 gap-2">
-        <motion.button
-          whileTap={{ scale: 0.96 }}
-          onClick={() =>
-            startQuiz({
-              mode: "quick",
-              label: "اختبار سريع — ١٠ أسئلة",
-              qids: shuffle(QUESTIONS).slice(0, 10).map((q) => q.id),
-            })
-          }
-          className="card-soft flex min-h-[96px] flex-col items-center justify-center gap-1.5 rounded-2xl border border-border bg-white p-3 text-center"
-        >
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500 text-white">
-            <Zap className="h-5 w-5" />
-          </span>
-          <span className="text-[11px] font-black text-gray-900">سريع</span>
-          <span className="text-[9px] font-bold text-gray-600">١٠ أسئلة</span>
-        </motion.button>
-
-        <motion.button
-          whileTap={{ scale: 0.96 }}
-          onClick={() => {
-            if (reviewSet.length > 0) {
-              startQuiz({ mode: "review", label: "مراجعة ذكية متباعدة", qids: reviewSet });
-            } else {
-              onGoTab("quiz");
-            }
-          }}
-          className={`card-soft flex min-h-[96px] flex-col items-center justify-center gap-1.5 rounded-2xl border border-border bg-white p-3 text-center ${
-            reviewSet.length === 0 ? "opacity-60" : ""
-          }`}
-        >
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#7C3AED] text-white">
-            <RotateCcw className="h-5 w-5" />
-          </span>
-          <span className="text-[11px] font-black text-gray-900">مراجعة ذكية</span>
-          <span className="text-[9px] font-bold text-gray-600">
-            {reviewSet.length > 0 ? "لديك مراجعات مستحقة" : "لا مراجعات الآن"}
-          </span>
-        </motion.button>
-
-        <motion.button
-          whileTap={{ scale: 0.96 }}
-          onClick={openMistakes}
-          className="card-soft flex min-h-[96px] flex-col items-center justify-center gap-1.5 rounded-2xl border border-border bg-white p-3 text-center"
-        >
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-red-500 text-white">
-            <Target className="h-5 w-5" />
-          </span>
-          <span className="text-[11px] font-black text-gray-900">أخطائي</span>
-          <span className="text-[9px] font-bold text-gray-600">تفصيل كل خطأ ومفهومه</span>
-        </motion.button>
-      </div>
-
-      {/* ٤. مفهوم اليوم — مختصر مع «اقرأ المزيد» */}
+      {/* ٣. مفهوم اليوم — مختصر مع «اقرأ المزيد» */}
       <DailyTip onOpen={handleOpenConcept} />
 
       {/* ٥. رحلتك إلى الاحتراف — مسار أفقي بخطوات متصلة والعالم الحالي مبرز */}

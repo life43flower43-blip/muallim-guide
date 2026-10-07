@@ -9,8 +9,6 @@ import {
   Dumbbell,
   Lightbulb,
   X,
-  Layers,
-  List,
   Search,
   Dna,
   Brain,
@@ -18,6 +16,9 @@ import {
   ClipboardList,
   School,
   Library,
+  Users,
+  Plus,
+  Trash2,
 } from "lucide-react";
 import {
   COURSES,
@@ -33,7 +34,6 @@ import type { Concept, Course } from "@/lib/types";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { Button } from "@/components/ui/button";
-import FlashcardsView from "./FlashcardsView";
 
 // أيقونة كل محور — بديل أرقام المحاور (قرار المستخدم: بلا شكل كتاب مدرسي)
 const COURSE_ICONS: Record<string, React.ElementType> = {
@@ -48,6 +48,110 @@ const CourseIcon = ({ id, className }: { id: string; className?: string }) => {
   const Icon = COURSE_ICONS[id] ?? BookOpen;
   return <Icon className={className} />;
 };
+
+// ---------- مجتمع الطلاب: أمثلة يضيفها الطلاب من واقع تخصصاتهم ----------
+const SPECIALTIES = ["هندسة", "طب", "إنسانيات", "تربية", "أخرى"];
+const SPECIALTY_COLORS: Record<string, string> = {
+  "هندسة": "#0E7490",
+  "طب": "#BE185D",
+  "إنسانيات": "#7C3AED",
+  "تربية": "#2D6A4F",
+  "أخرى": "#B45309",
+};
+
+function StudentExamplesSection({ conceptId }: { conceptId: string }) {
+  const studentExamples = useApp((s) => s.studentExamples);
+  const addStudentExample = useApp((s) => s.addStudentExample);
+  const removeStudentExample = useApp((s) => s.removeStudentExample);
+
+  const [draft, setDraft] = useState("");
+  const [specialty, setSpecialty] = useState<string>("تربية");
+  const mine = studentExamples[conceptId] ?? [];
+  const canAdd = draft.trim().length >= 10;
+
+  return (
+    <div className="mt-4 rounded-3xl border border-sky-200 bg-sky-50/60 p-4">
+      <p className="flex items-center gap-2 text-sm font-black text-sky-900">
+        <Users className="h-4 w-4" /> أمثلة الطلاب — مجتمع التطبيق
+      </p>
+      <p className="mt-1 text-[11px] font-bold leading-5 text-sky-800/80">
+        أضف مثالاً من واقع تخصصك (هندسة، طب، إنسانيات...) يثري الفهم للجميع — أمثلتك محفوظة
+        على جهازك وتظهر أسفل هذا المفهوم.
+      </p>
+
+      {/* أمثلة الطالب المضافة */}
+      {mine.length > 0 && (
+        <div className="mt-3 space-y-2">
+          {mine.map((e) => (
+            <div
+              key={e.id}
+              className="rounded-2xl border border-sky-100 bg-white p-3"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span
+                  className="rounded-full px-2.5 py-0.5 text-[9px] font-black text-white"
+                  style={{ background: SPECIALTY_COLORS[e.specialty] ?? "#B45309" }}
+                >
+                  {e.specialty}
+                </span>
+                <button
+                  onClick={() => removeStudentExample(conceptId, e.id)}
+                  aria-label="حذف المثال"
+                  className="rounded-full p-1 text-muted-foreground transition-colors hover:bg-red-50 hover:text-red-600"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </div>
+              <p className="mt-1.5 text-xs leading-6 text-gray-700">{e.text}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* نموذج الإضافة */}
+      <div className="mt-3 space-y-2">
+        <div className="no-scrollbar flex gap-1.5 overflow-x-auto">
+          {SPECIALTIES.map((s) => (
+            <button
+              key={s}
+              onClick={() => setSpecialty(s)}
+              className={`shrink-0 rounded-full border px-3 py-1.5 text-[11px] font-black transition-colors ${
+                specialty === s
+                  ? "border-sky-600 bg-sky-600 text-white"
+                  : "border-sky-200 bg-white text-sky-800"
+              }`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+        <textarea
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          rows={3}
+          placeholder={`اكتب مثالاً من واقع تخصص «${specialty}» يوضح هذا المفهوم...`}
+          className="w-full resize-none rounded-2xl border border-sky-200 bg-white p-3 text-sm leading-6 text-foreground outline-none placeholder:text-muted-foreground/60 focus:ring-2 focus:ring-sky-300"
+        />
+        <Button
+          disabled={!canAdd}
+          onClick={() => {
+            if (!canAdd) return;
+            addStudentExample(conceptId, draft.trim(), specialty);
+            setDraft("");
+          }}
+          className="h-11 w-full rounded-2xl bg-sky-600 text-sm font-black text-white hover:bg-sky-700 disabled:opacity-40"
+        >
+          <Plus className="ml-1.5 h-4 w-4" /> أضف مثالك للمجتمع
+        </Button>
+        {draft.trim().length > 0 && !canAdd && (
+          <p className="text-center text-[10px] font-bold text-sky-700/70">
+            اكتب مثالاً أوضح — عشرة أحرف على الأقل
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
 
 function ConceptDetail({
   conceptId,
@@ -122,6 +226,8 @@ function ConceptDetail({
               </div>
             ))}
           </div>
+          {/* مجتمع الطلاب: مساحة لإثراء المفهوم بأمثلة من تخصصات الطلاب */}
+          <StudentExamplesSection conceptId={c.id} />
         </div>
       </div>
 
@@ -167,9 +273,6 @@ export default function ConceptsView() {
   const clearPendingConcept = useUi((s) => s.clearPendingConcept);
   const clearPendingCourse = useUi((s) => s.clearPendingCourse);
 
-  const [mode, setMode] = useState<"cards" | "list">(
-    pendingConceptId || pendingCourseId ? "list" : "cards"
-  );
   const [filterCourse, setFilterCourse] = useState<string | null>(pendingCourseId);
   const [detailId, setDetailId] = useState<string | null>(pendingConceptId);
   const [query, setQuery] = useState("");
@@ -197,26 +300,6 @@ export default function ConceptsView() {
 
   return (
     <div className="space-y-3 pb-6">
-      {/* مبدّل العرض: بطاقات / قائمة */}
-      <div className="mx-4 flex items-center gap-2 rounded-2xl border border-border bg-white p-1.5">
-        <button
-          onClick={() => setMode("cards")}
-          className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-black transition-colors ${
-            mode === "cards" ? "bg-primary text-primary-foreground" : "text-foreground/60"
-          }`}
-        >
-          <Layers className="h-4 w-4" /> بطاقات
-        </button>
-        <button
-          onClick={() => setMode("list")}
-          className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-black transition-colors ${
-            mode === "list" ? "bg-primary text-primary-foreground" : "text-foreground/60"
-          }`}
-        >
-          <List className="h-4 w-4" /> قائمة
-        </button>
-      </div>
-
       {/* البحث في كل المفاهيم */}
       <div className="mx-4 flex items-center gap-2 rounded-2xl border border-border bg-white px-3">
         <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -260,8 +343,6 @@ export default function ConceptsView() {
             </button>
           ))}
         </div>
-      ) : mode === "cards" ? (
-        <FlashcardsView />
       ) : (
       <div className="space-y-3 px-4">
       <div className="card-soft flex items-center gap-3 rounded-3xl border border-border bg-white p-4">

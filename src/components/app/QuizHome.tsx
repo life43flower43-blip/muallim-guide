@@ -66,9 +66,8 @@ function ModeCard({
   );
 }
 
-export default function QuizHome() {
+export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) {
   const startQuiz = useUi((s) => s.startQuiz);
-  const openMistakes = useUi((s) => s.openMistakes);
   const attempts = useApp((s) => s.attempts);
   const [expanded, setExpanded] = useState<string | null>(null);
 
@@ -114,7 +113,7 @@ export default function QuizHome() {
         title="صفحة أخطائي"
         desc="كل خطأ مع شرح مفهومه وأمثلة متنوعة عليه — كل شيء مرتب حسب المفهوم"
         color="#DC2626"
-        onClick={openMistakes}
+        onClick={() => onGoTab("mistakes")}
       />
 
       <ModeCard

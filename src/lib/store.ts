@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from "react";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { Attempt, SessionRecord } from "./types";
+import type { Attempt, SessionRecord, StudentExample } from "./types";
 import { nextBox } from "./srs";
 import { SCENARIOS } from "./scenarios";
 
@@ -22,6 +22,7 @@ interface AppState {
   sessions: SessionRecord[];
   scenarioChoices: Record<string, ScenarioChoice>; // قرارات محاكاة الصف
   reportedQuestions: string[]; // معرفات الأسئلة التي أبلغ عنها المستخدم (نقد البند 11)
+  studentExamples: Record<string, StudentExample[]>; // أمثلة مجتمع الطلاب لكل مفهوم
   onboarded: boolean;
 
   setName: (n: string) => void;
@@ -31,6 +32,8 @@ interface AppState {
   recordScenarioChoice: (sid: string, opt: number) => void;
   finishSession: (s: Omit<SessionRecord, "id" | "ts">) => void;
   reportQuestion: (qid: string) => void;
+  addStudentExample: (cid: string, text: string, specialty: string) => void;
+  removeStudentExample: (cid: string, id: string) => void;
   resetAll: () => void;
 }
 
@@ -70,6 +73,7 @@ export const useApp = create<AppState>()(
       sessions: [],
       scenarioChoices: {},
       reportedQuestions: [],
+      studentExamples: {},
       onboarded: false,
 
       setName: (n) => set({ name: n }),
@@ -120,6 +124,26 @@ export const useApp = create<AppState>()(
             : [...st.reportedQuestions, qid],
         })),
 
+      // أمثلة مجتمع الطلاب — يضيف الطالب مثالاً من واقع تخصصه فيبقى محفوظًا على جهازه
+      addStudentExample: (cid, text, specialty) =>
+        set((st) => ({
+          studentExamples: {
+            ...st.studentExamples,
+            [cid]: [
+              { id: `SE${Date.now()}`, text, specialty, ts: Date.now() },
+              ...(st.studentExamples[cid] ?? []),
+            ],
+          },
+        })),
+
+      removeStudentExample: (cid, id) =>
+        set((st) => ({
+          studentExamples: {
+            ...st.studentExamples,
+            [cid]: (st.studentExamples[cid] ?? []).filter((e) => e.id !== id),
+          },
+        })),
+
       resetAll: () =>
         set({
           name: "",
@@ -131,6 +155,7 @@ export const useApp = create<AppState>()(
           sessions: [],
           scenarioChoices: {},
           reportedQuestions: [],
+          studentExamples: {},
           onboarded: false,
         }),
     }),

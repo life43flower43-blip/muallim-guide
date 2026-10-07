@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, BookOpen, User, School, Dumbbell } from "lucide-react";
+import { Home, BookOpen, User, School, Dumbbell, Target } from "lucide-react";
 import { useApp, useAppHydrated } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import QuizSession from "./QuizSession";
@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 const TAB_TITLES: Record<string, string> = {
   home: "تربوي",
   concepts: "المكتبة",
+  mistakes: "أخطائي",
   quiz: "الاختبارات",
   account: "حسابي",
 };
@@ -28,12 +29,14 @@ function BottomNav({
   tab,
   onHome,
   onConcepts,
+  onMistakes,
   onTrain,
   onAccount,
 }: {
   tab: string;
   onHome: () => void;
   onConcepts: () => void;
+  onMistakes: () => void;
   onTrain: () => void;
   onAccount: () => void;
 }) {
@@ -41,6 +44,7 @@ function BottomNav({
   const items = [
     { id: "home", label: "الرئيسية", icon: Home, active: tab === "home", onClick: onHome },
     { id: "library", label: "المكتبة", icon: BookOpen, active: tab === "concepts", onClick: onConcepts },
+    { id: "mistakes", label: "أخطائي", icon: Target, active: tab === "mistakes", onClick: onMistakes },
     { id: "train", label: "تدريب", icon: Dumbbell, active: scenariosOpen, onClick: onTrain },
     { id: "account", label: "حسابي", icon: User, active: tab === "account", onClick: onAccount },
   ];
@@ -166,7 +170,7 @@ function ShellSkeleton() {
         <div className="h-20 animate-pulse rounded-3xl bg-muted" />
         <div className="h-28 animate-pulse rounded-3xl bg-muted" />
       </div>
-      <BottomNav tab="home" onHome={() => {}} onConcepts={() => {}} onTrain={() => {}} onAccount={() => {}} />
+      <BottomNav tab="home" onHome={() => {}} onConcepts={() => {}} onMistakes={() => {}} onTrain={() => {}} onAccount={() => {}} />
     </div>
   );
 }
@@ -177,10 +181,8 @@ export default function AppShell() {
   const { onboarded } = useApp();
   const quizConfig = useUi((s) => s.quizConfig);
   const scenariosOpen = useUi((s) => s.scenariosOpen);
-  const mistakesOpen = useUi((s) => s.mistakesOpen);
   const startScenarios = useUi((s) => s.startScenarios);
   const clearScenarios = useUi((s) => s.clearScenarios);
-  const clearMistakes = useUi((s) => s.clearMistakes);
   const [tab, setTab] = useState("home");
 
   // تسجيل عامل الخدمة للعمل دون اتصال
@@ -222,7 +224,8 @@ export default function AppShell() {
           >
             {tab === "home" && <HomeView onGoTab={setTab} />}
             {tab === "concepts" && <ConceptsView />}
-            {tab === "quiz" && <QuizHome />}
+            {tab === "mistakes" && <MistakesView />}
+            {tab === "quiz" && <QuizHome onGoTab={setTab} />}
             {tab === "account" && <AccountView />}
           </motion.div>
         </AnimatePresence>
@@ -233,19 +236,16 @@ export default function AppShell() {
         tab={tab}
         onHome={() => {
           clearScenarios(); // يغلق الطبقات المفتوحة ويعود للرئيسية
-          clearMistakes();
           setTab("home");
         }}
         onConcepts={() => setTab("concepts")}
+        onMistakes={() => setTab("mistakes")}
         onTrain={startScenarios}
         onAccount={() => setTab("account")}
       />
 
       {/* شاشة محاكاة الصف الدراسي */}
       <AnimatePresence>{scenariosOpen && <ScenariosView key="scenarios" />}</AnimatePresence>
-
-      {/* صفحة أخطائي التفصيلية */}
-      <AnimatePresence>{mistakesOpen && <MistakesView key="mistakes" />}</AnimatePresence>
     </div>
   );
 }
