@@ -36,6 +36,7 @@ import type { Concept, Course } from "@/lib/types";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { Button } from "@/components/ui/button";
+import SpeakButton from "./SpeakButton";
 
 // أيقونة كل محور — بديل أرقام المحاور (قرار المستخدم: بلا شكل كتاب مدرسي)
 const COURSE_ICONS: Record<string, React.ElementType> = {
@@ -222,9 +223,12 @@ function ConceptDetail({
       <div className="no-scrollbar flex-1 overflow-y-auto px-4 py-4">
         <div className="card-soft space-y-4 rounded-3xl border border-border bg-white p-5">
           <div>
-            <p className="mb-1 flex items-center gap-2 text-sm font-black text-primary">
-              <BookOpen className="h-4 w-4" /> الشرح
-            </p>
+            <div className="mb-1 flex items-center justify-between gap-2">
+              <p className="flex items-center gap-2 text-sm font-black text-primary">
+                <BookOpen className="h-4 w-4" /> الشرح
+              </p>
+              <SpeakButton text={`${c.title}. ${c.explanation}`} label="استمع للشرح" />
+            </div>
             <p className="text-sm leading-8 text-foreground">{c.explanation}</p>
           </div>
           <div className="space-y-2">
@@ -234,9 +238,10 @@ function ConceptDetail({
             {examples.map((ex, i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4"
+                className="flex items-start gap-2 rounded-2xl border border-emerald-100 bg-emerald-50 p-4"
               >
-                <p className="text-sm leading-7 text-emerald-950">{ex}</p>
+                <p className="flex-1 text-sm leading-7 text-emerald-950">{ex}</p>
+                <SpeakButton text={ex} label="استمع للمثال" />
               </div>
             ))}
           </div>

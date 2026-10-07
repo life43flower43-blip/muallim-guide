@@ -31,6 +31,7 @@ import { buildReviewSet } from "@/lib/srs";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { Button } from "@/components/ui/button";
+import SpeakButton from "./SpeakButton";
 
 interface WrongEntry {
   qid: string;
@@ -236,7 +237,13 @@ export default function MistakesView() {
                       </h3>
                     </div>
                   </div>
-                  <p className="mt-2 text-sm leading-7 text-gray-700">{concept.explanation}</p>
+                  <div className="mt-2 flex items-start gap-2">
+                    <p className="flex-1 text-sm leading-7 text-gray-700">{concept.explanation}</p>
+                    <SpeakButton
+                      text={`${concept.title}. ${concept.explanation}`}
+                      label="استمع للشرح"
+                    />
+                  </div>
 
                   {examples.length > 0 && (
                     <div className="mt-3 space-y-2">
@@ -244,12 +251,13 @@ export default function MistakesView() {
                         <Lightbulb className="h-3.5 w-3.5" /> أمثلة متنوعة من الميدان
                       </p>
                       {shown.map((ex, i) => (
-                        <p
+                        <div
                           key={i}
-                          className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3 text-xs leading-6 text-emerald-950"
+                          className="flex items-start gap-2 rounded-2xl border border-emerald-100 bg-emerald-50 p-3"
                         >
-                          {ex}
-                        </p>
+                          <p className="flex-1 text-xs leading-6 text-emerald-950">{ex}</p>
+                          <SpeakButton text={ex} label="استمع للمثال" />
+                        </div>
                       ))}
                       {examples.length > 3 && (
                         <button

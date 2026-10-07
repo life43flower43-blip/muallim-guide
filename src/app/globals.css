@@ -252,3 +252,157 @@ body {
 .pulse-ring {
   animation: pulse-soft 1s ease-in-out infinite;
 }
+
+/* ============ الوضع الليلي — ميزة من تقرير المنافسين ============ */
+/* تفعيله بصف .dark على الجذر من مفتاح «حسابي»، وتغير متغيرات الثيم كلها */
+
+.dark {
+  --background: #0e1613;
+  --foreground: #e3e9e5;
+  --card: #16221c;
+  --card-foreground: #e3e9e5;
+  --popover: #16221c;
+  --popover-foreground: #e3e9e5;
+  --primary: #6fcf9f;
+  --primary-foreground: #0b2018;
+  --secondary: #20302a;
+  --secondary-foreground: #cfe6d8;
+  --muted: #1c2923;
+  --muted-foreground: #9aada2;
+  --accent: #1d3227;
+  --accent-foreground: #bee7ce;
+  --border: #26352d;
+  --input: #2c3c33;
+  --ring: #52b788;
+}
+
+/* إعادة خريطة الأصناف الثابتة الشائعة داخل الواجهة — الطبقة الداكنة فقط */
+.dark .bg-white {
+  background-color: var(--card);
+}
+.dark .bg-white\/90 {
+  background-color: rgba(22, 34, 28, 0.92);
+}
+.dark .text-gray-900 {
+  color: var(--foreground);
+}
+.dark .text-gray-700 {
+  color: #c6d3cc;
+}
+.dark .text-gray-600 {
+  color: #a9bbb1;
+}
+.dark .text-gray-100 {
+  color: #d9e4dd;
+}
+
+/* صناديق التوجيه والأمثلة الملونة — نفس الدلالة بإضاءة منخفضة */
+.dark .bg-emerald-50 {
+  background-color: rgba(16, 185, 129, 0.1);
+}
+.dark .bg-emerald-100 {
+  background-color: rgba(16, 185, 129, 0.16);
+}
+.dark .border-emerald-100 {
+  border-color: rgba(16, 185, 129, 0.2);
+}
+.dark .border-emerald-200 {
+  border-color: rgba(16, 185, 129, 0.28);
+}
+.dark .border-emerald-500 {
+  border-color: rgba(16, 185, 129, 0.55);
+}
+.dark .text-emerald-950 {
+  color: #d3f5e4;
+}
+.dark .text-emerald-900 {
+  color: #bcebd3;
+}
+.dark .text-emerald-800 {
+  color: #a5e3c4;
+}
+.dark .text-emerald-700 {
+  color: #8fddb6;
+}
+.dark .text-emerald-600 {
+  color: #6fcf9f;
+}
+
+.dark .bg-red-50 {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+.dark .bg-red-100 {
+  background-color: rgba(239, 68, 68, 0.16);
+}
+.dark .border-red-200 {
+  border-color: rgba(239, 68, 68, 0.28);
+}
+.dark .border-red-400 {
+  border-color: rgba(239, 68, 68, 0.5);
+}
+.dark .text-red-700 {
+  color: #fca5a5;
+}
+.dark .text-red-600 {
+  color: #f87171;
+}
+
+.dark .bg-amber-50 {
+  background-color: rgba(245, 158, 11, 0.1);
+}
+.dark .bg-amber-100 {
+  background-color: rgba(245, 158, 11, 0.16);
+}
+.dark .border-amber-200 {
+  border-color: rgba(245, 158, 11, 0.28);
+}
+.dark .border-amber-300 {
+  border-color: rgba(245, 158, 11, 0.4);
+}
+.dark .text-amber-950 {
+  color: #fde9b8;
+}
+.dark .text-amber-900 {
+  color: #fbdda0;
+}
+.dark .text-amber-800 {
+  color: #fad28a;
+}
+.dark .text-amber-700 {
+  color: #f8c15c;
+}
+
+.dark .bg-sky-50 {
+  background-color: rgba(14, 165, 233, 0.1);
+}
+.dark .border-sky-100 {
+  border-color: rgba(14, 165, 233, 0.2);
+}
+.dark .border-sky-200 {
+  border-color: rgba(14, 165, 233, 0.28);
+}
+.dark .text-sky-950 {
+  color: #cfebf7;
+}
+.dark .text-sky-900 {
+  color: #b4e2f4;
+}
+.dark .text-sky-800 {
+  color: #9dd8f0;
+}
+.dark .text-sky-700 {
+  color: #86cdeb;
+}
+
+/* ظل البطاقات أهدأ في الليل */
+.dark .card-soft {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.25),
+    0 12px 32px -16px rgba(0, 0, 0, 0.45);
+}
+
+/* الخلفية المحيطة على الشاشات الكبيرة */
+.dark .ambient-bg {
+  background-color: #0b110e;
+  background-image: radial-gradient(rgba(111, 207, 159, 0.06) 1px, transparent 1px);
+}

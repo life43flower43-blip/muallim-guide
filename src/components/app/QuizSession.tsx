@@ -19,6 +19,7 @@ import {
 import { questionById, conceptById, examplesOf, OPTION_LETTERS } from "@/lib/qbank";
 import { useApp } from "@/lib/store";
 import { useUi, type QuizConfig } from "@/lib/ui-store";
+import { saveSnapshot, loadSnapshot, clearSnapshot, RESUME_FLAG } from "@/lib/session-snapshot";
 import { buildSocraticSteps, type SocraticStep } from "@/lib/socratic";
 import { ad } from "@/lib/arabic";
 import { toast } from "@/hooks/use-toast";
@@ -228,7 +229,23 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
   const reportedQuestions = useApp((s) => s.reportedQuestions);
   const reportQuestion = useApp((s) => s.reportQuestion);
 
-  const [idx, setIdx] = useState(0);
+  // استئناف جلسة مقطوعة — يُفعّل فقط عند الضغط على «أكمل جلستك» في مركز الاختبارات
+  const resumed = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      if (sessionStorage.getItem(RESUME_FLAG) !== "1") return null;
+      sessionStorage.removeItem(RESUME_FLAG);
+    } catch {
+      return null;
+    }
+    const snap = loadSnapshot();
+    if (!snap) return null;
+    if (snap.config.label !== config.label || snap.config.qids.length !== config.qids.length)
+      return null;
+    return snap;
+  }, [config]);
+
+  const [idx, setIdx] = useState(resumed?.idx ?? 0);
   const [selected, setSelected] = useState<string | null>(null);
   const [graded, setGraded] = useState<null | boolean>(null);
   const [socratic, setSocratic] = useState(false);
@@ -236,8 +253,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
   const [finished, setFinished] = useState(false);
   const [recorded, setRecorded] = useState(false);
   const [wrongShake, setWrongShake] = useState(false);
-  const [sessionXp, setSessionXp] = useState(0);
-  const [review, setReview] = useState<{ qid: string; ok: boolean }[]>([]);
+  const [sessionXp, setSessionXp] = useState(resumed?.sessionXp ?? 0);
+  const [review, setReview] = useState<{ qid: string; ok: boolean }[]>(resumed?.review ?? []);
   const startedAt = useRef(Date.now());
 
   const questions = useMemo(
@@ -262,8 +279,15 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
         xp: sessionXp,
         durationSec,
       });
+      clearSnapshot(); // انتهت الجلسة — لا لقطة للاستئناف
     }
   }, [finished, recorded, review, sessionXp, config, questions.length, finishSession]);
+
+  // حفظ لقطة الجلسة بعد كل سؤال — تُستأنف من مركز الاختبارات عند العودة
+  useEffect(() => {
+    if (finished || questions.length === 0) return;
+    saveSnapshot({ config, idx, review, sessionXp });
+  }, [finished, config, idx, review, sessionXp, questions.length]);
 
   if (questions.length === 0) {
     return (
@@ -322,6 +346,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
 
   const exit = () => {
     if (finished || review.length === 0) {
+      clearSnapshot(); // خروج صريح بلا تقدم ذي به — لا استئناف
       clearQuiz();
     } else {
       setExiting(true);
@@ -629,7 +654,10 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
             <AlertDialogCancel className="rounded-full">متابعة الجلسة</AlertDialogCancel>
             <AlertDialogAction
               className="rounded-full bg-red-500 hover:bg-red-600"
-              onClick={clearQuiz}
+              onClick={() => {
+                clearSnapshot();
+                clearQuiz();
+              }}
             >
               خروج
             </AlertDialogAction>

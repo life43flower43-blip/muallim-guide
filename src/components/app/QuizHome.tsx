@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Brain,
@@ -12,11 +12,14 @@ import {
   BookOpenCheck,
   AlertTriangle,
   Target,
+  Play,
+  X,
 } from "lucide-react";
 import { COURSES, COURSE_SHORT, questionsOfCourse, QUESTIONS, conceptById, shuffle } from "@/lib/qbank";
 import { buildReviewSet, buildRedoSet, orderUnseenFirst } from "@/lib/srs";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
+import { loadSnapshot, clearSnapshot, RESUME_FLAG, type SessionSnapshot } from "@/lib/session-snapshot";
 
 function ModeCard({
   icon: Icon,
@@ -71,6 +74,21 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
   const attempts = useApp((s) => s.attempts);
   const [expanded, setExpanded] = useState<string | null>(null);
 
+  // استئناف الجلسة المقطوعة — تظهر فقط إن وُجدت لقطة صالحة
+  const [snap, setSnap] = useState<SessionSnapshot | null>(null);
+  useEffect(() => {
+    // قراءة اللقطة بعد الإطار الأول — تفادي التحديث المتزامد داخل الأثر وعدم تطابق الترطيب
+    const id = requestAnimationFrame(() => setSnap(loadSnapshot()));
+    return () => cancelAnimationFrame(id);
+  }, []);
+  const resume = () => {
+    if (!snap) return;
+    try {
+      sessionStorage.setItem(RESUME_FLAG, "1");
+    } catch {}
+    startQuiz(snap.config);
+  };
+
   const reviewSet = useMemo(() => buildReviewSet(attempts), [attempts]);
   const redoSet = useMemo(() => buildRedoSet(attempts), [attempts]);
   const seenCount = Object.keys(attempts).length;
@@ -90,6 +108,31 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
           </div>
         </div>
       </div>
+
+      {/* بطاقة استئناف الجلسة المقطوعة — تظهر فقط عند وجود جلسة لم تكتمل */}
+      {snap && (
+        <div className="card-soft flex items-center gap-3 rounded-3xl border border-amber-200 bg-amber-50 p-4">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-amber-400 text-amber-950">
+            <Play className="h-6 w-6" fill="currentColor" />
+          </span>
+          <button onClick={resume} className="min-w-0 flex-1 text-right">
+            <span className="block text-sm font-black text-amber-900">أكمل جلستك السابقة</span>
+            <span className="mt-0.5 block truncate text-xs font-bold text-amber-800/80">
+              {snap.config.label}
+            </span>
+          </button>
+          <button
+            onClick={() => {
+              clearSnapshot();
+              setSnap(null);
+            }}
+            aria-label="تجاهل الاستئناف"
+            className="rounded-full p-2 text-amber-700 transition-colors hover:bg-amber-100"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
 
       <ModeCard
         icon={Brain}

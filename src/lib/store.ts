@@ -24,6 +24,7 @@ interface AppState {
   reportedQuestions: string[]; // معرفات الأسئلة التي أبلغ عنها المستخدم (نقد البند 11)
   studentExamples: Record<string, StudentExample[]>; // أمثلة مجتمع الطلاب لكل مفهوم
   onboarded: boolean;
+  dark: boolean; // الوضع الليلي — تفضيل عرض محفوظ مع بقية البيانات
 
   setName: (n: string) => void;
   setOnboarded: () => void;
@@ -34,6 +35,7 @@ interface AppState {
   reportQuestion: (qid: string) => void;
   addStudentExample: (cid: string, text: string, specialty: string) => void;
   removeStudentExample: (cid: string, id: string) => void;
+  setDark: (v: boolean) => void;
   resetAll: () => void;
 }
 
@@ -75,6 +77,7 @@ export const useApp = create<AppState>()(
       reportedQuestions: [],
       studentExamples: {},
       onboarded: false,
+      dark: false,
 
       setName: (n) => set({ name: n }),
       setOnboarded: () => set({ onboarded: true }),
@@ -143,6 +146,9 @@ export const useApp = create<AppState>()(
             [cid]: (st.studentExamples[cid] ?? []).filter((e) => e.id !== id),
           },
         })),
+
+      // الوضع الليلي — لا يُصفّر مع التقدم (تفضيل عرض لا بيانات تدريب)
+      setDark: (v) => set({ dark: v }),
 
       resetAll: () =>
         set({

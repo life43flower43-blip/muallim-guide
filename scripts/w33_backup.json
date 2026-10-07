@@ -1,0 +1,19 @@
+{
+ "app": "turbawy",
+ "version": 1,
+ "exportedAt": "2026-10-07T09:06:45.840Z",
+ "data": {
+  "name": "سارة",
+  "xp": 0,
+  "weeklyXp": 0,
+  "weekStart": "2026-10-05",
+  "attempts": {},
+  "conceptReads": {},
+  "sessions": [],
+  "scenarioChoices": {},
+  "reportedQuestions": [],
+  "studentExamples": {},
+  "onboarded": true,
+  "dark": false
+ }
+}

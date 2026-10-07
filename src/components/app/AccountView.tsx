@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   User,
   Trophy,
@@ -17,11 +17,15 @@ import {
   History,
   MessageSquare,
   MessagesSquare,
+  Moon,
+  Download,
+  Upload,
 } from "lucide-react";
 import { conceptById, questionById } from "@/lib/qbank";
 import { ACHIEVEMENTS, useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { buildRedoSet } from "@/lib/srs";
+import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -50,10 +54,78 @@ const ACH_ICONS: Record<string, React.ElementType> = {
 // ---------- صفحة حسابي: الملف الشخصي + تثبيت الفهم + السجل — بلا أرقام ولا إحصاءات (قرار المستخدم) ----------
 export default function AccountView() {
   const { name, attempts, sessions, conceptReads, scenarioChoices, setName } = useApp();
+  const dark = useApp((s) => s.dark);
+  const setDark = useApp((s) => s.setDark);
   const startQuiz = useUi((s) => s.startQuiz);
   const resetAll = useApp((s) => s.resetAll);
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(name);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  // ---- نسخ احتياطي واستعادة (ميزة تقرير المنافسين) — ينتقل بها التقدم بين الأجهزة ----
+  const exportBackup = () => {
+    try {
+      const s = useApp.getState();
+      const payload = {
+        app: "turbawy",
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        data: {
+          name: s.name,
+          xp: s.xp,
+          weeklyXp: s.weeklyXp,
+          weekStart: s.weekStart,
+          attempts: s.attempts,
+          conceptReads: s.conceptReads,
+          sessions: s.sessions,
+          scenarioChoices: s.scenarioChoices,
+          reportedQuestions: s.reportedQuestions,
+          studentExamples: s.studentExamples,
+          onboarded: s.onboarded,
+          dark: s.dark,
+        },
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 1)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "turbawy-backup.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      toast({ title: "حُفظت نسخة تقدمك في ملفات جهازك" });
+    } catch {
+      toast({ title: "تعذّر إنشاء النسخة — أعد المحاولة" });
+    }
+  };
+
+  const importBackup = (file: File) => {
+    file
+      .text()
+      .then((t) => {
+        const p = JSON.parse(t);
+        const d = p?.data;
+        if (p?.app !== "turbawy" || !d || typeof d !== "object") throw new Error("bad");
+        const rec = (v: unknown, fb: unknown) => (v && typeof v === "object" ? v : fb);
+        useApp.setState({
+          name: typeof d.name === "string" ? d.name : "",
+          xp: Number(d.xp) || 0,
+          weeklyXp: Number(d.weeklyXp) || 0,
+          weekStart: typeof d.weekStart === "string" ? d.weekStart : "",
+          attempts: rec(d.attempts, {}) as typeof attempts,
+          conceptReads: rec(d.conceptReads, {}) as typeof conceptReads,
+          sessions: Array.isArray(d.sessions) ? d.sessions : [],
+          scenarioChoices: rec(d.scenarioChoices, {}) as typeof scenarioChoices,
+          reportedQuestions: Array.isArray(d.reportedQuestions) ? d.reportedQuestions : [],
+          studentExamples: rec(d.studentExamples, {}) as NonNullable<ReturnType<typeof useApp.getState>["studentExamples"]>,
+          onboarded: !!d.onboarded,
+          dark: !!d.dark,
+        });
+        toast({ title: "تمت استعادة تقدمك بنجاح" });
+      })
+      .catch(() => {
+        toast({ title: "الملف غير صالح — تأكد أنه نسخة احتياطية من هذا التطبيق" });
+      });
+  };
 
   const redoSet = useMemo(() => buildRedoSet(attempts), [attempts]);
 
@@ -221,6 +293,56 @@ export default function AccountView() {
             كل تقدمك (إجاباتك، مفاهيمك، جدول المراجعة) محفوظ على هاتفك فقط — يعمل التطبيق حتى دون إنترنت بعد أول فتح، والتطبيق مجاني بالكامل.
           </p>
         </div>
+
+        {/* الوضع الليلي — مفتاح مباشر */}
+        <button
+          onClick={() => setDark(!dark)}
+          aria-pressed={dark}
+          className="mt-3 flex w-full items-center justify-between rounded-2xl border border-border bg-muted/40 px-4 py-3"
+        >
+          <span className="flex items-center gap-2 text-sm font-black text-foreground">
+            <Moon className={`h-4 w-4 ${dark ? "text-amber-300" : "text-primary"}`} />
+            الوضع الليلي
+          </span>
+          <span
+            className={`relative h-6 w-11 rounded-full transition-colors ${
+              dark ? "bg-primary" : "bg-border"
+            }`}
+          >
+            <span
+              className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${
+                dark ? "right-0.5" : "right-[22px]"
+              }`}
+            />
+          </span>
+        </button>
+
+        {/* نسخ احتياطي واستعادة التقدم — للانتقال بين الأجهزة بلا فقدان */}
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          <button
+            onClick={exportBackup}
+            className="flex items-center justify-center gap-2 rounded-2xl bg-secondary py-3 text-xs font-black text-secondary-foreground"
+          >
+            <Download className="h-4 w-4" /> نسخ احتياطي
+          </button>
+          <button
+            onClick={() => fileRef.current?.click()}
+            className="flex items-center justify-center gap-2 rounded-2xl bg-secondary py-3 text-xs font-black text-secondary-foreground"
+          >
+            <Upload className="h-4 w-4" /> استعادة
+          </button>
+        </div>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="application/json,.json"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) importBackup(f);
+            e.target.value = "";
+          }}
+        />
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button variant="outline" className="mt-3 w-full rounded-2xl border-red-200 text-red-600">

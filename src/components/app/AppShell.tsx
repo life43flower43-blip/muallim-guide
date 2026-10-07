@@ -178,12 +178,17 @@ function ShellSkeleton() {
 // ---------- الهيكل الرئيسي ----------
 export default function AppShell() {
   const hydrated = useAppHydrated();
-  const { onboarded } = useApp();
+  const { onboarded, dark } = useApp();
   const quizConfig = useUi((s) => s.quizConfig);
   const scenariosOpen = useUi((s) => s.scenariosOpen);
   const startScenarios = useUi((s) => s.startScenarios);
   const clearScenarios = useUi((s) => s.clearScenarios);
   const [tab, setTab] = useState("home");
+
+  // الوضع الليلي — يُطبق على الجذر كي تغطي متغيرات الثيم كل الواجهة
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+  }, [dark]);
 
   // تسجيل عامل الخدمة للعمل دون اتصال
   useEffect(() => {
