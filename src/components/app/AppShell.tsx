@@ -32,6 +32,13 @@ function subscribeOnline(cb: () => void) {
   };
 }
 
+// اشتراك تفضيل النظام للوضع الليلي — لوضع «تلقائي»
+function subscribeScheme(cb: () => void) {
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
+
 // ---------- شريط التنقل السفلي الثابت (نقد البند 6) ----------
 // الرئيسية / المكتبة / تدريب / حسابي — أهداف لمس ≥44px مع safe-area،
 // والتمييز بالأيقونة واللون معًا.
@@ -188,7 +195,7 @@ function ShellSkeleton() {
 // ---------- الهيكل الرئيسي ----------
 export default function AppShell() {
   const hydrated = useAppHydrated();
-  const { onboarded, dark, fontScale } = useApp();
+  const { onboarded, darkMode, fontScale } = useApp();
   const quizConfig = useUi((s) => s.quizConfig);
   const scenariosOpen = useUi((s) => s.scenariosOpen);
   const startScenarios = useUi((s) => s.startScenarios);
@@ -202,6 +209,14 @@ export default function AppShell() {
     () => true
   );
   const offline = !isOnline;
+
+  // تفضيل النظام للوضع الليلي — يُتّبع في وضع «تلقائي»
+  const sysDark = useSyncExternalStore(
+    subscribeScheme,
+    () => window.matchMedia("(prefers-color-scheme: dark)").matches,
+    () => false
+  );
+  const dark = darkMode === "dark" || (darkMode === "auto" && sysDark);
 
   // الوضع الليلي — يُطبق على الجذر كي تغطي متغيرات الثيم كل الواجهة
   useEffect(() => {

@@ -18,6 +18,10 @@ import {
   MessageSquare,
   MessagesSquare,
   Moon,
+  Sun,
+  Monitor,
+  Share2,
+  Vibrate,
   Download,
   Upload,
   Type,
@@ -27,6 +31,7 @@ import { conceptById, questionById } from "@/lib/qbank";
 import { ACHIEVEMENTS, useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { buildRedoSet } from "@/lib/srs";
+import { shareText } from "@/lib/share";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -63,8 +68,10 @@ interface InstallPromptEvent extends Event {
 // ---------- صفحة حسابي: الملف الشخصي + تثبيت الفهم + السجل — بلا أرقام ولا إحصاءات (قرار المستخدم) ----------
 export default function AccountView() {
   const { name, attempts, sessions, conceptReads, scenarioChoices, setName } = useApp();
-  const dark = useApp((s) => s.dark);
-  const setDark = useApp((s) => s.setDark);
+  const darkMode = useApp((s) => s.darkMode);
+  const setDarkMode = useApp((s) => s.setDarkMode);
+  const haptics = useApp((s) => s.haptics);
+  const setHaptics = useApp((s) => s.setHaptics);
   const fontScale = useApp((s) => s.fontScale);
   const setFontScale = useApp((s) => s.setFontScale);
   const startQuiz = useUi((s) => s.startQuiz);
@@ -116,8 +123,9 @@ export default function AccountView() {
           reportedQuestions: s.reportedQuestions,
           studentExamples: s.studentExamples,
           onboarded: s.onboarded,
-          dark: s.dark,
+          darkMode: s.darkMode,
           fontScale: s.fontScale,
+          haptics: s.haptics,
         },
       };
       const blob = new Blob([JSON.stringify(payload, null, 1)], { type: "application/json" });
@@ -153,8 +161,18 @@ export default function AccountView() {
           reportedQuestions: Array.isArray(d.reportedQuestions) ? d.reportedQuestions : [],
           studentExamples: rec(d.studentExamples, {}) as NonNullable<ReturnType<typeof useApp.getState>["studentExamples"]>,
           onboarded: !!d.onboarded,
-          dark: !!d.dark,
-          fontScale: (d.fontScale === "large" || d.fontScale === "bigger" ? d.fontScale : "normal") as FontScale,
+          darkMode:
+            d.darkMode === "auto" || d.darkMode === "dark"
+              ? d.darkMode
+              : d.darkMode === "light"
+                ? "light"
+                : d.dark
+                  ? "dark"
+                  : "light",
+          fontScale: (d.fontScale === "large" || d.fontScale === "bigger"
+            ? d.fontScale
+            : "normal") as FontScale,
+          haptics: d.haptics !== false,
         });
         toast({ title: "تمت استعادة تقدمك بنجاح" });
       })
@@ -330,24 +348,52 @@ export default function AccountView() {
           </p>
         </div>
 
-        {/* الوضع الليلي — مفتاح مباشر */}
+        {/* وضع العرض — فاتح / يتبع النظام / ليلي */}
+        <div className="mt-3 rounded-2xl border border-border bg-muted/40 px-4 py-3">
+          <p className="mb-2 text-sm font-black text-foreground">وضع العرض</p>
+          <div className="grid grid-cols-3 gap-1.5" role="group" aria-label="وضع العرض">
+            {(
+              [
+                ["light", "فاتح", Sun],
+                ["auto", "تلقائي", Monitor],
+                ["dark", "ليلي", Moon],
+              ] as const
+            ).map(([v, lbl, Icon]) => (
+              <button
+                key={v}
+                onClick={() => setDarkMode(v)}
+                aria-pressed={darkMode === v}
+                className={`flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-2xl text-xs font-black transition-colors ${
+                  darkMode === v
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-white text-muted-foreground"
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+                {lbl}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* الاهتزاز عند الإجابة — مفتاح مباشر */}
         <button
-          onClick={() => setDark(!dark)}
-          aria-pressed={dark}
-          className="mt-3 flex w-full items-center justify-between rounded-2xl border border-border bg-muted/40 px-4 py-3"
+          onClick={() => setHaptics(!haptics)}
+          aria-pressed={haptics}
+          className="mt-2 flex w-full items-center justify-between rounded-2xl border border-border bg-muted/40 px-4 py-3"
         >
           <span className="flex items-center gap-2 text-sm font-black text-foreground">
-            <Moon className={`h-4 w-4 ${dark ? "text-amber-300" : "text-primary"}`} />
-            الوضع الليلي
+            <Vibrate className="h-4 w-4 text-primary" />
+            اهتزاز عند الإجابة
           </span>
           <span
             className={`relative h-6 w-11 rounded-full transition-colors ${
-              dark ? "bg-primary" : "bg-border"
+              haptics ? "bg-primary" : "bg-border"
             }`}
           >
             <span
               className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${
-                dark ? "right-0.5" : "right-[22px]"
+                haptics ? "right-0.5" : "right-[22px]"
               }`}
             />
           </span>
@@ -398,6 +444,21 @@ export default function AccountView() {
             أضف التطبيق إلى شاشتك الرئيسية
           </button>
         )}
+
+        {/* مشاركة التطبيق مع الزملاء */}
+        <button
+          onClick={async () => {
+            const r = await shareText(
+              "مساعد إعداد المعلم",
+              "تطبيق يرافق طالب الإعداد من مقاعده الدراسية إلى فصله الأول — مفاهيم، أسئلة مكثفة، ومحاكاة صفية، كلها تعمل حتى دون إنترنت. جرّبه وشاركه مع زملائك."
+            );
+            if (r === "copied") toast({ title: "نُسخ نص الدعوة — الصقه حيث تريد" });
+          }}
+          className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl border border-primary/30 bg-primary/10 py-3 text-xs font-black text-primary"
+        >
+          <Share2 className="h-4 w-4" />
+          شارك التطبيق مع زملائك
+        </button>
 
         {/* نسخ احتياطي واستعادة التقدم — للانتقال بين الأجهزة بلا فقدان */}
         <div className="mt-2 grid grid-cols-2 gap-2">

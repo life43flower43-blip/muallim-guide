@@ -20,6 +20,7 @@ import {
   Plus,
   Trash2,
   ChevronRight,
+  Share2,
 } from "lucide-react";
 import {
   COURSES,
@@ -35,6 +36,8 @@ import {
 import type { Concept, Course } from "@/lib/types";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
+import { shareText } from "@/lib/share";
+import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import SpeakButton from "./SpeakButton";
 
@@ -227,7 +230,28 @@ function ConceptDetail({
               <p className="flex items-center gap-2 text-sm font-black text-primary">
                 <BookOpen className="h-4 w-4" /> الشرح
               </p>
-              <SpeakButton text={`${c.title}. ${c.explanation}`} label="استمع للشرح" />
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={async () => {
+                    const exs = examples;
+                    const r = await shareText(
+                      c.title,
+                      `${c.explanation}${
+                        exs.length
+                          ? "\n\n" + exs.map((e) => `• ${e}`).join("\n\n")
+                          : ""
+                      }\n\n— من تطبيق مساعد إعداد المعلم`
+                    );
+                    if (r === "copied") toast({ title: "نُسخ المفهوم — الصقه حيث تريد" });
+                  }}
+                  aria-label="شارك المفهوم"
+                  title="شارك المفهوم"
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-100 text-sky-700 transition-colors hover:bg-sky-200 dark:bg-sky-500/20 dark:text-sky-200"
+                >
+                  <Share2 className="h-3.5 w-3.5" />
+                </button>
+                <SpeakButton text={`${c.title}. ${c.explanation}`} label="استمع للشرح" />
+              </div>
             </div>
             <p className="text-sm leading-8 text-foreground">{c.explanation}</p>
           </div>

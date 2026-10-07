@@ -24,8 +24,10 @@ interface AppState {
   reportedQuestions: string[]; // معرفات الأسئلة التي أبلغ عنها المستخدم (نقد البند 11)
   studentExamples: Record<string, StudentExample[]>; // أمثلة مجتمع الطلاب لكل مفهوم
   onboarded: boolean;
-  dark: boolean; // الوضع الليلي — تفضيل عرض محفوظ مع بقية البيانات
+  // وضع العرض — فاتح / يتبع النظام / ليلي (ترقية عن dark المنطقي القديم عبر migrate)
+  darkMode: "light" | "auto" | "dark";
   fontScale: "normal" | "large" | "bigger"; // حجم خط القراءة — تفضيل عرض كالوضع الليلي
+  haptics: boolean; // الاهتزاز اللطيف عند الإجابة — تفضيل عرض
 
   setName: (n: string) => void;
   setOnboarded: () => void;
@@ -36,8 +38,9 @@ interface AppState {
   reportQuestion: (qid: string) => void;
   addStudentExample: (cid: string, text: string, specialty: string) => void;
   removeStudentExample: (cid: string, id: string) => void;
-  setDark: (v: boolean) => void;
+  setDarkMode: (v: "light" | "auto" | "dark") => void;
   setFontScale: (v: "normal" | "large" | "bigger") => void;
+  setHaptics: (v: boolean) => void;
   resetAll: () => void;
 }
 
@@ -79,8 +82,9 @@ export const useApp = create<AppState>()(
       reportedQuestions: [],
       studentExamples: {},
       onboarded: false,
-      dark: false,
+      darkMode: "light",
       fontScale: "normal",
+      haptics: true,
 
       setName: (n) => set({ name: n }),
       setOnboarded: () => set({ onboarded: true }),
@@ -150,11 +154,10 @@ export const useApp = create<AppState>()(
           },
         })),
 
-      // الوضع الليلي — لا يُصفّر مع التقدم (تفضيل عرض لا بيانات تدريب)
-      setDark: (v) => set({ dark: v }),
-
-      // حجم الخط — كذلك تفضيل عرض لا يُمسّ عند تصفير التقدم
+      // وضع العرض وحجم الخط والاهتزاز — تفضيلات عرض لا تُمسّ عند تصفير التقدم
+      setDarkMode: (v) => set({ darkMode: v }),
       setFontScale: (v) => set({ fontScale: v }),
+      setHaptics: (v) => set({ haptics: v }),
 
       resetAll: () =>
         set({
@@ -173,6 +176,24 @@ export const useApp = create<AppState>()(
     }),
     {
       name: "turbawy-app-v1",
+      version: 1,
+      // ترقية الحالة القديمة: dark المنطقي يصبح darkMode ثلاثيًا، والاهتزاز يُفعّل افتراضيًا
+      migrate: (s, v) => {
+        const st = s as Record<string, unknown>;
+        if (v < 1) {
+          return {
+            ...st,
+            darkMode:
+              st.darkMode === "auto" || st.darkMode === "dark" || st.darkMode === "light"
+                ? st.darkMode
+                : st.dark
+                  ? "dark"
+                  : "light",
+            haptics: st.haptics === false ? false : true,
+          };
+        }
+        return s;
+      },
       storage: createJSONStorage(() => localStorage),
     }
   )

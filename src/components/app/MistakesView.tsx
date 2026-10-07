@@ -16,6 +16,7 @@ import {
   RotateCcw,
   PartyPopper,
   Zap,
+  Share2,
 } from "lucide-react";
 import {
   conceptById,
@@ -23,13 +24,17 @@ import {
   examplesOf,
   questionsOfConcept,
   QUESTIONS,
+  COURSES,
   COURSE_COLOR,
   COURSE_SHORT,
   shuffle,
 } from "@/lib/qbank";
+import type { Concept } from "@/lib/types";
 import { buildReviewSet } from "@/lib/srs";
+import { shareText } from "@/lib/share";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
+import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import SpeakButton from "./SpeakButton";
 
@@ -92,6 +97,8 @@ export default function MistakesView() {
   const attempts = useApp((s) => s.attempts);
 
   const [openExamples, setOpenExamples] = useState<Record<string, boolean>>({});
+  // تصفية حسب المحور — بلا أرقام، أسماء المحاور فقط
+  const [courseFilter, setCourseFilter] = useState<string | null>(null);
 
   const reviewSet = useMemo(() => buildReviewSet(attempts), [attempts]);
 
@@ -115,6 +122,35 @@ export default function MistakesView() {
     }
     return Array.from(map.entries());
   }, [wrongs]);
+
+  // المحاور الموجودة فعلاً بين الأخطاء — بترتيب المحاور الأصلي
+  const presentCourses = useMemo(() => {
+    const ids = new Set<string>();
+    for (const [cid] of groups) {
+      const c = conceptById(cid);
+      if (c) ids.add(c.courseId);
+    }
+    return COURSES.map((co) => co.id).filter((id) => ids.has(id));
+  }, [groups]);
+
+  // المجموعات بعد التصفية
+  const visibleGroups = useMemo(
+    () =>
+      courseFilter
+        ? groups.filter(([cid]) => conceptById(cid)?.courseId === courseFilter)
+        : groups,
+    [groups, courseFilter]
+  );
+
+  // مشاركة مفهوم كاملًا: الشرح + الأمثلة — عبر تطبيقات الجهاز أو نسخ للحافظة
+  const shareConcept = async (c: Concept) => {
+    const exs = examplesOf(c);
+    const text = `${c.explanation}${
+      exs.length ? "\n\n" + exs.map((e) => `• ${e}`).join("\n\n") : ""
+    }\n\n— من تطبيق مساعد إعداد المعلم`;
+    const r = await shareText(c.title, text);
+    if (r === "copied") toast({ title: "نُسخ المفهوم — الصقه حيث تريد" });
+  };
 
   const redoAll = () => {
     startQuiz({
@@ -208,7 +244,46 @@ export default function MistakesView() {
         </div>
       ) : (
         <div className="space-y-4">
-          {groups.map(([conceptId, entries]) => {
+          {/* تصفية حسب المحور — تظهر فقط حين يمتد الخطأ لأكثر من محور */}
+          {presentCourses.length > 1 && (
+            <div
+              className="no-scrollbar flex gap-2 overflow-x-auto pb-1"
+              role="group"
+              aria-label="تصفية حسب المحور"
+            >
+              <button
+                onClick={() => setCourseFilter(null)}
+                aria-pressed={courseFilter === null}
+                className={`shrink-0 rounded-full px-4 py-2 text-xs font-black transition-colors ${
+                  courseFilter === null
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-white text-muted-foreground"
+                }`}
+              >
+                الكل
+              </button>
+              {presentCourses.map((id) => {
+                const active = courseFilter === id;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => setCourseFilter(active ? null : id)}
+                    aria-pressed={active}
+                    className={`shrink-0 rounded-full px-4 py-2 text-xs font-black transition-colors ${
+                      active
+                        ? "text-white"
+                        : "border border-border bg-white text-muted-foreground"
+                    }`}
+                    style={active ? { background: COURSE_COLOR[id] ?? "#1B4332" } : undefined}
+                  >
+                    {COURSE_SHORT[id]}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {visibleGroups.map(([conceptId, entries]) => {
             const concept = conceptById(conceptId);
             if (!concept) return null;
             const color = COURSE_COLOR[concept.courseId] ?? "#1B4332";
@@ -239,10 +314,20 @@ export default function MistakesView() {
                   </div>
                   <div className="mt-2 flex items-start gap-2">
                     <p className="flex-1 text-sm leading-7 text-gray-700">{concept.explanation}</p>
-                    <SpeakButton
-                      text={`${concept.title}. ${concept.explanation}`}
-                      label="استمع للشرح"
-                    />
+                    <div className="flex shrink-0 flex-col items-center gap-1.5">
+                      <SpeakButton
+                        text={`${concept.title}. ${concept.explanation}`}
+                        label="استمع للشرح"
+                      />
+                      <button
+                        onClick={() => shareConcept(concept)}
+                        aria-label="شارك المفهوم"
+                        title="شارك المفهوم"
+                        className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-100 text-sky-700 transition-colors hover:bg-sky-200 dark:bg-sky-500/20 dark:text-sky-200"
+                      >
+                        <Share2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                   </div>
 
                   {examples.length > 0 && (

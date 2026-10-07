@@ -311,9 +311,10 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     if (!q || selected === null) return;
     const ok = selected === q.correct;
     setGraded(ok);
-    // اهتزاز لطيف يؤكد القرار لمسيًا — نجاح قصير واحد، خطأ نبضتان متقطعتان
+    // اهتزاز لطيف يؤكد القرار لمسيًا — نجاح قصير واحد، خطأ نبضتان متقطعتان (ويحترم مفتاح الإعدادات)
     try {
-      if ("vibrate" in navigator) navigator.vibrate(ok ? 35 : [60, 40, 60]);
+      if ("vibrate" in navigator && useApp.getState().haptics)
+        navigator.vibrate(ok ? 35 : [60, 40, 60]);
     } catch {}
     if (!ok) setWrongShake(true);
     setTimeout(() => setWrongShake(false), 450);
