@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ChevronDown,
   BookOpen,
   CheckCircle2,
   Circle,
@@ -23,7 +22,6 @@ import {
 import {
   COURSES,
   CONCEPTS,
-  chaptersOfCourse,
   conceptsOfCourse,
   questionsOfConcept,
   examplesOf,
@@ -172,7 +170,7 @@ export default function ConceptsView() {
   const [mode, setMode] = useState<"cards" | "list">(
     pendingConceptId || pendingCourseId ? "list" : "cards"
   );
-  const [openCourse, setOpenCourse] = useState<string | null>(pendingCourseId ?? "M1");
+  const [filterCourse, setFilterCourse] = useState<string | null>(pendingCourseId);
   const [detailId, setDetailId] = useState<string | null>(pendingConceptId);
   const [query, setQuery] = useState("");
 
@@ -190,6 +188,12 @@ export default function ConceptsView() {
   }, [query]);
 
   const totalConcepts = CONCEPTS.length;
+
+  // مفاهيم القائمة حسب الفلتر المختار — بلا تجزئة فصول
+  const listConcepts = useMemo(
+    () => (filterCourse ? conceptsOfCourse(filterCourse) : CONCEPTS),
+    [filterCourse]
+  );
 
   return (
     <div className="space-y-3 pb-6">
@@ -272,79 +276,77 @@ export default function ConceptsView() {
         </div>
       </div>
 
-      {COURSES.map((course) => {
-        const open = openCourse === course.id;
-        const concepts = conceptsOfCourse(course.id);
-        const color = COURSE_COLOR[course.id] ?? "#1B4332";
-        return (
-          <div key={course.id} className="card-soft overflow-hidden rounded-3xl border border-border bg-white">
+      {/* رقائق فلترة حسب المحور — بلا فصول كتاب ولا أكورديون */}
+      <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
+        <button
+          onClick={() => setFilterCourse(null)}
+          className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-black transition-colors ${
+            filterCourse === null
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-border bg-white text-gray-700"
+          }`}
+        >
+          <Library className="h-3.5 w-3.5" /> الكل
+        </button>
+        {COURSES.map((course) => {
+          const active = filterCourse === course.id;
+          const color = COURSE_COLOR[course.id] ?? "#1B4332";
+          return (
             <button
-              className="flex w-full items-center gap-3 p-4 text-right"
-              onClick={() => setOpenCourse((o) => (o === course.id ? null : course.id))}
+              key={course.id}
+              onClick={() => setFilterCourse(course.id)}
+              className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-black transition-colors ${
+                active ? "text-white" : "border-border bg-white text-gray-700"
+              }`}
+              style={active ? { background: color, borderColor: color } : undefined}
+            >
+              <CourseIcon id={course.id} className="h-3.5 w-3.5" />
+              {COURSE_SHORT[course.id]}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* شبكة بطاقات المفاهيم — كل مفهوم بطاقة مستقلة، بلا ترتيب فصول */}
+      <div className="grid grid-cols-2 gap-2">
+        {listConcepts.map((c) => {
+          const isRead = !!conceptReads[c.id];
+          const color = COURSE_COLOR[c.courseId] ?? "#1B4332";
+          return (
+            <button
+              key={c.id}
+              onClick={() => setDetailId(c.id)}
+              className="card-soft relative flex min-h-[104px] flex-col justify-between rounded-2xl border border-border bg-white p-3 text-right transition-transform active:scale-[0.98]"
             >
               <span
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-white"
+                className="flex h-8 w-8 items-center justify-center rounded-xl text-white"
                 style={{ background: color }}
               >
-                <CourseIcon id={course.id} className="h-5 w-5" />
+                <CourseIcon id={c.courseId} className="h-4 w-4" />
               </span>
-              <span className="flex-1">
-                <span className="block text-sm font-black leading-6 text-foreground">{course.name}</span>
-                <span className="mt-0.5 block text-[11px] text-muted-foreground">
-                  {COURSE_SHORT[course.id]}
-                </span>
+              <span className="mt-2 line-clamp-2 text-[13px] font-black leading-5 text-gray-900">
+                {c.title}
               </span>
-              <ChevronDown
-                className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
-              />
+              <span className="mt-1 flex items-center gap-1 text-[9px] font-bold text-muted-foreground">
+                {isRead ? (
+                  <>
+                    <CheckCircle2 className="h-3 w-3 text-emerald-600" /> تمت القراءة
+                  </>
+                ) : (
+                  <>
+                    <Circle className="h-3 w-3 text-border" /> {COURSE_SHORT[c.courseId]}
+                  </>
+                )}
+              </span>
             </button>
-
-            <AnimatePresence initial={false}>
-              {open && (
-                <motion.div
-                  initial={{ height: 0 }}
-                  animate={{ height: "auto" }}
-                  exit={{ height: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="space-y-2 border-t border-border px-4 py-3">
-                    {chaptersOfCourse(course.id).map((chapter) => {
-                      const chapterConcepts = concepts.filter((c) => c.chapter === chapter);
-                      return (
-                        <div key={chapter}>
-                          <p className="mb-1.5 mt-2 flex items-center gap-1.5 text-[11px] font-extrabold text-muted-foreground">
-                            <span className="h-1.5 w-1.5 rounded-full" style={{ background: color }} />
-                            {chapter}
-                          </p>
-                          {chapterConcepts.map((c) => {
-                            const isRead = !!conceptReads[c.id];
-                            return (
-                              <button
-                                key={c.id}
-                                onClick={() => setDetailId(c.id)}
-                                className="mb-1.5 flex w-full items-center gap-3 rounded-2xl border border-border bg-background px-3 py-3 text-right transition-colors active:bg-accent"
-                              >
-                                {isRead ? (
-                                  <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" />
-                                ) : (
-                                  <Circle className="h-5 w-5 shrink-0 text-border" />
-                                )}
-                                <span className="flex-1">
-                                  <span className="block text-sm font-bold leading-6">{c.title}</span>
-                                </span>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
+      {listConcepts.length === 0 && (
+        <p className="py-6 text-center text-xs font-bold text-muted-foreground">
+          لا مفاهيم في هذا المحور بعد
+        </p>
+      )}
       </div>
       )}
 

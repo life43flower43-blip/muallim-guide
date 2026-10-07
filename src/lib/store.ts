@@ -27,7 +27,7 @@ interface AppState {
   setName: (n: string) => void;
   setOnboarded: () => void;
   readConcept: (cid: string) => void;
-  recordAttempt: (qid: string, correct: boolean) => void;
+  recordAttempt: (qid: string, correct: boolean, answer?: string) => void;
   recordScenarioChoice: (sid: string, opt: number) => void;
   finishSession: (s: Omit<SessionRecord, "id" | "ts">) => void;
   reportQuestion: (qid: string) => void;
@@ -78,11 +78,11 @@ export const useApp = create<AppState>()(
       readConcept: (cid) =>
         set((st) => ({ conceptReads: { ...st.conceptReads, [cid]: Date.now() } })),
 
-      recordAttempt: (qid, correct) =>
+      recordAttempt: (qid, correct, answer) =>
         set((st) => {
           const prev = st.attempts[qid];
           const box = nextBox(prev?.box ?? 0, correct);
-          const at: Attempt = { qid, correct, ts: Date.now(), box };
+          const at: Attempt = { qid, correct, answer, ts: Date.now(), box };
           return { attempts: { ...st.attempts, [qid]: at } };
         }),
 

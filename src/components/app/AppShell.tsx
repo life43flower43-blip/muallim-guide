@@ -11,6 +11,7 @@ import ConceptsView from "./ConceptsView";
 import QuizHome from "./QuizHome";
 import AccountView from "./AccountView";
 import ScenariosView from "./ScenariosView";
+import MistakesView from "./MistakesView";
 import { Button } from "@/components/ui/button";
 
 const TAB_TITLES: Record<string, string> = {
@@ -176,8 +177,10 @@ export default function AppShell() {
   const { onboarded } = useApp();
   const quizConfig = useUi((s) => s.quizConfig);
   const scenariosOpen = useUi((s) => s.scenariosOpen);
+  const mistakesOpen = useUi((s) => s.mistakesOpen);
   const startScenarios = useUi((s) => s.startScenarios);
   const clearScenarios = useUi((s) => s.clearScenarios);
+  const clearMistakes = useUi((s) => s.clearMistakes);
   const [tab, setTab] = useState("home");
 
   // تسجيل عامل الخدمة للعمل دون اتصال
@@ -230,6 +233,7 @@ export default function AppShell() {
         tab={tab}
         onHome={() => {
           clearScenarios(); // يغلق الطبقات المفتوحة ويعود للرئيسية
+          clearMistakes();
           setTab("home");
         }}
         onConcepts={() => setTab("concepts")}
@@ -239,6 +243,9 @@ export default function AppShell() {
 
       {/* شاشة محاكاة الصف الدراسي */}
       <AnimatePresence>{scenariosOpen && <ScenariosView key="scenarios" />}</AnimatePresence>
+
+      {/* صفحة أخطائي التفصيلية */}
+      <AnimatePresence>{mistakesOpen && <MistakesView key="mistakes" />}</AnimatePresence>
     </div>
   );
 }

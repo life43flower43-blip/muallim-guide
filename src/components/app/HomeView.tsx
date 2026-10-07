@@ -16,18 +16,18 @@ import {
   BadgeCheck,
   Brain,
   Play,
-  Lock,
   ChevronDown,
   ChevronUp,
+  CircleCheck,
 } from "lucide-react";
 import {
   CONCEPTS,
   QUESTIONS,
-  questionsOfCourse,
-  shuffle,
   conceptById,
+  questionById,
+  shuffle,
 } from "@/lib/qbank";
-import { buildReviewSet, buildRedoSet, orderUnseenFirst } from "@/lib/srs";
+import { buildReviewSet, orderUnseenFirst } from "@/lib/srs";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 
@@ -89,14 +89,13 @@ function DailyTip({ onOpen }: { onOpen: (id: string) => void }) {
   );
 }
 
-// ---------- رحلة المعلم: العوالم الستة كرقائق ----------
+// ---------- رحلة المعلم: العوالم الستة ----------
 interface World {
   id: string;
   name: string;
   icon: React.ElementType;
   color: string;
   hint: string; // وصف وظيفي قصير — لا أرقام (قرار المستخدم: أرقام بلا علاقة تُحذف)
-  planLocked?: boolean; // منشئ خطط الدروس: قيد البناء (بند 9)
   action: () => void;
 }
 
@@ -107,6 +106,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const openConcept = useUi((s) => s.openConcept);
   const openCourseTab = useUi((s) => s.openCourseTab);
   const startScenarios = useUi((s) => s.startScenarios);
+  const openMistakes = useUi((s) => s.openMistakes);
 
   const handleOpenConcept = (id: string) => {
     openConcept(id);
@@ -114,7 +114,6 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   };
 
   const reviewSet = useMemo(() => buildReviewSet(attempts), [attempts]);
-  const redoSet = useMemo(() => buildRedoSet(attempts), [attempts]);
   const answered = Object.keys(attempts).length;
   const started = answered > 0;
 
@@ -140,7 +139,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
 
   const worlds: World[] = [
     {
-      id: "university",
+      id: "base",
       name: "الأساس",
       icon: Sprout,
       color: "#2D6A4F",
@@ -167,13 +166,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       icon: Presentation,
       color: "#0E7490",
       hint: "تدريب على طرق التدريس",
-      planLocked: true,
-      action: () =>
-        startQuiz({
-          mode: "training",
-          label: "تدريب أُدرّس: استراتيجيات وطرق التدريس",
-          qids: shuffle(questionsOfCourse("M5")).slice(0, 15).map((q) => q.id),
-        }),
+      action: () => onGoTab("quiz"),
     },
     {
       id: "face",
@@ -213,21 +206,30 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
     return "مساء الخير";
   })();
 
-  // جلسة اليوم: 5 أسئلة — الجديد أولاً ثم ما وُاجه سابقاً
-  const startDailySession = () => {
+  // ---- الاختبار المكثف: جميع أسئلة البنك — الجديد أولاً ثم ما وُاجه سابقاً ----
+  // طلب المستخدم الصريح: الجلسة تشمل جميع الأسئلة المكثفة، لا خمسة.
+  const startIntensiveSession = () => {
     startQuiz({
-      mode: "quick",
-      label: "جلسة اليوم — ١٠ دقائق",
+      mode: "intensive",
+      label: "الاختبار المكثف — جميع الأسئلة",
       qids: orderUnseenFirst(
         QUESTIONS.map((q) => q.id),
         attempts
-      ).slice(0, 5),
+      ),
     });
   };
 
+  // آخر مفهوم تفاعل معه المستخدم — لسطر «أكمل من حيث توقفت»
+  const lastConceptTitle = useMemo(() => {
+    const last = Object.values(attempts).sort((a, b) => b.ts - a.ts)[0];
+    if (!last) return undefined;
+    const q = questionById(last.qid);
+    return q ? conceptById(q.conceptId)?.title : undefined;
+  }, [attempts]);
+
   return (
     <div className="space-y-4 px-4 pb-6">
-      {/* ١. الترويسة المدمجة داخل الصفحة — ألوان صريحة عالية التباين (بند 1) */}
+      {/* ١. الترويسة المدمجة داخل الصفحة — ألوان صريحة عالية التباين */}
       <header className="pt-1">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -242,40 +244,58 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
         </div>
       </header>
 
-      {/* ٢. بطاقة جلسة اليوم — داكنة عالية التباين (بند 7) */}
+      {/* ٢. بطاقة الاختبار المكثف — جميع الأسئلة، وعند كل خطأ نرشدك إلى مفهومه */}
       <motion.section
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         className="rounded-3xl bg-gradient-to-l from-[#0B2018] to-[#1B4332] p-5 shadow-lg"
-        aria-label="جلسة اليوم"
+        aria-label="الاختبار المكثف"
       >
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <h3 className="text-lg font-black text-white">ابدأ جلسة اليوم</h3>
-            <p className="mt-1 text-sm font-bold text-gray-100">١٠ دقائق: ٥ أسئلة + مفهوم + موقف</p>
+            <p className="mt-1 text-sm font-bold leading-6 text-gray-100">
+              اختبار مكثف يشمل جميع الأسئلة — وعند كل خطأ نعرفك بمفهومه وأمثلته
+            </p>
           </div>
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15">
             <Play className="h-6 w-6 text-white" />
           </span>
         </div>
 
+        <div className="mt-3 flex items-center gap-3 rounded-2xl bg-white/10 p-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/15">
+            <Target className="h-4.5 w-4.5 text-white" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-[11px] font-bold text-gray-200">
+              {started ? "أكمل من حيث توقفت" : "ابدأ من الأول"}
+            </p>
+            <p className="truncate text-sm font-black text-white">
+              {started
+                ? (lastConceptTitle ?? "متابعة الأسئلة")
+                : "سنجيب عن الأسئلة كلها واحدة تلو الأخرى"}
+            </p>
+          </div>
+        </div>
+
         <motion.button
           whileTap={{ scale: 0.98 }}
-          onClick={startDailySession}
-          className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-amber-400 py-3.5 text-base font-black text-amber-950 shadow-md active:bg-amber-300"
+          onClick={startIntensiveSession}
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-amber-400 py-3.5 text-base font-black text-amber-950 shadow-md active:bg-amber-300"
         >
           <Play className="h-5 w-5" /> ابدأ الآن
         </motion.button>
       </motion.section>
 
-      {/* ٣. ثلاثة اختصارات بأيقونات Lucide حقيقية — بلا فراغات فارغة (بند 2) */}
+      {/* ٣. ثلاثة اختصارات: سريع / مراجعة ذكية / أخطائي (صفحة تفصيلية) */}
       <div className="grid grid-cols-3 gap-2">
         <motion.button
           whileTap={{ scale: 0.96 }}
           onClick={() =>
             startQuiz({
               mode: "quick",
-              label: "اختبار سريع — 10 أسئلة",
+              label: "اختبار سريع — ١٠ أسئلة",
               qids: shuffle(QUESTIONS).slice(0, 10).map((q) => q.id),
             })
           }
@@ -312,114 +332,99 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
 
         <motion.button
           whileTap={{ scale: 0.96 }}
-          onClick={() => {
-            if (redoSet.length > 0) {
-              startQuiz({ mode: "redo", label: "إعادة الأسئلة الخاطئة", qids: redoSet });
-            } else {
-              onGoTab("quiz");
-            }
-          }}
-          className={`card-soft flex min-h-[96px] flex-col items-center justify-center gap-1.5 rounded-2xl border border-border bg-white p-3 text-center ${
-            redoSet.length === 0 ? "opacity-60" : ""
-          }`}
+          onClick={openMistakes}
+          className="card-soft flex min-h-[96px] flex-col items-center justify-center gap-1.5 rounded-2xl border border-border bg-white p-3 text-center"
         >
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-red-500 text-white">
             <Target className="h-5 w-5" />
           </span>
           <span className="text-[11px] font-black text-gray-900">أخطائي</span>
-          <span className="text-[9px] font-bold text-gray-600">
-            {redoSet.length > 0 ? "أخطاء تنتظر إصلاحك" : "لا أخطاء بعد"}
-          </span>
+          <span className="text-[9px] font-bold text-gray-600">تفصيل كل خطأ ومفهومه</span>
         </motion.button>
       </div>
 
-      {/* ٤. أكمل من حيث توقفت — العالم الحالي فقط (بند 7) */}
-      <section>
-        <p className="mb-2 flex flex-wrap items-center gap-2 text-sm font-black text-gray-900">
-          <BadgeCheck className="h-4 w-4 text-primary" />
-          {started ? "أكمل من حيث توقفت" : "ابدأ رحلتك"}
-          <span
-            className="rounded-full px-2 py-0.5 text-[9px] font-black text-white"
-            style={{ background: currentWorld.color }}
-          >
-            أنت هنا: {currentWorld.name}
-          </span>
-        </p>
-        <motion.button
-          whileTap={{ scale: 0.98 }}
-          onClick={currentWorld.action}
-          className="card-soft flex w-full items-center gap-3 rounded-3xl border border-border bg-white p-4 text-right"
-        >
-          <span
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-white"
-            style={{ background: currentWorld.color }}
-          >
-            <CurrentIcon className="h-6 w-6" />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-base font-black text-gray-900">{currentWorld.name}</span>
-            <span className="mt-0.5 block text-xs font-bold text-gray-600">
-              {currentWorld.hint}
-            </span>
-          </span>
-          <span className="flex shrink-0 items-center gap-1 text-sm font-black text-primary">
-            متابعة <ArrowLeft className="h-4 w-4" />
-          </span>
-        </motion.button>
-      </section>
-
-      {/* ٥. مفهوم اليوم — مختصر مع «اقرأ المزيد» */}
+      {/* ٤. مفهوم اليوم — مختصر مع «اقرأ المزيد» */}
       <DailyTip onOpen={handleOpenConcept} />
 
-      {/* ٧. رحلتك إلى الاحتراف — رقائق أفقية قابلة للتمرير، والعالم الحالي مبرز (بند 7) */}
+      {/* ٥. رحلتك إلى الاحتراف — مسار أفقي بخطوات متصلة والعالم الحالي مبرز */}
       <section>
         <p className="mb-2 flex items-center gap-2 text-sm font-black text-gray-900">
           <BadgeCheck className="h-4 w-4 text-primary" /> رحلتك إلى الاحتراف
         </p>
-        <div className="no-scrollbar -mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-2">
-          {worlds.map((w, i) => {
-            const Icon = w.icon;
-            const current = i === currentWorldIdx;
-            return (
-              <motion.button
-                key={w.id}
-                whileTap={{ scale: 0.97 }}
-                onClick={w.action}
-                aria-current={current ? "step" : undefined}
-                className={`relative flex w-[152px] shrink-0 snap-start flex-col gap-1.5 rounded-2xl border bg-white p-3 text-right ${
-                  current ? "" : "border-border"
-                }`}
-                style={current ? { borderColor: w.color, boxShadow: `0 0 0 2px ${w.color}` } : undefined}
-              >
-                <span className="flex items-center justify-between">
+        <div className="card-soft rounded-3xl border border-border bg-white p-4">
+          {/* المسار: العوالم الستة بخطوات متصلة */}
+          <div className="flex items-start justify-between gap-0.5">
+            {worlds.map((w, i) => {
+              const Icon = w.icon;
+              const isCurrent = i === currentWorldIdx;
+              const isDone = i < currentWorldIdx;
+              return (
+                <button
+                  key={w.id}
+                  onClick={w.action}
+                  aria-label={w.name}
+                  aria-current={isCurrent ? "step" : undefined}
+                  className="flex w-[13%] flex-col items-center gap-1"
+                >
                   <span
-                    className="flex h-9 w-9 items-center justify-center rounded-xl text-white"
-                    style={{ background: w.color }}
+                    className={`flex h-9 w-9 items-center justify-center rounded-full ${
+                      isCurrent
+                        ? "text-white ring-4 ring-offset-0"
+                        : isDone
+                          ? "text-white"
+                          : "bg-muted text-muted-foreground"
+                    }`}
+                    style={
+                      isCurrent
+                        ? { background: w.color, boxShadow: `0 0 0 3px ${w.color}33` }
+                        : isDone
+                          ? { background: w.color }
+                          : undefined
+                    }
                   >
-                    <Icon className="h-5 w-5" />
+                    {isDone ? (
+                      <CircleCheck className="h-4.5 w-4.5" />
+                    ) : isCurrent ? (
+                      <Icon className="h-4.5 w-4.5" />
+                    ) : (
+                      <Icon className="h-4 w-4" />
+                    )}
                   </span>
-                </span>
-                <span className="text-sm font-black leading-5 text-gray-900">{w.name}</span>
-                <span className="text-[10px] font-bold leading-4 text-gray-600">{w.hint}</span>
-                {w.planLocked && (
                   <span
-                    className="flex cursor-not-allowed items-center gap-1 rounded-lg bg-muted px-2 py-1 text-[9px] font-bold text-gray-500 opacity-70"
-                    title="منشئ خطط الدروس قيد البناء — بقية بطاقة أُدرّس جاهزة"
+                    className={`text-center text-[8.5px] font-black leading-3 ${
+                      isCurrent ? "text-gray-900" : "text-muted-foreground"
+                    }`}
                   >
-                    <Lock className="h-3 w-3" /> منشئ الخطط: قيد البناء
+                    {w.name}
                   </span>
-                )}
-                {current && (
-                  <span
-                    className="absolute -top-2 left-2 rounded-full px-2 py-0.5 text-[9px] font-black text-white"
-                    style={{ background: w.color }}
-                  >
-                    أنت هنا
-                  </span>
-                )}
-              </motion.button>
-            );
-          })}
+                </button>
+              );
+            })}
+          </div>
+          {/* خط الاتصال بين الخطوات — خلف الأيقونات */}
+
+          {/* بطاقة الخطوة الحالية */}
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            onClick={currentWorld.action}
+            className="mt-3 flex w-full items-center gap-3 rounded-2xl bg-muted/50 p-3 text-right"
+          >
+            <span
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white"
+              style={{ background: currentWorld.color }}
+            >
+              <CurrentIcon className="h-5 w-5" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-black text-gray-900">{currentWorld.name}</span>
+              <span className="mt-0.5 block text-[11px] font-bold leading-4 text-gray-600">
+                {currentWorld.hint}
+              </span>
+            </span>
+            <span className="flex shrink-0 items-center gap-1 text-xs font-black text-primary">
+              متابعة <ArrowLeft className="h-4 w-4" />
+            </span>
+          </motion.button>
         </div>
       </section>
 

@@ -11,12 +11,12 @@ import {
   ChevronLeft,
   BookOpenCheck,
   AlertTriangle,
+  Target,
 } from "lucide-react";
 import { COURSES, questionsOfCourse, QUESTIONS, conceptById, shuffle } from "@/lib/qbank";
 import { buildReviewSet, buildRedoSet, orderUnseenFirst } from "@/lib/srs";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { ad } from "@/lib/arabic";
 
 function ModeCard({
   icon: Icon,
@@ -68,6 +68,7 @@ function ModeCard({
 
 export default function QuizHome() {
   const startQuiz = useUi((s) => s.startQuiz);
+  const openMistakes = useUi((s) => s.openMistakes);
   const attempts = useApp((s) => s.attempts);
   const [expanded, setExpanded] = useState<string | null>(null);
 
@@ -90,6 +91,31 @@ export default function QuizHome() {
           </div>
         </div>
       </div>
+
+      <ModeCard
+        icon={Brain}
+        title="الاختبار المكثف"
+        desc="جميع أسئلة البنك في جلسة واحدة — وعند كل خطأ نعرفك بمفهومه وأمثلته، ويُسجل الخطأ في صفحة أخطائي"
+        color="#1B4332"
+        onClick={() =>
+          startQuiz({
+            mode: "intensive",
+            label: "الاختبار المكثف — جميع الأسئلة",
+            qids: orderUnseenFirst(
+              QUESTIONS.map((q) => q.id),
+              attempts
+            ),
+          })
+        }
+      />
+
+      <ModeCard
+        icon={Target}
+        title="صفحة أخطائي"
+        desc="كل خطأ مع شرح مفهومه وأمثلة متنوعة عليه — كل شيء مرتب حسب المفهوم"
+        color="#DC2626"
+        onClick={openMistakes}
+      />
 
       <ModeCard
         icon={Brain}

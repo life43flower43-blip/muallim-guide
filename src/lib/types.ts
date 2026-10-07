@@ -38,13 +38,14 @@ export interface Course {
 export interface Attempt {
   qid: string;
   correct: boolean;
+  answer?: string; // نص إجابة المستخدم — لعرضه في صفحة أخطائي
   ts: number; // وقت المحاولة
   box: number; // صندوق ليتم 1-5 للمراجعة المتباعدة
 }
 
 export interface SessionRecord {
   id: string;
-  mode: "training" | "exam" | "quick" | "review" | "redo" | "scenarios";
+  mode: "training" | "exam" | "quick" | "review" | "redo" | "scenarios" | "intensive";
   label: string;
   total: number;
   correctCount: number;

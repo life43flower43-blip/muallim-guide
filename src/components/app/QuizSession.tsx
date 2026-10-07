@@ -14,8 +14,9 @@ import {
   ArrowLeft,
   Trophy,
   Flag,
+  Target,
 } from "lucide-react";
-import { questionById, conceptById, OPTION_LETTERS } from "@/lib/qbank";
+import { questionById, conceptById, examplesOf, OPTION_LETTERS } from "@/lib/qbank";
 import { useApp } from "@/lib/store";
 import { useUi, type QuizConfig } from "@/lib/ui-store";
 import { buildSocraticSteps, type SocraticStep } from "@/lib/socratic";
@@ -163,6 +164,39 @@ function SocraticBox({ q }: { q: Question }) {
   );
 }
 
+// لوحة «المفهوم وأمثلة مشابهة» — تظهر بعد الخطأ مباشرة (المحتوى من البنك حصراً — بلا تأليف)
+function ConceptExamplesBox({ q }: { q: Question }) {
+  const concept = conceptById(q.conceptId);
+  const examples = useMemo(() => (concept ? examplesOf(concept).slice(0, 3) : []), [concept]);
+  if (!concept) return null;
+  return (
+    <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4">
+      <p className="mb-1.5 flex items-center gap-2 text-sm font-extrabold text-sky-900">
+        <BookOpen className="h-4 w-4" /> المفهوم الذي خطأت فيه: {concept.title}
+      </p>
+      <p className="text-sm leading-7 text-sky-950">{concept.explanation}</p>
+      {examples.length > 0 && (
+        <div className="mt-3 space-y-2">
+          <p className="flex items-center gap-1.5 text-xs font-black text-sky-800">
+            <Lightbulb className="h-3.5 w-3.5" /> أمثلة مشابهة من الميدان
+          </p>
+          {examples.map((ex, i) => (
+            <p
+              key={i}
+              className="rounded-xl border border-sky-100 bg-white p-3 text-xs leading-6 text-gray-700"
+            >
+              {ex}
+            </p>
+          ))}
+        </div>
+      )}
+      <p className="mt-3 flex items-center gap-1.5 text-[11px] font-bold text-sky-700">
+        <Target className="h-3.5 w-3.5" /> سجلنا هذا الخطأ في صفحة «أخطائي» مع شرح المفهوم وأمثلته
+      </p>
+    </div>
+  );
+}
+
 function ReasonBox({ q }: { q: Question }) {
   const [open, setOpen] = useState(false);
   const concept = conceptById(q.conceptId);
@@ -267,6 +301,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     setGraded(ok);
     if (!ok) setWrongShake(true);
     setTimeout(() => setWrongShake(false), 450);
+    recordAttempt(q.id, ok, selected ?? undefined);
     const wasUnseen = !attempts[q.id];
     const gain = ok
       ? wasUnseen
@@ -278,7 +313,6 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
         : 6
       : 0;
     setSessionXp((x) => x + gain);
-    recordAttempt(q.id, ok);
     setReview((r) => [...r, { qid: q.id, ok }]);
   };
 
@@ -549,6 +583,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                       </button>
                       {socratic && <SocraticBox q={q} />}
                       {!socratic && <ReasonBox q={q} />}
+                      <ConceptExamplesBox q={q} />
                     </>
                   )}
                   {graded && <ReasonBox q={q} />}
@@ -606,7 +641,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
             <AlertDialogTitle>الخروج من الجلسة؟</AlertDialogTitle>
             <AlertDialogDescription>
               تقدمك في هذه الجلسة سيُهدر. أنجزت {review.length} من{" "}
-              {arCount(questions.length, QUESTION_GEN_FORMS)}.
+              {arCount(questions.length, QUESTION_GEN_FORMS)} — وأخطاؤك تبقى محفوظة في صفحة
+              «أخطائي» مع شرح المفهوم وأمثلته.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
