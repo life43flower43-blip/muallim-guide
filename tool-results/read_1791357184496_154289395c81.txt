@@ -1,0 +1,662 @@
+     1→     1→"use client";
+     2→     2→
+     3→     3→import { useEffect, useMemo, useRef, useState } from "react";
+     4→     4→import { motion, AnimatePresence } from "framer-motion";
+     5→     5→import {
+     6→     6→  CheckCircle2,
+     7→     7→  XCircle,
+     8→     8→  ChevronDown,
+     9→     9→  Lightbulb,
+    10→    10→  BookOpen,
+    11→    11→  Timer as TimerIcon,
+    12→    12→  X,
+    13→    13→  Brain,
+    14→    14→  ArrowLeft,
+    15→    15→  Trophy,
+    16→    16→  Flag,
+    17→    17→  Target,
+    18→    18→} from "lucide-react";
+    19→    19→import { questionById, conceptById, examplesOf, OPTION_LETTERS } from "@/lib/qbank";
+    20→    20→import { useApp } from "@/lib/store";
+    21→    21→import { useUi, type QuizConfig } from "@/lib/ui-store";
+    22→    22→import { buildSocraticSteps, type SocraticStep } from "@/lib/socratic";
+    23→    23→import { ad, arCount, QUESTION_OBJ_FORMS, QUESTION_GEN_FORMS } from "@/lib/arabic";
+    24→    24→import { toast } from "@/hooks/use-toast";
+    25→    25→import { Button } from "@/components/ui/button";
+    26→    26→import {
+    27→    27→  AlertDialog,
+    28→    28→  AlertDialogAction,
+    29→    29→  AlertDialogCancel,
+    30→    30→  AlertDialogContent,
+    31→    31→  AlertDialogDescription,
+    32→    32→  AlertDialogFooter,
+    33→    33→  AlertDialogHeader,
+    34→    34→  AlertDialogTitle,
+    35→    35→} from "@/components/ui/alert-dialog";
+    36→    36→import type { Question } from "@/lib/types";
+    37→    37→
+    38→    38→// ---------- مكونات صغيرة ----------
+    39→    39→
+    40→    40→function ScoreRing({ pct, size = 150 }: { pct: number; size?: number }) {
+    41→    41→  const r = (size - 18) / 2;
+    42→    42→  const c = 2 * Math.PI * r;
+    43→    43→  const color = pct >= 80 ? "#2D6A4F" : pct >= 50 ? "#F59E0B" : "#E5484D";
+    44→    44→  return (
+    45→    45→    <div className="relative" style={{ width: size, height: size }}>
+    46→    46→      <svg width={size} height={size} className="-rotate-90">
+    47→    47→        <circle cx={size / 2} cy={size / 2} r={r} stroke="#E7ECE6" strokeWidth="14" fill="none" />
+    48→    48→        <motion.circle
+    49→    49→          cx={size / 2}
+    50→    50→          cy={size / 2}
+    51→    51→          r={r}
+    52→    52→          stroke={color}
+    53→    53→          strokeWidth="14"
+    54→    54→          fill="none"
+    55→    55→          strokeLinecap="round"
+    56→    56→          strokeDasharray={c}
+    57→    57→          initial={{ strokeDashoffset: c }}
+    58→    58→          animate={{ strokeDashoffset: c * (1 - pct / 100) }}
+    59→    59→          transition={{ duration: 1, ease: "easeOut" }}
+    60→    60→        />
+    61→    61→      </svg>
+    62→    62→      <div className="absolute inset-0 flex flex-col items-center justify-center">
+    63→    63→        <span className="text-3xl font-black" style={{ color }}>
+    64→    64→          {ad(Math.round(pct))}٪
+    65→    65→        </span>
+    66→    66→      </div>
+    67→    67→    </div>
+    68→    68→  );
+    69→    69→}
+    70→    70→
+    71→    71→function Timer({ seconds, onTimeout }: { seconds: number; onTimeout: () => void }) {
+    72→    72→  const [left, setLeft] = useState(seconds);
+    73→    73→  const firedRef = useRef(false);
+    74→    74→  useEffect(() => {
+    75→    75→    const t = setInterval(() => {
+    76→    76→      setLeft((v) => {
+    77→    77→        if (v <= 1) {
+    78→    78→          clearInterval(t);
+    79→    79→          if (!firedRef.current) {
+    80→    80→            firedRef.current = true;
+    81→    81→            onTimeout();
+    82→    82→          }
+    83→    83→          return 0;
+    84→    84→        }
+    85→    85→        return v - 1;
+    86→    86→      });
+    87→    87→    }, 1000);
+    88→    88→    return () => clearInterval(t);
+    89→    89→  }, []);
+    90→    90→  const m = Math.floor(left / 60);
+    91→    91→  const s = left % 60;
+    92→    92→  const danger = left <= 60;
+    93→    93→  return (
+    94→    94→    <div
+    95→    95→      className={`flex items-center gap-1 rounded-full px-3 py-1 text-sm font-bold tabular-nums ${
+    96→    96→        danger ? "bg-red-100 text-red-700 pulse-ring" : "bg-secondary text-primary"
+    97→    97→      }`}
+    98→    98→    >
+    99→    99→      <TimerIcon className="h-4 w-4" />
+   100→   100→      <span dir="ltr">
+   101→   101→        {ad(m)}:{ad(String(s).padStart(2, "0"))}
+   102→   102→      </span>
+   103→   103→    </div>
+   104→   104→  );
+   105→   105→}
+   106→   106→
+   107→   107→function SocraticBox({ q }: { q: Question }) {
+   108→   108→  const [stepIdx, setStepIdx] = useState(0);
+   109→   109→  const [showHint, setShowHint] = useState(false);
+   110→   110→  const steps: SocraticStep[] = useMemo(() => buildSocraticSteps(q), [q]);
+   111→   111→  const done = stepIdx >= steps.length;
+   112→   112→
+   113→   113→  return (
+   114→   114→    <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+   115→   115→      <div className="mb-3 flex items-center gap-2">
+   116→   116→        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-400">
+   117→   117→          <Lightbulb className="h-4 w-4 text-amber-950" />
+   118→   118→        </div>
+   119→   119→        <p className="text-sm font-extrabold text-amber-900">المدرّب السقراطي — فكّر معي</p>
+   120→   120→      </div>
+   121→   121→      {!done ? (
+   122→   122→        <div className="space-y-3">
+   123→   123→          <p className="font-bold text-foreground">{steps[stepIdx].prompt}</p>
+   124→   124→          {!showHint ? (
+   125→   125→            <Button
+   126→   126→              size="sm"
+   127→   127→              variant="outline"
+   128→   128→              className="rounded-full border-amber-300 bg-white text-amber-900"
+   129→   129→              onClick={() => setShowHint(true)}
+   130→   130→            >
+   131→   131→              <Brain className="ml-1 h-4 w-4" /> جرب أول نفسي
+   132→   132→            </Button>
+   133→   133→          ) : (
+   134→   134→            <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
+   135→   135→              <p className="rounded-xl border border-amber-200 bg-white p-3 text-sm leading-7 text-amber-950">
+   136→   136→                {steps[stepIdx].hint}
+   137→   137→              </p>
+   138→   138→            </motion.div>
+   139→   139→          )}
+   140→   140→          {showHint && (
+   141→   141→            <Button
+   142→   142→              size="sm"
+   143→   143→              className="rounded-full bg-amber-500 text-white hover:bg-amber-600"
+   144→   144→              onClick={() => {
+   145→   145→                setStepIdx((i) => i + 1);
+   146→   146→                setShowHint(false);
+   147→   147→              }}
+   148→   148→            >
+   149→   149→              {stepIdx + 1 < steps.length ? "سؤال تالٍ" : "فتح الإجابة الكاملة"}
+   150→   150→              <ArrowLeft className="mr-1 h-4 w-4" />
+   151→   151→            </Button>
+   152→   152→          )}
+   153→   153→        </div>
+   154→   154→      ) : (
+   155→   155→        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2">
+   156→   156→          <p className="text-sm leading-7 text-foreground">
+   157→   157→            <span className="font-extrabold text-primary">الإجابة الصحيحة: </span>
+   158→   158→            {q.correct}
+   159→   159→          </p>
+   160→   160→          <p className="text-sm leading-7 text-muted-foreground">{q.reason}</p>
+   161→   161→        </motion.div>
+   162→   162→      )}
+   163→   163→    </div>
+   164→   164→  );
+   165→   165→}
+   166→   166→
+   167→   167→// لوحة «المفهوم وأمثلة مشابهة» — تظهر بعد الخطأ مباشرة (المحتوى من البنك حصراً — بلا تأليف)
+   168→   168→function ConceptExamplesBox({ q }: { q: Question }) {
+   169→   169→  const concept = conceptById(q.conceptId);
+   170→   170→  const examples = useMemo(() => (concept ? examplesOf(concept).slice(0, 3) : []), [concept]);
+   171→   171→  if (!concept) return null;
+   172→   172→  return (
+   173→   173→    <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4">
+   174→   174→      <p className="mb-1.5 flex items-center gap-2 text-sm font-extrabold text-sky-900">
+   175→   175→        <BookOpen className="h-4 w-4" /> المفهوم الذي خطأت فيه: {concept.title}
+   176→   176→      </p>
+   177→   177→      <p className="text-sm leading-7 text-sky-950">{concept.explanation}</p>
+   178→   178→      {examples.length > 0 && (
+   179→   179→        <div className="mt-3 space-y-2">
+   180→   180→          <p className="flex items-center gap-1.5 text-xs font-black text-sky-800">
+   181→   181→            <Lightbulb className="h-3.5 w-3.5" /> أمثلة مشابهة من الميدان
+   182→   182→          </p>
+   183→   183→          {examples.map((ex, i) => (
+   184→   184→            <p
+   185→   185→              key={i}
+   186→   186→              className="rounded-xl border border-sky-100 bg-white p-3 text-xs leading-6 text-gray-700"
+   187→   187→            >
+   188→   188→              {ex}
+   189→   189→            </p>
+   190→   190→          ))}
+   191→   191→        </div>
+   192→   192→      )}
+   193→   193→      <p className="mt-3 flex items-center gap-1.5 text-[11px] font-bold text-sky-700">
+   194→   194→        <Target className="h-3.5 w-3.5" /> سجلنا هذا الخطأ في صفحة «أخطائي» مع شرح المفهوم وأمثلته
+   195→   195→      </p>
+   196→   196→    </div>
+   197→   197→  );
+   198→   198→}
+   199→   199→
+   200→   200→function ReasonBox({ q }: { q: Question }) {
+   201→   201→  const [open, setOpen] = useState(false);
+   202→   202→  const concept = conceptById(q.conceptId);
+   203→   203→  return (
+   204→   204→    <div className="space-y-2">
+   205→   205→      <button
+   206→   206→        onClick={() => setOpen((o) => !o)}
+   207→   207→        className="flex w-full items-center justify-between rounded-xl bg-secondary px-4 py-3 text-sm font-bold text-primary"
+   208→   208→      >
+   209→   209→        <span className="flex items-center gap-2">
+   210→   210→          <BookOpen className="h-4 w-4" />
+   211→   211→          سبب الإجابة ومصدر المفهوم
+   212→   212→        </span>
+   213→   213→        <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />
+   214→   214→      </button>
+   215→   215→      {open && (
+   216→   216→        <motion.div
+   217→   217→          initial={{ opacity: 0, height: 0 }}
+   218→   218→          animate={{ opacity: 1, height: "auto" }}
+   219→   219→          className="space-y-2 overflow-hidden"
+   220→   220→        >
+   221→   221→          <p className="rounded-xl border border-border bg-white p-3 text-sm leading-7">{q.reason}</p>
+   222→   222→          {concept && (
+   223→   223→            <p className="rounded-xl bg-accent p-3 text-xs leading-6 text-primary">
+   224→   224→              <span className="font-bold">المفهوم: </span>
+   225→   225→              {concept.title} — {concept.chapter}
+   226→   226→            </p>
+   227→   227→          )}
+   228→   228→        </motion.div>
+   229→   229→      )}
+   230→   230→    </div>
+   231→   231→  );
+   232→   232→}
+   233→   233→
+   234→   234→// ---------- الجلسة الرئيسية ----------
+   235→   235→
+   236→   236→export default function QuizSession({ config }: { config: QuizConfig }) {
+   237→   237→  const clearQuiz = useUi((s) => s.clearQuiz);
+   238→   238→  const recordAttempt = useApp((s) => s.recordAttempt);
+   239→   239→  const finishSession = useApp((s) => s.finishSession);
+   240→   240→  const attempts = useApp((s) => s.attempts);
+   241→   241→  const reportedQuestions = useApp((s) => s.reportedQuestions);
+   242→   242→  const reportQuestion = useApp((s) => s.reportQuestion);
+   243→   243→
+   244→   244→  const [idx, setIdx] = useState(0);
+   245→   245→  const [selected, setSelected] = useState<string | null>(null);
+   246→   246→  const [graded, setGraded] = useState<null | boolean>(null);
+   247→   247→  const [socratic, setSocratic] = useState(false);
+   248→   248→  const [exiting, setExiting] = useState(false);
+   249→   249→  const [finished, setFinished] = useState(false);
+   250→   250→  const [recorded, setRecorded] = useState(false);
+   251→   251→  const [wrongShake, setWrongShake] = useState(false);
+   252→   252→  const [sessionXp, setSessionXp] = useState(0);
+   253→   253→  const [review, setReview] = useState<{ qid: string; ok: boolean }[]>([]);
+   254→   254→  const startedAt = useRef(Date.now());
+   255→   255→
+   256→   256→  const questions = useMemo(
+   257→   257→    () => config.qids.map((id) => questionById(id)).filter(Boolean) as Question[],
+   258→   258→    [config.qids]
+   259→   259→  );
+   260→   260→  const q = questions[idx];
+   261→   261→  const instantFeedback = config.mode !== "exam";
+   262→   262→  const concept = q ? conceptById(q.conceptId) : undefined;
+   263→   263→
+   264→   264→  // عند انتهاء الجلسة: تسجيل النقاط مرة واحدة
+   265→   265→  useEffect(() => {
+   266→   266→    if (finished && !recorded) {
+   267→   267→      setRecorded(true);
+   268→   268→      const correctCount = review.filter((r) => r.ok).length;
+   269→   269→      const durationSec = Math.round((Date.now() - startedAt.current) / 1000);
+   270→   270→      finishSession({
+   271→   271→        mode: config.mode,
+   272→   272→        label: config.label,
+   273→   273→        total: questions.length,
+   274→   274→        correctCount,
+   275→   275→        xp: sessionXp,
+   276→   276→        durationSec,
+   277→   277→      });
+   278→   278→    }
+   279→   279→  }, [finished, recorded, review, sessionXp, config, questions.length, finishSession]);
+   280→   280→
+   281→   281→  if (questions.length === 0) {
+   282→   282→    return (
+   283→   283→      <div className="flex h-dvh flex-col items-center justify-center gap-4 bg-background p-8 text-center">
+   284→   284→        <Brain className="h-14 w-14 text-primary" />
+   285→   285→        <h2 className="text-xl font-black">لا توجد أسئلة في هذه الجلسة</h2>
+   286→   286→        <p className="text-sm text-muted-foreground">
+   287→   287→          {config.mode === "review"
+   288→   288→            ? "لا توجد أسئلة مستحقة للمراجعة الآن — أنجز تدريباً جديداً وستظهر المراجعة المتباعدة لاحقاً."
+   289→   289→            : "جرّب نمطاً آخر من شاشة الاختبار."}
+   290→   290→        </p>
+   291→   291→        <Button onClick={clearQuiz} className="rounded-full bg-primary px-8 text-primary-foreground">
+   292→   292→          رجوع
+   293→   293→        </Button>
+   294→   294→      </div>
+   295→   295→    );
+   296→   296→  }
+   297→   297→
+   298→   298→  const grade = () => {
+   299→   299→    if (!q || selected === null) return;
+   300→   300→    const ok = selected === q.correct;
+   301→   301→    setGraded(ok);
+   302→   302→    if (!ok) setWrongShake(true);
+   303→   303→    setTimeout(() => setWrongShake(false), 450);
+   304→   304→    recordAttempt(q.id, ok, selected ?? undefined);
+   305→   305→    const wasUnseen = !attempts[q.id];
+   306→   306→    const gain = ok
+   307→   307→      ? wasUnseen
+   308→   308→        ? q.difficulty === "صعب"
+   309→   309→          ? 15
+   310→   310→          : q.difficulty === "متوسط"
+   311→   311→            ? 10
+   312→   312→            : 8
+   313→   313→        : 6
+   314→   314→      : 0;
+   315→   315→    setSessionXp((x) => x + gain);
+   316→   316→    setReview((r) => [...r, { qid: q.id, ok }]);
+   317→   317→  };
+   318→   318→
+   319→   319→  const next = () => {
+   320→   320→    setSelected(null);
+   321→   321→    setGraded(null);
+   322→   322→    setSocratic(false);
+   323→   323→    if (idx + 1 >= questions.length) {
+   324→   324→      const correctCount = review.filter((r) => r.ok).length;
+   325→   325→      if (config.mode === "exam" && correctCount === questions.length) {
+   326→   326→        setSessionXp((x) => x + 30);
+   327→   327→      } else if (correctCount === questions.length && questions.length >= 5) {
+   328→   328→        setSessionXp((x) => x + 20);
+   329→   329→      }
+   330→   330→      setFinished(true);
+   331→   331→    } else {
+   332→   332→      setIdx((i) => i + 1);
+   333→   333→    }
+   334→   334→  };
+   335→   335→
+   336→   336→  const exit = () => {
+   337→   337→    if (finished || review.length === 0) {
+   338→   338→      clearQuiz();
+   339→   339→    } else {
+   340→   340→      setExiting(true);
+   341→   341→    }
+   342→   342→  };
+   343→   343→
+   344→   344→  // زر «أبلغ عن خطأ» — يُحفظ معرف السؤال محليًا ويختفي الزر للسؤال المبلّغ عنه
+   345→   345→  const reported = q ? reportedQuestions.includes(q.id) : false;
+   346→   346→  const handleReport = () => {
+   347→   347→    if (!q || reported) return;
+   348→   348→    reportQuestion(q.id);
+   349→   349→    toast({ title: "شكرًا — سيُراجع السؤال" });
+   350→   350→  };
+   351→   351→
+   352→   352→  // ---------- شاشة النتائج ----------
+   353→   353→  if (finished) {
+   354→   354→    const correctCount = review.filter((r) => r.ok).length;
+   355→   355→    const pct = (correctCount / questions.length) * 100;
+   356→   356→    const msg =
+   357→   357→      pct === 100
+   358→   358→        ? "إتقان كامل! أنت أسطورة"
+   359→   359→        : pct >= 80
+   360→   360→          ? "أداء ممتاز، استمر!"
+   361→   361→          : pct >= 50
+   362→   362→            ? "جيد — راجع أخطائك وستتحسن"
+   363→   363→            : "لا بأس، التوجيه بعد الخطأ طريق الإتقان";
+   364→   364→    return (
+   365→   365→      <div className="flex h-dvh flex-col bg-background">
+   366→   366→        <div className="safe-top flex items-center justify-between px-4 pb-2">
+   367→   367→          <p className="text-lg font-black text-primary">النتيجة</p>
+   368→   368→          <button onClick={clearQuiz} className="rounded-full bg-muted p-2" aria-label="إغلاق">
+   369→   369→            <X className="h-5 w-5" />
+   370→   370→          </button>
+   371→   371→        </div>
+   372→   372→        <div className="no-scrollbar flex-1 overflow-y-auto px-4 pb-8">
+   373→   373→          <div className="pop-in flex flex-col items-center gap-3 py-4">
+   374→   374→            <ScoreRing pct={pct} />
+   375→   375→            <h2 className="text-xl font-black">{msg}</h2>
+   376→   376→            <div className="flex flex-wrap justify-center gap-3">
+   377→   377→              <div className="flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-bold text-primary">
+   378→   378→                <CheckCircle2 className="h-4 w-4" /> {ad(correctCount)} من {ad(questions.length)} إجابة صحيحة
+   379→   379→              </div>
+   380→   380→            </div>
+   381→   381→            {review.length < questions.length && (
+   382→   382→              <p className="rounded-2xl bg-red-50 px-4 py-2 text-xs font-bold leading-6 text-red-700">
+   383→   383→                لم تُجب عن {arCount(questions.length - review.length, QUESTION_OBJ_FORMS)} قبل انتهاء
+   384→   384→                الوقت — احتُسبت خطأً كالامتحان الحقيقي.
+   385→   385→              </p>
+   386→   386→            )}
+   387→   387→          </div>
+   388→   388→          <p className="mb-2 mt-4 px-1 text-sm font-extrabold text-muted-foreground">
+   389→   389→            مراجعة الأسئلة — اضغط لعرض التفسير
+   390→   390→          </p>
+   391→   391→          <div className="space-y-2">
+   392→   392→            {review.map((r) => {
+   393→   393→              const rq = questionById(r.qid)!;
+   394→   394→              return (
+   395→   395→                <details key={r.qid} className="card-soft rounded-2xl border border-border bg-white p-4">
+   396→   396→                  <summary className="flex cursor-pointer list-none items-start gap-3">
+   397→   397→                    {r.ok ? (
+   398→   398→                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+   399→   399→                    ) : (
+   400→   400→                      <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
+   401→   401→                    )}
+   402→   402→                    <span className="text-sm font-bold leading-6">{rq.question}</span>
+   403→   403→                  </summary>
+   404→   404→                  {!r.ok && (
+   405→   405→                    <p className="mt-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-800">
+   406→   406→                      الإجابة الصحيحة: {rq.correct}
+   407→   407→                    </p>
+   408→   408→                  )}
+   409→   409→                  <p className="mt-2 text-xs leading-6 text-muted-foreground">{rq.reason}</p>
+   410→   410→                </details>
+   411→   411→              );
+   412→   412→            })}
+   413→   413→          </div>
+   414→   414→        </div>
+   415→   415→        <div className="safe-bottom border-t border-border bg-white px-4 pt-3">
+   416→   416→          <Button
+   417→   417→            onClick={clearQuiz}
+   418→   418→            className="h-14 w-full rounded-2xl bg-primary text-lg font-black text-primary-foreground"
+   419→   419→          >
+   420→   420→            <Trophy className="ml-2 h-5 w-5" /> متابعة رحلة التعلم
+   421→   421→          </Button>
+   422→   422→        </div>
+   423→   423→      </div>
+   424→   424→    );
+   425→   425→  }
+   426→   426→
+   427→   427→  // ---------- شاشة السؤال ----------
+   428→   428→  const progress = (idx / questions.length) * 100;
+   429→   429→
+   430→   430→  return (
+   431→   431→    <div className="tap-none flex h-dvh flex-col bg-background">
+   432→   432→      {/* رأس الجلسة */}
+   433→   433→      <div className="safe-top px-4 pb-2 pt-2">
+   434→   434→        <div className="mb-2 flex items-center gap-3">
+   435→   435→          <button onClick={exit} className="rounded-full p-1.5 text-muted-foreground" aria-label="خروج">
+   436→   436→            <X className="h-6 w-6" />
+   437→   437→          </button>
+   438→   438→          <div className="progress-track h-3.5 flex-1">
+   439→   439→            <div className="progress-fill h-full" style={{ width: `${progress}%` }} />
+   440→   440→          </div>
+   441→   441→          {config.timeLimitSec ? (
+   442→   442→            <Timer seconds={config.timeLimitSec} onTimeout={() => setFinished(true)} />
+   443→   443→          ) : (
+   444→   444→            <span className="rounded-full bg-secondary px-3 py-1 text-sm font-bold tabular-nums text-primary">
+   445→   445→              {ad(idx + 1)} من {ad(questions.length)}
+   446→   446→            </span>
+   447→   447→          )}
+   448→   448→        </div>
+   449→   449→        <p className="text-center text-xs font-bold text-muted-foreground">{config.label}</p>
+   450→   450→      </div>
+   451→   451→
+   452→   452→      {/* جسم السؤال */}
+   453→   453→      <div className="no-scrollbar flex-1 overflow-y-auto px-4 pb-4">
+   454→   454→        <AnimatePresence mode="wait">
+   455→   455→          <motion.div
+   456→   456→            key={q.id}
+   457→   457→            initial={{ opacity: 0, x: -30 }}
+   458→   458→            animate={{ opacity: 1, x: 0 }}
+   459→   459→            exit={{ opacity: 0, x: 30 }}
+   460→   460→            transition={{ duration: 0.25 }}
+   461→   461→            className="space-y-4"
+   462→   462→          >
+   463→   463→            <div className="flex flex-wrap items-center gap-2 pt-1">
+   464→   464→              <span className="rounded-full bg-accent px-3 py-1 text-xs font-bold text-primary">
+   465→   465→                {q.type === "mcq" ? "اختيار من متعدد" : "صح أم خطأ"}
+   466→   466→              </span>
+   467→   467→              <span
+   468→   468→                className={`rounded-full px-3 py-1 text-xs font-bold ${
+   469→   469→                  q.difficulty === "سهل"
+   470→   470→                    ? "bg-emerald-100 text-emerald-700"
+   471→   471→                    : q.difficulty === "متوسط"
+   472→   472→                      ? "bg-amber-100 text-amber-700"
+   473→   473→                      : "bg-red-100 text-red-600"
+   474→   474→                }`}
+   475→   475→              >
+   476→   476→                {q.difficulty}
+   477→   477→              </span>
+   478→   478→              {concept && (
+   479→   479→                <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+   480→   480→                  {concept.title}
+   481→   481→                </span>
+   482→   482→              )}
+   483→   483→            </div>
+   484→   484→
+   485→   485→            <h2 className="text-xl font-extrabold leading-9">{q.question}</h2>
+   486→   486→
+   487→   487→            {q.type === "tf" ? (
+   488→   488→              <div className="grid grid-cols-2 gap-3">
+   489→   489→                {[q.options[0], q.options[1]].map((o, i) => {
+   490→   490→                  const isSel = selected === o.text;
+   491→   491→                  const isCorrect = o.isCorrect;
+   492→   492→                  // كشف الصواب/الخطأ فقط في الأنماط ذات التغذية الفورية — المحاكاة لا تكشف الإجابة
+   493→   493→                  let cls = "border-border bg-white";
+   494→   494→                  if (instantFeedback && graded !== null && isCorrect) cls = "border-emerald-500 bg-emerald-50";
+   495→   495→                  else if (instantFeedback && graded === false && isSel) cls = "border-red-400 bg-red-50";
+   496→   496→                  else if (isSel) cls = "border-primary bg-accent shadow-sm";
+   497→   497→                  return (
+   498→   498→                    <button
+   499→   499→                      key={i}
+   500→   500→                      disabled={graded !== null}
+   501→   501→                      onClick={() => setSelected(o.text)}
+   502→   502→                      className={`opt-btn flex h-20 items-center justify-center gap-2 rounded-2xl border-2 text-xl font-black ${cls} ${
+   503→   503→                        wrongShake && isSel && instantFeedback ? "shake" : ""
+   504→   504→                      }`}
+   505→   505→                    >
+   506→   506→                      {i === 0 ? (
+   507→   507→                        <CheckCircle2 className="h-6 w-6 text-emerald-600" />
+   508→   508→                      ) : (
+   509→   509→                        <XCircle className="h-6 w-6 text-red-500" />
+   510→   510→                      )}
+   511→   511→                      {o.text}
+   512→   512→                    </button>
+   513→   513→                  );
+   514→   514→                })}
+   515→   515→              </div>
+   516→   516→            ) : (
+   517→   517→              <div className="space-y-3">
+   518→   518→                {q.options.map((o, i) => {
+   519→   519→                  const isSel = selected === o.text;
+   520→   520→                  const isCorrect = o.isCorrect;
+   521→   521→                  // كشف الصواب/الخطأ فقط في الأنماط ذات التغذية الفورية — المحاكاة لا تكشف الإجابة
+   522→   522→                  let cls = "border-border bg-white";
+   523→   523→                  if (instantFeedback && graded !== null && isCorrect) cls = "border-emerald-500 bg-emerald-50";
+   524→   524→                  else if (instantFeedback && graded === false && isSel) cls = "border-red-400 bg-red-50";
+   525→   525→                  else if (isSel) cls = "border-primary bg-accent shadow-sm";
+   526→   526→                  return (
+   527→   527→                    <button
+   528→   528→                      key={i}
+   529→   529→                      disabled={graded !== null}
+   530→   530→                      onClick={() => setSelected(o.text)}
+   531→   531→                      className={`opt-btn flex w-full items-center gap-3 rounded-2xl border-2 p-4 text-right ${cls} ${
+   532→   532→                        wrongShake && isSel && instantFeedback ? "shake" : ""
+   533→   533→                      }`}
+   534→   534→                    >
+   535→   535→                      <span
+   536→   536→                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-base font-black ${
+   537→   537→                          isSel ? "bg-primary text-primary-foreground" : "bg-muted text-primary"
+   538→   538→                        }`}
+   539→   539→                      >
+   540→   540→                        {OPTION_LETTERS[i]}
+   541→   541→                      </span>
+   542→   542→                      <span className="text-base font-bold leading-7">{o.text}</span>
+   543→   543→                    </button>
+   544→   544→                  );
+   545→   545→                })}
+   546→   546→              </div>
+   547→   547→            )}
+   548→   548→
+   549→   549→            {/* التغذية الراجعة الفورية */}
+   550→   550→            <AnimatePresence>
+   551→   551→              {graded !== null && instantFeedback && (
+   552→   552→                <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
+   553→   553→                  <div
+   554→   554→                    className={`flex items-center gap-3 rounded-2xl border p-4 ${
+   555→   555→                      graded ? "border-emerald-200 bg-emerald-50" : "border-red-200 bg-red-50"
+   556→   556→                    }`}
+   557→   557→                  >
+   558→   558→                    {graded ? (
+   559→   559→                      <CheckCircle2 className="h-8 w-8 shrink-0 text-emerald-600" />
+   560→   560→                    ) : (
+   561→   561→                      <XCircle className="h-8 w-8 shrink-0 text-red-500" />
+   562→   562→                    )}
+   563→   563→                    <div>
+   564→   564→                      <p className={`font-black ${graded ? "text-emerald-800" : "text-red-700"}`}>
+   565→   565→                        {graded ? "أحسنت! إجابة صحيحة" : "إجابة غير صحيحة"}
+   566→   566→                      </p>
+   567→   567→                      {!graded && (
+   568→   568→                        <p className="text-sm text-red-600">
+   569→   569→                          الإجابة الصحيحة: <b>{q.correct}</b>
+   570→   570→                        </p>
+   571→   571→                      )}
+   572→   572→                    </div>
+   573→   573→                  </div>
+   574→   574→
+   575→   575→                  {!graded && (
+   576→   576→                    <>
+   577→   577→                      <button
+   578→   578→                        onClick={() => setSocratic((s) => !s)}
+   579→   579→                        className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-amber-300 bg-amber-50 py-3 text-sm font-black text-amber-900"
+   580→   580→                      >
+   581→   581→                        <Lightbulb className="h-4 w-4" />
+   582→   582→                        {socratic ? "إخفاء المدرّب" : "لا تفهم فقط — افهم لماذا (توجيه سقراطي)"}
+   583→   583→                      </button>
+   584→   584→                      {socratic && <SocraticBox q={q} />}
+   585→   585→                      {!socratic && <ReasonBox q={q} />}
+   586→   586→                      <ConceptExamplesBox q={q} />
+   587→   587→                    </>
+   588→   588→                  )}
+   589→   589→                  {graded && <ReasonBox q={q} />}
+   590→   590→
+   591→   591→                  {/* زر أبلغ عن خطأ داخل منطقة الشرح بعد الإجابة (نقد البند 11) */}
+   592→   592→                  {reported ? (
+   593→   593→                    <span className="flex items-center gap-1.5 self-start rounded-full bg-muted px-3 py-1.5 text-[11px] font-bold text-muted-foreground">
+   594→   594→                      <Flag className="h-3.5 w-3.5" /> تم الإبلاغ عن هذا السؤال
+   595→   595→                    </span>
+   596→   596→                  ) : (
+   597→   597→                    <button
+   598→   598→                      onClick={handleReport}
+   599→   599→                      className="flex items-center gap-1.5 self-start rounded-full px-3 py-1.5 text-[11px] font-bold text-muted-foreground transition-colors hover:bg-muted"
+   600→   600→                    >
+   601→   601→                      <Flag className="h-3.5 w-3.5" /> أبلغ عن خطأ
+   602→   602→                    </button>
+   603→   603→                  )}
+   604→   604→                </motion.div>
+   605→   605→              )}
+   606→   606→            </AnimatePresence>
+   607→   607→          </motion.div>
+   608→   608→        </AnimatePresence>
+   609→   609→      </div>
+   610→   610→
+   611→   611→      {/* زر التحقق/التالي */}
+   612→   612→      <div className="safe-bottom border-t border-border bg-white px-4 pt-3">
+   613→   613→        {graded === null ? (
+   614→   614→          <Button
+   615→   615→            disabled={selected === null}
+   616→   616→            onClick={grade}
+   617→   617→            className="h-14 w-full rounded-2xl bg-primary text-lg font-black text-primary-foreground disabled:opacity-40"
+   618→   618→          >
+   619→   619→            {instantFeedback ? "تحقق" : "تأكيد الاختيار"}
+   620→   620→          </Button>
+   621→   621→        ) : (
+   622→   622→          <Button
+   623→   623→            onClick={next}
+   624→   624→            className={`h-14 w-full rounded-2xl text-lg font-black ${
+   625→   625→              !instantFeedback
+   626→   626→                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+   627→   627→                : graded
+   628→   628→                  ? "bg-emerald-600 text-white hover:bg-emerald-700"
+   629→   629→                  : "bg-red-500 text-white"
+   630→   630→            }`}
+   631→   631→          >
+   632→   632→            {idx + 1 >= questions.length ? "عرض النتيجة" : "متابعة"}
+   633→   633→          </Button>
+   634→   634→        )}
+   635→   635→      </div>
+   636→   636→
+   637→   637→      {/* تأكيد الخروج */}
+   638→   638→      <AlertDialog open={exiting} onOpenChange={setExiting}>
+   639→   639→        <AlertDialogContent className="rounded-3xl">
+   640→   640→          <AlertDialogHeader>
+   641→   641→            <AlertDialogTitle>الخروج من الجلسة؟</AlertDialogTitle>
+   642→   642→            <AlertDialogDescription>
+   643→   643→              تقدمك في هذه الجلسة سيُهدر. أنجزت {review.length} من{" "}
+   644→   644→              {arCount(questions.length, QUESTION_GEN_FORMS)} — وأخطاؤك تبقى محفوظة في صفحة
+   645→   645→              «أخطائي» مع شرح المفهوم وأمثلته.
+   646→   646→            </AlertDialogDescription>
+   647→   647→          </AlertDialogHeader>
+   648→   648→          <AlertDialogFooter>
+   649→   649→            <AlertDialogCancel className="rounded-full">متابعة الجلسة</AlertDialogCancel>
+   650→   650→            <AlertDialogAction
+   651→   651→              className="rounded-full bg-red-500 hover:bg-red-600"
+   652→   652→              onClick={clearQuiz}
+   653→   653→            >
+   654→   654→              خروج
+   655→   655→            </AlertDialogAction>
+   656→   656→          </AlertDialogFooter>
+   657→   657→        </AlertDialogContent>
+   658→   658→      </AlertDialog>
+   659→   659→    </div>
+   660→   660→  );
+   661→   661→}
+   662→   662→

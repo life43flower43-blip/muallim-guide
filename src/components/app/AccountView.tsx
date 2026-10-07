@@ -14,18 +14,13 @@ import {
   Settings,
   Trash2,
   ShieldCheck,
-  BarChart3,
-  TrendingUp,
   History,
   MessageSquare,
   MessagesSquare,
 } from "lucide-react";
-import { COURSES, COURSE_SHORT, questionsOfCourse, conceptById, questionById } from "@/lib/qbank";
+import { conceptById, questionById } from "@/lib/qbank";
 import { ACHIEVEMENTS, useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import {
-  ad,
-} from "@/lib/arabic";
 import { buildRedoSet } from "@/lib/srs";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,13 +47,7 @@ const ACH_ICONS: Record<string, React.ElementType> = {
   MessagesSquare,
 };
 
-const DIFF_COLORS: Record<string, string> = {
-  سهل: "#2D6A4F",
-  متوسط: "#F59E0B",
-  صعب: "#DC2626",
-};
-
-// ---------- صفحة حسابي: الملف المهني + التقدم العلمي + السجل ----------
+// ---------- صفحة حسابي: الملف الشخصي + تثبيت الفهم + السجل — بلا أرقام ولا إحصاءات (قرار المستخدم) ----------
 export default function AccountView() {
   const { name, attempts, sessions, conceptReads, scenarioChoices, setName } = useApp();
   const startQuiz = useUi((s) => s.startQuiz);
@@ -66,46 +55,9 @@ export default function AccountView() {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(name);
 
-  // ---- الإحصائيات (مدمجة من شاشة التقدم) ----
-  const vals = Object.values(attempts);
-  const totalAnswered = vals.length;
-  const totalCorrect = vals.filter((a) => a.correct).length;
-  const accuracy = totalAnswered ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
-  // الدقة لا تُعرض قبل 10 إجابات مسجلة (نقد البند 4)
-  const showAccuracy = totalAnswered >= 10;
-
-  const perCourse = useMemo(() => {
-    return COURSES.map((c) => {
-      const qs = questionsOfCourse(c.id);
-      const answered = qs.filter((q) => attempts[q.id]);
-      const correct = answered.filter((q) => attempts[q.id].correct).length;
-      return {
-        course: c,
-        total: qs.length,
-        answered: answered.length,
-        correct,
-        pct: answered.length ? Math.round((correct / answered.length) * 100) : 0,
-      };
-    });
-  }, [attempts]);
-
-  const perDifficulty = useMemo(() => {
-    const map: Record<string, { total: number; correct: number }> = {
-      سهل: { total: 0, correct: 0 },
-      متوسط: { total: 0, correct: 0 },
-      صعب: { total: 0, correct: 0 },
-    };
-    for (const [qid, at] of Object.entries(attempts)) {
-      const q = questionById(qid);
-      if (!q) continue;
-      map[q.difficulty].total++;
-      if (at.correct) map[q.difficulty].correct++;
-    }
-    return map;
-  }, [attempts]);
-
   const redoSet = useMemo(() => buildRedoSet(attempts), [attempts]);
 
+  // المفهوم الذي تتكرر فيه الأخطاء — توجيه بلا نسب (قرار المستخدم: حذف الأرقام لا إخفاؤها)
   const weakestConcept = useMemo(() => {
     const stats = new Map<string, { t: number; c: number }>();
     for (const [qid, at] of Object.entries(attempts)) {
@@ -117,11 +69,11 @@ export default function AccountView() {
       stats.set(q.conceptId, s);
     }
     const sorted = [...stats.entries()]
-      .filter(([, s]) => s.t >= 2)
+      .filter(([, s]) => s.t >= 2 && s.c < s.t)
       .sort((a, b) => a[1].c / a[1].t - b[1].c / b[1].t);
     if (sorted.length === 0) return null;
-    const [cid, s] = sorted[0];
-    return { concept: conceptById(cid), pct: Math.round((s.c / s.t) * 100) };
+    const [cid] = sorted[0];
+    return conceptById(cid) ?? null;
   }, [attempts]);
 
   // ---- محطات التقدم ----
@@ -164,114 +116,33 @@ export default function AccountView() {
             ) : (
               <button className="text-right" onClick={() => setEditing(true)}>
                 <p className="text-lg font-black">{name || "اضغط لضبط اسمك"}</p>
-                <p className="mt-1 text-xs text-emerald-100">طالب تربية — رحلة الإعداد المهني</p>
               </button>
             )}
           </div>
         </div>
-
-        <div className="mt-4">
-          <p className="flex items-center gap-2 rounded-2xl bg-white/10 px-3 py-2.5 text-xs font-bold leading-6 text-emerald-100">
-            <Trophy className="h-4 w-4 shrink-0 text-yellow-300" />
-            رحلتك من طالب تربية إلى معلّم جاهز — تتقدّم مراحلها كلما قرأت وتدرّبت
-          </p>
-        </div>
       </div>
 
-      {/* الدقة العامة */}
-      <div className="card-soft rounded-3xl border border-border bg-white p-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="flex items-center gap-2 text-sm font-black">
-              <Target className="h-4 w-4 text-primary" /> الدقة العامة
-            </p>
-            <p className="mt-1 text-3xl font-black text-primary">
-              <span>{showAccuracy ? `${ad(accuracy)}٪` : "—"}</span>
-            </p>
-            <p className="text-xs text-muted-foreground">
-              {showAccuracy
-                ? "نسبة إجاباتك الصحيحة في كل ما تدربت عليه"
-                : "أجب عن عشرة أسئلة فتصحّ الدقة — النسبة المبكرة خادعة"}
-            </p>
-          </div>
-          <div className="relative flex h-24 w-24 items-center justify-center">
-            <svg width="96" height="96" className="-rotate-90">
-              <circle cx="48" cy="48" r="40" stroke="#E7ECE6" strokeWidth="10" fill="none" />
-              <circle
-                cx="48"
-                cy="48"
-                r="40"
-                stroke="#2D6A4F"
-                strokeWidth="10"
-                fill="none"
-                strokeLinecap="round"
-                strokeDasharray={2 * Math.PI * 40}
-                strokeDashoffset={2 * Math.PI * 40 * (1 - accuracy / 100)}
-              />
-            </svg>
-          </div>
-        </div>
-
-        {redoSet.length > 0 && (
+      {/* إعادة الأسئلة الخاطئة */}
+      {redoSet.length > 0 && (
+        <div className="card-soft rounded-3xl border border-border bg-white p-5">
           <button
             onClick={() => startQuiz({ mode: "redo", label: "إعادة الأسئلة الخاطئة", qids: redoSet })}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-red-500 py-3 text-sm font-black text-white"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-red-500 py-3 text-sm font-black text-white"
           >
             <RotateCcw className="h-4 w-4" /> إعادة أسئلتي الخاطئة
           </button>
-        )}
-      </div>
-
-      {/* الدقة حسب المحور */}
-      <div className="card-soft rounded-3xl border border-border bg-white p-5">
-        <p className="mb-4 flex items-center gap-2 text-sm font-black">
-          <BarChart3 className="h-4 w-4 text-primary" /> الدقة حسب المحور
-        </p>
-        <div className="space-y-4">
-          {perCourse.map((row) => (
-            <div key={row.course.id}>
-              <div className="mb-1.5 flex items-center justify-between text-xs font-bold">
-                <span className="leading-5">{COURSE_SHORT[row.course.id]}</span>
-                <span className="shrink-0 text-muted-foreground">
-                  {row.answered > 0 ? `${ad(row.pct)}٪` : "لم تبدأ بعد"}
-                </span>
-              </div>
-              <div className="progress-track h-2.5">
-                <div className="progress-fill h-full" style={{ width: `${row.pct}%` }} />
-              </div>
-            </div>
-          ))}
         </div>
-      </div>
+      )}
 
-      {/* حسب الصعوبة + أضعف مفهوم */}
-      <div className="card-soft rounded-3xl border border-border bg-white p-5">
-        <p className="mb-3 flex items-center gap-2 text-sm font-black">
-          <TrendingUp className="h-4 w-4 text-primary" /> الدقة حسب الصعوبة
-        </p>
-        <div className="grid grid-cols-3 gap-2">
-          {Object.entries(perDifficulty).map(([diff, s]) => {
-            const pct = s.total ? Math.round((s.correct / s.total) * 100) : 0;
-            return (
-              <div key={diff} className="rounded-2xl bg-muted/60 p-3 text-center">
-                <p className="text-lg font-black" style={{ color: DIFF_COLORS[diff] }}>
-                  {s.total ? <span>{`${ad(pct)}٪`}</span> : "—"}
-                </p>
-                <p className="text-xs font-bold">{diff}</p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {weakestConcept?.concept && (
+      {/* المفهوم الذي يحتاج تركيزاً أكثر — توجيه بلا نسب */}
+      {weakestConcept && (
         <div className="card-soft rounded-3xl border border-amber-200 bg-amber-50 p-5">
           <p className="flex items-center gap-2 text-sm font-black text-amber-900">
             <Brain className="h-4 w-4" /> يحتاج تركيزاً أكثر
           </p>
-          <p className="mt-2 font-extrabold text-foreground">{weakestConcept.concept.title}</p>
+          <p className="mt-2 font-extrabold text-foreground">{weakestConcept.title}</p>
           <p className="mt-1 text-xs leading-6 text-amber-900/80">
-            دقتك فيه <span>{ad(weakestConcept.pct)}٪</span> — راجع شرحه ثم تدرب على أسئلته من صفحة المكتبة.
+            راجع شرحه ثم تدرب على أسئلته من صفحة المكتبة.
           </p>
         </div>
       )}
@@ -306,7 +177,7 @@ export default function AccountView() {
         </div>
       </div>
 
-      {/* سجل الجلسات */}
+      {/* سجل الجلسات — بلا نسب (قرار المستخدم) */}
       <div className="card-soft rounded-3xl border border-border bg-white p-5">
         <p className="mb-3 flex items-center gap-2 text-sm font-black">
           <History className="h-4 w-4 text-primary" /> آخر الجلسات
@@ -317,31 +188,24 @@ export default function AccountView() {
           </p>
         ) : (
           <div className="no-scrollbar max-h-72 space-y-2 overflow-y-auto">
-            {sessions.slice(0, 20).map((s) => {
-              const pct = Math.round((s.correctCount / Math.max(1, s.total)) * 100);
-              return (
-                <div key={s.id} className="flex items-center gap-3 rounded-2xl border border-border p-3">
-                  <span
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-black text-white ${
-                      pct >= 80 ? "bg-emerald-600" : pct >= 50 ? "bg-amber-500" : "bg-red-500"
-                    }`}
-                  >
-                    <span>{ad(pct)}٪</span>
-                  </span>
-                  <div className="flex-1 overflow-hidden">
-                    <p className="truncate text-xs font-bold">{s.label}</p>
-                    <p className="text-[10px] text-muted-foreground">
-                      {new Date(s.ts).toLocaleDateString("ar", {
-                        day: "numeric",
-                        month: "long",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
+            {sessions.slice(0, 20).map((s) => (
+              <div key={s.id} className="flex items-center gap-3 rounded-2xl border border-border p-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-primary">
+                  <BookOpen className="h-5 w-5" />
+                </span>
+                <div className="flex-1 overflow-hidden">
+                  <p className="truncate text-xs font-bold">{s.label}</p>
+                  <p className="text-[10px] text-muted-foreground">
+                    {new Date(s.ts).toLocaleDateString("ar", {
+                      day: "numeric",
+                      month: "long",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         )}
       </div>
@@ -379,10 +243,6 @@ export default function AccountView() {
           </AlertDialogContent>
         </AlertDialog>
       </div>
-
-      <p className="pb-2 text-center text-[10px] text-muted-foreground">
-        تربوي — مساعد إعداد المعلم: من طالب تربية إلى معلم جاهز
-      </p>
     </div>
   );
 }

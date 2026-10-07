@@ -14,6 +14,7 @@ import {
   Brain,
   Play,
   Target,
+  User,
   ChevronDown,
   ChevronUp,
   CircleCheck,
@@ -195,13 +196,6 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const currentWorld = worlds[currentWorldIdx];
   const CurrentIcon = currentWorld.icon;
 
-  const greeting = (() => {
-    const h = new Date().getHours();
-    if (h < 12) return "صباح المعرفة";
-    if (h < 17) return "نهار موفق";
-    return "مساء الخير";
-  })();
-
   // ---- الاختبار المكثف: جميع أسئلة البنك — الجديد أولاً ثم ما وُاجه سابقاً ----
   // طلب المستخدم الصريح: الجلسة تشمل جميع الأسئلة المكثفة، لا خمسة.
   const startIntensiveSession = () => {
@@ -225,18 +219,23 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
 
   return (
     <div className="space-y-4 px-4 pb-6">
-      {/* ١. الترويسة المدمجة داخل الصفحة — ألوان صريحة عالية التباين */}
-      <header className="pt-1">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-xs font-bold text-gray-600">{greeting}</p>
-            <h2 className="mt-0.5 truncate text-xl font-black text-gray-900">
-              {name || "طالب التربية"}
-            </h2>
-            <p className="mt-0.5 text-[11px] font-bold text-gray-700">
-              رحلتك الآن: {currentWorld.name}
-            </p>
+      {/* ١. شريط الهوية — ممتد بعرض الشاشة بلون كامل بلا حواف ولا إطارات (نموذج المستخدم) */}
+      <header className="-mx-4 -mt-3 bg-gradient-to-l from-[#0B2018] to-[#1B4332] px-4 pb-4 pt-[calc(max(env(safe-area-inset-top),6px)+12px)]">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15">
+              <School className="h-6 w-6 text-white" />
+            </span>
+            <div>
+              <h2 className="text-lg font-black leading-6 text-white">تربوي</h2>
+              <p className="text-[10px] font-bold text-emerald-100/80">مساعد إعداد المعلم</p>
+            </div>
           </div>
+          {name && (
+            <span className="flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-xs font-black text-white">
+              <User className="h-3.5 w-3.5" /> {name}
+            </span>
+          )}
         </div>
       </header>
 
@@ -368,10 +367,6 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
           </motion.button>
         </div>
       </section>
-
-      <p className="pt-1 text-center text-[10px] leading-5 text-gray-500">
-        تربوي — مساعد إعداد المعلم: من طالب تربية إلى معلم جاهز
-      </p>
     </div>
   );
 }

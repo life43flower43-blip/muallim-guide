@@ -30,7 +30,6 @@ import {
 import { buildReviewSet } from "@/lib/srs";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { ad, arCount, QUESTION_MISTAKE_FORMS, QUESTION_OBJ_FORMS } from "@/lib/arabic";
 import { Button } from "@/components/ui/button";
 
 interface WrongEntry {
@@ -136,7 +135,7 @@ export default function MistakesView() {
             <h3 className="text-lg font-black">كل شيء عن أخطائك هنا</h3>
             <p className="mt-0.5 text-xs font-bold leading-5 text-red-100">
               {wrongs.length > 0
-                ? `${arCount(wrongs.length, QUESTION_MISTAKE_FORMS)} — كل خطأ مع شرح مفهومه وأمثلته الواقعية`
+                ? "أخطاؤك مرتبة حسب المفهوم — كل خطأ مع شرحه وأمثلته الواقعية"
                 : "كل شيء مرتب — لا أخطاء تنتظر إصلاحك"}
             </p>
           </div>
@@ -158,7 +157,7 @@ export default function MistakesView() {
           onClick={() =>
             startQuiz({
               mode: "quick",
-              label: "اختبار سريع — ١٠ أسئلة",
+              label: "اختبار سريع",
               qids: shuffle(QUESTIONS).slice(0, 10).map((q) => q.id),
             })
           }
@@ -168,7 +167,7 @@ export default function MistakesView() {
             <Zap className="h-5 w-5" />
           </span>
           <span className="text-xs font-black text-gray-900">سريع</span>
-          <span className="text-[9px] font-bold text-gray-600">١٠ أسئلة عشوائية</span>
+          <span className="text-[9px] font-bold text-gray-600">أسئلة عشوائية سريعة</span>
         </motion.button>
 
         <motion.button
@@ -188,7 +187,7 @@ export default function MistakesView() {
           <span className="text-xs font-black text-gray-900">مراجعة ذكية</span>
           <span className="text-[9px] font-bold text-gray-600">
             {reviewSet.length > 0
-              ? `${arCount(reviewSet.length, QUESTION_OBJ_FORMS)} مستحقة الآن`
+              ? "مراجعات مستحقة الآن"
               : "لا مراجعات مستحقة"}
           </span>
         </motion.button>
@@ -288,7 +287,7 @@ export default function MistakesView() {
                 {/* أسئلة هذا المفهوم التي أخطأت فيها */}
                 <div className="space-y-2 border-t border-border bg-muted/40 p-4">
                   <p className="text-[11px] font-black text-muted-foreground">
-                    الأسئلة التي أخطأت فيها — {arCount(entries.length, QUESTION_MISTAKE_FORMS)}
+                    الأسئلة التي أخطأت فيها
                   </p>
                   {entries.map((w) => {
                     const q = questionById(w.qid)!;

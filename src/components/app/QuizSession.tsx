@@ -20,7 +20,7 @@ import { questionById, conceptById, examplesOf, OPTION_LETTERS } from "@/lib/qba
 import { useApp } from "@/lib/store";
 import { useUi, type QuizConfig } from "@/lib/ui-store";
 import { buildSocraticSteps, type SocraticStep } from "@/lib/socratic";
-import { ad, arCount, QUESTION_OBJ_FORMS, QUESTION_GEN_FORMS } from "@/lib/arabic";
+import { ad } from "@/lib/arabic";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,34 +37,21 @@ import type { Question } from "@/lib/types";
 
 // ---------- مكونات صغيرة ----------
 
-function ScoreRing({ pct, size = 150 }: { pct: number; size?: number }) {
-  const r = (size - 18) / 2;
-  const c = 2 * Math.PI * r;
-  const color = pct >= 80 ? "#2D6A4F" : pct >= 50 ? "#F59E0B" : "#E5484D";
+// شارة النتيجة النوعية — بلا نسب ولا أرقام (قرار المستخدم: حذف الأرقام لا إخفاؤها)
+function ResultBadge({ tone }: { tone: "great" | "good" | "fair" | "weak" }) {
+  const toneCls =
+    tone === "great"
+      ? "bg-emerald-100 text-emerald-700"
+      : tone === "good"
+        ? "bg-emerald-100 text-emerald-700"
+        : tone === "fair"
+          ? "bg-amber-100 text-amber-700"
+          : "bg-red-100 text-red-600";
+  const Icon = tone === "weak" ? XCircle : Trophy;
   return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} stroke="#E7ECE6" strokeWidth="14" fill="none" />
-        <motion.circle
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          stroke={color}
-          strokeWidth="14"
-          fill="none"
-          strokeLinecap="round"
-          strokeDasharray={c}
-          initial={{ strokeDashoffset: c }}
-          animate={{ strokeDashoffset: c * (1 - pct / 100) }}
-          transition={{ duration: 1, ease: "easeOut" }}
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-3xl font-black" style={{ color }}>
-          {ad(Math.round(pct))}٪
-        </span>
-      </div>
-    </div>
+    <span className={`flex h-24 w-24 items-center justify-center rounded-full ${toneCls}`}>
+      <Icon className="h-12 w-12" />
+    </span>
   );
 }
 
@@ -361,6 +348,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
           : pct >= 50
             ? "جيد — راجع أخطائك وستتحسن"
             : "لا بأس، التوجيه بعد الخطأ طريق الإتقان";
+    const tone: "great" | "good" | "fair" | "weak" =
+      pct === 100 ? "great" : pct >= 80 ? "good" : pct >= 50 ? "fair" : "weak";
     return (
       <div className="flex h-dvh flex-col bg-background">
         <div className="safe-top flex items-center justify-between px-4 pb-2">
@@ -371,17 +360,11 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
         </div>
         <div className="no-scrollbar flex-1 overflow-y-auto px-4 pb-8">
           <div className="pop-in flex flex-col items-center gap-3 py-4">
-            <ScoreRing pct={pct} />
+            <ResultBadge tone={tone} />
             <h2 className="text-xl font-black">{msg}</h2>
-            <div className="flex flex-wrap justify-center gap-3">
-              <div className="flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-bold text-primary">
-                <CheckCircle2 className="h-4 w-4" /> {ad(correctCount)} من {ad(questions.length)} إجابة صحيحة
-              </div>
-            </div>
             {review.length < questions.length && (
               <p className="rounded-2xl bg-red-50 px-4 py-2 text-xs font-bold leading-6 text-red-700">
-                لم تُجب عن {arCount(questions.length - review.length, QUESTION_OBJ_FORMS)} قبل انتهاء
-                الوقت — احتُسبت خطأً كالامتحان الحقيقي.
+                لم تُجب عن بعض الأسئلة قبل انتهاء الوقت — احتُسبت خطأً كالامتحان الحقيقي.
               </p>
             )}
           </div>
@@ -441,9 +424,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
           {config.timeLimitSec ? (
             <Timer seconds={config.timeLimitSec} onTimeout={() => setFinished(true)} />
           ) : (
-            <span className="rounded-full bg-secondary px-3 py-1 text-sm font-bold tabular-nums text-primary">
-              {ad(idx + 1)} من {ad(questions.length)}
-            </span>
+            <span className="h-8" aria-hidden />
           )}
         </div>
         <p className="text-center text-xs font-bold text-muted-foreground">{config.label}</p>
@@ -640,9 +621,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
           <AlertDialogHeader>
             <AlertDialogTitle>الخروج من الجلسة؟</AlertDialogTitle>
             <AlertDialogDescription>
-              تقدمك في هذه الجلسة سيُهدر. أنجزت {review.length} من{" "}
-              {arCount(questions.length, QUESTION_GEN_FORMS)} — وأخطاؤك تبقى محفوظة في صفحة
-              «أخطائي» مع شرح المفهوم وأمثلته.
+              تقدمك في هذه الجلسة سيُهدر — وأخطاؤك تبقى محفوظة في صفحة «أخطائي» مع شرح المفهوم
+              وأمثلته.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -202,21 +202,21 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: "read5",
     title: "بداية الاطلاع",
-    desc: "اطلعت على ٥ مفاهيم",
+    desc: "اطلعت على مجموعة من المفاهيم",
     icon: "BookOpen",
     earned: (s) => Object.keys(s.conceptReads).length >= 5,
   },
   {
     id: "q25",
     title: "مثابر",
-    desc: "أجب عن ٢٥ سؤالًا",
+    desc: "واصلت التدريب على الأسئلة",
     icon: "Target",
     earned: (s) => Object.keys(s.attempts).length >= 25,
   },
   {
     id: "perfect",
     title: "علامة كاملة",
-    desc: "جلسة بلا خطأ واحدة (١٠ أسئلة فأكثر)",
+    desc: "جلسة كاملة بلا خطأ واحدة",
     icon: "Star",
     earned: (s) =>
       s.sessions.some((x) => x.total >= 10 && x.correctCount === x.total),
@@ -241,7 +241,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: "srs10",
     title: "تثبيت في الذاكرة",
-    desc: "١٠ أسئلة في الصناديق العليا للمراجعة",
+    desc: "أسئلة كثيرة استقرت في أعلى صناديق المراجعة",
     icon: "Brain",
     earned: (s) =>
       Object.values(s.attempts).filter((a) => a.box >= 4).length >= 10,

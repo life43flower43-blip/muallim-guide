@@ -141,12 +141,12 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
       <ModeCard
         icon={Zap}
         title="اختبار سريع"
-        desc="١٠ أسئلة عشوائية من كل المحاور مع توجيه فوري"
+        desc="أسئلة عشوائية من كل المحاور مع توجيه فوري"
         color="#F59E0B"
         onClick={() =>
           startQuiz({
             mode: "quick",
-            label: "اختبار سريع — ١٠ أسئلة",
+            label: "اختبار سريع",
             qids: shuffle(QUESTIONS).slice(0, 10).map((q) => q.id),
           })
         }
@@ -155,12 +155,12 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
       <ModeCard
         icon={Timer}
         title="اختبار محاكاة"
-        desc="٢٠ سؤالًا في ١٥ دقيقة — بلا توجيه فوري، والنتيجة في النهاية (كالامتحان الحقيقي)"
+        desc="أسئلة مختارة في وقت محدد — بلا توجيه فوري، والنتيجة في النهاية (كالامتحان الحقيقي)"
         color="#0E7490"
         onClick={() =>
           startQuiz({
             mode: "exam",
-            label: "اختبار محاكاة — ٢٠ سؤالًا",
+            label: "اختبار محاكاة",
             qids: shuffle(QUESTIONS).slice(0, 20).map((q) => q.id),
             timeLimitSec: 15 * 60,
           })

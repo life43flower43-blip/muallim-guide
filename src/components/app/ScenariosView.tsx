@@ -27,7 +27,6 @@ import {
 import { buildScenarioRun } from "@/lib/scenarios";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { ad, arCount, SCENARIO_FORMS } from "@/lib/arabic";
 import { Button } from "@/components/ui/button";
 
 const LETTERS = ["أ", "ب", "ج", "د"];
@@ -74,7 +73,7 @@ function RunScreen({
       const bestCount = results.filter((s) => s === "best").length;
       finishSession({
         mode: "scenarios",
-        label: `محاكاة الصف — ${arCount(run.length, SCENARIO_FORMS)}`,
+        label: "محاكاة الصف — جولة قرارات",
         total: run.length,
         correctCount: bestCount,
         xp,
@@ -112,9 +111,6 @@ function RunScreen({
               />
             </div>
           </div>
-          <span className="text-xs font-black">
-            {ad(idx + 1)} من {ad(run.length)}
-          </span>
         </div>
       </div>
 
@@ -217,8 +213,6 @@ function RunScreen({
 // ---------- شاشة النتيجة ----------
 function ResultScreen({ scores, run, onAgain, onExit }: { scores: ScenarioScore[]; run: Scenario[]; onAgain: () => void; onExit: () => void }) {
   const bestCount = scores.filter((s) => s === "best").length;
-  const okCount = scores.filter((s) => s === "ok").length;
-  const poorCount = scores.filter((s) => s === "poor").length;
   const pct = Math.round((bestCount / run.length) * 100);
 
   const headline =
@@ -235,23 +229,9 @@ function ResultScreen({ scores, run, onAgain, onExit }: { scores: ScenarioScore[
       </motion.div>
       <h2 className="mt-4 text-2xl font-black">{headline}</h2>
       <p className="mt-2 text-sm font-semibold text-muted-foreground">
-        أكملت جولة قرارات في مواقف صفّية واقعية
+        أكملت جولة قرارات في مواقف صفّية واقعية — عُد إلى المحاكاة لجولة جديدة أو راجع التفسيرات
+        في الأخطاء
       </p>
-
-      <div className="mt-6 grid w-full max-w-sm grid-cols-3 gap-2">
-        <div className="rounded-2xl bg-emerald-50 p-3">
-          <p className="text-xl font-black text-emerald-700">{ad(bestCount)}</p>
-          <p className="text-[10px] font-bold text-emerald-800">قرار ممتاز</p>
-        </div>
-        <div className="rounded-2xl bg-amber-50 p-3">
-          <p className="text-xl font-black text-amber-600">{ad(okCount)}</p>
-          <p className="text-[10px] font-bold text-amber-700">مقبول</p>
-        </div>
-        <div className="rounded-2xl bg-red-50 p-3">
-          <p className="text-xl font-black text-red-500">{ad(poorCount)}</p>
-          <p className="text-[10px] font-bold text-red-600">فيه مخاطرة</p>
-        </div>
-      </div>
 
       <div className="mt-8 w-full max-w-sm space-y-2">
         <Button onClick={onAgain} className="h-13 w-full rounded-2xl bg-primary py-3.5 text-base font-black text-primary-foreground">
