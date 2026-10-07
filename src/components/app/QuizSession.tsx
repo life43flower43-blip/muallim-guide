@@ -16,7 +16,7 @@ import {
   Flag,
   Target,
 } from "lucide-react";
-import { questionById, conceptById, examplesOf, OPTION_LETTERS } from "@/lib/qbank";
+import { questionById, conceptById, examplesOf, OPTION_LETTERS, shuffle } from "@/lib/qbank";
 import { useApp } from "@/lib/store";
 import { useUi, type QuizConfig } from "@/lib/ui-store";
 import { saveSnapshot, loadSnapshot, clearSnapshot, RESUME_FLAG } from "@/lib/session-snapshot";
@@ -265,6 +265,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
   const q = questions[idx];
   const instantFeedback = config.mode !== "exam";
   const concept = q ? conceptById(q.conceptId) : undefined;
+  // خلط ترتيب خيارات المقالي بثبات لكل سؤال — لا يُخلط صح/خطأ (أيقوناته دلالية)
+  const mcqOpts = useMemo(() => (q && q.type === "mcq" ? shuffle(q.options) : []), [q]);
 
   // عند انتهاء الجلسة: تسجيل النقاط مرة واحدة
   useEffect(() => {
@@ -518,7 +520,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                         wrongShake && isSel && instantFeedback ? "shake" : ""
                       }`}
                     >
-                      {i === 0 ? (
+                      {o.text === "صح" ? (
                         <CheckCircle2 className="h-6 w-6 text-emerald-600" />
                       ) : (
                         <XCircle className="h-6 w-6 text-red-500" />
@@ -530,7 +532,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               </div>
             ) : (
               <div className="space-y-3">
-                {q.options.map((o, i) => {
+                {mcqOpts.map((o, i) => {
                   const isSel = selected === o.text;
                   const isCorrect = o.isCorrect;
                   // كشف الصواب/الخطأ فقط في الأنماط ذات التغذية الفورية — المحاكاة لا تكشف الإجابة
