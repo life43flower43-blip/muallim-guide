@@ -6,7 +6,12 @@ import path from "path";
 const ROOT = "/home/z/my-project";
 const QBANK = path.join(ROOT, "src/data/qbank.json");
 const NCDIR = path.join(ROOT, "src/data/generated/nc");
-const SPEC = JSON.parse(fs.readFileSync(path.join(ROOT, "scripts/newconcepts.json"), "utf8")).concepts;
+// كل ملفات المواصفات: newconcepts*.json — مرتبة بالمعرف ليعمل الدمج بترتيب الدفعات
+const SPEC = fs.readdirSync(path.join(ROOT, "scripts"))
+  .filter((f) => /^newconcepts\d*\.json$/.test(f))
+  .sort()
+  .flatMap((f) => JSON.parse(fs.readFileSync(path.join(ROOT, "scripts", f), "utf8")).concepts)
+  .sort((a, b) => Number(a.id.slice(1)) - Number(b.id.slice(1)));
 
 const qb = JSON.parse(fs.readFileSync(QBANK, "utf8"));
 const hasDigit = (s) => /[0-9\u0660-\u0669]/.test(s);

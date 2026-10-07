@@ -8,7 +8,12 @@ import path from "path";
 const ROOT = "/home/z/my-project";
 const OUTDIR = path.join(ROOT, "src/data/generated/nc");
 const LOG = path.join(OUTDIR, "progress.log");
-const SPEC = JSON.parse(fs.readFileSync(path.join(ROOT, "scripts/newconcepts.json"), "utf8")).concepts;
+// كل ملفات المواصفات: newconcepts*.json (الدفعة الأولى + دفعات الاستكمال) — مرتبة بالاسم ثم بالمعرف
+const SPEC = fs.readdirSync(path.join(ROOT, "scripts"))
+  .filter((f) => /^newconcepts\d*\.json$/.test(f))
+  .sort()
+  .flatMap((f) => JSON.parse(fs.readFileSync(path.join(ROOT, "scripts", f), "utf8")).concepts)
+  .sort((a, b) => Number(a.id.slice(1)) - Number(b.id.slice(1)));
 const CONCURRENCY = Number(process.env.GEN_CONC || 1);
 const DEADLINE_MS = Number(process.env.GEN_DEADLINE_MS || 0);
 

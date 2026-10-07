@@ -1,9 +1,9 @@
 #!/bin/bash
 # حلقة توليد المفاهيم المفقودة — تعيد المحاولة كل ٩٠ ثانية وتدمج بعد كل دورة
-# تتوقف عند اكتمال كل المفاهيم (nc/_done.flag) أو بعد ٦٠ دورة
+# تتوقف عند اكتمال كل المفاهيم (nc/_done.flag) أو بعد ٤٠٠ دورة (≈ يومان من إعادة المحاولة)
 cd /home/z/my-project
 echo "[nc-watchdog] start $(date)" >> src/data/generated/nc/watchdog.log
-for i in $(seq 1 60); do
+for i in $(seq 1 400); do
   if [ -f src/data/generated/nc/_done.flag ]; then
     echo "[nc-watchdog] COMPLETE at cycle $i $(date)" >> src/data/generated/nc/watchdog.log
     break
