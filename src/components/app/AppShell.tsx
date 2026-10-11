@@ -12,6 +12,7 @@ import QuizHome from "./QuizHome";
 import AccountView from "./AccountView";
 import ScenariosView from "./ScenariosView";
 import LabView from "./LabView";
+import StudioView from "./StudioView";
 import MistakesView from "./MistakesView";
 import { Button } from "@/components/ui/button";
 
@@ -204,6 +205,8 @@ export default function AppShell() {
   const startLab = useUi((s) => s.startLab);
   const clearLab = useUi((s) => s.clearLab);
   const clearScenarios = useUi((s) => s.clearScenarios);
+  const studioOpen = useUi((s) => s.studioOpen);
+  const clearStudio = useUi((s) => s.clearStudio);
   const [tab, setTab] = useState("home");
 
   // حالة الاتصال — قراءة مباشرة من المتصفح بلا setState داخل الأثر
@@ -297,6 +300,7 @@ export default function AppShell() {
         onHome={() => {
           clearScenarios(); // يغلق الطبقات المفتوحة ويعود للرئيسية
           clearLab(); // المختبر أيضاً طبقة ملء شاشة — يجب أن يغلقها زر الرئيسية
+          clearStudio(); // والاستوديو كذلك
           setTab("home");
         }}
         onConcepts={() => setTab("concepts")}
@@ -307,6 +311,9 @@ export default function AppShell() {
 
       {/* مختبر المعلّم */}
       <AnimatePresence>{labOpen && <LabView key="lab" />}</AnimatePresence>
+
+      {/* استوديو خطط الدروس */}
+      <AnimatePresence>{studioOpen && <StudioView key="studio" />}</AnimatePresence>
 
       {/* شاشة محاكاة الصف الدراسي */}
       <AnimatePresence>{scenariosOpen && <ScenariosView key="scenarios" />}</AnimatePresence>

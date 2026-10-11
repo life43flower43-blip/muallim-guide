@@ -17,6 +17,7 @@ import {
   History,
   MessageSquare,
   MessagesSquare,
+  NotebookPen,
   Moon,
   Sun,
   Monitor,
@@ -57,6 +58,7 @@ const ACH_ICONS: Record<string, React.ElementType> = {
   Brain,
   MessageSquare,
   MessagesSquare,
+  NotebookPen,
 };
 
 type FontScale = "normal" | "large" | "bigger";
@@ -68,7 +70,7 @@ interface InstallPromptEvent extends Event {
 
 // ---------- صفحة حسابي: الملف الشخصي + تثبيت الفهم + السجل — بلا أرقام ولا إحصاءات (قرار المستخدم) ----------
 export default function AccountView() {
-  const { name, attempts, sessions, conceptReads, scenarioChoices, setName } = useApp();
+  const { name, attempts, sessions, conceptReads, scenarioChoices, lessonPlans, setName } = useApp();
   const darkMode = useApp((s) => s.darkMode);
   const setDarkMode = useApp((s) => s.setDarkMode);
   const haptics = useApp((s) => s.haptics);
@@ -124,6 +126,7 @@ export default function AccountView() {
           reportedQuestions: s.reportedQuestions,
           studentExamples: s.studentExamples,
           labAttempts: s.labAttempts,
+          lessonPlans: s.lessonPlans,
           onboarded: s.onboarded,
           darkMode: s.darkMode,
           fontScale: s.fontScale,
@@ -164,6 +167,12 @@ export default function AccountView() {
           studentExamples: rec(d.studentExamples, {}) as NonNullable<ReturnType<typeof useApp.getState>["studentExamples"]>,
           labAttempts: Array.isArray(d.labAttempts)
             ? d.labAttempts.filter((a: unknown) => !!a && typeof a === "object" && typeof (a as LabAttempt).sid === "string")
+            : [],
+          lessonPlans: Array.isArray(d.lessonPlans)
+            ? d.lessonPlans.filter(
+                (p: unknown) =>
+                  !!p && typeof p === "object" && typeof (p as { id?: unknown }).id === "string"
+              )
             : [],
           onboarded: !!d.onboarded,
           darkMode:
@@ -212,9 +221,9 @@ export default function AccountView() {
     () =>
       ACHIEVEMENTS.map((a) => ({
         ...a,
-        ok: a.earned({ attempts, sessions, conceptReads, scenarioChoices }),
+        ok: a.earned({ attempts, sessions, conceptReads, scenarioChoices, lessonPlans }),
       })),
-    [attempts, sessions, conceptReads, scenarioChoices]
+    [attempts, sessions, conceptReads, scenarioChoices, lessonPlans]
   );
 
   return (

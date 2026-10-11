@@ -25,6 +25,7 @@ import {
   ChevronLeft,
   Route,
   Target,
+  ClipboardList,
 } from "lucide-react";
 import { CONCEPTS, QUESTIONS, conceptById } from "@/lib/qbank";
 import { orderUnseenFirst } from "@/lib/srs";
@@ -80,6 +81,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const openCourseTab = useUi((s) => s.openCourseTab);
   const startScenarios = useUi((s) => s.startScenarios);
   const startLab = useUi((s) => s.startLab);
+  const startStudio = useUi((s) => s.startStudio);
 
   // ---- موضع التقدم على المسار: أول محور لم تُنجز مهامه بعد (من المحاولات والجلسات) ----
   const courseOfQid = useMemo(() => {
@@ -403,7 +405,58 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
           </motion.button>
         </motion.section>
 
-        {/* ٣. رحلة المحاور — خط تقدم وخطوة تالية */}
+        {/* ٣. استوديو خطط الدروس — أداة المعلم للبناء قبل الحصة */}
+        <motion.section variants={rise} aria-label="استوديو خطط الدروس">
+          <motion.button
+            whileTap={{ scale: 0.985 }}
+            onClick={startStudio}
+            className="relative w-full overflow-hidden rounded-[2rem] border border-border bg-white p-5 text-right shadow-lift"
+          >
+            {/* ورقة زخرفية باهتة */}
+            <ClipboardList
+              aria-hidden
+              className="pointer-events-none absolute -bottom-6 -left-4 h-28 w-28 text-primary/5"
+            />
+            <div aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-28 w-28 rounded-full bg-teal-200/20 blur-2xl" />
+
+            <div className="relative">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-emerald-700 text-white shadow-md shadow-teal-600/25">
+                    <ClipboardList className="h-6 w-6" />
+                  </span>
+                  <div>
+                    <h3 className="text-base font-black text-gray-900">استوديو خطط الدروس</h3>
+                    <p className="mt-0.5 text-[11px] font-bold leading-5 text-gray-600">
+                      اصنع خطة درس بخطوات موجهة وقيّمها قبل أن تصعد المنصة
+                    </p>
+                  </div>
+                </div>
+                <span className="flex shrink-0 items-center gap-1 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1 text-[10px] font-black text-teal-700">
+                  <Sparkles className="h-3 w-3" /> أداة المعلم
+                </span>
+              </div>
+
+              <div className="mt-4 flex items-center justify-between gap-2">
+                <div className="flex flex-wrap gap-1.5">
+                  {["قالب موجه", "تقييم الخطة", "خططي"].map((c) => (
+                    <span
+                      key={c}
+                      className="rounded-full border border-border bg-muted/60 px-2.5 py-1 text-[10px] font-black text-gray-700"
+                    >
+                      {c}
+                    </span>
+                  ))}
+                </div>
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent">
+                  <ChevronLeft className="h-4.5 w-4.5 text-primary" />
+                </span>
+              </div>
+            </div>
+          </motion.button>
+        </motion.section>
+
+        {/* ٤. رحلة المحاور — خط تقدم وخطوة تالية */}
         <motion.section
           variants={rise}
           aria-label="رحلتك إلى الاحتراف"
