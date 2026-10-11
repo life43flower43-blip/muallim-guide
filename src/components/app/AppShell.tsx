@@ -11,6 +11,7 @@ import ConceptsView from "./ConceptsView";
 import QuizHome from "./QuizHome";
 import AccountView from "./AccountView";
 import ScenariosView from "./ScenariosView";
+import LabView from "./LabView";
 import MistakesView from "./MistakesView";
 import { Button } from "@/components/ui/button";
 
@@ -58,11 +59,12 @@ function BottomNav({
   onAccount: () => void;
 }) {
   const scenariosOpen = useUi((s) => s.scenariosOpen);
+  const labOpen = useUi((s) => s.labOpen);
   const items = [
     { id: "home", label: "الرئيسية", icon: Home, active: tab === "home", onClick: onHome },
     { id: "library", label: "المكتبة", icon: BookOpen, active: tab === "concepts", onClick: onConcepts },
     { id: "mistakes", label: "أخطائي", icon: Target, active: tab === "mistakes", onClick: onMistakes },
-    { id: "train", label: "تدريب", icon: Dumbbell, active: scenariosOpen, onClick: onTrain },
+    { id: "train", label: "تدريب", icon: Dumbbell, active: labOpen || scenariosOpen, onClick: onTrain },
     { id: "account", label: "حسابي", icon: User, active: tab === "account", onClick: onAccount },
   ];
   return (
@@ -198,7 +200,9 @@ export default function AppShell() {
   const { onboarded, darkMode, fontScale } = useApp();
   const quizConfig = useUi((s) => s.quizConfig);
   const scenariosOpen = useUi((s) => s.scenariosOpen);
-  const startScenarios = useUi((s) => s.startScenarios);
+  const labOpen = useUi((s) => s.labOpen);
+  const startLab = useUi((s) => s.startLab);
+  const clearLab = useUi((s) => s.clearLab);
   const clearScenarios = useUi((s) => s.clearScenarios);
   const [tab, setTab] = useState("home");
 
@@ -296,9 +300,12 @@ export default function AppShell() {
         }}
         onConcepts={() => setTab("concepts")}
         onMistakes={() => setTab("mistakes")}
-        onTrain={startScenarios}
+        onTrain={startLab}
         onAccount={() => setTab("account")}
       />
+
+      {/* مختبر المعلّم */}
+      <AnimatePresence>{labOpen && <LabView key="lab" />}</AnimatePresence>
 
       {/* شاشة محاكاة الصف الدراسي */}
       <AnimatePresence>{scenariosOpen && <ScenariosView key="scenarios" />}</AnimatePresence>

@@ -4,6 +4,7 @@ import { useSyncExternalStore } from "react";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { Attempt, SessionRecord, StudentExample } from "./types";
+import type { LabAttempt } from "./lab";
 import { nextBox } from "./srs";
 import { SCENARIOS } from "./scenarios";
 
@@ -23,6 +24,7 @@ interface AppState {
   scenarioChoices: Record<string, ScenarioChoice>; // قرارات محاكاة الصف
   reportedQuestions: string[]; // معرفات الأسئلة التي أبلغ عنها المستخدم (نقد البند 11)
   studentExamples: Record<string, StudentExample[]>; // أمثلة مجتمع الطلاب لكل مفهوم
+  labAttempts: LabAttempt[]; // سجل محاولات مختبر المعلّم — مواقف وتأملات
   onboarded: boolean;
   // وضع العرض — فاتح / يتبع النظام / ليلي (ترقية عن dark المنطقي القديم عبر migrate)
   darkMode: "light" | "auto" | "dark";
@@ -38,6 +40,7 @@ interface AppState {
   reportQuestion: (qid: string) => void;
   addStudentExample: (cid: string, text: string, specialty: string) => void;
   removeStudentExample: (cid: string, id: string) => void;
+  addLabAttempt: (a: LabAttempt) => void;
   setDarkMode: (v: "light" | "auto" | "dark") => void;
   setFontScale: (v: "normal" | "large" | "bigger") => void;
   setHaptics: (v: boolean) => void;
@@ -81,6 +84,7 @@ export const useApp = create<AppState>()(
       scenarioChoices: {},
       reportedQuestions: [],
       studentExamples: {},
+      labAttempts: [],
       onboarded: false,
       darkMode: "light",
       fontScale: "normal",
@@ -154,6 +158,9 @@ export const useApp = create<AppState>()(
           },
         })),
 
+      // مختبر المعلّم — تسجيل محاولة موقف متفرع مع تأملها
+      addLabAttempt: (a) => set((st) => ({ labAttempts: [...st.labAttempts, a] })),
+
       // وضع العرض وحجم الخط والاهتزاز — تفضيلات عرض لا تُمسّ عند تصفير التقدم
       setDarkMode: (v) => set({ darkMode: v }),
       setFontScale: (v) => set({ fontScale: v }),
@@ -171,17 +178,19 @@ export const useApp = create<AppState>()(
           scenarioChoices: {},
           reportedQuestions: [],
           studentExamples: {},
+          labAttempts: [],
           onboarded: false,
         }),
     }),
     {
       name: "turbawy-app-v1",
-      version: 1,
-      // ترقية الحالة القديمة: dark المنطقي يصبح darkMode ثلاثيًا، والاهتزاز يُفعّل افتراضيًا
+      version: 2,
+      // ترقية الحالة القديمة: dark المنطقي يصبح darkMode ثلاثيًا، والاهتزاز يُفعّل افتراضيًا، والمختبر يبدأ فارغًا
       migrate: (s, v) => {
         const st = s as Record<string, unknown>;
+        let out: Record<string, unknown> = st;
         if (v < 1) {
-          return {
+          out = {
             ...st,
             darkMode:
               st.darkMode === "auto" || st.darkMode === "dark" || st.darkMode === "light"
@@ -192,7 +201,8 @@ export const useApp = create<AppState>()(
             haptics: st.haptics === false ? false : true,
           };
         }
-        return s;
+        if (v < 2 && !Array.isArray(out.labAttempts)) return { ...out, labAttempts: [] };
+        return out;
       },
       storage: createJSONStorage(() => localStorage),
     }
