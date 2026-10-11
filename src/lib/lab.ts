@@ -1,12 +1,13 @@
 // مختبر المعلّم — تجميع المواقف (تدريبية واختبار استقلال) وأدوات اشتقاق حالة الكفاءة من الأدلة
 import { LAB_SCENARIOS_A, LAB_SKILLS, type LabScenario, type LabRating } from "./lab-scenarios-a";
 import { LAB_SCENARIOS_B } from "./lab-scenarios-b";
+import { LAB_SCENARIOS_C } from "./lab-scenarios-c";
 import { LAB_EXAM_SCENARIOS as EXAM_SCENARIOS } from "./lab-exam";
 
 export type { LabScenario, LabRating, LabNode, LabOption } from "./lab-scenarios-a";
 export { LAB_SKILLS } from "./lab-scenarios-a";
 
-export const LAB_SCENARIOS: LabScenario[] = [...LAB_SCENARIOS_A, ...LAB_SCENARIOS_B];
+export const LAB_SCENARIOS: LabScenario[] = [...LAB_SCENARIOS_A, ...LAB_SCENARIOS_B, ...LAB_SCENARIOS_C];
 export const LAB_EXAM_SCENARIOS: LabScenario[] = EXAM_SCENARIOS;
 export const LAB_ALL: LabScenario[] = [...LAB_SCENARIOS, ...LAB_EXAM_SCENARIOS];
 

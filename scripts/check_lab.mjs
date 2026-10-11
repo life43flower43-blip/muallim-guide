@@ -2,14 +2,15 @@
 import fs from "node:fs";
 import { LAB_SCENARIOS_A, LAB_SKILLS } from "/home/z/my-project/src/lib/lab-scenarios-a.ts";
 import { LAB_SCENARIOS_B } from "/home/z/my-project/src/lib/lab-scenarios-b.ts";
+import { LAB_SCENARIOS_C } from "/home/z/my-project/src/lib/lab-scenarios-c.ts";
 import { LAB_EXAM_SCENARIOS } from "/home/z/my-project/src/lib/lab-exam.ts";
 const qb = JSON.parse(fs.readFileSync("/home/z/my-project/src/data/qbank.json", "utf8"));
 const conceptIds = new Set(qb.concepts.map((c) => c.id));
 
 const bad = (s) => typeof s !== "string" || /[0-9\u0660-\u0669A-Za-z]/.test(s) || /[\u{1F000}-\u{1FAFF}\u{2600}-\u27BF}]/u.test(s) || s.includes('"');
 const STAGES = ["الروضة", "الابتدائي", "المتوسط", "الثانوي"];
-const trainIds = new Set([...LAB_SCENARIOS_A, ...LAB_SCENARIOS_B].map((s) => s.id));
-const all = [...LAB_SCENARIOS_A, ...LAB_SCENARIOS_B, ...LAB_EXAM_SCENARIOS];
+const trainIds = new Set([...LAB_SCENARIOS_A, ...LAB_SCENARIOS_B, ...LAB_SCENARIOS_C].map((s) => s.id));
+const all = [...LAB_SCENARIOS_A, ...LAB_SCENARIOS_B, ...LAB_SCENARIOS_C, ...LAB_EXAM_SCENARIOS];
 let errs = 0;
 
 const ids = new Set(all.map((s) => s.id));
