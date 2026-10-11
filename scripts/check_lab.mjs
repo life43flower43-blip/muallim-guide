@@ -2,12 +2,14 @@
 import fs from "node:fs";
 import { LAB_SCENARIOS_A, LAB_SKILLS } from "/home/z/my-project/src/lib/lab-scenarios-a.ts";
 import { LAB_SCENARIOS_B } from "/home/z/my-project/src/lib/lab-scenarios-b.ts";
+import { LAB_EXAM_SCENARIOS } from "/home/z/my-project/src/lib/lab-exam.ts";
 const qb = JSON.parse(fs.readFileSync("/home/z/my-project/src/data/qbank.json", "utf8"));
 const conceptIds = new Set(qb.concepts.map((c) => c.id));
 
 const bad = (s) => typeof s !== "string" || /[0-9\u0660-\u0669A-Za-z]/.test(s) || /[\u{1F000}-\u{1FAFF}\u{2600}-\u27BF}]/u.test(s) || s.includes('"');
 const STAGES = ["الروضة", "الابتدائي", "المتوسط", "الثانوي"];
-const all = [...LAB_SCENARIOS_A, ...LAB_SCENARIOS_B];
+const trainIds = new Set([...LAB_SCENARIOS_A, ...LAB_SCENARIOS_B].map((s) => s.id));
+const all = [...LAB_SCENARIOS_A, ...LAB_SCENARIOS_B, ...LAB_EXAM_SCENARIOS];
 let errs = 0;
 
 const ids = new Set(all.map((s) => s.id));
@@ -15,6 +17,8 @@ if (ids.size !== all.length) { console.log("× معرفات مكررة"); errs++
 const skills = new Set(LAB_SKILLS);
 for (const s of all) {
   const e = [];
+  const isExam = s.id.startsWith("EX-");
+  if (isExam && trainIds.has(s.id)) e.push("معرف اختبار يتداخل مع تدريبي");
   if (bad(s.title) || bad(s.skill) || bad(s.stage)) e.push("حقل رأسي مخالف");
   if (!skills.has(s.skill)) e.push(`كفاءة خارج القائمة: ${s.skill}`);
   if (!STAGES.includes(s.stage)) e.push(`مرحلة غير صالحة: ${s.stage}`);
@@ -44,5 +48,6 @@ for (const s of all) {
   }
   if (e.length) { errs += e.length; console.log(`× ${s.id} «${s.title}»:`, e.join("؛ ")); }
 }
-console.log(errs ? `\nفشل: ${errs} ملاحظة` : `\nمقبول: ${all.length} مواقف سليمة بنيوياً ونصياً — ${all.reduce((a, s) => a + Object.keys(s.nodes).length, 0)} عقدة قرار`);
+const examCount = LAB_EXAM_SCENARIOS.length;
+console.log(errs ? `\nفشل: ${errs} ملاحظة` : `\nمقبول: ${all.length - examCount} موقف تدريبي و${examCount} مواقف اختبار استقلال — ${all.reduce((a, s) => a + Object.keys(s.nodes).length, 0)} عقدة قرار`);
 if (errs) process.exit(1);

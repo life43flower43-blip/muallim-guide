@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { conceptById, questionById } from "@/lib/qbank";
 import { ACHIEVEMENTS, useApp } from "@/lib/store";
+import type { LabAttempt } from "@/lib/lab";
 import { useUi } from "@/lib/ui-store";
 import { buildRedoSet } from "@/lib/srs";
 import { shareText } from "@/lib/share";
@@ -122,6 +123,7 @@ export default function AccountView() {
           scenarioChoices: s.scenarioChoices,
           reportedQuestions: s.reportedQuestions,
           studentExamples: s.studentExamples,
+          labAttempts: s.labAttempts,
           onboarded: s.onboarded,
           darkMode: s.darkMode,
           fontScale: s.fontScale,
@@ -160,6 +162,9 @@ export default function AccountView() {
           scenarioChoices: rec(d.scenarioChoices, {}) as typeof scenarioChoices,
           reportedQuestions: Array.isArray(d.reportedQuestions) ? d.reportedQuestions : [],
           studentExamples: rec(d.studentExamples, {}) as NonNullable<ReturnType<typeof useApp.getState>["studentExamples"]>,
+          labAttempts: Array.isArray(d.labAttempts)
+            ? d.labAttempts.filter((a: unknown) => !!a && typeof a === "object" && typeof (a as LabAttempt).sid === "string")
+            : [],
           onboarded: !!d.onboarded,
           darkMode:
             d.darkMode === "auto" || d.darkMode === "dark"

@@ -70,7 +70,7 @@ async def main():
         print("PERSIST: التأمل محفوظ بعد إعادة التحميل ✓")
 
         # خريطة الكفاءات: كفاءة لها دليل وغيرها بلا بداية
-        await pg.click('button:has-text("خريطة الكفاءات")')
+        await pg.click('button:has-text("الخريطة")')
         await pg.wait_for_timeout(500)
         body = await pg.inner_text("body")
         assert "وضوح الشرح" in body, "كفاءة وضوح الشرح غائبة"
