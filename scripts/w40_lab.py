@@ -92,7 +92,9 @@ async def main():
         await pg.click('button:has-text("مواقف سريعة")')
         await pg.wait_for_timeout(800)
         body = await pg.inner_text("body")
-        assert "مختبر المعلّم" not in body, "المختبر لم يغلق عند فتح السريعة"
+        # بطاقة «مختبر المعلّم» في الرئيسية تحمل الاسم نفسه خلف الطبقة — نتحقق بنص حصري لقائمة المختبر
+        assert "محاكاة قرار واحد مع تفسيره التربوي" not in body, "المختبر لم يغلق عند فتح السريعة"
+        assert "مرآتي" not in body, "تبويبات المختبر ما زالت ظاهرة عند فتح السريعة"
         print("QUICK-SCENARIOS: المحاكاة القديمة تعمل من داخل المختبر ✓")
         await pg.screenshot(path=f"{SHOTS}/w40_lab_quick.png")
 

@@ -296,6 +296,7 @@ export default function AppShell() {
         tab={tab}
         onHome={() => {
           clearScenarios(); // يغلق الطبقات المفتوحة ويعود للرئيسية
+          clearLab(); // المختبر أيضاً طبقة ملء شاشة — يجب أن يغلقها زر الرئيسية
           setTab("home");
         }}
         onConcepts={() => setTab("concepts")}

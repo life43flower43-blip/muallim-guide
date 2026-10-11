@@ -19,6 +19,8 @@ import {
   Play,
   User,
   CircleCheck,
+  FlaskConical,
+  Sparkles,
 } from "lucide-react";
 import { CONCEPTS, QUESTIONS, conceptById } from "@/lib/qbank";
 import { orderUnseenFirst } from "@/lib/srs";
@@ -40,6 +42,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const startQuiz = useUi((s) => s.startQuiz);
   const openCourseTab = useUi((s) => s.openCourseTab);
   const startScenarios = useUi((s) => s.startScenarios);
+  const startLab = useUi((s) => s.startLab);
 
   // ---- موضع التقدم على المسار: أول محور لم تُنجز مهامه بعد (من المحاولات والجلسات) ----
   const courseOfQid = useMemo(() => {
@@ -101,7 +104,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       name: "أتدرّب",
       icon: Dumbbell,
       color: "#F59E0B",
-      action: () => onGoTab("quiz"),
+      action: startLab, // توحيد الوجهة مع زر «تدريب» في شريط التنقل — المختبر نفسه
     },
     {
       id: "become",
@@ -191,6 +194,30 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
         <p className="mt-1 text-sm font-bold text-gray-600">
           (عدد لا متناهي من الأسئلة)
         </p>
+      </section>
+
+      {/* ٢.ب مختبر المعلّم — الإضافة الجديدة بارزة في الشاشة الأولى كي لا تبقى مغمورة خلف زر الشريط */}
+      <section aria-label="مختبر المعلّم" className="pt-1">
+        <motion.button
+          whileTap={{ scale: 0.98 }}
+          onClick={startLab}
+          className="relative w-full overflow-hidden rounded-3xl border border-amber-200 bg-gradient-to-l from-amber-50 via-white to-white p-4 text-right shadow-sm"
+        >
+          <span className="absolute left-4 top-4 flex items-center gap-1 rounded-full bg-amber-400 px-2.5 py-1 text-[10px] font-black text-amber-950">
+            <Sparkles className="h-3 w-3" /> جديد
+          </span>
+          <div className="flex items-center gap-3">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#1B4332] text-white">
+              <FlaskConical className="h-6 w-6" />
+            </span>
+            <div className="min-w-0 pr-0.5">
+              <h3 className="text-base font-black text-gray-900">مختبر المعلّم</h3>
+              <p className="mt-0.5 text-xs font-bold leading-5 text-gray-600">
+                مواقف صفّية قراراتها تغيّر الموقف، خريطة كفاءات بأدلة، ومرآة للتأمل — تدرّب كأنك في الصف
+              </p>
+            </div>
+          </div>
+        </motion.button>
       </section>
 
       {/* ٣. القائمة الأفقية للمحاور — بعد الزر الدائري مباشرة، بلا عنوان وبلا تكرار */}
