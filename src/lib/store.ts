@@ -6,6 +6,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import type { Attempt, SessionRecord, StudentExample } from "./types";
 import type { LabAttempt } from "./lab";
 import type { LessonPlan } from "./plans";
+import type { FieldVisit } from "./field";
 import { nextBox } from "./srs";
 import { SCENARIOS } from "./scenarios";
 
@@ -27,6 +28,7 @@ interface AppState {
   studentExamples: Record<string, StudentExample[]>; // أمثلة مجتمع الطلاب لكل مفهوم
   labAttempts: LabAttempt[]; // سجل محاولات مختبر المعلّم — مواقف وتأملات
   lessonPlans: LessonPlan[]; // خطط الدروس المحفوظة من استوديو خطط الدروس
+  fieldVisits: FieldVisit[]; // سجل التدريب الميداني — زيارات المشاهدة والتنفيذ وتأملها
   onboarded: boolean;
   // وضع العرض — فاتح / يتبع النظام / ليلي (ترقية عن dark المنطقي القديم عبر migrate)
   darkMode: "light" | "auto" | "dark";
@@ -45,6 +47,8 @@ interface AppState {
   addLabAttempt: (a: LabAttempt) => void;
   saveLessonPlan: (p: LessonPlan) => void; // إضافة أو تعديل خطة حسب معرفها
   removeLessonPlan: (id: string) => void;
+  addFieldVisit: (v: FieldVisit) => void; // إضافة أو تعديل زيارة ميدانية حسب معرفها
+  removeFieldVisit: (id: string) => void;
   setDarkMode: (v: "light" | "auto" | "dark") => void;
   setFontScale: (v: "normal" | "large" | "bigger") => void;
   setHaptics: (v: boolean) => void;
@@ -90,6 +94,7 @@ export const useApp = create<AppState>()(
       studentExamples: {},
       labAttempts: [],
       lessonPlans: [],
+      fieldVisits: [],
       onboarded: false,
       darkMode: "light",
       fontScale: "normal",
@@ -178,6 +183,15 @@ export const useApp = create<AppState>()(
       removeLessonPlan: (id) =>
         set((st) => ({ lessonPlans: st.lessonPlans.filter((x) => x.id !== id) })),
 
+      // سجل التدريب الميداني — حفظ أو تحديث زيارة حسب معرفها
+      addFieldVisit: (v) =>
+        set((st) => ({
+          fieldVisits: [v, ...st.fieldVisits.filter((x) => x.id !== v.id)],
+        })),
+
+      removeFieldVisit: (id) =>
+        set((st) => ({ fieldVisits: st.fieldVisits.filter((x) => x.id !== id) })),
+
       // وضع العرض وحجم الخط والاهتزاز — تفضيلات عرض لا تُمسّ عند تصفير التقدم
       setDarkMode: (v) => set({ darkMode: v }),
       setFontScale: (v) => set({ fontScale: v }),
@@ -197,12 +211,13 @@ export const useApp = create<AppState>()(
           studentExamples: {},
           labAttempts: [],
           lessonPlans: [],
+          fieldVisits: [],
           onboarded: false,
         }),
     }),
     {
       name: "turbawy-app-v1",
-      version: 3,
+      version: 4,
       // ترقية الحالة القديمة: dark المنطقي يصبح darkMode ثلاثيًا، والاهتزاز يُفعّل افتراضيًا، والمختبر يبدأ فارغًا
       migrate: (s, v) => {
         const st = s as Record<string, unknown>;
@@ -221,6 +236,7 @@ export const useApp = create<AppState>()(
         }
         if (v < 2 && !Array.isArray(out.labAttempts)) return { ...out, labAttempts: [] };
         if (v < 3 && !Array.isArray(out.lessonPlans)) return { ...out, lessonPlans: [] };
+        if (v < 4 && !Array.isArray(out.fieldVisits)) return { ...out, fieldVisits: [] };
         return out;
       },
       storage: createJSONStorage(() => localStorage),
@@ -251,6 +267,7 @@ export interface Achievement {
     conceptReads: Record<string, number>;
     scenarioChoices: Record<string, ScenarioChoice>;
     lessonPlans?: LessonPlan[];
+    fieldVisits?: FieldVisit[];
   }) => boolean;
 }
 
@@ -331,5 +348,12 @@ export const ACHIEVEMENTS: Achievement[] = [
     desc: "أعددت أول خطة درس في استوديو خطط الدروس",
     icon: "NotebookPen",
     earned: (s) => (s.lessonPlans?.length ?? 0) >= 1,
+  },
+  {
+    id: "firstvisit",
+    title: "أول زيارة ميدانية",
+    desc: "وثّقت أول زيارة في سجل التدريب الميداني",
+    icon: "MapPin",
+    earned: (s) => (s.fieldVisits?.length ?? 0) >= 1,
   },
 ];

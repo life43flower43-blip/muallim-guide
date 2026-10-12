@@ -31,6 +31,7 @@ import {
   BookMarked,
   Users,
   Sparkles,
+  LayoutTemplate,
 } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { useApp } from "@/lib/store";
@@ -40,6 +41,7 @@ import {
   DURATION_OPTIONS,
   STRATEGY_OPTIONS,
   PHASE_META,
+  PLAN_TEMPLATES,
   planReview,
   composePlanText,
   planMaturityWord,
@@ -50,7 +52,7 @@ import {
   type PlanReview,
 } from "@/lib/plans";
 
-type StudioTab = "new" | "mine";
+type StudioTab = "new" | "templates" | "mine";
 type FormPlan = Omit<LessonPlan, "id" | "ts">;
 
 const emptyForm = (): FormPlan => ({
@@ -199,6 +201,16 @@ export default function StudioView() {
     setEditingId(null);
     setReview(null);
     setFormErr("");
+  };
+
+  // تحميل قالب جاهز إلى النموذج — يبدأ من خطة احترافية كاملة الأركان ويكيّفها
+  const loadTemplate = (t: (typeof PLAN_TEMPLATES)[number]) => {
+    setForm({ ...t.form, phases: { ...t.form.phases }, strategies: [...t.form.strategies] });
+    setEditingId(null);
+    setReview(null);
+    setFormErr("");
+    setTab("new");
+    toast({ title: `حُمّل قالب «${t.name}» — كيّفه بصفّك وموضوعك` });
   };
 
   const share = async (p: LessonPlan) => {
@@ -371,6 +383,7 @@ export default function StudioView() {
           {(
             [
               ["new", "خطة جديدة", NotebookPen],
+              ["templates", "قوالب", LayoutTemplate],
               ["mine", "خططي", FolderOpen],
             ] as const
           ).map(([id, lbl, Icon]) => (
@@ -395,7 +408,7 @@ export default function StudioView() {
                 <Sparkles className="h-4 w-4" /> كيف يعمل الاستوديو؟
               </p>
               <p className="mt-1 text-xs leading-6 text-muted-foreground">
-                املأ الأركان التي تخدمك — كل حقل موجه بسؤال يذكّرك بالأفضل المهني — ثم اطلب التقييم ليريك ما اكتمل وما يحتاج
+                ابدأ من قالب جاهز أو املأ الأركان بنفسك — كل حقل موجه بسؤال يذكّرك بالأفضل المهني — ثم اطلب التقييم ليريك ما اكتمل وما يحتاج
                 لمسة، واحفظ خطتك لتعود إليها وتشاركها وقتما شئت.
               </p>
             </div>
@@ -598,6 +611,39 @@ export default function StudioView() {
                 </div>
               </motion.div>
             )}
+          </div>
+        ) : tab === "templates" ? (
+          <div className="space-y-3">
+            <div className="rounded-2xl border-2 border-primary/20 bg-gradient-to-l from-accent to-white p-4">
+              <p className="flex items-center gap-2 text-sm font-black text-primary">
+                <LayoutTemplate className="h-4 w-4" /> قوالب جاهزة كاملة الأركان
+              </p>
+              <p className="mt-1 text-xs leading-6 text-muted-foreground">
+                كل قالب خطة محترفة مكتملة من معلمين سابقين — حمّل ما يناسب نوع درسك ثم كيّفه بصفّك وموضوعك، فالبداية من منتصف الطريق أنجح من البداية من الصفر.
+              </p>
+            </div>
+            {PLAN_TEMPLATES.map((t) => (
+              <div key={t.id} className="rounded-2xl border-2 border-border bg-white p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-black leading-6">{t.name}</h3>
+                    <span className="mt-1 inline-block rounded-full bg-accent px-2 py-0.5 text-[10px] font-black text-primary">{t.tag}</span>
+                  </div>
+                </div>
+                <p className="mt-2 text-xs font-bold leading-5 text-muted-foreground">{t.desc}</p>
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {t.form.strategies.map((s) => (
+                    <span key={s} className="rounded-full bg-muted/70 px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{s}</span>
+                  ))}
+                </div>
+                <button
+                  onClick={() => loadTemplate(t)}
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-primary/30 bg-accent py-2.5 text-xs font-black text-primary"
+                >
+                  <NotebookPen className="h-4 w-4" /> ابدأ بهذا القالب
+                </button>
+              </div>
+            ))}
           </div>
         ) : lessonPlans.length === 0 ? (
           <div className="rounded-2xl border-2 border-dashed border-border bg-white p-8 text-center">

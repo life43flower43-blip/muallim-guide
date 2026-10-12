@@ -4,6 +4,8 @@
 // هيرو ترحيبي داكن بتحية حسب الوقت وحلقة هدف اليوم وسلسلة المواصلة (كلها نوعية بلا أرقام)
 // ← بطاقة الاختبار الجوهرية بالزر الدائري المتوهج (هوية المستخدم المحفوظة)
 // ← بطاقة مختبر المعلّم الرائدة بشارة «جديد»
+// ← بطاقة استوديو خطط الدروس (أداة المعلم)
+// ← بطاقة سجل التدريب الميداني بشارة «جديد»
 // ← بطاقة رحلة المحاور الستة بخط تقدم وخطوة تالية ديناميكية
 // قواعد صارمة: صفر أرقام ولا لاتيني ولا إيموجي في النصوص المعروضة، والتنصيص ب«»، وبلا تكرار.
 
@@ -26,6 +28,8 @@ import {
   Route,
   Target,
   ClipboardList,
+  Backpack,
+  MapPin,
 } from "lucide-react";
 import { CONCEPTS, QUESTIONS, conceptById } from "@/lib/qbank";
 import { orderUnseenFirst } from "@/lib/srs";
@@ -82,6 +86,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const startScenarios = useUi((s) => s.startScenarios);
   const startLab = useUi((s) => s.startLab);
   const startStudio = useUi((s) => s.startStudio);
+  const startField = useUi((s) => s.startField);
 
   // ---- موضع التقدم على المسار: أول محور لم تُنجز مهامه بعد (من المحاولات والجلسات) ----
   const courseOfQid = useMemo(() => {
@@ -439,7 +444,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
 
               <div className="mt-4 flex items-center justify-between gap-2">
                 <div className="flex flex-wrap gap-1.5">
-                  {["قالب موجه", "تقييم الخطة", "خططي"].map((c) => (
+                  {["قوالب جاهزة", "تقييم الخطة", "خططي"].map((c) => (
                     <span
                       key={c}
                       className="rounded-full border border-border bg-muted/60 px-2.5 py-1 text-[10px] font-black text-gray-700"
@@ -456,7 +461,58 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
           </motion.button>
         </motion.section>
 
-        {/* ٤. رحلة المحاور — خط تقدم وخطوة تالية */}
+        {/* ٤. سجل التدريب الميداني — وثّق الميدان وتأمله */}
+        <motion.section variants={rise} aria-label="سجل التدريب الميداني">
+          <motion.button
+            whileTap={{ scale: 0.985 }}
+            onClick={startField}
+            className="relative w-full overflow-hidden rounded-[2rem] border border-border bg-white p-5 text-right shadow-lift"
+          >
+            {/* دبوس موقع زخرفي باهت */}
+            <MapPin
+              aria-hidden
+              className="pointer-events-none absolute -bottom-6 -left-4 h-28 w-28 text-primary/5"
+            />
+            <div aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-28 w-28 rounded-full bg-amber-200/25 blur-2xl" />
+
+            <div className="relative">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-md shadow-amber-500/25">
+                    <Backpack className="h-6 w-6" />
+                  </span>
+                  <div>
+                    <h3 className="text-base font-black text-gray-900">سجل التدريب الميداني</h3>
+                    <p className="mt-0.5 text-[11px] font-bold leading-5 text-gray-600">
+                      وثّق زياراتك الميدانية وتأملها — من الملاحظة إلى صفك الخاص
+                    </p>
+                  </div>
+                </div>
+                <span className="flex shrink-0 items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-black text-amber-700">
+                  <Sparkles className="h-3 w-3" /> جديد
+                </span>
+              </div>
+
+              <div className="mt-4 flex items-center justify-between gap-2">
+                <div className="flex flex-wrap gap-1.5">
+                  {["جاهزية قبل الحصة", "مشاهدة وتنفيذ", "تأمل بعد الحصة"].map((c) => (
+                    <span
+                      key={c}
+                      className="rounded-full border border-border bg-muted/60 px-2.5 py-1 text-[10px] font-black text-gray-700"
+                    >
+                      {c}
+                    </span>
+                  ))}
+                </div>
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent">
+                  <ChevronLeft className="h-4.5 w-4.5 text-primary" />
+                </span>
+              </div>
+            </div>
+          </motion.button>
+        </motion.section>
+
+        {/* ٥. رحلة المحاور — خط تقدم وخطوة تالية */}
         <motion.section
           variants={rise}
           aria-label="رحلتك إلى الاحتراف"

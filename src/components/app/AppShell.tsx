@@ -13,6 +13,7 @@ import AccountView from "./AccountView";
 import ScenariosView from "./ScenariosView";
 import LabView from "./LabView";
 import StudioView from "./StudioView";
+import FieldLogView from "./FieldLogView";
 import MistakesView from "./MistakesView";
 import { Button } from "@/components/ui/button";
 
@@ -207,6 +208,8 @@ export default function AppShell() {
   const clearScenarios = useUi((s) => s.clearScenarios);
   const studioOpen = useUi((s) => s.studioOpen);
   const clearStudio = useUi((s) => s.clearStudio);
+  const fieldOpen = useUi((s) => s.fieldOpen);
+  const clearField = useUi((s) => s.clearField);
   const [tab, setTab] = useState("home");
 
   // حالة الاتصال — قراءة مباشرة من المتصفح بلا setState داخل الأثر
@@ -301,6 +304,7 @@ export default function AppShell() {
           clearScenarios(); // يغلق الطبقات المفتوحة ويعود للرئيسية
           clearLab(); // المختبر أيضاً طبقة ملء شاشة — يجب أن يغلقها زر الرئيسية
           clearStudio(); // والاستوديو كذلك
+          clearField(); // وسجل التدريب الميداني
           setTab("home");
         }}
         onConcepts={() => setTab("concepts")}
@@ -314,6 +318,9 @@ export default function AppShell() {
 
       {/* استوديو خطط الدروس */}
       <AnimatePresence>{studioOpen && <StudioView key="studio" />}</AnimatePresence>
+
+      {/* سجل التدريب الميداني */}
+      <AnimatePresence>{fieldOpen && <FieldLogView key="field" />}</AnimatePresence>
 
       {/* شاشة محاكاة الصف الدراسي */}
       <AnimatePresence>{scenariosOpen && <ScenariosView key="scenarios" />}</AnimatePresence>

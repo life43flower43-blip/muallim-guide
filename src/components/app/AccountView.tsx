@@ -18,6 +18,10 @@ import {
   MessageSquare,
   MessagesSquare,
   NotebookPen,
+  MapPin,
+  Award,
+  CircleCheck,
+  MinusCircle,
   Moon,
   Sun,
   Monitor,
@@ -34,6 +38,12 @@ import type { LabAttempt } from "@/lib/lab";
 import { useUi } from "@/lib/ui-store";
 import { buildRedoSet } from "@/lib/srs";
 import { shareText } from "@/lib/share";
+import {
+  composePortfolioText,
+  readinessChecks,
+  readinessDesc,
+  readinessWord,
+} from "@/lib/portfolio";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -59,6 +69,7 @@ const ACH_ICONS: Record<string, React.ElementType> = {
   MessageSquare,
   MessagesSquare,
   NotebookPen,
+  MapPin,
 };
 
 type FontScale = "normal" | "large" | "bigger";
@@ -70,7 +81,18 @@ interface InstallPromptEvent extends Event {
 
 // ---------- صفحة حسابي: الملف الشخصي + تثبيت الفهم + السجل — بلا أرقام ولا إحصاءات (قرار المستخدم) ----------
 export default function AccountView() {
-  const { name, attempts, sessions, conceptReads, scenarioChoices, lessonPlans, setName } = useApp();
+  const {
+    name,
+    xp,
+    attempts,
+    sessions,
+    conceptReads,
+    scenarioChoices,
+    labAttempts,
+    lessonPlans,
+    fieldVisits,
+    setName,
+  } = useApp();
   const darkMode = useApp((s) => s.darkMode);
   const setDarkMode = useApp((s) => s.setDarkMode);
   const haptics = useApp((s) => s.haptics);
@@ -127,6 +149,7 @@ export default function AccountView() {
           studentExamples: s.studentExamples,
           labAttempts: s.labAttempts,
           lessonPlans: s.lessonPlans,
+          fieldVisits: s.fieldVisits,
           onboarded: s.onboarded,
           darkMode: s.darkMode,
           fontScale: s.fontScale,
@@ -172,6 +195,12 @@ export default function AccountView() {
             ? d.lessonPlans.filter(
                 (p: unknown) =>
                   !!p && typeof p === "object" && typeof (p as { id?: unknown }).id === "string"
+              )
+            : [],
+          fieldVisits: Array.isArray(d.fieldVisits)
+            ? d.fieldVisits.filter(
+                (v: unknown) =>
+                  !!v && typeof v === "object" && typeof (v as { id?: unknown }).id === "string"
               )
             : [],
           onboarded: !!d.onboarded,
@@ -221,10 +250,34 @@ export default function AccountView() {
     () =>
       ACHIEVEMENTS.map((a) => ({
         ...a,
-        ok: a.earned({ attempts, sessions, conceptReads, scenarioChoices, lessonPlans }),
+        ok: a.earned({ attempts, sessions, conceptReads, scenarioChoices, lessonPlans, fieldVisits }),
       })),
-    [attempts, sessions, conceptReads, scenarioChoices, lessonPlans]
+    [attempts, sessions, conceptReads, scenarioChoices, lessonPlans, fieldVisits]
   );
+
+  // ---- ملف الإنجاز المهني — جاهزيتك من كل مصادر التطبيق كلمات لا نسب ----
+  const portfolio = useMemo(() => {
+    const input = {
+      name,
+      xp,
+      attempts,
+      sessions,
+      conceptReads,
+      scenarioChoices,
+      labAttempts,
+      lessonPlans,
+      fieldVisits,
+      achievementsTotal: ACHIEVEMENTS.length,
+      achievementsEarned: earned.filter((a) => a.ok).length,
+    };
+    const word = readinessWord(input);
+    return {
+      word,
+      desc: readinessDesc(input),
+      checks: readinessChecks(input),
+      shareText: () => composePortfolioText(input, word),
+    };
+  }, [name, xp, attempts, sessions, conceptReads, scenarioChoices, labAttempts, lessonPlans, fieldVisits, earned]);
 
   return (
     <div className="space-y-4 px-4 pb-6">
@@ -260,6 +313,41 @@ export default function AccountView() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* ملف الإنجاز المهني — جاهزيتك كلمات لا نسب، من كل مصادر التطبيق */}
+      <div className="card-soft rounded-3xl border border-primary/20 bg-accent p-5">
+        <div className="flex items-center justify-between gap-2">
+          <p className="flex items-center gap-2 text-sm font-black">
+            <Award className="h-4 w-4 text-primary" /> ملف إنجازك المهني
+          </p>
+          <span className="rounded-full bg-primary px-3 py-1 text-[10px] font-black text-primary-foreground">
+            {portfolio.word}
+          </span>
+        </div>
+        <p className="mt-2 text-xs font-bold leading-5 text-muted-foreground">{portfolio.desc}</p>
+        <div className="mt-3 space-y-1.5">
+          {portfolio.checks.map(({ check, ok }) => (
+            <div key={check.key} className="flex items-start gap-2 rounded-xl bg-background/60 px-3 py-2">
+              {ok ? (
+                <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+              ) : (
+                <MinusCircle className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+              )}
+              <p className="text-[11px] font-bold leading-5 text-foreground">{ok ? check.label : check.next}</p>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={async () => {
+            const r = await shareText("ملف إنجاز المعلم المتدرب", portfolio.shareText());
+            if (r === "copied") toast({ title: "نُسخ ملف إنجازك إلى الحافظة" });
+            else if (r === "failed") toast({ title: "تعذّر النسخ — أعد المحاولة" });
+          }}
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3 text-xs font-black text-primary-foreground"
+        >
+          <Share2 className="h-4 w-4" /> شارك ملف إنجازك
+        </button>
       </div>
 
       {/* إعادة الأسئلة الخاطئة */}
