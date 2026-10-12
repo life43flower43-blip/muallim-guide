@@ -16,6 +16,11 @@ import StudioView from "./StudioView";
 import FieldLogView from "./FieldLogView";
 import MistakesView from "./MistakesView";
 import ChallengeSession from "./ChallengeSession";
+import SpeechStage from "./SpeechStage";
+import StudySchool from "./StudySchool";
+import MeasureKit from "./MeasureKit";
+import PeerChallenge from "./PeerChallenge";
+import { readPeerHash } from "@/lib/peer";
 import { Button } from "@/components/ui/button";
 
 const TAB_TITLES: Record<string, string> = {
@@ -213,6 +218,16 @@ export default function AppShell() {
   const clearField = useUi((s) => s.clearField);
   const challengesOpen = useUi((s) => s.challengesOpen);
   const clearChallenges = useUi((s) => s.clearChallenges);
+  const stageOpen = useUi((s) => s.stageOpen);
+  const clearStage = useUi((s) => s.clearStage);
+  const studyOpen = useUi((s) => s.studyOpen);
+  const clearStudy = useUi((s) => s.clearStudy);
+  const measureOpen = useUi((s) => s.measureOpen);
+  const clearMeasure = useUi((s) => s.clearMeasure);
+  const peerOpen = useUi((s) => s.peerOpen);
+  const clearPeer = useUi((s) => s.clearPeer);
+  const startPeer = useUi((s) => s.startPeer);
+  const setPeerIncoming = useUi((s) => s.setPeerIncoming);
   const [tab, setTab] = useState("home");
 
   // حالة الاتصال — قراءة مباشرة من المتصفح بلا setState داخل الأثر
@@ -250,6 +265,18 @@ export default function AppShell() {
     }
   }, []);
 
+  // التقاط تحدٍّ واصل عبر معرف الرابط — يفتح تحدّي الأقران مباشرة ثم ينظف العنوان
+  useEffect(() => {
+    const p = readPeerHash();
+    if (!p) return;
+    setPeerIncoming(p);
+    startPeer();
+    try {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (!hydrated) return <ShellSkeleton />;
 
   if (!onboarded) return <Onboarding />;
@@ -257,6 +284,14 @@ export default function AppShell() {
   if (quizConfig) return <QuizSession config={quizConfig} />;
 
   if (challengesOpen) return <ChallengeSession />;
+
+  if (stageOpen) return <SpeechStage />;
+
+  if (studyOpen) return <StudySchool />;
+
+  if (measureOpen) return <MeasureKit />;
+
+  if (peerOpen) return <PeerChallenge />;
 
   return (
     <div className="mx-auto flex h-dvh max-w-[480px] flex-col bg-background shadow-xl">
@@ -311,6 +346,10 @@ export default function AppShell() {
           clearStudio(); // والاستوديو كذلك
           clearField(); // وسجل التدريب الميداني
           clearChallenges(); // والتحديات الذكية
+          clearStage(); // ومِسرح الإلقاء
+          clearStudy(); // ومدرسة المذاكرة
+          clearMeasure(); // ومعدة القياس
+          clearPeer(); // وتحدّي الأقران
           setTab("home");
         }}
         onConcepts={() => setTab("concepts")}

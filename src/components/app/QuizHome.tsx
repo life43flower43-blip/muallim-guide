@@ -18,8 +18,13 @@ import {
   Flame,
   HeartPulse,
   Focus,
+  Users,
+  Award,
+  Mic,
+  GraduationCap,
+  Calculator,
 } from "lucide-react";
-import { COURSES, COURSE_SHORT, questionsOfCourse, QUESTIONS, conceptById, shuffle } from "@/lib/qbank";
+import { COURSES, COURSE_SHORT, questionsOfCourse, QUESTIONS, conceptById, shuffle, buildProficiencySet } from "@/lib/qbank";
 import { buildReviewSet, buildRedoSet, orderUnseenFirst } from "@/lib/srs";
 import { useApp, currentStreak } from "@/lib/store";
 import { ad } from "@/lib/arabic";
@@ -79,6 +84,10 @@ function ModeCard({
 export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) {
   const startQuiz = useUi((s) => s.startQuiz);
   const startChallenges = useUi((s) => s.startChallenges);
+  const startStage = useUi((s) => s.startStage);
+  const startStudy = useUi((s) => s.startStudy);
+  const startMeasure = useUi((s) => s.startMeasure);
+  const startPeer = useUi((s) => s.startPeer);
   const attempts = useApp((s) => s.attempts);
   const sessions = useApp((s) => s.sessions);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -193,6 +202,14 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
       />
 
       <ModeCard
+        icon={Users}
+        title="تحدّي الأقران"
+        desc="أنشئ تحديًا من الأسئلة وشارك رابطه مع زميلك — يجيب هو عنها ويقارن نتيجتاكم بلا حسابات ولا سيرفرات"
+        color="#B45309"
+        onClick={startPeer}
+      />
+
+      <ModeCard
         icon={Brain}
         title="الاختبار المكثف"
         desc="جميع أسئلة البنك في جلسة واحدة — وعند كل خطأ نعرفك بمفهومه وأمثلته، ويُسجل الخطأ في صفحة أخطائي"
@@ -266,6 +283,48 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
             timeLimitSec: 15 * 60,
           })
         }
+      />
+
+      <ModeCard
+        icon={Award}
+        title="اختبار الكفاءة الشامل"
+        desc="خمسون سؤالًا من كل المحاور في خمسين دقيقة — بلا تلميحات ولا توجيه أثناءه، وتقرير نجاح بخطاب على المحاور"
+        badge="وضع صارم"
+        color="#1B4332"
+        onClick={() =>
+          startQuiz({
+            mode: "proficiency",
+            label: "اختبار الكفاءة الشامل",
+            qids: buildProficiencySet(50),
+            timeLimitSec: 50 * 60,
+          })
+        }
+      />
+
+      <ModeCard
+        icon={Mic}
+        title="مِسرح الإلقاء"
+        desc="سجّل شرحك بصوتك لمفهوم ما ثم استمع لنفسك وقيّم نفسك — سلم تدريجي يكسر رهبة الوقوف أمام الصف"
+        badge="جديد"
+        color="#BE185D"
+        onClick={startStage}
+      />
+
+      <ModeCard
+        icon={GraduationCap}
+        title="مدرسة المذاكرة"
+        desc="ستة دروس قصيرة تعلمك الاستدعاء والتباعد وفاينمان وبومودورو والخرائط وليلة الاختبار — وكل درس تطبقه هنا"
+        badge="جديد"
+        color="#4338CA"
+        onClick={startStudy}
+      />
+
+      <ModeCard
+        icon={Calculator}
+        title="معدة القياس والتقويم"
+        desc="حاسبات مساق التقويم الأربع: الوسط والوسيط والمدى، صعوبة السؤال وتمييزه، ووزن الدرجة — بشرح تربوي"
+        color="#0E7490"
+        onClick={startMeasure}
       />
 
       {/* تدريب حسب المحور */}

@@ -53,7 +53,19 @@ export interface Attempt {
 
 export interface SessionRecord {
   id: string;
-  mode: "training" | "exam" | "quick" | "review" | "redo" | "scenarios" | "intensive" | "challenges";
+  mode:
+    | "training"
+    | "exam"
+    | "quick"
+    | "review"
+    | "redo"
+    | "scenarios"
+    | "intensive"
+    | "challenges"
+    | "proficiency" // اختبار الكفاءة الشامل الموقوت — من بحث مشاكل الطلبة
+    | "peer" // تحدّي الأقران عبر الرابط
+    | "stage" // مِسرح الإلقاء — شرح صوتي موقوت
+    | "study"; // مدرسة المذاكرة — درس مكتمل
   label: string;
   total: number;
   correctCount: number;

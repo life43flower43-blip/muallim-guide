@@ -9,6 +9,7 @@ import type { LessonPlan } from "./plans";
 import type { FieldVisit } from "./field";
 import { nextBox } from "./srs";
 import { SCENARIOS } from "./scenarios";
+import { STUDY_LESSONS } from "./study-school";
 
 export interface ScenarioChoice {
   opt: number; // فهرس الخيار المختار
@@ -20,6 +21,14 @@ export interface ConceptNote {
   id: string;
   text: string;
   ts: number;
+}
+
+// وقفة إلقاء مسجلة في مِسرح الإلقاء — من ميزة «د» في بحث مشاكل الطلبة (خوف التحدث أمام الجمهور)
+export interface SpeechRecord {
+  ts: number;
+  level: number; // مستوى السلم التدريجي: واحد شرح لنفسك، اثنان دقيقة مؤقتة، ثلاثة أسئلة مفاجئة
+  durSec: number; // مدة التسجيل بالثواني
+  score: number; // متوسط التقييم الذاتي من خمسة
 }
 
 interface AppState {
@@ -39,6 +48,9 @@ interface AppState {
   challengeStats: Record<string, { ok: number; total: number; lastTs: number }>; // إحصاء التحديات الذكية
   notes: Record<string, ConceptNote[]>; // ملاحظاتي المرتبطة بالمفاهيم
   focusCount: number; // عدد جلسات التركيز المكتملة
+  speechRecords: SpeechRecord[]; // وقفات الإلقاء المسجلة — مِسرح الإلقاء
+  studyDone: Record<string, number>; // دروس مدرسة المذاكرة المكتملة — معرف الدرس إلى زمن إتمامه
+  firstdayChecked: string[]; // بنود قائمة اليوم الأول المشطّطة
   onboarded: boolean;
   // وضع العرض — فاتح / يتبع النظام / ليلي (ترقية عن dark المنطقي القديم عبر migrate)
   darkMode: "light" | "auto" | "dark";
@@ -63,6 +75,9 @@ interface AppState {
   addNote: (cid: string, text: string) => void;
   removeNote: (cid: string, id: string) => void;
   addFocusSession: () => void;
+  addSpeechRecord: (r: Omit<SpeechRecord, "ts">) => void;
+  addStudyLesson: (lessonId: string) => void;
+  toggleFirstday: (itemId: string) => void;
   setDarkMode: (v: "light" | "auto" | "dark") => void;
   setFontScale: (v: "normal" | "large" | "bigger") => void;
   setHaptics: (v: boolean) => void;
@@ -137,6 +152,9 @@ export const useApp = create<AppState>()(
       challengeStats: {},
       notes: {},
       focusCount: 0,
+      speechRecords: [],
+      studyDone: {},
+      firstdayChecked: [],
       onboarded: false,
       darkMode: "light",
       fontScale: "normal",
@@ -263,6 +281,28 @@ export const useApp = create<AppState>()(
       // جلسات التركيز — عدّاد الإنجاز لمؤقت التركيز
       addFocusSession: () => set((st) => ({ focusCount: st.focusCount + 1 })),
 
+      // مِسرح الإلقاء — حفظ وقفة جديدة ويبقى آخر ثلاثين وقفة
+      addSpeechRecord: (r) =>
+        set((st) => ({
+          speechRecords: [{ ...r, ts: Date.now() }, ...st.speechRecords].slice(0, 30),
+        })),
+
+      // مدرسة المذاكرة — وسم درسًا مكتملًا (لا يُعاد وسمه)
+      addStudyLesson: (lessonId) =>
+        set((st) =>
+          st.studyDone[lessonId]
+            ? {}
+            : { studyDone: { ...st.studyDone, [lessonId]: Date.now() } }
+        ),
+
+      // قائمة اليوم الأول — شطط بند أو إلغاؤه
+      toggleFirstday: (itemId) =>
+        set((st) => ({
+          firstdayChecked: st.firstdayChecked.includes(itemId)
+            ? st.firstdayChecked.filter((x) => x !== itemId)
+            : [...st.firstdayChecked, itemId],
+        })),
+
       // وضع العرض وحجم الخط والاهتزاز — تفضيلات عرض لا تُمسّ عند تصفير التقدم
       setDarkMode: (v) => set({ darkMode: v }),
       setFontScale: (v) => set({ fontScale: v }),
@@ -286,12 +326,15 @@ export const useApp = create<AppState>()(
           challengeStats: {},
           notes: {},
           focusCount: 0,
+          speechRecords: [],
+          studyDone: {},
+          firstdayChecked: [],
           onboarded: false,
         }),
     }),
     {
       name: "turbawy-app-v1",
-      version: 5,
+      version: 6,
       // ترقية الحالة القديمة: dark المنطقي يصبح darkMode ثلاثيًا، والاهتزاز يُفعّل افتراضيًا، والمختبر يبدأ فارغًا
       migrate: (s, v) => {
         const st = s as Record<string, unknown>;
@@ -317,6 +360,14 @@ export const useApp = create<AppState>()(
             challengeStats: out.challengeStats ?? {},
             notes: out.notes ?? {},
             focusCount: typeof out.focusCount === "number" ? out.focusCount : 0,
+          };
+        }
+        if (v < 6) {
+          return {
+            ...out,
+            speechRecords: Array.isArray(out.speechRecords) ? out.speechRecords : [],
+            studyDone: out.studyDone ?? {},
+            firstdayChecked: Array.isArray(out.firstdayChecked) ? out.firstdayChecked : [],
           };
         }
         return out;
@@ -350,6 +401,8 @@ export interface Achievement {
     scenarioChoices: Record<string, ScenarioChoice>;
     lessonPlans?: LessonPlan[];
     fieldVisits?: FieldVisit[];
+    speechRecords?: SpeechRecord[];
+    studyDone?: Record<string, number>;
   }) => boolean;
 }
 
@@ -437,5 +490,36 @@ export const ACHIEVEMENTS: Achievement[] = [
     desc: "وثّقت أول زيارة في سجل التدريب الميداني",
     icon: "MapPin",
     earned: (s) => (s.fieldVisits?.length ?? 0) >= 1,
+  },
+  {
+    id: "firstspeech",
+    title: "أول وقفة على المسرح",
+    desc: "سجلت أول شرح صوتي في مِسرح الإلقاء",
+    icon: "Mic",
+    earned: (s) => (s.speechRecords?.length ?? 0) >= 1,
+  },
+  {
+    id: "studyschool",
+    title: "خريج مدرسة المذاكرة",
+    desc: "أكملت دروس مهارات المذاكرة الستة كلها",
+    icon: "GraduationCap",
+    earned: (s) => Object.keys(s.studyDone ?? {}).length >= STUDY_LESSONS.length,
+  },
+  {
+    id: "proficiency",
+    title: "نجمة الكفاءة",
+    desc: "نجحت في اختبار الكفاءة الشامل الموقوت",
+    icon: "Award",
+    earned: (s) =>
+      s.sessions.some(
+        (x) => x.mode === "proficiency" && x.total > 0 && x.correctCount / x.total >= 0.6
+      ),
+  },
+  {
+    id: "peer",
+    title: "روح التحدي",
+    desc: "أكملت تحدي أقران مشتركًا عبر رابط",
+    icon: "Users",
+    earned: (s) => s.sessions.some((x) => x.mode === "peer"),
   },
 ];

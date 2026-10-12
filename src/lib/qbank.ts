@@ -81,6 +81,16 @@ export function shuffle<T>(arr: T[]): T[] {
 
 export const OPTION_LETTERS = ["أ", "ب", "ج", "د"];
 
+// مجموعة اختبار الكفاءة الشامل — توزيع متوازن على المحاور كلها ثم خلط
+// (من ميزة «ي» في بحث مشاكل الطلبة: رسوب اختبارات الترخيص)
+export function buildProficiencySet(total = 50): string[] {
+  const per = Math.ceil(total / COURSES.length);
+  const parts = COURSES.map((c) =>
+    shuffle(questionsOfCourse(c.id).map((q) => q.id)).slice(0, per)
+  );
+  return shuffle(parts.flat()).slice(0, total);
+}
+
 export const LEVEL_TITLES = [
   "مبتدئ",
   "ناشئ",

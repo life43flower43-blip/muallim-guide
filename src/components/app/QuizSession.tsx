@@ -15,13 +15,14 @@ import {
   Trophy,
   Flag,
   Target,
+  Award,
 } from "lucide-react";
-import { questionById, conceptById, examplesOf, OPTION_LETTERS, shuffle } from "@/lib/qbank";
+import { questionById, conceptById, examplesOf, OPTION_LETTERS, COURSES, COURSE_SHORT, shuffle } from "@/lib/qbank";
 import { useApp } from "@/lib/store";
 import { useUi, type QuizConfig } from "@/lib/ui-store";
 import { saveSnapshot, loadSnapshot, clearSnapshot, RESUME_FLAG } from "@/lib/session-snapshot";
 import { buildSocraticSteps, type SocraticStep } from "@/lib/socratic";
-import { ad } from "@/lib/arabic";
+import { ad, arCount, QUESTION_OBJ_FORMS } from "@/lib/arabic";
 import SpeakButton from "./SpeakButton";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -263,10 +264,31 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     [config.qids]
   );
   const q = questions[idx];
-  const instantFeedback = config.mode !== "exam";
+  const instantFeedback = config.mode !== "exam" && config.mode !== "proficiency";
   const concept = q ? conceptById(q.conceptId) : undefined;
   // خلط ترتيب خيارات المقالي بثبات لكل سؤال — لا يُخلط صح/خطأ (أيقوناته دلالية)
   const mcqOpts = useMemo(() => (q && q.type === "mcq" ? shuffle(q.options) : []), [q]);
+
+  // خطاب اختبار الكفاءة — تفصيل النتيجة على المحاور (ميزة «ي» في بحث مشاكل الطلبة)
+  // محسوب دائمًا بلا شرط — قواعد الخطافات تمنع الاستدعاء الشرطي
+  const courseRows = useMemo(() => {
+    const m = new Map<string, { ok: number; total: number }>();
+    for (const r of review) {
+      const rq = questionById(r.qid);
+      if (!rq) continue;
+      const rc = conceptById(rq.conceptId);
+      if (!rc) continue;
+      const row = m.get(rc.courseId) ?? { ok: 0, total: 0 };
+      row.total++;
+      if (r.ok) row.ok++;
+      m.set(rc.courseId, row);
+    }
+    return COURSES.map((c) => ({
+      id: c.id,
+      name: COURSE_SHORT[c.id] ?? c.name,
+      ...(m.get(c.id) ?? { ok: 0, total: 0 }),
+    })).filter((r) => r.total > 0);
+  }, [review]);
 
   // عند انتهاء الجلسة: تسجيل النقاط مرة واحدة
   useEffect(() => {
@@ -343,6 +365,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
       const correctCount = review.filter((r) => r.ok).length;
       if (config.mode === "exam" && correctCount === questions.length) {
         setSessionXp((x) => x + 30);
+      } else if (config.mode === "proficiency" && correctCount / questions.length >= 0.6) {
+        setSessionXp((x) => x + 50); // مكافأة النجاح في وضع الكفاءة الصارم
       } else if (correctCount === questions.length && questions.length >= 5) {
         setSessionXp((x) => x + 20);
       }
@@ -373,6 +397,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
   if (finished) {
     const correctCount = review.filter((r) => r.ok).length;
     const pct = (correctCount / questions.length) * 100;
+    const isProficiency = config.mode === "proficiency";
+    const passed = pct >= 60;
     const msg =
       pct === 100
         ? "إتقان كامل! أنت أسطورة"
@@ -401,6 +427,70 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               </p>
             )}
           </div>
+
+          {/* خطاب اختبار الكفاءة — نجاح أو رسوب مع تفصيل المحاور */}
+          {isProficiency && (
+            <div
+              className={`pop-in rounded-3xl border-2 p-4 ${
+                passed ? "border-emerald-300 bg-emerald-50" : "border-red-200 bg-red-50"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                {passed ? (
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-600 text-white">
+                    <Award className="h-6 w-6" />
+                  </span>
+                ) : (
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-red-500 text-white">
+                    <XCircle className="h-6 w-6" />
+                  </span>
+                )}
+                <div className="min-w-0">
+                  <p className={`text-base font-black ${passed ? "text-emerald-800" : "text-red-800"}`}>
+                    {passed ? "نجحت في اختبار الكفاءة" : "لم تنجح هذه المرة — وسبيلك واضح"}
+                  </p>
+                  <p className="text-xs font-bold leading-6 text-muted-foreground">
+                    أجبت صوابًا عن {arCount(correctCount, QUESTION_OBJ_FORMS)} من {ad(questions.length)} — وعتبة
+                    النجاح ستون بالمئة كما في الاختبارات الحقيقية.
+                  </p>
+                </div>
+              </div>
+
+              <p className="mt-3 text-xs font-black text-foreground">خطابك على المحاور:</p>
+              <div className="mt-2 space-y-2">
+                {courseRows.map((row) => {
+                  const rowPct = row.total > 0 ? row.ok / row.total : 0;
+                  return (
+                    <div key={row.id}>
+                      <div className="mb-1 flex items-center justify-between text-[11px] font-black">
+                        <span>{row.name}</span>
+                        <span
+                          className={
+                            rowPct >= 0.6
+                              ? "text-emerald-700"
+                              : rowPct >= 0.4
+                                ? "text-amber-700"
+                                : "text-red-600"
+                          }
+                        >
+                          {ad(row.ok)} من {ad(row.total)}
+                        </span>
+                      </div>
+                      <div className="progress-track h-2">
+                        <div className="progress-fill h-full" style={{ width: `${rowPct * 100}%` }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <p className="mt-3 rounded-xl bg-white/80 p-3 text-[11px] font-bold leading-6 text-foreground">
+                {passed
+                  ? "أنت الآن قادر على اجتياز هذا المستوى من الكفاءة — راجع المحاور الأضعف في الخطاب أعلاه لتثبيت الأفضلية."
+                  : "ركّز مذاكرتك على المحاور الأدنى في الخطاب أعلاه: تدريب حسب المحور ثم المراجعة الذكية — ثم عد لاختبار الكفاءة من جديد."}
+              </p>
+            </div>
+          )}
           <p className="mb-2 mt-4 px-1 text-sm font-extrabold text-muted-foreground">
             مراجعة الأسئلة — اضغط لعرض التفسير
           </p>

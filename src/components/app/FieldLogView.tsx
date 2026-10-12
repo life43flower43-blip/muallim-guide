@@ -24,11 +24,13 @@ import {
   Search,
   MessageSquareQuote,
   Star,
+  Sunrise,
 } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { useApp } from "@/lib/store";
 import { shareText } from "@/lib/share";
 import { toast } from "@/hooks/use-toast";
+import FirstDayList from "./FirstDayList";
 import {
   SIZE_OPTIONS,
   RATING_OPTIONS,
@@ -44,7 +46,7 @@ import {
   type VisitKind,
 } from "@/lib/field";
 
-type FieldTab = "new" | "log";
+type FieldTab = "new" | "log" | "first";
 type VisitForm = Omit<FieldVisit, "id" | "ts">;
 
 const emptyForm = (): VisitForm => ({
@@ -329,6 +331,7 @@ export default function FieldLogView() {
             [
               ["new", "زيارة جديدة", NotebookPen],
               ["log", "سجل الزيارات", FolderOpen],
+              ["first", "اليوم الأول", Sunrise],
             ] as const
           ).map(([id, lbl, Icon]) => (
             <button
@@ -566,6 +569,8 @@ export default function FieldLogView() {
               </button>
             )}
           </div>
+        ) : tab === "first" ? (
+          <FirstDayList />
         ) : fieldVisits.length === 0 ? (
           <div className="rounded-2xl border-2 border-dashed border-border bg-white p-8 text-center">
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent">

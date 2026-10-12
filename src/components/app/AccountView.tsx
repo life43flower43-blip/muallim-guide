@@ -31,6 +31,9 @@ import {
   Upload,
   Type,
   Smartphone,
+  Mic,
+  GraduationCap,
+  Users,
 } from "lucide-react";
 import { conceptById, questionById } from "@/lib/qbank";
 import { ACHIEVEMENTS, useApp } from "@/lib/store";
@@ -70,6 +73,10 @@ const ACH_ICONS: Record<string, React.ElementType> = {
   MessagesSquare,
   NotebookPen,
   MapPin,
+  Mic,
+  GraduationCap,
+  Award,
+  Users,
 };
 
 type FontScale = "normal" | "large" | "bigger";
@@ -91,6 +98,8 @@ export default function AccountView() {
     labAttempts,
     lessonPlans,
     fieldVisits,
+    speechRecords,
+    studyDone,
     setName,
   } = useApp();
   const darkMode = useApp((s) => s.darkMode);
@@ -250,9 +259,18 @@ export default function AccountView() {
     () =>
       ACHIEVEMENTS.map((a) => ({
         ...a,
-        ok: a.earned({ attempts, sessions, conceptReads, scenarioChoices, lessonPlans, fieldVisits }),
+        ok: a.earned({
+          attempts,
+          sessions,
+          conceptReads,
+          scenarioChoices,
+          lessonPlans,
+          fieldVisits,
+          speechRecords,
+          studyDone,
+        }),
       })),
-    [attempts, sessions, conceptReads, scenarioChoices, lessonPlans, fieldVisits]
+    [attempts, sessions, conceptReads, scenarioChoices, lessonPlans, fieldVisits, speechRecords, studyDone]
   );
 
   // ---- ملف الإنجاز المهني — جاهزيتك من كل مصادر التطبيق كلمات لا نسب ----

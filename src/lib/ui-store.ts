@@ -1,9 +1,10 @@
 "use client";
 
 import { create } from "zustand";
+import type { PeerPayload } from "./peer";
 
 export interface QuizConfig {
-  mode: "training" | "exam" | "quick" | "review" | "redo" | "intensive";
+  mode: "training" | "exam" | "quick" | "review" | "redo" | "intensive" | "proficiency";
   label: string;
   qids: string[];
   timeLimitSec?: number;
@@ -19,6 +20,11 @@ interface UiState {
   challengesOpen: boolean; // التحديات الذكية — ترتيب وإكمال وإنتاج كتابي
   studioOpen: boolean; // استوديو خطط الدروس — نموذج موجّه وتقييم الخطة وخططي
   fieldOpen: boolean; // سجل التدريب الميداني — جاهزية وزيارات وتأملها
+  stageOpen: boolean; // مِسرح الإلقاء — شرح صوتي موقوت وتقييم ذاتي
+  studyOpen: boolean; // مدرسة المذاكرة — ستة دروس تفاعلية في مهارات الدراسة
+  measureOpen: boolean; // معدة القياس والتقويم — حاسبات إحصائية تربوية
+  peerOpen: boolean; // تحدّي الأقران — رابط يحمل التحدي بلا سيرفر
+  peerIncoming: PeerPayload | null; // تحدٍّ وصل عبر رابط مفتوح — يُلتقط من معرف الرابط
   startQuiz: (c: QuizConfig) => void;
   clearQuiz: () => void;
   openConcept: (id: string) => void;
@@ -35,6 +41,15 @@ interface UiState {
   clearStudio: () => void;
   startField: () => void;
   clearField: () => void;
+  startStage: () => void;
+  clearStage: () => void;
+  startStudy: () => void;
+  clearStudy: () => void;
+  startMeasure: () => void;
+  clearMeasure: () => void;
+  startPeer: () => void;
+  clearPeer: () => void;
+  setPeerIncoming: (p: PeerPayload | null) => void;
 }
 
 export const useUi = create<UiState>((set) => ({
@@ -46,6 +61,11 @@ export const useUi = create<UiState>((set) => ({
   challengesOpen: false,
   studioOpen: false,
   fieldOpen: false,
+  stageOpen: false,
+  studyOpen: false,
+  measureOpen: false,
+  peerOpen: false,
+  peerIncoming: null,
   startQuiz: (c) => set({ quizConfig: c }),
   clearQuiz: () => set({ quizConfig: null }),
   openConcept: (id) => set({ pendingConceptId: id }),
@@ -62,4 +82,13 @@ export const useUi = create<UiState>((set) => ({
   clearStudio: () => set({ studioOpen: false }),
   startField: () => set({ fieldOpen: true }),
   clearField: () => set({ fieldOpen: false }),
+  startStage: () => set({ stageOpen: true }),
+  clearStage: () => set({ stageOpen: false }),
+  startStudy: () => set({ studyOpen: true }),
+  clearStudy: () => set({ studyOpen: false }),
+  startMeasure: () => set({ measureOpen: true }),
+  clearMeasure: () => set({ measureOpen: false }),
+  startPeer: () => set({ peerOpen: true }),
+  clearPeer: () => set({ peerOpen: false }),
+  setPeerIncoming: (p) => set({ peerIncoming: p }),
 }));
