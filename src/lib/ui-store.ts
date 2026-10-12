@@ -16,6 +16,7 @@ interface UiState {
   pendingCourseId: string | null; // محور مطلوب فتحه في المفاهيم (عوالم «الأساس» و«أعرف»)
   scenariosOpen: boolean; // شاشة محاكاة الصف الدراسي
   labOpen: boolean; // مختبر المعلّم — مواقف متفرعة وخريطة كفاءات ومرآة
+  challengesOpen: boolean; // التحديات الذكية — ترتيب وإكمال وإنتاج كتابي
   studioOpen: boolean; // استوديو خطط الدروس — نموذج موجّه وتقييم الخطة وخططي
   fieldOpen: boolean; // سجل التدريب الميداني — جاهزية وزيارات وتأملها
   startQuiz: (c: QuizConfig) => void;
@@ -28,6 +29,8 @@ interface UiState {
   clearScenarios: () => void;
   startLab: () => void;
   clearLab: () => void;
+  startChallenges: () => void;
+  clearChallenges: () => void;
   startStudio: () => void;
   clearStudio: () => void;
   startField: () => void;
@@ -40,6 +43,7 @@ export const useUi = create<UiState>((set) => ({
   pendingCourseId: null,
   scenariosOpen: false,
   labOpen: false,
+  challengesOpen: false,
   studioOpen: false,
   fieldOpen: false,
   startQuiz: (c) => set({ quizConfig: c }),
@@ -52,6 +56,8 @@ export const useUi = create<UiState>((set) => ({
   clearScenarios: () => set({ scenariosOpen: false }),
   startLab: () => set({ labOpen: true }),
   clearLab: () => set({ labOpen: false }),
+  startChallenges: () => set({ challengesOpen: true }),
+  clearChallenges: () => set({ challengesOpen: false }),
   startStudio: () => set({ studioOpen: true }),
   clearStudio: () => set({ studioOpen: false }),
   startField: () => set({ fieldOpen: true }),

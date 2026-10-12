@@ -15,6 +15,7 @@ import LabView from "./LabView";
 import StudioView from "./StudioView";
 import FieldLogView from "./FieldLogView";
 import MistakesView from "./MistakesView";
+import ChallengeSession from "./ChallengeSession";
 import { Button } from "@/components/ui/button";
 
 const TAB_TITLES: Record<string, string> = {
@@ -210,6 +211,8 @@ export default function AppShell() {
   const clearStudio = useUi((s) => s.clearStudio);
   const fieldOpen = useUi((s) => s.fieldOpen);
   const clearField = useUi((s) => s.clearField);
+  const challengesOpen = useUi((s) => s.challengesOpen);
+  const clearChallenges = useUi((s) => s.clearChallenges);
   const [tab, setTab] = useState("home");
 
   // حالة الاتصال — قراءة مباشرة من المتصفح بلا setState داخل الأثر
@@ -252,6 +255,8 @@ export default function AppShell() {
   if (!onboarded) return <Onboarding />;
 
   if (quizConfig) return <QuizSession config={quizConfig} />;
+
+  if (challengesOpen) return <ChallengeSession />;
 
   return (
     <div className="mx-auto flex h-dvh max-w-[480px] flex-col bg-background shadow-xl">
@@ -305,6 +310,7 @@ export default function AppShell() {
           clearLab(); // المختبر أيضاً طبقة ملء شاشة — يجب أن يغلقها زر الرئيسية
           clearStudio(); // والاستوديو كذلك
           clearField(); // وسجل التدريب الميداني
+          clearChallenges(); // والتحديات الذكية
           setTab("home");
         }}
         onConcepts={() => setTab("concepts")}

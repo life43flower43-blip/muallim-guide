@@ -21,6 +21,7 @@ import {
   Trash2,
   ChevronRight,
   Share2,
+  StickyNote,
 } from "lucide-react";
 import {
   COURSES,
@@ -172,6 +173,65 @@ function StudentExamplesSection({ conceptId }: { conceptId: string }) {
   );
 }
 
+// ---------- ملاحظاتي: ملاحظة مرتبطة بالمفهوم — من ميزة «ملاحظاتي» ضد ضياع الملاحظات ----------
+function MyNotesSection({ conceptId }: { conceptId: string }) {
+  const notes = useApp((s) => s.notes);
+  const addNote = useApp((s) => s.addNote);
+  const removeNote = useApp((s) => s.removeNote);
+  const [draft, setDraft] = useState("");
+  const mine = notes[conceptId] ?? [];
+  const canAdd = draft.trim().length >= 5;
+
+  return (
+    <div className="mt-4 rounded-3xl border border-amber-200 bg-amber-50/60 p-4">
+      <p className="flex items-center gap-2 text-sm font-black text-amber-900">
+        <StickyNote className="h-4 w-4" /> ملاحظاتي على هذا المفهوم
+      </p>
+      <p className="mt-1 text-[11px] font-bold leading-5 text-amber-800/80">
+        دون ما يخطرك أثناء المحاضرة أو القراءة بلغتك الخاصة — ملاحظاتك محفوظة على جهازك وتعود معك كلما فتحت المفهوم.
+      </p>
+
+      {mine.length > 0 && (
+        <div className="mt-3 space-y-2">
+          {mine.map((n) => (
+            <div key={n.id} className="flex items-start gap-2 rounded-2xl border border-amber-100 bg-white p-3">
+              <p className="flex-1 whitespace-pre-wrap text-xs leading-6 text-gray-700">{n.text}</p>
+              <button
+                onClick={() => removeNote(conceptId, n.id)}
+                aria-label="حذف الملاحظة"
+                className="rounded-full p-1 text-muted-foreground transition-colors hover:bg-red-50 hover:text-red-600"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-3 space-y-2">
+        <textarea
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          rows={2}
+          placeholder="ملاحظة سريعة بلغتك..."
+          className="w-full resize-none rounded-2xl border border-amber-200 bg-white p-3 text-sm leading-6 text-foreground outline-none placeholder:text-muted-foreground/60 focus:ring-2 focus:ring-amber-300"
+        />
+        <Button
+          disabled={!canAdd}
+          onClick={() => {
+            if (!canAdd) return;
+            addNote(conceptId, draft.trim());
+            setDraft("");
+          }}
+          className="h-11 w-full rounded-2xl bg-amber-500 text-sm font-black text-white hover:bg-amber-600 disabled:opacity-40"
+        >
+          <Plus className="ml-1.5 h-4 w-4" /> احفظ الملاحظة
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function ConceptDetail({
   conceptId,
   onClose,
@@ -269,6 +329,8 @@ function ConceptDetail({
               </div>
             ))}
           </div>
+          {/* ملاحظاتي — قبل أمثلة المجتمع لأنها شخصية أولًا */}
+          <MyNotesSection conceptId={c.id} />
           {/* مجتمع الطلاب: مساحة لإثراء المفهوم بأمثلة من تخصصات الطلاب */}
           <StudentExamplesSection conceptId={c.id} />
         </div>

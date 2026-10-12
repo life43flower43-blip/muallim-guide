@@ -14,12 +14,19 @@ import {
   Target,
   Play,
   X,
+  Puzzle,
+  Flame,
+  HeartPulse,
+  Focus,
 } from "lucide-react";
 import { COURSES, COURSE_SHORT, questionsOfCourse, QUESTIONS, conceptById, shuffle } from "@/lib/qbank";
 import { buildReviewSet, buildRedoSet, orderUnseenFirst } from "@/lib/srs";
-import { useApp } from "@/lib/store";
+import { useApp, currentStreak } from "@/lib/store";
+import { ad } from "@/lib/arabic";
 import { useUi } from "@/lib/ui-store";
 import { loadSnapshot, clearSnapshot, RESUME_FLAG, type SessionSnapshot } from "@/lib/session-snapshot";
+import CalmBreak from "./CalmBreak";
+import FocusTimer from "./FocusTimer";
 
 function ModeCard({
   icon: Icon,
@@ -71,8 +78,13 @@ function ModeCard({
 
 export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) {
   const startQuiz = useUi((s) => s.startQuiz);
+  const startChallenges = useUi((s) => s.startChallenges);
   const attempts = useApp((s) => s.attempts);
+  const sessions = useApp((s) => s.sessions);
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [calmOpen, setCalmOpen] = useState(false);
+  const [focusOpen, setFocusOpen] = useState(false);
+  const streak = useMemo(() => currentStreak(sessions), [sessions]);
 
   // استئناف الجلسة المقطوعة — تظهر فقط إن وُجدت لقطة صالحة
   const [snap, setSnap] = useState<SessionSnapshot | null>(null);
@@ -106,8 +118,45 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
                 : "ابدأ أول جلسة — أسئلة من محاور الرحلة كلها مع توجيه فوري"}
             </p>
           </div>
+          {streak > 0 && (
+            <span className="ml-auto flex shrink-0 items-center gap-1 rounded-full bg-amber-400 px-3 py-1.5 text-xs font-black text-amber-950">
+              <Flame className="h-4 w-4" fill="currentColor" />
+              {streak === 1 ? "يوم واحد" : streak === 2 ? "يومان" : `${ad(streak)} أيام`}
+            </span>
+          )}
         </div>
       </div>
+
+      {/* زرا الهدوء والتركيز — من بحث مشاكل الطلبة: القلق والتشتت */}
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          onClick={() => setCalmOpen(true)}
+          className="card-soft flex items-center gap-2 rounded-2xl border border-border bg-white px-3 py-2.5"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-600">
+            <HeartPulse className="h-5 w-5" />
+          </span>
+          <span className="text-right">
+            <span className="block text-sm font-black">هدّئ نفسك</span>
+            <span className="block text-[10px] font-bold text-muted-foreground">قبل الاختبار — دقيقتان</span>
+          </span>
+        </button>
+        <button
+          onClick={() => setFocusOpen(true)}
+          className="card-soft flex items-center gap-2 rounded-2xl border border-border bg-white px-3 py-2.5"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sky-100 text-sky-600">
+            <Focus className="h-5 w-5" />
+          </span>
+          <span className="text-right">
+            <span className="block text-sm font-black">مؤقت التركيز</span>
+            <span className="block text-[10px] font-bold text-muted-foreground">جلسة مذاكرة موقوتة</span>
+          </span>
+        </button>
+      </div>
+
+      <CalmBreak open={calmOpen} onClose={() => setCalmOpen(false)} />
+      <FocusTimer open={focusOpen} onClose={() => setFocusOpen(false)} />
 
       {/* بطاقة استئناف الجلسة المقطوعة — تظهر فقط عند وجود جلسة لم تكتمل */}
       {snap && (
@@ -133,6 +182,15 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
           </button>
         </div>
       )}
+
+      <ModeCard
+        icon={Puzzle}
+        title="التحديات الذكية"
+        desc="ترتيب خطوات، إكمال فراغات، وإنتاج كتابي بتوجيه حي — أنماط تحدٍّ تكسر الروتين وتثبّت الفهم"
+        badge="جديد"
+        color="#B45309"
+        onClick={startChallenges}
+      />
 
       <ModeCard
         icon={Brain}

@@ -109,3 +109,10 @@ export const CARD_FORMS: CountForms = {
   few: "بطاقات تعليمية",
   many: "بطاقة تعليمية",
 };
+
+export const WORD_FORMS: CountForms = {
+  one: "كلمة واحدة",
+  two: "كلمتان",
+  few: "كلمات",
+  many: "كلمة",
+};
