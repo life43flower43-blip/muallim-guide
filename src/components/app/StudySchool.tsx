@@ -119,12 +119,12 @@ export default function StudySchool() {
                 >
                   <span
                     className={`relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${
-                      done ? "bg-emerald-100 text-emerald-700" : "bg-[#4338CA]/10 text-[#4338CA]"
+                      done ? "bg-indigo-100 text-indigo-700" : "bg-[#4338CA]/10 text-[#4338CA]"
                     }`}
                   >
                     <Icon className="h-6 w-6" />
                     {done && (
-                      <span className="absolute -bottom-1 -left-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-white">
+                      <span className="absolute -bottom-1 -left-1 flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-white">
                         <CheckCircle2 className="h-3.5 w-3.5" />
                       </span>
                     )}
@@ -135,7 +135,7 @@ export default function StudySchool() {
                         الدرس {["الأول", "الثاني", "الثالث", "الرابع", "الخامس", "السادس"][i]}
                       </span>
                       {done && (
-                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-black text-emerald-700">
+                        <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-black text-indigo-700">
                           مكتمل
                         </span>
                       )}
@@ -152,9 +152,9 @@ export default function StudySchool() {
           </div>
 
           {graduate && (
-            <div className="mt-4 flex items-center gap-3 rounded-2xl border-2 border-emerald-200 bg-emerald-50 p-4">
-              <GraduationCap className="h-8 w-8 shrink-0 text-emerald-700" />
-              <p className="text-xs font-bold leading-6 text-emerald-900">
+            <div className="mt-4 flex items-center gap-3 rounded-2xl border-2 border-indigo-200 bg-indigo-50 p-4">
+              <GraduationCap className="h-8 w-8 shrink-0 text-indigo-700" />
+              <p className="text-xs font-bold leading-6 text-indigo-900">
                 أتممت منهج المدرسة كله: استدعاء، تباعد، تبسيط فاينمان، بومودورو، خرائط، وليلة
                 الاختبار — طبّقها وستلمس فرقًا في رسوخ ما تتعلمه.
               </p>
@@ -272,12 +272,12 @@ function FlipStep({
             key={i}
             onClick={() => setFlipped((f) => (f.includes(i) ? f : [...f, i]))}
             className={`w-full rounded-2xl border-2 p-4 text-right transition ${
-              open ? "border-emerald-300 bg-emerald-50" : "border-[#4338CA]/30 bg-[#4338CA]/5"
+              open ? "border-indigo-300 bg-indigo-50" : "border-[#4338CA]/30 bg-[#4338CA]/5"
             }`}
           >
             <p className="flex items-start gap-2 text-sm font-black leading-7">
               {open ? (
-                <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-emerald-600" />
+                <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-indigo-600" />
               ) : (
                 <Lock className="mt-1 h-4 w-4 shrink-0 text-[#4338CA]" />
               )}
@@ -332,7 +332,7 @@ function QuizStep({
               {item.options.map((opt, oi) => {
                 const isCorrect = oi === item.correct;
                 let cls = "border-border bg-white";
-                if (done && isCorrect) cls = "border-emerald-500 bg-emerald-50";
+                if (done && isCorrect) cls = "border-indigo-500 bg-indigo-50";
                 else if (done && chosen === oi) cls = "border-red-400 bg-red-50";
                 else if (done) cls = "border-border bg-white opacity-60";
                 return (
@@ -347,7 +347,7 @@ function QuizStep({
                     className={`flex w-full items-center gap-2.5 rounded-xl border-2 p-3 text-right text-sm font-bold transition ${cls}`}
                   >
                     <span className="min-w-0 flex-1 leading-6">{opt}</span>
-                    {done && isCorrect && <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" />}
+                    {done && isCorrect && <CheckCircle2 className="h-5 w-5 shrink-0 text-indigo-600" />}
                     {done && chosen === oi && !isCorrect && (
                       <XCircle className="h-5 w-5 shrink-0 text-red-500" />
                     )}

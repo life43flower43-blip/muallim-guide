@@ -127,14 +127,14 @@ export default function FocusTimer({ open, onClose }: { open: boolean; onClose: 
             transition={running ? { repeat: Infinity, duration: 2 } : {}}
             className={`flex h-40 w-40 items-center justify-center rounded-full border-4 ${
               completed
-                ? "border-emerald-500 bg-emerald-50"
+                ? "border-indigo-500 bg-indigo-50"
                 : running
                   ? "border-primary bg-accent"
                   : "border-border bg-white"
             }`}
           >
             {completed ? (
-              <CheckCircle2 className="h-16 w-16 text-emerald-600" />
+              <CheckCircle2 className="h-16 w-16 text-indigo-600" />
             ) : (
               <span dir="ltr" className="text-4xl font-black tabular-nums text-primary">
                 {fmt(left)}
@@ -170,7 +170,7 @@ export default function FocusTimer({ open, onClose }: { open: boolean; onClose: 
             </Button>
           </div>
         ) : (
-          <Button onClick={onClose} className="h-12 w-full rounded-2xl bg-emerald-600 font-black text-white hover:bg-emerald-700">
+          <Button onClick={onClose} className="h-12 w-full rounded-2xl bg-indigo-600 font-black text-white hover:bg-indigo-700">
             استراحة قصيرة الآن
           </Button>
         )}

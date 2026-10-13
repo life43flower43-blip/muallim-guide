@@ -47,7 +47,7 @@ const ratingIcon: Record<LabRating, typeof CheckCircle2> = {
   poor: CircleAlert,
 };
 const ratingCls: Record<LabRating, string> = {
-  good: "text-emerald-600 border-emerald-200 bg-emerald-50",
+  good: "text-indigo-600 border-indigo-200 bg-indigo-50",
   ok: "text-amber-600 border-amber-200 bg-amber-50",
   poor: "text-red-600 border-red-200 bg-red-50",
 };
@@ -266,7 +266,7 @@ export default function LabView() {
                 <div className="space-y-2">
                   {steps.map((s, i) => (
                     <div key={i} className="rounded-xl bg-white p-3 text-xs leading-6">
-                      <span className={`mr-1 font-black ${s.rating === "good" ? "text-emerald-700" : s.rating === "ok" ? "text-amber-700" : "text-red-700"}`}>
+                      <span className={`mr-1 font-black ${s.rating === "good" ? "text-indigo-700" : s.rating === "ok" ? "text-amber-700" : "text-red-700"}`}>
                         {RATING_WORD[s.rating]}:
                       </span>
                       <span className="font-bold">{s.choice}</span>
@@ -468,7 +468,7 @@ export default function LabView() {
                   </span>
                 </div>
                 {r.examVerdict && (
-                  <p className="mt-3 flex items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-2.5 text-[11px] leading-5 text-emerald-800">
+                  <p className="mt-3 flex items-start gap-2 rounded-xl border border-indigo-200 bg-indigo-50 p-2.5 text-[11px] leading-5 text-indigo-800">
                     <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" /> {r.examVerdict}
                   </p>
                 )}
@@ -562,7 +562,7 @@ export default function LabView() {
                   </div>
                   <div className="space-y-1.5 text-xs leading-6">
                     <p>
-                      <span className="font-black text-emerald-700">ما نجح: </span>
+                      <span className="font-black text-indigo-700">ما نجح: </span>
                       <span className="text-muted-foreground">{a.reflection.success || "—"}</span>
                     </p>
                     <p>

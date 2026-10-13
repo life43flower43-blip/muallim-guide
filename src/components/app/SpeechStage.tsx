@@ -258,7 +258,7 @@ export default function SpeechStage() {
               ستشرح مفهومًا بصوتك كما تفعل أمام الصف — ثم تستمع لنفسك وتقيّم نفسك.
             </p>
             <p className="mt-1.5 flex items-center gap-1.5 text-xs font-bold leading-6 text-muted-foreground">
-              <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-600" />
+              <ShieldCheck className="h-4 w-4 shrink-0 text-indigo-600" />
               تسجيلك يبقى على جهازك وحده ولا يُرسل إلى أي أحد — والوسيلة الآمنة لكسر رهبة المسرح.
             </p>
           </div>
@@ -576,7 +576,7 @@ export default function SpeechStage() {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", damping: 12 }}
         >
-          <CheckCircle2 className="h-20 w-20 text-emerald-600" />
+          <CheckCircle2 className="h-20 w-20 text-indigo-600" />
         </motion.div>
         <h2 className="mt-4 text-2xl font-black">وقفتك محفوظة</h2>
         <p className="mt-2 max-w-xs text-sm font-bold leading-7 text-muted-foreground">

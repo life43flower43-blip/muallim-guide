@@ -128,7 +128,7 @@ export default function CalmBreak({
                   }}
                   className={`flex w-full items-center gap-3 rounded-2xl border-2 p-3 text-right transition-colors ${
                     passed
-                      ? "border-emerald-200 bg-emerald-50 opacity-70"
+                      ? "border-indigo-200 bg-indigo-50 opacity-70"
                       : active
                         ? "border-primary bg-accent"
                         : "border-border bg-white opacity-50"
@@ -136,7 +136,7 @@ export default function CalmBreak({
                 >
                   <span
                     className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
-                      passed ? "bg-emerald-500 text-white" : "bg-primary text-primary-foreground"
+                      passed ? "bg-indigo-500 text-white" : "bg-primary text-primary-foreground"
                     }`}
                   >
                     <Icon className="h-5 w-5" />
@@ -151,7 +151,7 @@ export default function CalmBreak({
         {stage === "done" && (
           <div className="flex flex-col items-center gap-3 py-4">
             <motion.div initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-              <CheckCircle2 className="h-16 w-16 text-emerald-600" />
+              <CheckCircle2 className="h-16 w-16 text-indigo-600" />
             </motion.div>
             <p className="text-center text-sm font-bold leading-7 text-muted-foreground">
               تنفسك منتظم وذهنك حاضر — القلق ضيف عابر وأنت صاحب المكان.

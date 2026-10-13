@@ -123,7 +123,7 @@ export default function FlashcardsView() {
                 {COURSE_SHORT[card.courseId] ?? ""}
               </span>
               {isRead && (
-                <span className="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-black text-emerald-700">
+                <span className="rounded-full bg-indigo-50 px-3 py-1 text-[10px] font-black text-indigo-700">
                   قُرئت سابقاً
                 </span>
               )}

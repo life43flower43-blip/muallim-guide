@@ -348,7 +348,7 @@ export default function AccountView() {
           {portfolio.checks.map(({ check, ok }) => (
             <div key={check.key} className="flex items-start gap-2 rounded-xl bg-background/60 px-3 py-2">
               {ok ? (
-                <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-indigo-600" />
               ) : (
                 <MinusCircle className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
               )}
@@ -405,12 +405,12 @@ export default function AccountView() {
               <div
                 key={a.id}
                 className={`rounded-2xl border p-3 ${
-                  a.ok ? "border-emerald-200 bg-emerald-50" : "border-border bg-muted/40 opacity-60"
+                  a.ok ? "border-indigo-200 bg-indigo-50" : "border-border bg-muted/40 opacity-60"
                 }`}
               >
                 <span
                   className={`flex h-9 w-9 items-center justify-center rounded-xl ${
-                    a.ok ? "bg-emerald-600 text-white" : "bg-muted text-muted-foreground"
+                    a.ok ? "bg-indigo-600 text-white" : "bg-muted text-muted-foreground"
                   }`}
                 >
                   <Icon className="h-5 w-5" />
@@ -463,7 +463,7 @@ export default function AccountView() {
         </p>
         <div className="space-y-2 text-xs leading-6 text-muted-foreground">
           <p className="flex items-start gap-2">
-            <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-emerald-600" />
+            <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-indigo-600" />
             كل تقدمك (إجاباتك، مفاهيمك، جدول المراجعة) محفوظ على هاتفك فقط — يعمل التطبيق حتى دون إنترنت بعد أول فتح، والتطبيق مجاني بالكامل.
           </p>
         </div>

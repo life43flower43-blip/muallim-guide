@@ -63,7 +63,7 @@ const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
 
 // وصف موجز لكل محور في بطاقات المكتبة — مستمد من موضوعاته نفسها
 const COURSE_SUBTITLE: Record<string, string> = {
-  M1: "الوراثة والجهاز العصبي والسلوك",
+  M1: "النمو بمراحله ومجالاته وتطبيقاته في الصف",
   M2: "الغرائز والعواطف والذكاء",
   M3: "التعلم ونظرياته والذاكرة والدافعية",
   M4: "القياس وأدوات التقويم والاختبارات",
@@ -270,17 +270,35 @@ function ConceptDetail({
       className="fixed inset-0 z-50 flex flex-col bg-background"
     >
       <div
-        className="safe-top px-4 pb-4 pt-3 text-white"
-        style={{ background: COURSE_COLOR[course.id] ?? "#5B21B6" }}
+        className="safe-top relative overflow-hidden px-4 pb-5 pt-3 text-white"
+        style={{ background: `linear-gradient(135deg, ${COURSE_COLOR[course.id] ?? "#5B21B6"}, #2A1058)` }}
       >
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex-1">
+        {/* أشكال زخرفية */}
+        <span aria-hidden className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-white/10" />
+        <span aria-hidden className="pointer-events-none absolute -bottom-14 -right-8 h-36 w-36 rounded-full bg-white/5" />
+        <span aria-hidden className="pointer-events-none absolute bottom-6 left-16 h-16 w-16 rounded-full bg-amber-300/10" />
+        <div className="relative flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
             <p className="flex items-center gap-1.5 text-[11px] font-bold opacity-90">
               <CourseIcon id={course.id} className="h-3.5 w-3.5" /> {chapterLabel(c.chapter)}
             </p>
             <h2 className="mt-1 text-xl font-black leading-8">{c.title}</h2>
+            {/* شرائح إحصاء */}
+            <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+              <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-black ring-1 ring-white/20 backdrop-blur">
+                {ad(examples.length)} شواهد تطبيقية
+              </span>
+              <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-black ring-1 ring-white/20 backdrop-blur">
+                {ad(qs.length)} سؤال تدريب
+              </span>
+              {isRead && (
+                <span className="flex items-center gap-1 rounded-full bg-amber-400/90 px-2.5 py-0.5 text-[10px] font-black text-amber-950">
+                  <CheckCircle2 className="h-3 w-3" /> تمت القراءة
+                </span>
+              )}
+            </div>
           </div>
-          <button onClick={onClose} className="rounded-full bg-white/20 p-2" aria-label="إغلاق">
+          <button onClick={onClose} className="rounded-full bg-white/20 p-2 ring-1 ring-white/25 backdrop-blur" aria-label="إغلاق">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -324,34 +342,41 @@ function ConceptDetail({
               ))}
             </div>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             <p className="flex items-center gap-2 text-sm font-black text-violet-800">
               <Lightbulb className="h-4 w-4" /> الشواهد التطبيقية من الميدان
             </p>
             <p className="text-[11px] font-bold leading-5 text-muted-foreground">
               مواقف حقيقية مُعاد تركيبها تُجسّد المفهوم في سياقه التربوي — تُقرأ كل شاهدة كحالة مستقلة تُلاحظ ثم تُحلَّل.
             </p>
-            {examples.map((ex, i) => (
-              <div
-                key={i}
-                className="rounded-2xl border border-violet-100 bg-violet-50 p-4"
-              >
-                <div className="flex items-start gap-2">
-                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-200/70 text-[11px] font-black text-violet-800">
+            <div className="relative space-y-3 pr-5">
+              {/* الخط الزمني الرأسي */}
+              <span
+                aria-hidden
+                className="absolute bottom-3 right-[11px] top-3 w-0.5 rounded-full bg-gradient-to-b from-violet-300 via-violet-200 to-violet-100"
+              />
+              {examples.map((ex, i) => (
+                <div key={i} className="relative">
+                  {/* عقدة الرقم على الخط */}
+                  <span className="absolute -right-5 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-violet-800 text-[11px] font-black text-white shadow-md ring-2 ring-white">
                     {ad(i + 1)}
                   </span>
-                  <div className="flex-1 space-y-2">
-                    <span className="inline-block rounded-full bg-white px-2.5 py-0.5 text-[10px] font-black text-violet-700 ring-1 ring-violet-200">
-                      سياق: {exampleContext(ex)}
-                    </span>
-                    {splitArParagraphs(ex).map((p, j) => (
-                      <p key={j} className="text-sm leading-7 text-violet-950/95">{p}</p>
-                    ))}
+                  <div className="rounded-3xl border border-violet-100 bg-gradient-to-bl from-violet-50/80 to-white p-4 shadow-[0_2px_10px_rgba(109,40,217,0.05)]">
+                    <div className="flex items-start gap-2">
+                      <div className="flex-1 space-y-2">
+                        <span className="inline-block rounded-full bg-white px-2.5 py-0.5 text-[10px] font-black text-violet-700 ring-1 ring-violet-200">
+                          سياق: {exampleContext(ex)}
+                        </span>
+                        {splitArParagraphs(ex).map((p, j) => (
+                          <p key={j} className="text-sm leading-7 text-violet-950/95">{p}</p>
+                        ))}
+                      </div>
+                      <SpeakButton text={ex} label="استمع للمثال" />
+                    </div>
                   </div>
-                  <SpeakButton text={ex} label="استمع للمثال" />
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
           {/* ملاحظاتي — قبل أمثلة المجتمع لأنها شخصية أولًا */}
           <MyNotesSection conceptId={c.id} />
@@ -362,7 +387,7 @@ function ConceptDetail({
 
       <div className="safe-bottom space-y-2 border-t border-border bg-white px-4 pt-3">
         <Button
-          className="h-13 w-full rounded-2xl bg-primary py-3.5 text-base font-black text-primary-foreground"
+          className="h-13 w-full rounded-2xl bg-gradient-to-l from-violet-700 to-violet-900 py-3.5 text-base font-black text-white shadow-lg shadow-violet-900/20"
           onClick={() => {
             readConcept(c.id);
             startQuiz({
@@ -384,7 +409,7 @@ function ConceptDetail({
               onClose();
             }}
           >
-            <CheckCircle2 className="ml-1 h-4 w-4 text-emerald-600" /> تعليم كمقروء
+            <CheckCircle2 className="ml-1 h-4 w-4 text-indigo-600" /> تعليم كمقروء
           </Button>
         )}
       </div>
@@ -559,9 +584,12 @@ export default function ConceptsView() {
             </div>
           </button>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-2 gap-3">
           {COURSES.map((course) => {
             const color = COURSE_COLOR[course.id] ?? "#5B21B6";
+            const courseConcepts = conceptsOfCourse(course.id);
+            const readCount = courseConcepts.filter((cc) => conceptReads[cc.id]).length;
+            const pct = courseConcepts.length ? Math.round((readCount / courseConcepts.length) * 100) : 0;
             return (
               <button
                 key={course.id}
@@ -569,19 +597,51 @@ export default function ConceptsView() {
                   setOpenCourseId(course.id);
                   setOpenChapter(null);
                 }}
-                className="card-soft flex min-h-[104px] flex-col rounded-3xl border border-border bg-white p-3.5 text-right transition-transform active:scale-[0.98]"
+                className="group relative flex min-h-[128px] flex-col overflow-hidden rounded-3xl border border-indigo-100/80 bg-white p-3.5 text-right shadow-[0_2px_10px_rgba(49,46,129,0.05),0_14px_34px_rgba(49,46,129,0.07)] transition-all active:scale-[0.98]"
               >
+                {/* غشاء تدرّج علوي فاتح بلون المحور */}
                 <span
-                  className="flex h-11 w-11 items-center justify-center rounded-2xl text-white"
+                  aria-hidden
+                  className="pointer-events-none absolute inset-x-0 top-0 h-16 opacity-[0.08]"
+                  style={{ background: `linear-gradient(180deg, ${color}, transparent)` }}
+                />
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -left-6 -top-6 h-20 w-20 rounded-full opacity-[0.06]"
                   style={{ background: color }}
-                >
-                  <CourseIcon id={course.id} className="h-5 w-5" />
+                />
+                <span className="relative flex items-start justify-between">
+                  <span
+                    className="flex h-11 w-11 items-center justify-center rounded-2xl text-white shadow-lg"
+                    style={{ background: `linear-gradient(135deg, ${color}, ${color}cc)` }}
+                  >
+                    <CourseIcon id={course.id} className="h-5 w-5" />
+                  </span>
+                  <span
+                    className="rounded-full px-2 py-0.5 text-[9px] font-black"
+                    style={{ background: `${color}14`, color }}
+                  >
+                    {ad(courseConcepts.length)} مفهومًا
+                  </span>
                 </span>
-                <span className="mt-2.5 text-sm font-black leading-6 text-gray-900">
+                <span className="relative mt-2.5 text-sm font-black leading-6 text-gray-900">
                   {COURSE_SHORT[course.id]}
                 </span>
-                <span className="mt-0.5 line-clamp-2 text-[10px] font-bold leading-4 text-muted-foreground">
+                <span className="relative mt-0.5 line-clamp-2 text-[10px] font-bold leading-4 text-muted-foreground">
                   {COURSE_SUBTITLE[course.id]}
+                </span>
+                {/* شريط تقدم القراءة */}
+                <span className="relative mt-auto pt-2.5">
+                  <span className="mb-1 flex items-center justify-between text-[9px] font-black">
+                    <span className="text-muted-foreground">قرأت {ad(readCount)}</span>
+                    <span style={{ color }}>{ad(pct)}٪</span>
+                  </span>
+                  <span className="block h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+                    <span
+                      className="block h-full rounded-full transition-all"
+                      style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${color}, ${color}aa)` }}
+                    />
+                  </span>
                 </span>
               </button>
             );
@@ -607,23 +667,56 @@ export default function ConceptsView() {
             }}
           />
           <div className="grid grid-cols-2 gap-2.5">
-            {chapters.map((ch) => (
+            {chapters.map((ch, chIdx) => {
+              const chConcepts = conceptsOfCourse(openCourse.id).filter((c) => c.chapter === ch);
+              const chRead = chConcepts.filter((c) => conceptReads[c.id]).length;
+              const chPct = chConcepts.length ? Math.round((chRead / chConcepts.length) * 100) : 0;
+              const color = COURSE_COLOR[openCourse.id] ?? "#5B21B6";
+              return (
               <button
                 key={ch}
                 onClick={() => setOpenChapter(ch)}
-                className="card-soft flex min-h-[88px] flex-col justify-center rounded-3xl border border-border bg-white p-3.5 text-right transition-transform active:scale-[0.98]"
+                className="group relative flex min-h-[112px] flex-col overflow-hidden rounded-3xl border border-indigo-100/70 bg-white p-3.5 text-right shadow-[0_2px_8px_rgba(49,46,129,0.04),0_10px_26px_rgba(49,46,129,0.06)] transition-all active:scale-[0.98]"
               >
                 <span
-                  className="flex h-8 w-8 items-center justify-center rounded-xl text-white"
-                  style={{ background: COURSE_COLOR[openCourse.id] ?? "#5B21B6" }}
-                >
-                  <CourseIcon id={openCourse.id} className="h-4 w-4" />
+                  aria-hidden
+                  className="pointer-events-none absolute -left-5 -top-5 h-16 w-16 rounded-full opacity-[0.07]"
+                  style={{ background: color }}
+                />
+                <span className="relative flex items-start justify-between">
+                  <span
+                    className="flex h-9 w-9 items-center justify-center rounded-xl text-white shadow-md"
+                    style={{ background: `linear-gradient(135deg, ${color}, ${color}c0)` }}
+                  >
+                    <span className="text-[13px] font-black">{ad(chIdx + 1)}</span>
+                  </span>
+                  {chPct === 100 && (
+                    <span
+                      className="rounded-full px-2 py-0.5 text-[9px] font-black"
+                      style={{ background: `${color}14`, color }}
+                    >
+                      مكتمل
+                    </span>
+                  )}
                 </span>
-                <span className="mt-2 line-clamp-2 text-[13px] font-black leading-5 text-gray-900">
+                <span className="relative mt-2 line-clamp-2 text-[13px] font-black leading-5 text-gray-900">
                   {chapterLabel(ch)}
                 </span>
+                <span className="relative mt-auto pt-2">
+                  <span className="mb-1 flex items-center justify-between text-[9px] font-black">
+                    <span className="text-muted-foreground">{ad(chConcepts.length)} مفاهيم</span>
+                    <span style={{ color: chPct > 0 ? color : undefined }}>{ad(chPct)}٪</span>
+                  </span>
+                  <span className="block h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+                    <span
+                      className="block h-full rounded-full"
+                      style={{ width: `${chPct}%`, background: color }}
+                    />
+                  </span>
+                </span>
               </button>
-            ))}
+              );
+            })}
           </div>
         </motion.div>
       ) : (
@@ -641,28 +734,44 @@ export default function ConceptsView() {
             accent={COURSE_COLOR[openCourse.id] ?? "#5B21B6"}
             onBack={() => setOpenChapter(null)}
           />
-          <div className="grid grid-cols-2 gap-2">
-            {chapterConcepts.map((c) => {
+          <div className="grid grid-cols-2 gap-2.5">
+            {chapterConcepts.map((c, cIdx) => {
               const isRead = !!conceptReads[c.id];
+              const color = COURSE_COLOR[c.courseId] ?? "#5B21B6";
+              const cQs = questionsOfConcept(c.id).length;
               return (
                 <button
                   key={c.id}
                   onClick={() => setDetailId(c.id)}
-                  className="card-soft relative flex min-h-[104px] flex-col justify-between rounded-2xl border border-border bg-white p-3 text-right transition-transform active:scale-[0.98]"
+                  className={`group relative flex min-h-[124px] flex-col overflow-hidden rounded-3xl border p-3 text-right shadow-[0_2px_8px_rgba(49,46,129,0.04),0_10px_26px_rgba(49,46,129,0.06)] transition-all active:scale-[0.98] ${
+                    isRead ? "border-indigo-200 bg-indigo-50/40" : "border-indigo-100/70 bg-white"
+                  }`}
                 >
                   <span
-                    className="flex h-8 w-8 items-center justify-center rounded-xl text-white"
-                    style={{ background: COURSE_COLOR[c.courseId] ?? "#5B21B6" }}
-                  >
-                    <CourseIcon id={c.courseId} className="h-4 w-4" />
+                    aria-hidden
+                    className="pointer-events-none absolute -left-4 -top-4 h-14 w-14 rounded-full opacity-[0.07]"
+                    style={{ background: color }}
+                  />
+                  <span className="relative flex items-start justify-between">
+                    <span
+                      className="flex h-9 w-9 items-center justify-center rounded-xl text-white shadow-md"
+                      style={{ background: `linear-gradient(135deg, ${color}, ${color}c0)` }}
+                    >
+                      {isRead ? <CheckCircle2 className="h-4.5 w-4.5" /> : <span className="text-[13px] font-black">{ad(cIdx + 1)}</span>}
+                    </span>
+                    {!isRead && cQs > 0 && (
+                      <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[9px] font-black text-amber-700 ring-1 ring-amber-100">
+                        {ad(cQs)} سؤال
+                      </span>
+                    )}
                   </span>
-                  <span className="mt-2 line-clamp-2 text-[13px] font-black leading-5 text-gray-900">
+                  <span className="relative mt-2 line-clamp-2 text-[13px] font-black leading-5 text-gray-900">
                     {c.title}
                   </span>
-                  <span className="mt-1 flex items-center gap-1 text-[9px] font-bold text-muted-foreground">
+                  <span className="relative mt-auto flex items-center gap-1 text-[9px] font-bold text-muted-foreground">
                     {isRead ? (
                       <>
-                        <CheckCircle2 className="h-3 w-3 text-emerald-600" /> تمت القراءة
+                        <CheckCircle2 className="h-3 w-3" style={{ color }} /> تمت القراءة
                       </>
                     ) : (
                       <>

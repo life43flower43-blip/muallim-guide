@@ -9,8 +9,8 @@ export function RingProgress({
   value,
   size = 64,
   stroke = 7,
-  color = "#0f766e",
-  track = "#e6efec",
+  color = "#4F46E5",
+  track = "#e0e7ff",
   children,
 }: {
   value: number;
@@ -59,7 +59,7 @@ export function StatCard({
   icon,
   value,
   label,
-  color = "#0f766e",
+  color = "#4F46E5",
 }: {
   icon: string;
   value: string | number;

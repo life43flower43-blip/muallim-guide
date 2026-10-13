@@ -63,13 +63,18 @@ function ModeCard({
       whileTap={{ scale: disabled ? 1 : 0.98 }}
       disabled={disabled}
       onClick={onClick}
-      className={`card-soft flex w-full items-center gap-4 rounded-3xl border border-border bg-white p-4 text-right ${
+      className={`relative flex w-full items-center gap-4 overflow-hidden rounded-3xl border border-indigo-100/80 bg-white p-4 text-right shadow-[0_2px_10px_rgba(49,46,129,0.05),0_12px_30px_rgba(49,46,129,0.06)] ${
         disabled ? "opacity-50" : ""
       }`}
     >
       <span
-        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-white"
+        aria-hidden
+        className="pointer-events-none absolute -left-6 -top-6 h-20 w-20 rounded-full opacity-[0.07]"
         style={{ background: color }}
+      />
+      <span
+        className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-white shadow-lg"
+        style={{ background: `linear-gradient(135deg, ${color}, ${color}c4)` }}
       >
         <Icon className="h-7 w-7" />
       </span>

@@ -76,7 +76,7 @@ const statusIcon: Record<PlanCheckStatus, typeof CircleCheck> = {
   missing: CircleAlert,
 };
 const statusCls: Record<PlanCheckStatus, string> = {
-  done: "text-emerald-700",
+  done: "text-indigo-700",
   partial: "text-amber-700",
   missing: "text-red-700",
 };

@@ -44,9 +44,9 @@ import type { Question } from "@/lib/types";
 function ResultBadge({ tone }: { tone: "great" | "good" | "fair" | "weak" }) {
   const toneCls =
     tone === "great"
-      ? "bg-emerald-100 text-emerald-700"
+      ? "bg-indigo-100 text-indigo-700"
       : tone === "good"
-        ? "bg-emerald-100 text-emerald-700"
+        ? "bg-indigo-100 text-indigo-700"
         : tone === "fair"
           ? "bg-amber-100 text-amber-700"
           : "bg-red-100 text-red-600";
@@ -459,12 +459,12 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
           {isProficiency && (
             <div
               className={`pop-in rounded-3xl border-2 p-4 ${
-                passed ? "border-emerald-300 bg-emerald-50" : "border-red-200 bg-red-50"
+                passed ? "border-indigo-300 bg-indigo-50" : "border-red-200 bg-red-50"
               }`}
             >
               <div className="flex items-center gap-3">
                 {passed ? (
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-600 text-white">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white">
                     <Award className="h-6 w-6" />
                   </span>
                 ) : (
@@ -473,7 +473,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   </span>
                 )}
                 <div className="min-w-0">
-                  <p className={`text-base font-black ${passed ? "text-emerald-800" : "text-red-800"}`}>
+                  <p className={`text-base font-black ${passed ? "text-indigo-800" : "text-red-800"}`}>
                     {passed ? "نجحت في اختبار الكفاءة" : "لم تنجح هذه المرة — وسبيلك واضح"}
                   </p>
                   <p className="text-xs font-bold leading-6 text-muted-foreground">
@@ -494,7 +494,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                         <span
                           className={
                             rowPct >= 0.6
-                              ? "text-emerald-700"
+                              ? "text-indigo-700"
                               : rowPct >= 0.4
                                 ? "text-amber-700"
                                 : "text-red-600"
@@ -528,14 +528,14 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                 <details key={r.qid} className="card-soft rounded-2xl border border-border bg-white p-4">
                   <summary className="flex cursor-pointer list-none items-start gap-3">
                     {r.ok ? (
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
                     ) : (
                       <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
                     )}
                     <span className="text-sm font-bold leading-6">{rq.question}</span>
                   </summary>
                   {!r.ok && (
-                    <p className="mt-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-800">
+                    <p className="mt-2 rounded-lg bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-800">
                       الإجابة الصحيحة: {rq.correct}
                     </p>
                   )}
@@ -601,7 +601,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               <span
                 className={`rounded-full px-3 py-1 text-xs font-bold ${
                   q.difficulty === "سهل"
-                    ? "bg-emerald-100 text-emerald-700"
+                    ? "bg-indigo-100 text-indigo-700"
                     : q.difficulty === "متوسط"
                       ? "bg-amber-100 text-amber-700"
                       : "bg-red-100 text-red-600"
@@ -628,7 +628,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   const isCorrect = o.isCorrect;
                   // كشف الصواب/الخطأ فقط في الأنماط ذات التغذية الفورية — المحاكاة لا تكشف الإجابة
                   let cls = "border-border bg-white";
-                  if (instantFeedback && graded !== null && isCorrect) cls = "border-emerald-500 bg-emerald-50";
+                  if (instantFeedback && graded !== null && isCorrect) cls = "border-indigo-500 bg-indigo-50";
                   else if (instantFeedback && graded === false && isSel) cls = "border-red-400 bg-red-50";
                   else if (isSel) cls = "border-primary bg-accent shadow-sm";
                   return (
@@ -641,7 +641,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                       }`}
                     >
                       {o.text === "صح" ? (
-                        <CheckCircle2 className="h-6 w-6 text-emerald-600" />
+                        <CheckCircle2 className="h-6 w-6 text-indigo-600" />
                       ) : (
                         <XCircle className="h-6 w-6 text-red-500" />
                       )}
@@ -657,7 +657,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   const isCorrect = o.isCorrect;
                   // كشف الصواب/الخطأ فقط في الأنماط ذات التغذية الفورية — المحاكاة لا تكشف الإجابة
                   let cls = "border-border bg-white";
-                  if (instantFeedback && graded !== null && isCorrect) cls = "border-emerald-500 bg-emerald-50";
+                  if (instantFeedback && graded !== null && isCorrect) cls = "border-indigo-500 bg-indigo-50";
                   else if (instantFeedback && graded === false && isSel) cls = "border-red-400 bg-red-50";
                   else if (isSel) cls = "border-primary bg-accent shadow-sm";
                   return (
@@ -689,16 +689,16 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                 <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
                   <div
                     className={`flex items-center gap-3 rounded-2xl border p-4 ${
-                      graded ? "border-emerald-200 bg-emerald-50" : "border-red-200 bg-red-50"
+                      graded ? "border-indigo-200 bg-indigo-50" : "border-red-200 bg-red-50"
                     }`}
                   >
                     {graded ? (
-                      <CheckCircle2 className="h-8 w-8 shrink-0 text-emerald-600" />
+                      <CheckCircle2 className="h-8 w-8 shrink-0 text-indigo-600" />
                     ) : (
                       <XCircle className="h-8 w-8 shrink-0 text-red-500" />
                     )}
                     <div>
-                      <p className={`font-black ${graded ? "text-emerald-800" : "text-red-700"}`}>
+                      <p className={`font-black ${graded ? "text-indigo-800" : "text-red-700"}`}>
                         {graded ? "أحسنت! إجابة صحيحة" : "إجابة غير صحيحة"}
                       </p>
                       {!graded && (
@@ -762,7 +762,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               !instantFeedback
                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
                 : graded
-                  ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                  ? "bg-indigo-600 text-white hover:bg-indigo-700"
                   : "bg-red-500 text-white"
             }`}
           >

@@ -233,8 +233,8 @@ export default function MistakesView() {
       {/* المحتوى: الأخطاء مجمعة حسب المفهوم */}
       {wrongs.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-12 text-center">
-          <span className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
-            <PartyPopper className="h-10 w-10 text-emerald-600" />
+          <span className="flex h-20 w-20 items-center justify-center rounded-full bg-indigo-100">
+            <PartyPopper className="h-10 w-10 text-indigo-600" />
           </span>
           <p className="text-lg font-black text-gray-900">لا أخطاء حتى الآن</p>
           <p className="max-w-xs text-sm leading-7 text-muted-foreground">
@@ -332,15 +332,15 @@ export default function MistakesView() {
 
                   {examples.length > 0 && (
                     <div className="mt-3 space-y-2">
-                      <p className="flex items-center gap-1.5 text-xs font-black text-emerald-800">
+                      <p className="flex items-center gap-1.5 text-xs font-black text-indigo-800">
                         <Lightbulb className="h-3.5 w-3.5" /> أمثلة متنوعة من الميدان
                       </p>
                       {shown.map((ex, i) => (
                         <div
                           key={i}
-                          className="flex items-start gap-2 rounded-2xl border border-emerald-100 bg-emerald-50 p-3"
+                          className="flex items-start gap-2 rounded-2xl border border-indigo-100 bg-indigo-50 p-3"
                         >
-                          <p className="flex-1 text-xs leading-6 text-emerald-950">{ex}</p>
+                          <p className="flex-1 text-xs leading-6 text-indigo-950">{ex}</p>
                           <SpeakButton text={ex} label="استمع للمثال" />
                         </div>
                       ))}
@@ -349,7 +349,7 @@ export default function MistakesView() {
                           onClick={() =>
                             setOpenExamples((o) => ({ ...o, [conceptId]: !o[conceptId] }))
                           }
-                          className="flex items-center gap-1 text-[11px] font-black text-emerald-700 underline decoration-emerald-300 underline-offset-4"
+                          className="flex items-center gap-1 text-[11px] font-black text-indigo-700 underline decoration-indigo-300 underline-offset-4"
                         >
                           {openExamples[conceptId] ? (
                             <>إظهار أقل <ChevronDown className="h-3 w-3 rotate-180" /></>
@@ -397,7 +397,7 @@ export default function MistakesView() {
                               إجابتك: {w.answer}
                             </p>
                           )}
-                          <p className="flex items-start gap-1.5 rounded-xl bg-emerald-50 px-3 py-2 text-xs font-bold leading-6 text-emerald-800">
+                          <p className="flex items-start gap-1.5 rounded-xl bg-indigo-50 px-3 py-2 text-xs font-bold leading-6 text-indigo-800">
                             <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
                             الإجابة الصحيحة: {q.correct}
                           </p>
