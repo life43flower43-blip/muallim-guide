@@ -26,6 +26,11 @@ interface UiState {
   heartOpen: boolean; // قلب الصف — سلّم المشاعر التربوي وشرارة المبدع (دليل المعلم)
   peerOpen: boolean; // تحدّي الأقران — رابط يحمل التحدي بلا سيرفر
   peerIncoming: PeerPayload | null; // تحدٍّ وصل عبر رابط مفتوح — يُلتقط من معرف الرابط
+  examsimOpen: boolean; // محاكي الرخصة والمسابقات — بلاتنات موقوتة بأقسام ومحك
+  placementOpen: boolean; // اختبار تحديد المستوى — تشخيص ثلاثي المستويات
+  matchOpen: boolean; // لعبة المطابقة — مصطلح مقابل شرحه المصغّر
+  speedOpen: boolean; // سباق السرعة — مؤقت لكل سؤال وكونبو
+  flashOpen: boolean; // بطاقات المفاهيم — وضع بطاقات القلب
   startQuiz: (c: QuizConfig) => void;
   clearQuiz: () => void;
   openConcept: (id: string) => void;
@@ -53,6 +58,16 @@ interface UiState {
   startPeer: () => void;
   clearPeer: () => void;
   setPeerIncoming: (p: PeerPayload | null) => void;
+  startExamsim: () => void;
+  clearExamsim: () => void;
+  startPlacement: () => void;
+  clearPlacement: () => void;
+  startMatch: () => void;
+  clearMatch: () => void;
+  startSpeed: () => void;
+  clearSpeed: () => void;
+  startFlash: () => void;
+  clearFlash: () => void;
 }
 
 export const useUi = create<UiState>((set) => ({
@@ -70,6 +85,11 @@ export const useUi = create<UiState>((set) => ({
   heartOpen: false,
   peerOpen: false,
   peerIncoming: null,
+  examsimOpen: false,
+  placementOpen: false,
+  matchOpen: false,
+  speedOpen: false,
+  flashOpen: false,
   startQuiz: (c) => set({ quizConfig: c }),
   clearQuiz: () => set({ quizConfig: null }),
   openConcept: (id) => set({ pendingConceptId: id }),
@@ -97,4 +117,14 @@ export const useUi = create<UiState>((set) => ({
   startPeer: () => set({ peerOpen: true }),
   clearPeer: () => set({ peerOpen: false }),
   setPeerIncoming: (p) => set({ peerIncoming: p }),
+  startExamsim: () => set({ examsimOpen: true }),
+  clearExamsim: () => set({ examsimOpen: false }),
+  startPlacement: () => set({ placementOpen: true }),
+  clearPlacement: () => set({ placementOpen: false }),
+  startMatch: () => set({ matchOpen: true }),
+  clearMatch: () => set({ matchOpen: false }),
+  startSpeed: () => set({ speedOpen: true }),
+  clearSpeed: () => set({ speedOpen: false }),
+  startFlash: () => set({ flashOpen: true }),
+  clearFlash: () => set({ flashOpen: false }),
 }));

@@ -16,6 +16,7 @@ export const COURSE_COLOR: Record<string, string> = {
   M4: "#D97706",
   M5: "#6D28D9",
   G1: "#8B5CF6",
+  C1: "#9333EA",
 };
 
 // أسماء مختصرة للمحاور — للشرائح والشارات الصغيرة (بلا أرقام — قرار المستخدم)
@@ -26,6 +27,7 @@ export const COURSE_SHORT: Record<string, string> = {
   M4: "التقويم",
   M5: "التدريس",
   G1: "ثقافة تربوية",
+  C1: "مهارات معرفية",
 };
 
 export const courseById = (id: string) => COURSES.find((c) => c.id === id);

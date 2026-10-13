@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, BookOpen, User, School, ClipboardList, Target, WifiOff } from "lucide-react";
+import { Home, BookOpen, User, School, ClipboardList, Target, WifiOff, X, Layers } from "lucide-react";
 import { useApp, useAppHydrated } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import QuizSession from "./QuizSession";
@@ -21,6 +21,11 @@ import StudySchool from "./StudySchool";
 import MeasureKit from "./MeasureKit";
 import PeerChallenge from "./PeerChallenge";
 import HeartOfClass from "./HeartOfClass";
+import ExamSimView from "./ExamSimView";
+import PlacementView from "./PlacementView";
+import MatchGameView from "./MatchGameView";
+import SpeedRunView from "./SpeedRunView";
+import FlashcardsView from "./FlashcardsView";
 import { readPeerHash } from "@/lib/peer";
 import { Button } from "@/components/ui/button";
 
@@ -227,6 +232,16 @@ export default function AppShell() {
   const clearPeer = useUi((s) => s.clearPeer);
   const startPeer = useUi((s) => s.startPeer);
   const setPeerIncoming = useUi((s) => s.setPeerIncoming);
+  const examsimOpen = useUi((s) => s.examsimOpen);
+  const clearExamsim = useUi((s) => s.clearExamsim);
+  const placementOpen = useUi((s) => s.placementOpen);
+  const clearPlacement = useUi((s) => s.clearPlacement);
+  const matchOpen = useUi((s) => s.matchOpen);
+  const clearMatch = useUi((s) => s.clearMatch);
+  const speedOpen = useUi((s) => s.speedOpen);
+  const clearSpeed = useUi((s) => s.clearSpeed);
+  const flashOpen = useUi((s) => s.flashOpen);
+  const clearFlash = useUi((s) => s.clearFlash);
   const [tab, setTab] = useState("home");
 
   // حالة الاتصال — قراءة مباشرة من المتصفح بلا setState داخل الأثر
@@ -352,6 +367,11 @@ export default function AppShell() {
           clearMeasure(); // ومعدة القياس
           clearHeart(); // وقلب الصف
           clearPeer(); // وتحدّي الأقران
+          clearExamsim(); // ومحاكي الرخصة والمسابقات
+          clearPlacement(); // واختبار تحديد المستوى
+          clearMatch(); // ولعبة المطابقة
+          clearSpeed(); // وسباق السرعة
+          clearFlash(); // وبطاقات المفاهيم
           setTab("home");
         }}
         onConcepts={() => setTab("concepts")}
@@ -371,6 +391,47 @@ export default function AppShell() {
 
       {/* شاشة محاكاة الصف الدراسي */}
       <AnimatePresence>{scenariosOpen && <ScenariosView key="scenarios" />}</AnimatePresence>
+
+      {/* محاكي الرخصة والمسابقات */}
+      <AnimatePresence>{examsimOpen && <ExamSimView key="examsim" />}</AnimatePresence>
+
+      {/* اختبار تحديد المستوى */}
+      <AnimatePresence>{placementOpen && <PlacementView key="placement" />}</AnimatePresence>
+
+      {/* لعبة المطابقة */}
+      <AnimatePresence>{matchOpen && <MatchGameView key="match" />}</AnimatePresence>
+
+      {/* سباق السرعة */}
+      <AnimatePresence>{speedOpen && <SpeedRunView key="speed" />}</AnimatePresence>
+
+      {/* بطاقات المفاهيم — طبقة برأس إغلاق فوق وضع البطاقات */}
+      <AnimatePresence>
+        {flashOpen && (
+          <motion.div
+            key="flash"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 24 }}
+            className="fixed inset-0 z-50 overflow-y-auto bg-background"
+          >
+            <div className="mx-auto max-w-lg pb-10 pt-5">
+              <div className="flex items-center justify-between px-4">
+                <p className="flex items-center gap-2 text-sm font-black text-primary">
+                  <Layers className="h-5 w-5" /> بطاقات المفاهيم
+                </p>
+                <button
+                  onClick={clearFlash}
+                  aria-label="إغلاق البطاقات"
+                  className="rounded-full bg-muted p-2.5 text-muted-foreground transition-colors hover:bg-accent"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              <FlashcardsView />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

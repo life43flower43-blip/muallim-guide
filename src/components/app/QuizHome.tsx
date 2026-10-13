@@ -27,6 +27,9 @@ import {
   School,
   Backpack,
   ClipboardList,
+  Compass,
+  Layers,
+  Shuffle,
 } from "lucide-react";
 import { COURSES, COURSE_SHORT, questionsOfCourse, QUESTIONS, conceptById, shuffle, buildProficiencySet } from "@/lib/qbank";
 import { buildReviewSet, buildRedoSet, orderUnseenFirst } from "@/lib/srs";
@@ -97,6 +100,11 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
   const startScenarios = useUi((s) => s.startScenarios);
   const startStudio = useUi((s) => s.startStudio);
   const startField = useUi((s) => s.startField);
+  const startExamsim = useUi((s) => s.startExamsim);
+  const startPlacement = useUi((s) => s.startPlacement);
+  const startMatch = useUi((s) => s.startMatch);
+  const startSpeed = useUi((s) => s.startSpeed);
+  const startFlash = useUi((s) => s.startFlash);
   const attempts = useApp((s) => s.attempts);
   const sessions = useApp((s) => s.sessions);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -201,11 +209,55 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
         </div>
       )}
 
+      {/* الميزات الجديدة المستقاة من تطبيقات المحاكاة والبطاقات العالمية */}
+      <ModeCard
+        icon={GraduationCap}
+        title="محاكي الرخصة والمسابقات"
+        desc="بلاتنات موقوتة بأقسام ومحك نجاح: التربوي العام، التخصص، ومسابقة الكادر — بدرجة وتحليل أقسام بعد التسليم"
+        badge="جديد"
+        color="#4C1D95"
+        onClick={startExamsim}
+      />
+
+      <ModeCard
+        icon={Compass}
+        title="اختبار تحديد المستوى"
+        desc="اثنا عشر سؤالاً سريعًا من كل محور — يعرّفك بمستواك ونقاط قوتك وفجواتك ويعطيك خطة تنفيذية"
+        badge="جديد"
+        color="#B45309"
+        onClick={startPlacement}
+      />
+
+      <ModeCard
+        icon={Layers}
+        title="بطاقات المفاهيم"
+        desc="مئات البطاقات تنقلب باللمس: المصطلح في وجه، والشرح وأمثلته في الوجه الآخر — بنمط تطبيقات البطاقات العالمية"
+        color="#6D28D9"
+        onClick={startFlash}
+      />
+
+      <ModeCard
+        icon={Puzzle}
+        title="لعبة المطابقة"
+        desc="صلّ المصطلح بشرحه المصغّر في أسرع وقت — لعبة تذكر معرفي سريعة تثبّت المصطلحات بلا ملل"
+        badge="جديد"
+        color="#7C3AED"
+        onClick={startMatch}
+      />
+
+      <ModeCard
+        icon={Zap}
+        title="سباق السرعة"
+        desc="عشرة أسئلة بعشرين ثانية للسؤال — مكافأة زمنية للإجابة المبكرة ومتتالية مضاعفة تُقطع بالخطأ"
+        badge="جديد"
+        color="#F59E0B"
+        onClick={startSpeed}
+      />
+
       <ModeCard
         icon={Puzzle}
         title="التحديات الذكية"
         desc="ترتيب خطوات، إكمال فراغات، وإنتاج كتابي بتوجيه حي — أنماط تحدٍّ تكسر الروتين وتثبّت الفهم"
-        badge="جديد"
         color="#B45309"
         onClick={startChallenges}
       />
@@ -266,7 +318,7 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
       />
 
       <ModeCard
-        icon={Zap}
+        icon={Shuffle}
         title="اختبار سريع"
         desc="أسئلة عشوائية من كل المحاور مع توجيه فوري"
         color="#F59E0B"
