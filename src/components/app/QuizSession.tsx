@@ -290,7 +290,11 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
   const instantFeedback = config.mode !== "exam" && config.mode !== "proficiency";
   const concept = q ? conceptById(q.conceptId) : undefined;
   // خلط ترتيب خيارات المقالي بثبات لكل سؤال — لا يُخلط صح/خطأ (أيقوناته دلالية)
-  const mcqOpts = useMemo(() => (q && q.type === "mcq" ? shuffle(q.options) : []), [q]);
+  // الأسئلة الموسومة fixedOrder يشير شرحها إلى الخيارات بترتيبها («الخيار الثاني…») فتبقى بترتيبها
+  const mcqOpts = useMemo(
+    () => (q && q.type === "mcq" ? (q.fixedOrder ? q.options : shuffle(q.options)) : []),
+    [q]
+  );
 
   // خطاب اختبار الكفاءة — تفصيل النتيجة على المحاور (ميزة «ي» في بحث مشاكل الطلبة)
   // محسوب دائمًا بلا شرط — قواعد الخطافات تمنع الاستدعاء الشرطي

@@ -16,6 +16,8 @@ export interface Question {
   options: QOption[];
   correct: string;
   reason: string;
+  /** الشرح يشير إلى الخيارات بترتيبها (الأول/الثاني…) — لا يُخلط ترتيبها عند العرض */
+  fixedOrder?: boolean;
 }
 
 export interface Concept {

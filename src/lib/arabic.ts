@@ -142,12 +142,20 @@ export function splitArParagraphs(text: string): string[] {
 /**
  * تفكيك التعليل الأكاديمي إلى شقّين:
  * «أساس الصواب» ثم «موقف البدائل» (كل جملة تبدأ بإبطال خيار) — ليُعرض كل شق بعنوانه.
+ * ملاحظة: \b لا يعمل مع العربية في جافاسكربت — تُستخدم lookahead عند حدود الكلمات.
  */
 export function splitReason(reason: string): { base: string; rest: string | null } {
   const t = (reason ?? "").trim();
   if (!t) return { base: "", rest: null };
   const sentences = t.split(/(?<=[.؛])\s+/).filter(Boolean);
-  const REJECT = /^(أما[ ]|ولا يصح|وتسقط|وتبقى|وباقي[ ]|الخيار[ ](الأول|الثاني|الثالث|الرابع)\b|الخيارات[ ](الأخرى|البديلة|الأولى|الثانية|الثالثة|الرابعة)\b|البدائل[ ])/;
+  const AR = "(?![\\u0621-\\u064a])"; // ليس متبوعًا بحرف عربي — بديل \b الآمن مع العربية
+  const REJECT = new RegExp(
+    "^(أما[ ]|ولا يصح|وتسقط|وتبقى|وباقي[ ]" +
+      "|و?الخيار[ ](الأول|الثاني|الثالث|الرابع)" + AR +
+      "|و?الخيارات[ ](الأخرى|البديلة|الأولى|الثانية|الثالثة|الرابعة)" + AR +
+      "|و?الخياران" + AR + "|و?الخيارين" + AR +
+      "|البدائل[ ]|المشتتات)"
+  );
   for (let i = 1; i < sentences.length; i++) {
     if (REJECT.test(sentences[i])) {
       const base = sentences.slice(0, i).join(" ").trim();
