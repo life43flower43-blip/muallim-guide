@@ -1,6 +1,6 @@
 // عامل خدمة: شبكة أولاً للتنقل والملفات الديناميكية، كاش أولاً للأصول الموسومة فقط
 // v22 — إصلاح البقاء على نسخة قديمة: تحديث تلقائي عند توفر نسخة أحدث
-const CACHE = "turbawy-v22";
+const CACHE = "turbawy-v23";
 const SHELL = ["/", "/manifest.json", "/icons/icon-192.png", "/icons/icon-512.png"];
 
 self.addEventListener("install", (e) => {
