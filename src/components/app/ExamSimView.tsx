@@ -688,7 +688,10 @@ export default function ExamSimView() {
                       <p className="mt-1.5 rounded-xl bg-accent px-3 py-2 text-[11px] font-black text-primary">
                         الصواب: {q.correct}
                       </p>
-                      <p className="mt-2 text-[11px] font-bold leading-6 text-muted-foreground">{q.reason}</p>
+                      <p className="mt-2 text-[11px] font-bold leading-6 text-muted-foreground">
+                        <span className="font-black text-primary/80">التعليل: </span>
+                        {q.reason}
+                      </p>
                     </div>
                   );
                 })}

@@ -116,3 +116,57 @@ export const WORD_FORMS: CountForms = {
   few: "كلمات",
   many: "كلمة",
 };
+
+// ---------- الصياغة الأكاديمية: تقسيم الفقرات وتفكيك التعليل وسياق الشاهد ----------
+
+/** تقسيم نص عربي طويل إلى فقرات قراءة مريحة على حدود الجُمل (٢–٣ جمل لكل فقرة) */
+export function splitArParagraphs(text: string): string[] {
+  const t = (text ?? "").trim();
+  if (!t) return [];
+  const sentences = t.split(/(?<=[.؟!…])\s+/).filter(Boolean);
+  if (sentences.length < 3 || t.length < 220) return [t];
+  const paras: string[] = [];
+  let cur = "";
+  for (const s of sentences) {
+    if (cur && cur.length > 130) {
+      paras.push(cur.trim());
+      cur = s;
+    } else {
+      cur = cur ? `${cur} ${s}` : s;
+    }
+  }
+  if (cur.trim()) paras.push(cur.trim());
+  return paras.length ? paras : [t];
+}
+
+/**
+ * تفكيك التعليل الأكاديمي إلى شقّين:
+ * «أساس الصواب» ثم «موقف البدائل» (كل جملة تبدأ بإبطال خيار) — ليُعرض كل شق بعنوانه.
+ */
+export function splitReason(reason: string): { base: string; rest: string | null } {
+  const t = (reason ?? "").trim();
+  if (!t) return { base: "", rest: null };
+  const sentences = t.split(/(?<=[.؛])\s+/).filter(Boolean);
+  const REJECT = /^(أما[ ]|ولا يصح|وتسقط|وتبقى|وباقي[ ]|الخيار[ ](الأول|الثاني|الثالث|الرابع)\b|الخيارات[ ](الأخرى|البديلة|الأولى|الثانية|الثالثة|الرابعة)\b|البدائل[ ])/;
+  for (let i = 1; i < sentences.length; i++) {
+    if (REJECT.test(sentences[i])) {
+      const base = sentences.slice(0, i).join(" ").trim();
+      const rest = sentences.slice(i).join(" ").trim();
+      if (base.length >= 25 && rest.length >= 20) return { base, rest };
+      break;
+    }
+  }
+  return { base: t, rest: null };
+}
+
+/** سياق الشاهد التطبيقي: تُستنتج المرحلة أو البيئة من مفردات المثال نفسه */
+export function exampleContext(ex: string): string {
+  const t = ex ?? "";
+  if (/روضة|رياض[ ]الأطفال/.test(t)) return "الروضة";
+  if (/ابتدائي/.test(t)) return "الابتدائي";
+  if (/المتوسطة|المرحلة[ ]المتوسطة|متوسطة/.test(t)) return "المتوسط";
+  if (/ثانوي/.test(t)) return "الثانوي";
+  if (/جامعة|الجامعي/.test(t)) return "الجامعي";
+  if (/في[ ]المنزل|والدته?[ ]|والدة|الأسرة|الأب[ ]|الأم[ ]/.test(t)) return "المنزل";
+  return "ميداني";
+}

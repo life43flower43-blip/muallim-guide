@@ -22,7 +22,7 @@ import { useApp } from "@/lib/store";
 import { useUi, type QuizConfig } from "@/lib/ui-store";
 import { saveSnapshot, loadSnapshot, clearSnapshot, RESUME_FLAG } from "@/lib/session-snapshot";
 import { buildSocraticSteps, type SocraticStep } from "@/lib/socratic";
-import { ad, arCount, QUESTION_OBJ_FORMS } from "@/lib/arabic";
+import { ad, arCount, QUESTION_OBJ_FORMS, splitReason, splitArParagraphs } from "@/lib/arabic";
 import SpeakButton from "./SpeakButton";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -147,7 +147,7 @@ function SocraticBox({ q }: { q: Question }) {
             <span className="font-extrabold text-primary">الإجابة الصحيحة: </span>
             {q.correct}
           </p>
-          <p className="text-sm leading-7 text-muted-foreground">{q.reason}</p>
+          <AcademicReason reason={q.reason} compact />
         </motion.div>
       )}
     </div>
@@ -164,11 +164,15 @@ function ConceptExamplesBox({ q }: { q: Question }) {
       <p className="mb-1.5 flex items-center gap-2 text-sm font-extrabold text-sky-900">
         <BookOpen className="h-4 w-4" /> المفهوم الذي خطأت فيه: {concept.title}
       </p>
-      <p className="text-sm leading-7 text-sky-950">{concept.explanation}</p>
+      <div className="space-y-2">
+        {splitArParagraphs(concept.explanation).map((p, i) => (
+          <p key={i} className="text-sm leading-7 text-sky-950">{p}</p>
+        ))}
+      </div>
       {examples.length > 0 && (
         <div className="mt-3 space-y-2">
           <p className="flex items-center gap-1.5 text-xs font-black text-sky-800">
-            <Lightbulb className="h-3.5 w-3.5" /> أمثلة مشابهة من الميدان
+            <Lightbulb className="h-3.5 w-3.5" /> شواهد تطبيقية من الميدان
           </p>
           {examples.map((ex, i) => (
             <p
@@ -187,6 +191,25 @@ function ConceptExamplesBox({ q }: { q: Question }) {
   );
 }
 
+// التعليل الأكاديمي: أساس الصواب ثم موقف البدائل — كل شقّ بعنوانه
+function AcademicReason({ reason, compact }: { reason: string; compact?: boolean }) {
+  const { base, rest } = useMemo(() => splitReason(reason), [reason]);
+  return (
+    <div className="space-y-2">
+      <div className="rounded-xl border border-primary/15 bg-violet-50/70 p-3">
+        <p className={`font-black text-primary ${compact ? "text-[11px]" : "text-xs"}`}>أساس الصواب</p>
+        <p className={`mt-1 leading-7 ${compact ? "text-[13px]" : "text-sm"} text-foreground/95`}>{base}</p>
+      </div>
+      {rest && (
+        <div className="rounded-xl border border-amber-200/70 bg-amber-50/60 p-3">
+          <p className={`font-black text-amber-800 ${compact ? "text-[11px]" : "text-xs"}`}>موقف البدائل</p>
+          <p className={`mt-1 leading-7 ${compact ? "text-[13px]" : "text-sm"} text-amber-950/90`}>{rest}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ReasonBox({ q }: { q: Question }) {
   const [open, setOpen] = useState(false);
   const concept = conceptById(q.conceptId);
@@ -198,7 +221,7 @@ function ReasonBox({ q }: { q: Question }) {
       >
         <span className="flex items-center gap-2">
           <BookOpen className="h-4 w-4" />
-          سبب الإجابة ومصدر المفهوم
+          التعليل ومصدر المفهوم
         </span>
         <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
@@ -208,7 +231,7 @@ function ReasonBox({ q }: { q: Question }) {
           animate={{ opacity: 1, height: "auto" }}
           className="space-y-2 overflow-hidden"
         >
-          <p className="rounded-xl border border-border bg-white p-3 text-sm leading-7">{q.reason}</p>
+          <AcademicReason reason={q.reason} />
           {concept && (
             <p className="rounded-xl bg-accent p-3 text-xs leading-6 text-primary">
               <span className="font-bold">المفهوم: </span>
@@ -512,7 +535,10 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                       الإجابة الصحيحة: {rq.correct}
                     </p>
                   )}
-                  <p className="mt-2 text-xs leading-6 text-muted-foreground">{rq.reason}</p>
+                  <p className="mt-2 text-xs leading-6 text-muted-foreground">
+                    <span className="font-black text-primary/80">التعليل: </span>
+                    {rq.reason}
+                  </p>
                 </details>
               );
             })}

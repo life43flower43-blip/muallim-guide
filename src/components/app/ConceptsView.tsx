@@ -39,30 +39,10 @@ import type { Concept, Course } from "@/lib/types";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { shareText } from "@/lib/share";
-import { ad } from "@/lib/arabic";
+import { ad, splitArParagraphs, exampleContext } from "@/lib/arabic";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import SpeakButton from "./SpeakButton";
-
-/** تقسيم نص عربي طويل إلى فقرات قراءة مريحة على حدود الجُمل (٢–٣ جمل لكل فقرة) */
-function splitArParagraphs(text: string): string[] {
-  const t = (text ?? "").trim();
-  if (!t) return [];
-  const sentences = t.split(/(?<=[.؟!…])\s+/).filter(Boolean);
-  if (sentences.length < 3 || t.length < 220) return [t];
-  const paras: string[] = [];
-  let cur = "";
-  for (const s of sentences) {
-    if (cur && cur.length > 130) {
-      paras.push(cur.trim());
-      cur = s;
-    } else {
-      cur = cur ? `${cur} ${s}` : s;
-    }
-  }
-  if (cur.trim()) paras.push(cur.trim());
-  return paras.length ? paras : [t];
-}
 
 // أيقونة كل محور — بديل أرقام المحاور (قرار المستخدم: بلا شكل كتاب مدرسي)
 const COURSE_ICONS: Record<string, React.ElementType> = {
@@ -311,7 +291,7 @@ function ConceptDetail({
           <div>
             <div className="mb-1 flex items-center justify-between gap-2">
               <p className="flex items-center gap-2 text-sm font-black text-primary">
-                <BookOpen className="h-4 w-4" /> الشرح
+                <BookOpen className="h-4 w-4" /> المضمون العلمي
               </p>
               <div className="flex items-center gap-1.5">
                 <button
@@ -346,7 +326,10 @@ function ConceptDetail({
           </div>
           <div className="space-y-2">
             <p className="flex items-center gap-2 text-sm font-black text-violet-800">
-              <Lightbulb className="h-4 w-4" /> أمثلة واقعية من الميدان
+              <Lightbulb className="h-4 w-4" /> الشواهد التطبيقية من الميدان
+            </p>
+            <p className="text-[11px] font-bold leading-5 text-muted-foreground">
+              مواقف حقيقية مُعاد تركيبها تُجسّد المفهوم في سياقه التربوي — تُقرأ كل شاهدة كحالة مستقلة تُلاحظ ثم تُحلَّل.
             </p>
             {examples.map((ex, i) => (
               <div
@@ -358,6 +341,9 @@ function ConceptDetail({
                     {ad(i + 1)}
                   </span>
                   <div className="flex-1 space-y-2">
+                    <span className="inline-block rounded-full bg-white px-2.5 py-0.5 text-[10px] font-black text-violet-700 ring-1 ring-violet-200">
+                      سياق: {exampleContext(ex)}
+                    </span>
                     {splitArParagraphs(ex).map((p, j) => (
                       <p key={j} className="text-sm leading-7 text-violet-950/95">{p}</p>
                     ))}
