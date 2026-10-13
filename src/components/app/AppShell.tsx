@@ -272,11 +272,22 @@ export default function AppShell() {
   }, [fontScale]);
 
   // مؤشر عدم الاتصال — اشتراك أحداث الشبكة (الاستماع فقط، لا حالة تُضبط يدويًا)
-  // تسجيل عامل الخدمة للعمل دون اتصال
+  // تسجيل عامل الخدمة للعمل دون اتصال + تحديث تلقائي عند وصول نسخة أحدث
   useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => {});
-    }
+    if (!("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("/sw.js").catch(() => {});
+    // عند سيطرة عامل خدمة جديد (نسخة أحدث) يعاد التحميل مرة واحدة —
+    // حتى لا يبقى المستخدم على حزمة قديمة. أول زيارة بلا متحكم فلا تُعاد.
+    let reloading = false;
+    const hadController = !!navigator.serviceWorker.controller;
+    const onChange = () => {
+      if (reloading || !hadController) return;
+      reloading = true;
+      window.location.reload();
+    };
+    navigator.serviceWorker.addEventListener("controllerchange", onChange);
+    return () =>
+      navigator.serviceWorker.removeEventListener("controllerchange", onChange);
   }, []);
 
   // التقاط تحدٍّ واصل عبر معرف الرابط — يفتح تحدّي الأقران مباشرة ثم ينظف العنوان
