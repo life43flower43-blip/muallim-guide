@@ -3,9 +3,6 @@
 import { motion } from "framer-motion";
 import { ChevronLeft, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CAT_MAP } from "@/lib/content";
-// معرف الفئة نصي في هذه الشاشة — الاستيراد القديم كان من ملف types أُعيدت كتابته
- type CategoryId = string;
 
 /** حلقة تقدم دائرية متحركة */
 export function RingProgress({
@@ -46,24 +43,6 @@ export function RingProgress({
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">{children}</div>
     </div>
-  );
-}
-
-/** شارة فئة المفهوم */
-export function CategoryChip({ id, small }: { id: CategoryId; small?: boolean }) {
-  const cat = CAT_MAP[id];
-  if (!cat) return null;
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1 rounded-full font-semibold",
-        small ? "px-2 py-0.5 text-[10px]" : "px-2.5 py-1 text-[11px]"
-      )}
-      style={{ backgroundColor: cat.soft, color: cat.color }}
-    >
-      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: cat.color }} />
-      {cat.short}
-    </span>
   );
 }
 

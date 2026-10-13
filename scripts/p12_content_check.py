@@ -76,7 +76,11 @@ c1q = [q for q in d["questions"] if q["conceptId"] in {c["id"] for c in c1c}]
 print(f"مساق C1: {len(c1c)} مفهوماً / {len(c1q)} سؤالاً")
 if d["courses"].get("C1") != "المهارات المعرفية والقدرات":
     errors.append("اسم مساق C1 غير صحيح")
-if len(c1c) != 14 or len(c1q) != 28:
+# اكتمال C1: كل مفهوم سؤالان على الأقل، وليس عددًا ثابتًا (البنك يتوسع)
+c1cnt = {}
+for q in c1q:
+    c1cnt[q["conceptId"]] = c1cnt.get(q["conceptId"], 0) + 1
+if len(c1c) != 14 or any(v < 2 for v in c1cnt.values()) or len(c1q) < 28:
     errors.append(f"C1 غير مكتمل: {len(c1c)} مفهوماً / {len(c1q)} سؤالاً")
 
 # ---------- النتيجة ----------
