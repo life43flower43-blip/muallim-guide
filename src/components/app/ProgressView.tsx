@@ -92,7 +92,7 @@ export default function ProgressView() {
       {/* Stats grid */}
       <div className="flex gap-2.5">
         <StatCard icon="🔥" value={store.streakDays} label="سلسلة أيام" color="#f97316" />
-        <StatCard icon="🧠" value={store.answered} label="سؤال مجاب" color="#0d9488" />
+        <StatCard icon="🧠" value={store.answered} label="سؤال مجاب" color="#7C3AED" />
         <StatCard icon="🎯" value={`${accuracy}%`} label="الدقة" color="#f59e0b" />
         <StatCard icon="📚" value={`${exploredCount}/${CONCEPTS.length}`} label="مفاهيم" color="#8b5cf6" />
       </div>

@@ -100,7 +100,7 @@ export default function CalmBreak({
               <motion.div
                 animate={{ scale: phase.scale }}
                 transition={{ duration: phase.dur, ease: "easeInOut" }}
-                className="flex h-44 w-44 items-center justify-center rounded-full bg-gradient-to-b from-[#2D6A4F] to-[#1B4332] shadow-lg"
+                className="flex h-44 w-44 items-center justify-center rounded-full bg-gradient-to-b from-[#6D28D9] to-[#5B21B6] shadow-lg"
               >
                 <span className="text-center text-lg font-black text-white">{phase.label}</span>
               </motion.div>

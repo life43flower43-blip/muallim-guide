@@ -23,12 +23,17 @@ import {
   Mic,
   GraduationCap,
   Calculator,
+  FlaskConical,
+  School,
+  Backpack,
+  ClipboardList,
 } from "lucide-react";
 import { COURSES, COURSE_SHORT, questionsOfCourse, QUESTIONS, conceptById, shuffle, buildProficiencySet } from "@/lib/qbank";
 import { buildReviewSet, buildRedoSet, orderUnseenFirst } from "@/lib/srs";
 import { useApp, currentStreak } from "@/lib/store";
 import { ad } from "@/lib/arabic";
 import { useUi } from "@/lib/ui-store";
+import { ToolRow, NewBadge } from "./shared";
 import { loadSnapshot, clearSnapshot, RESUME_FLAG, type SessionSnapshot } from "@/lib/session-snapshot";
 import CalmBreak from "./CalmBreak";
 import FocusTimer from "./FocusTimer";
@@ -69,7 +74,7 @@ function ModeCard({
         <span className="flex items-center gap-2">
           <span className="text-lg font-black">{title}</span>
           {badge && (
-            <span className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-black text-primary">
+            <span className="rounded-full bg-amber-400 px-2.5 py-0.5 text-[10px] font-black text-amber-950">
               {badge}
             </span>
           )}
@@ -88,6 +93,10 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
   const startStudy = useUi((s) => s.startStudy);
   const startMeasure = useUi((s) => s.startMeasure);
   const startPeer = useUi((s) => s.startPeer);
+  const startLab = useUi((s) => s.startLab);
+  const startScenarios = useUi((s) => s.startScenarios);
+  const startStudio = useUi((s) => s.startStudio);
+  const startField = useUi((s) => s.startField);
   const attempts = useApp((s) => s.attempts);
   const sessions = useApp((s) => s.sessions);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -116,12 +125,12 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
 
   return (
     <div className="space-y-4 px-4 pb-6">
-      <div className="card-soft rounded-3xl border border-border bg-gradient-to-l from-[#1B4332] to-[#2D6A4F] p-5 text-white">
+      <div className="card-soft rounded-3xl border border-border bg-gradient-to-l from-[#2A1058] to-[#6D28D9] p-5 text-white">
         <div className="flex items-center gap-3">
           <BookOpenCheck className="h-8 w-8" />
           <div>
             <h2 className="text-lg font-black">مركز الاختبارات</h2>
-            <p className="text-xs text-gray-100">
+            <p className="text-xs text-white/90">
               {seenCount > 0
                 ? "راجع بذكاء، صحّح أخطاءك، وتحدّ نفسك — الجديد يأتي أولاً"
                 : "ابدأ أول جلسة — أسئلة من محاور الرحلة كلها مع توجيه فوري"}
@@ -213,7 +222,7 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
         icon={Brain}
         title="الاختبار المكثف"
         desc="جميع أسئلة البنك في جلسة واحدة — وعند كل خطأ نعرفك بمفهومه وأمثلته، ويُسجل الخطأ في صفحة أخطائي"
-        color="#1B4332"
+        color="#5B21B6"
         onClick={() =>
           startQuiz({
             mode: "intensive",
@@ -274,7 +283,7 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
         icon={Timer}
         title="اختبار محاكاة"
         desc="أسئلة مختارة في وقت محدد — بلا توجيه فوري، والنتيجة في النهاية (كالامتحان الحقيقي)"
-        color="#0E7490"
+        color="#6D28D9"
         onClick={() =>
           startQuiz({
             mode: "exam",
@@ -290,7 +299,7 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
         title="اختبار الكفاءة الشامل"
         desc="خمسون سؤالًا من كل المحاور في خمسين دقيقة — بلا تلميحات ولا توجيه أثناءه، وتقرير نجاح بخطاب على المحاور"
         badge="وضع صارم"
-        color="#1B4332"
+        color="#5B21B6"
         onClick={() =>
           startQuiz({
             mode: "proficiency",
@@ -323,9 +332,45 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
         icon={Calculator}
         title="معدة القياس والتقويم"
         desc="حاسبات مساق التقويم الأربع: الوسط والوسيط والمدى، صعوبة السؤال وتمييزه، ووزن الدرجة — بشرح تربوي"
-        color="#0E7490"
+        color="#7C3AED"
         onClick={startMeasure}
       />
+
+      {/* أدوات الممارسة — المنقولة من الرئيسية: مختبر، الصف الحي، الميدان، الاستوديو */}
+      <div className="pt-1">
+        <p className="mb-2 flex items-center gap-2 text-sm font-black text-primary">
+          <Dumbbell className="h-4 w-4" /> أدوات الممارسة
+        </p>
+        <div className="space-y-2.5">
+          <ToolRow
+            icon={FlaskConical}
+            title="مختبر المعلّم"
+            desc="مواقف قراراتها تغيّر الموقف — تدرّب كأنك في صفك"
+            onClick={startLab}
+            badge={<NewBadge tone="violet" />}
+          />
+          <ToolRow
+            icon={School}
+            title="الصف الحي"
+            desc="محاكاة صفية حية بقرارات متتابعة ونتائج واقعية"
+            onClick={startScenarios}
+            tone="amber"
+          />
+          <ToolRow
+            icon={Backpack}
+            title="سجل التدريب الميداني"
+            desc="وثّق زياراتك الميدانية وتأملها بعد الحصة"
+            onClick={startField}
+            badge={<NewBadge tone="amber" />}
+          />
+          <ToolRow
+            icon={ClipboardList}
+            title="استوديو خطط الدروس"
+            desc="اصنع خطة درس موجهة وقيّمها قبل الحصة"
+            onClick={startStudio}
+          />
+        </div>
+      </div>
 
       {/* تدريب حسب المحور */}
       <div className="card-soft rounded-3xl border border-border bg-white p-4">
@@ -333,7 +378,7 @@ export default function QuizHome({ onGoTab }: { onGoTab: (t: string) => void }) 
           className="flex w-full items-center gap-4 text-right"
           onClick={() => setExpanded((e) => (e ? null : "courses"))}
         >
-          <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#2D6A4F] text-white">
+          <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#6D28D9] text-white">
             <Dumbbell className="h-7 w-7" />
           </span>
           <span className="flex-1">

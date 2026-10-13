@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, BookOpen, User, School, Dumbbell, Target, WifiOff } from "lucide-react";
+import { Home, BookOpen, User, School, ClipboardList, Target, WifiOff } from "lucide-react";
 import { useApp, useAppHydrated } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import QuizSession from "./QuizSession";
@@ -20,12 +20,13 @@ import SpeechStage from "./SpeechStage";
 import StudySchool from "./StudySchool";
 import MeasureKit from "./MeasureKit";
 import PeerChallenge from "./PeerChallenge";
+import HeartOfClass from "./HeartOfClass";
 import { readPeerHash } from "@/lib/peer";
 import { Button } from "@/components/ui/button";
 
 const TAB_TITLES: Record<string, string> = {
   home: "تربوي",
-  concepts: "المكتبة",
+  concepts: "دليل المعلم",
   mistakes: "أخطائي",
   quiz: "الاختبارات",
   account: "حسابي",
@@ -48,9 +49,8 @@ function subscribeScheme(cb: () => void) {
   return () => mq.removeEventListener("change", cb);
 }
 
-// ---------- شريط التنقل السفلي الثابت (نقد البند 6) ----------
-// الرئيسية / المكتبة / تدريب / حسابي — أهداف لمس ≥44px مع safe-area،
-// والتمييز بالأيقونة واللون معًا.
+// ---------- شريط التنقل السفلي الثابت ----------
+// الرئيسية / دليل المعلم / أخطائي / الاختبارات / حسابي — أهداف لمس ≥٤٤px مع safe-area
 function BottomNav({
   tab,
   onHome,
@@ -66,13 +66,11 @@ function BottomNav({
   onTrain: () => void;
   onAccount: () => void;
 }) {
-  const scenariosOpen = useUi((s) => s.scenariosOpen);
-  const labOpen = useUi((s) => s.labOpen);
   const items = [
     { id: "home", label: "الرئيسية", icon: Home, active: tab === "home", onClick: onHome },
-    { id: "library", label: "المكتبة", icon: BookOpen, active: tab === "concepts", onClick: onConcepts },
+    { id: "library", label: "دليل المعلم", icon: BookOpen, active: tab === "concepts", onClick: onConcepts },
     { id: "mistakes", label: "أخطائي", icon: Target, active: tab === "mistakes", onClick: onMistakes },
-    { id: "train", label: "تدريب", icon: Dumbbell, active: labOpen || scenariosOpen, onClick: onTrain },
+    { id: "train", label: "الاختبارات", icon: ClipboardList, active: tab === "quiz", onClick: onTrain },
     { id: "account", label: "حسابي", icon: User, active: tab === "account", onClick: onAccount },
   ];
   return (
@@ -121,7 +119,7 @@ function Onboarding() {
   const [draft, setDraft] = useState("");
 
   return (
-    <div className="flex h-dvh flex-col bg-gradient-to-b from-[#1B4332] to-[#2D6A4F] p-6 text-white">
+    <div className="flex h-dvh flex-col bg-gradient-to-b from-[#2A1058] to-[#6D28D9] p-6 text-white">
       <div className="safe-top" />
       <div className="flex flex-1 flex-col items-center justify-center text-center">
         <motion.div
@@ -133,14 +131,14 @@ function Onboarding() {
           <School className="h-16 w-16" />
         </motion.div>
         <h1 className="text-4xl font-black">تربوي</h1>
-        <p className="mt-3 max-w-xs text-sm leading-7 text-gray-100">
+        <p className="mt-3 max-w-xs text-sm leading-7 text-white/90">
           مساعد إعداد المعلم يرافقك من طالب تربية إلى معلم جاهز: مفاهيم مشروحة بأمثلة واقعية من
           الميدان، تدريب بتوجيه فوري، مواقف صفّية تحاكي الصف الحقيقي، ومراجعة ذكية تثبّت المعرفة في
           ذاكرتك.
         </p>
 
         <div className="mt-10 w-full max-w-sm">
-          <label className="mb-2 block text-right text-xs font-bold text-gray-100">
+          <label className="mb-2 block text-right text-xs font-bold text-white/90">
             ما اسمك يا معلم المستقبل؟
           </label>
           <input
@@ -209,7 +207,6 @@ export default function AppShell() {
   const quizConfig = useUi((s) => s.quizConfig);
   const scenariosOpen = useUi((s) => s.scenariosOpen);
   const labOpen = useUi((s) => s.labOpen);
-  const startLab = useUi((s) => s.startLab);
   const clearLab = useUi((s) => s.clearLab);
   const clearScenarios = useUi((s) => s.clearScenarios);
   const studioOpen = useUi((s) => s.studioOpen);
@@ -224,6 +221,8 @@ export default function AppShell() {
   const clearStudy = useUi((s) => s.clearStudy);
   const measureOpen = useUi((s) => s.measureOpen);
   const clearMeasure = useUi((s) => s.clearMeasure);
+  const heartOpen = useUi((s) => s.heartOpen);
+  const clearHeart = useUi((s) => s.clearHeart);
   const peerOpen = useUi((s) => s.peerOpen);
   const clearPeer = useUi((s) => s.clearPeer);
   const startPeer = useUi((s) => s.startPeer);
@@ -293,6 +292,8 @@ export default function AppShell() {
 
   if (peerOpen) return <PeerChallenge />;
 
+  if (heartOpen) return <HeartOfClass key="heart" />;
+
   return (
     <div className="mx-auto flex h-dvh max-w-[480px] flex-col bg-background shadow-xl">
       {/* شريط علوي — الرئيسية ترويستها مدمجة داخل الصفحة (نقد البند 7) */}
@@ -349,12 +350,13 @@ export default function AppShell() {
           clearStage(); // ومِسرح الإلقاء
           clearStudy(); // ومدرسة المذاكرة
           clearMeasure(); // ومعدة القياس
+          clearHeart(); // وقلب الصف
           clearPeer(); // وتحدّي الأقران
           setTab("home");
         }}
         onConcepts={() => setTab("concepts")}
         onMistakes={() => setTab("mistakes")}
-        onTrain={startLab}
+        onTrain={() => setTab("quiz")}
         onAccount={() => setTab("account")}
       />
 

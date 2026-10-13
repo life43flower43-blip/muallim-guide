@@ -10,12 +10,12 @@ export const CONCEPTS: Concept[] = raw.concepts as Concept[];
 export const QUESTIONS: Question[] = raw.questions as Question[];
 
 export const COURSE_COLOR: Record<string, string> = {
-  M1: "#2D6A4F",
+  M1: "#5B21B6",
   M2: "#B45309",
   M3: "#7C3AED",
-  M4: "#0E7490",
-  M5: "#BE185D",
-  G1: "#1D4ED8",
+  M4: "#D97706",
+  M5: "#6D28D9",
+  G1: "#8B5CF6",
 };
 
 // أسماء مختصرة للمحاور — للشرائح والشارات الصغيرة (بلا أرقام — قرار المستخدم)

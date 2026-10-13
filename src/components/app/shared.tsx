@@ -1,9 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { ChevronLeft, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CAT_MAP } from "@/lib/content";
-import type { CategoryId } from "@/lib/types";
+// معرف الفئة نصي في هذه الشاشة — الاستيراد القديم كان من ملف types أُعيدت كتابته
+ type CategoryId = string;
 
 /** حلقة تقدم دائرية متحركة */
 export function RingProgress({
@@ -131,5 +133,82 @@ export function EmptyState({ icon, title, desc }: { icon: string; title: string;
       <p className="font-bold text-stone-700 mb-1">{title}</p>
       <p className="text-xs text-stone-500 leading-relaxed">{desc}</p>
     </div>
+  );
+}
+
+// ---------- شارة «جديد» الموحدة — واحدة بالنمط، وتختفي بعد سبعة أيام من أول تشغيل ----------
+const FIRST_RUN_KEY = "trb-first-run";
+
+export function isNewWindow(): boolean {
+  try {
+    let t = Number(localStorage.getItem(FIRST_RUN_KEY) || "0");
+    if (!t) {
+      t = Date.now();
+      localStorage.setItem(FIRST_RUN_KEY, String(t));
+    }
+    return Date.now() - t < 7 * 24 * 60 * 60 * 1000;
+  } catch {
+    return false;
+  }
+}
+
+export function NewBadge({ tone = "amber" }: { tone?: "amber" | "violet" }) {
+  const show = isNewWindow();
+  if (!show) return null;
+  return (
+    <span
+      className={`flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-black ${
+        tone === "amber"
+          ? "bg-amber-400 text-amber-950"
+          : "bg-violet-600 text-white"
+      }`}
+    >
+      <Sparkles className="h-3 w-3" /> جديد
+    </span>
+  );
+}
+
+// ---------- سطر أداة قياسي: أيقونة موحدة + عنوان + وصف سطر واحد + سهم ----------
+export function ToolRow({
+  icon: Icon,
+  title,
+  desc,
+  onClick,
+  badge,
+  tone = "violet",
+}: {
+  icon: React.ElementType;
+  title: string;
+  desc: string;
+  onClick: () => void;
+  badge?: React.ReactNode;
+  tone?: "violet" | "amber";
+}) {
+  return (
+    <motion.button
+      whileTap={{ scale: 0.985 }}
+      onClick={onClick}
+      className="flex w-full items-center gap-3 rounded-3xl border border-border bg-white p-4 text-right shadow-soft"
+    >
+      <span
+        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-white shadow-sm ${
+          tone === "amber"
+            ? "bg-gradient-to-br from-amber-500 to-orange-500"
+            : "bg-gradient-to-br from-violet-600 to-violet-800"
+        }`}
+      >
+        <Icon className="h-5 w-5" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="flex items-center gap-2">
+          <span className="truncate text-sm font-black text-gray-900">{title}</span>
+          {badge}
+        </span>
+        <span className="mt-0.5 block truncate text-[11px] font-bold text-gray-500">
+          {desc}
+        </span>
+      </span>
+      <ChevronLeft className="h-4.5 w-4.5 shrink-0 text-muted-foreground" />
+    </motion.button>
   );
 }

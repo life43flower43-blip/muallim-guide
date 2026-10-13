@@ -5,7 +5,7 @@ export const CATEGORIES: Category[] = [
     id: "foundations",
     name: "أساسيات السلوك",
     short: "الأساسيات",
-    color: "#0d9488",
+    color: "#7C3AED",
     soft: "#e6f2f0",
     description: "طبيعة السلوك، تعديله، ومبادئ القياس والملاحظة",
   },

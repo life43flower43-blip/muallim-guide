@@ -39,27 +39,27 @@
 
 :root {
   --radius: 1rem;
-  --background: #FAFAF4;
-  --foreground: #22302A;
+  --background: #FAF9F8;
+  --foreground: #2B2340;
   --card: #ffffff;
-  --card-foreground: #22302A;
+  --card-foreground: #2B2340;
   --popover: #ffffff;
-  --popover-foreground: #22302A;
-  --primary: #1B4332;
-  --primary-foreground: #F7FAF6;
-  --secondary: #E7ECE6;
-  --secondary-foreground: #1B4332;
-  --muted: #EEF1EC;
-  --muted-foreground: #6B7A74;
-  --accent: #E9F3EC;
-  --accent-foreground: #1B4332;
+  --popover-foreground: #2B2340;
+  --primary: #5B21B6;
+  --primary-foreground: #FAF5FF;
+  --secondary: #EDE9FE;
+  --secondary-foreground: #4C1D95;
+  --muted: #F2EFF8;
+  --muted-foreground: #6E6486;
+  --accent: #F3EEFC;
+  --accent-foreground: #4C1D95;
   --destructive: #dc2626;
-  --border: #E4E9E2;
-  --input: #DFE5DF;
-  --ring: #2D6A4F;
+  --border: #E8E2F2;
+  --input: #DFD7EE;
+  --ring: #7C3AED;
   --success: #16a34a;
   --warning: #f59e0b;
-  --teal: #0d9488;
+  --teal: #7c3aed;
   --amber: #f59e0b;
   --rose: #f43f5e;
   --violet: #8b5cf6;
@@ -89,7 +89,7 @@ body {
   height: 4px;
 }
 .nice-scroll::-webkit-scrollbar-thumb {
-  background: rgba(15, 118, 110, 0.25);
+  background: rgba(124, 58, 237, 0.25);
   border-radius: 999px;
 }
 .nice-scroll::-webkit-scrollbar-track {
@@ -111,14 +111,14 @@ body {
 }
 .shadow-lift {
   box-shadow:
-    0 2px 4px rgba(28, 36, 34, 0.05),
-    0 16px 40px -16px rgba(15, 118, 110, 0.25);
+    0 2px 4px rgba(28, 22, 40, 0.05),
+    0 16px 40px -16px rgba(124, 58, 237, 0.25);
 }
 
 /* dotted ambient background for desktop sides */
 .ambient-bg {
-  background-color: #e9efec;
-  background-image: radial-gradient(rgba(15, 118, 110, 0.08) 1px, transparent 1px);
+  background-color: #efecf6;
+  background-image: radial-gradient(rgba(124, 58, 237, 0.08) 1px, transparent 1px);
   background-size: 22px 22px;
 }
 
@@ -199,8 +199,8 @@ body {
 /* ظل ناعم للبطاقات */
 .card-soft {
   box-shadow:
-    0 1px 2px rgba(28, 36, 34, 0.05),
-    0 12px 32px -16px rgba(27, 67, 50, 0.18);
+    0 1px 2px rgba(28, 22, 40, 0.05),
+    0 12px 32px -16px rgba(91, 33, 182, 0.18);
 }
 
 /* أشرطة التقدم */
@@ -257,23 +257,23 @@ body {
 /* تفعيله بصف .dark على الجذر من مفتاح «حسابي»، وتغير متغيرات الثيم كلها */
 
 .dark {
-  --background: #0e1613;
-  --foreground: #e3e9e5;
-  --card: #16221c;
-  --card-foreground: #e3e9e5;
-  --popover: #16221c;
-  --popover-foreground: #e3e9e5;
-  --primary: #6fcf9f;
-  --primary-foreground: #0b2018;
-  --secondary: #20302a;
-  --secondary-foreground: #cfe6d8;
-  --muted: #1c2923;
-  --muted-foreground: #9aada2;
-  --accent: #1d3227;
-  --accent-foreground: #bee7ce;
-  --border: #26352d;
-  --input: #2c3c33;
-  --ring: #52b788;
+  --background: #131020;
+  --foreground: #E9E4F5;
+  --card: #1B1630;
+  --card-foreground: #E9E4F5;
+  --popover: #1B1630;
+  --popover-foreground: #E9E4F5;
+  --primary: #A78BFA;
+  --primary-foreground: #2A1058;
+  --secondary: #2A2145;
+  --secondary-foreground: #CFC2EE;
+  --muted: #221B38;
+  --muted-foreground: #A79BC7;
+  --accent: #2A2145;
+  --accent-foreground: #D5C8F3;
+  --border: #2C2347;
+  --input: #372B57;
+  --ring: #8B5CF6;
 }
 
 /* إعادة خريطة الأصناف الثابتة الشائعة داخل الواجهة — الطبقة الداكنة فقط */
@@ -293,10 +293,35 @@ body {
   color: #a9bbb1;
 }
 .dark .text-gray-100 {
-  color: #d9e4dd;
+  color: #ded8ea;
 }
 
 /* صناديق التوجيه والأمثلة الملونة — نفس الدلالة بإضاءة منخفضة */
+.dark .bg-violet-50 {
+  background-color: rgba(139, 92, 246, 0.12);
+}
+.dark .bg-violet-100 {
+  background-color: rgba(139, 92, 246, 0.18);
+}
+.dark .border-violet-100 {
+  border-color: rgba(139, 92, 246, 0.22);
+}
+.dark .border-violet-200 {
+  border-color: rgba(139, 92, 246, 0.3);
+}
+.dark .text-violet-950 {
+  color: #e6dcfb;
+}
+.dark .text-violet-900 {
+  color: #d9cbf7;
+}
+.dark .text-violet-800 {
+  color: #cbb8f3;
+}
+.dark .text-violet-700 {
+  color: #b9a4ee;
+}
+
 .dark .bg-emerald-50 {
   background-color: rgba(16, 185, 129, 0.1);
 }
@@ -403,6 +428,6 @@ body {
 
 /* الخلفية المحيطة على الشاشات الكبيرة */
 .dark .ambient-bg {
-  background-color: #0b110e;
-  background-image: radial-gradient(rgba(111, 207, 159, 0.06) 1px, transparent 1px);
+  background-color: #0e0b18;
+  background-image: radial-gradient(rgba(167, 139, 250, 0.06) 1px, transparent 1px);
 }

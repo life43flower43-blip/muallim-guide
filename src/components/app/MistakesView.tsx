@@ -274,7 +274,7 @@ export default function MistakesView() {
                         ? "text-white"
                         : "border border-border bg-white text-muted-foreground"
                     }`}
-                    style={active ? { background: COURSE_COLOR[id] ?? "#1B4332" } : undefined}
+                    style={active ? { background: COURSE_COLOR[id] ?? "#5B21B6" } : undefined}
                   >
                     {COURSE_SHORT[id]}
                   </button>
@@ -286,7 +286,7 @@ export default function MistakesView() {
           {visibleGroups.map(([conceptId, entries]) => {
             const concept = conceptById(conceptId);
             if (!concept) return null;
-            const color = COURSE_COLOR[concept.courseId] ?? "#1B4332";
+            const color = COURSE_COLOR[concept.courseId] ?? "#5B21B6";
             const examples = examplesOf(concept);
             const shown = openExamples[conceptId] ? examples : examples.slice(0, 3);
             return (

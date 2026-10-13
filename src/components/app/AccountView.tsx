@@ -300,7 +300,7 @@ export default function AccountView() {
   return (
     <div className="space-y-4 px-4 pb-6">
       {/* البطاقة الشخصية */}
-      <div className="card-soft rounded-3xl border border-border bg-gradient-to-l from-[#1B4332] to-[#2D6A4F] p-5 text-white">
+      <div className="card-soft rounded-3xl border border-border bg-gradient-to-l from-[#5B21B6] to-[#6D28D9] p-5 text-white">
         <div className="flex items-center gap-4">
           <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
             <User className="h-8 w-8" />

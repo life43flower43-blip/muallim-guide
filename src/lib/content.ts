@@ -1,11 +1,11 @@
 import { QUESTIONS_A } from "./questions-a";
 import { QUESTIONS_B } from "./questions-b";
 import { CONCEPTS, CATEGORIES, CAT_MAP, LEVELS, BADGES } from "./concepts";
-import { SCENARIOS, PLAN_STEPS } from "./scenarios";
+import { SCENARIOS } from "./scenarios";
 import type { QuizQuestion, Concept, CategoryId } from "./types";
 
 export * from "./types";
-export { CONCEPTS, CATEGORIES, CAT_MAP, LEVELS, BADGES, SCENARIOS, PLAN_STEPS };
+export { CONCEPTS, CATEGORIES, CAT_MAP, LEVELS, BADGES, SCENARIOS };
 
 export const QUESTIONS: QuizQuestion[] = [...QUESTIONS_A, ...QUESTIONS_B];
 

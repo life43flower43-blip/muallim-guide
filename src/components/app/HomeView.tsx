@@ -1,13 +1,11 @@
 "use client";
 
-// الرئيسية — إعادة تصميم عالمية:
-// هيرو ترحيبي داكن بتحية حسب الوقت وحلقة هدف اليوم وسلسلة المواصلة (كلها نوعية بلا أرقام)
-// ← بطاقة الاختبار الجوهرية بالزر الدائري المتوهج (هوية المستخدم المحفوظة)
-// ← بطاقة مختبر المعلّم الرائدة بشارة «جديد»
-// ← بطاقة استوديو خطط الدروس (أداة المعلم)
-// ← بطاقة سجل التدريب الميداني بشارة «جديد»
-// ← بطاقة رحلة المحاور الستة بخط تقدم وخطوة تالية ديناميكية
-// قواعد صارمة: صفر أرقام ولا لاتيني ولا إيموجي في النصوص المعروضة، والتنصيص ب«»، وبلا تكرار.
+// الرئيسية — شاشة قرار سريع (إعادة توزيع بطلب المستخدم):
+// تحية + صف واحد مضغوط لهدف اليوم والسلسلة برقم ← بطاقة «ابدأ الاختبار» مصغّرة
+// ← أداتان مميزتان كحد أقصى بشارة «جديد» موحدة تختفي بعد سبعة أيام ← رحلتك إلى الاحتراف
+// قواعد التصميم الموحدة: نصف قطر واحد rounded-3xl، ظل واحد shadow-soft، أيقونة واحدة داخل مربع ١١،
+// لونان أساسيان (بنفسجي + برتقالي) فقط، أوصاف سطر واحد، بلا رقائق زخرفية، تباين ثانوي على الداكن بنسبة AA.
+// قواعد صارمة: صفر أرقام لاتينية ولا لاتيني ولا إيموجي في النصوص، والتنصيص ب«».
 
 import { useMemo } from "react";
 import { motion, type Variants } from "framer-motion";
@@ -15,26 +13,24 @@ import {
   Sprout,
   Presentation,
   School,
-  Dumbbell,
-  Rocket,
   Brain,
   Play,
   User,
   CircleCheck,
-  FlaskConical,
-  Sparkles,
   Flame,
   ChevronLeft,
   Route,
   Target,
   ClipboardList,
   Backpack,
-  MapPin,
+  UserRound,
 } from "lucide-react";
 import { CONCEPTS, QUESTIONS, conceptById } from "@/lib/qbank";
 import { orderUnseenFirst } from "@/lib/srs";
 import { DAILY_GOAL_XP, useApp, xpToday } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
+import { ad } from "@/lib/arabic";
+import { NewBadge } from "./shared";
 
 // ---------- حركات الدخول المتدرجة ----------
 const rise: Variants = {
@@ -47,25 +43,24 @@ const stagger: Variants = {
   show: { transition: { staggerChildren: 0.08 } },
 };
 
-// ---------- أدوات محلية ----------
 const dayKey = (ts: number) => {
   const d = new Date(ts);
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 };
 
-// كلمة السلسلة — نوعية كليًا، لا أرقام
-const streakWord = (n: number) => {
-  if (n <= 0) return "ابدأ سلسلتك";
-  if (n < 3) return "سلسلة بدأت";
-  if (n < 7) return "مواصلة رائعة";
-  if (n < 14) return "أسبوع متواصل";
-  return "أسابيع متواصلة";
-};
-
 const STAGE_WORDS = ["الأولى", "الثانية", "الثالثة", "الرابعة", "الخامسة", "السادسة"];
 
+// نص السلسلة بصيغه العربية الصحيحة مع الرقم المشرقي
+const streakText = (n: number) => {
+  if (n <= 0) return "٠ — ابدأ اليوم";
+  if (n === 1) return "يوم واحد متواصل";
+  if (n === 2) return "يومان متواصلان";
+  if (n <= 10) return `${ad(n)} أيام متواصلة`;
+  return `${ad(n)} يومًا متواصلًا`;
+};
+
 // محيط حلقة الهدف — هندسة داخلية لا تظهر نصًا
-const RING_R = 15.5;
+const RING_R = 13;
 const RING_C = 2 * Math.PI * RING_R;
 
 // ---------- المحاور: رحلة ست مراحل ----------
@@ -79,16 +74,14 @@ interface World {
 }
 
 export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) {
-  const { name, xp, attempts, sessions, conceptReads, scenarioChoices } =
-    useApp();
+  const { name, xp, attempts, sessions, conceptReads, scenarioChoices } = useApp();
   const startQuiz = useUi((s) => s.startQuiz);
   const openCourseTab = useUi((s) => s.openCourseTab);
   const startScenarios = useUi((s) => s.startScenarios);
-  const startLab = useUi((s) => s.startLab);
   const startStudio = useUi((s) => s.startStudio);
   const startField = useUi((s) => s.startField);
 
-  // ---- موضع التقدم على المسار: أول محور لم تُنجز مهامه بعد (من المحاولات والجلسات) ----
+  // ---- موضع التقدم على المسار: أول محور لم تُنجز مهامه بعد ----
   const courseOfQid = useMemo(() => {
     const cmap = new Map(CONCEPTS.map((c) => [c.id, c.courseId]));
     return new Map(QUESTIONS.map((q) => [q.conceptId, cmap.get(q.conceptId)]));
@@ -97,12 +90,12 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const currentWorldIdx = useMemo(() => {
     const att = Object.keys(attempts);
     const done = [
-      att.some((qid) => courseOfQid.get(qid) && courseOfQid.get(qid) !== "G1"), // الأساس
-      Object.keys(conceptReads).some((cid) => conceptById(cid)?.courseId === "G1"), // أعرف
-      att.some((qid) => courseOfQid.get(qid) === "M5"), // أُدرّس
-      Object.keys(scenarioChoices).length > 0, // أواجه
-      sessions.some((s) => s.mode === "review" || s.mode === "redo"), // أتدرّب
-      xp >= 300, // أصبح معلّمًا: بلوغ المستوى الثاني
+      att.some((qid) => courseOfQid.get(qid) && courseOfQid.get(qid) !== "G1"),
+      Object.keys(conceptReads).some((cid) => conceptById(cid)?.courseId === "G1"),
+      att.some((qid) => courseOfQid.get(qid) === "M5"),
+      Object.keys(scenarioChoices).length > 0,
+      sessions.some((s) => s.mode === "review" || s.mode === "redo"),
+      xp >= 300,
     ];
     const i = done.findIndex((d) => !d);
     return i === -1 ? 5 : i;
@@ -113,8 +106,8 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       id: "base",
       name: "الأساس",
       icon: Sprout,
-      color: "#2D6A4F",
-      hint: "ابدأ بأساسيات التربية من المكتبة",
+      color: "#4C1D95",
+      hint: "ابدأ بأساسيات التربية من دليل المعلم",
       action: () => {
         openCourseTab("M1");
         onGoTab("concepts");
@@ -124,8 +117,8 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       id: "know",
       name: "أعرف",
       icon: Brain,
-      color: "#7C3AED",
-      hint: "اتسع معرفتك في مكتبة التربية العامة",
+      color: "#5B21B6",
+      hint: "اتسع معرفتك في الثقافة التربوية العامة",
       action: () => {
         openCourseTab("G1");
         onGoTab("concepts");
@@ -135,7 +128,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       id: "teach",
       name: "أُدرّس",
       icon: Presentation,
-      color: "#0E7490",
+      color: "#6D28D9",
       hint: "تدرّب على أسئلة التدريس والمواد",
       action: () => onGoTab("quiz"),
     },
@@ -143,29 +136,29 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       id: "face",
       name: "أواجه",
       icon: School,
-      color: "#EA580C",
+      color: "#7C3AED",
       hint: "واجه مواقف الصف واتخذ قرارك",
       action: startScenarios,
     },
     {
       id: "train",
       name: "أتدرّب",
-      icon: Dumbbell,
-      color: "#F59E0B",
-      hint: "اصقل مهاراتك في مختبر المعلّم",
-      action: startLab, // توحيد الوجهة مع زر «تدريب» في شريط التنقل
+      icon: ClipboardList,
+      color: "#8B5CF6",
+      hint: "ادخل مختبر المعلّم وأدوات الممارسة",
+      action: () => onGoTab("quiz"),
     },
     {
       id: "become",
       name: "أصبح معلّمًا",
-      icon: Rocket,
-      color: "#B45309",
+      icon: UserRound,
+      color: "#F59E0B",
       hint: "أكمل رحلتك حتى بلوغ الاحتراف",
       action: () => onGoTab("account"),
     },
   ];
 
-  // ---- هدف اليوم وسلسلة المواصلة (نوعية بلا أرقام) ----
+  // ---- هدف اليوم وسلسلة المواصلة ----
   const todayXp = useMemo(() => xpToday(sessions), [sessions]);
   const goalPct = Math.min(todayXp / DAILY_GOAL_XP, 1);
   const goalDone = todayXp >= DAILY_GOAL_XP;
@@ -173,7 +166,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const streak = useMemo(() => {
     const days = new Set(sessions.map((s) => dayKey(s.ts)));
     const d = new Date();
-    if (!days.has(dayKey(d.getTime()))) d.setDate(d.getDate() - 1); // يوم لم يُختم بعد — السلسلة تنطلق من الأمس
+    if (!days.has(dayKey(d.getTime()))) d.setDate(d.getDate() - 1);
     let n = 0;
     while (days.has(dayKey(d.getTime()))) {
       n += 1;
@@ -187,15 +180,12 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const greet = hour < 12 ? "صباح الخير" : hour < 17 ? "طاب نهارك" : "مساء الخير";
   const greetLine = name.trim() ? `${greet}، ${name.trim()}` : `${greet} يا معلم المستقبل`;
 
-  // ---- الاختبار المكثف: جميع أسئلة البنك — الجديد أولاً ثم ما وُاجه سابقاً ----
+  // ---- الاختبار المكثف: جميع أسئلة البنك — الجديد أولًا ----
   const startIntensiveSession = () => {
     startQuiz({
       mode: "intensive",
       label: "الاختبار المكثف — جميع الأسئلة",
-      qids: orderUnseenFirst(
-        QUESTIONS.map((q) => q.id),
-        attempts
-      ),
+      qids: orderUnseenFirst(QUESTIONS.map((q) => q.id), attempts),
     });
   };
 
@@ -204,12 +194,10 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
 
   return (
     <div className="pb-8">
-      {/* ============ الهيرو — تدرج زمردي عميق بتوهجات وهالة نقاط ============ */}
-      <header className="relative overflow-hidden bg-gradient-to-bl from-[#0B2018] via-[#1B4332] to-[#2D6A4F] px-5 pb-24 pt-[calc(max(env(safe-area-inset-top),6px)+14px)]">
-        {/* توهجات زخرفية */}
+      {/* ============ الهيرو البنفسجي — تحية وصف حالة واحد مضغوط ============ */}
+      <header className="relative overflow-hidden bg-gradient-to-bl from-[#2A1058] via-[#4C1D95] to-[#6D28D9] px-5 pb-16 pt-[calc(max(env(safe-area-inset-top),6px)+14px)]">
         <div aria-hidden className="pointer-events-none absolute -left-12 -top-12 h-44 w-44 rounded-full bg-amber-400/15 blur-3xl" />
-        <div aria-hidden className="pointer-events-none absolute -right-10 top-16 h-40 w-40 rounded-full bg-emerald-300/10 blur-3xl" />
-        {/* هالة نقاط خفيفة */}
+        <div aria-hidden className="pointer-events-none absolute -right-10 top-16 h-40 w-40 rounded-full bg-violet-300/10 blur-3xl" />
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-[0.35]"
@@ -220,22 +208,21 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
         />
 
         <div className="relative">
-          {/* الصف العلوي: الهوية والأفاتار */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/15 backdrop-blur">
-                <School className="h-5.5 w-5.5 text-white" />
+                <School className="h-5 w-5 text-white" />
               </span>
               <div>
                 <h2 className="text-base font-black leading-5 text-white">تربوي</h2>
-                <p className="text-[10px] font-bold text-emerald-100/75">مساعد إعداد المعلم</p>
+                <p className="text-[10px] font-bold text-white/85">مساعد إعداد المعلم</p>
               </div>
             </div>
             <motion.button
               whileTap={{ scale: 0.92 }}
               onClick={() => onGoTab("account")}
               aria-label="حسابي"
-              className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/12 ring-2 ring-white/20 backdrop-blur transition hover:bg-white/20"
+              className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 ring-2 ring-white/25 backdrop-blur transition hover:bg-white/25"
             >
               {initial ? (
                 <span className="text-lg font-black text-white">{initial}</span>
@@ -246,27 +233,26 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
           </div>
 
           {/* التحية */}
-          <motion.div initial="hidden" animate="show" variants={stagger} className="mt-7">
-            <motion.h1 variants={rise} className="text-[26px] font-black leading-9 text-white">
+          <motion.div initial="hidden" animate="show" variants={stagger} className="mt-6">
+            <motion.h1 variants={rise} className="text-[25px] font-black leading-9 text-white">
               {greetLine}
             </motion.h1>
-            <motion.p variants={rise} className="mt-1.5 text-[13px] font-bold leading-6 text-emerald-100/85">
+            <motion.p variants={rise} className="mt-1 text-[13px] font-bold leading-6 text-white/85">
               كل جلسة اليوم تصنع صفك غدًا — واصل البناء
             </motion.p>
 
-            {/* مؤشرا الحالة: هدف اليوم وسلسلة المواصلة */}
-            <motion.div variants={rise} className="mt-5 flex flex-wrap items-stretch gap-2.5">
-              {/* حلقة هدف اليوم */}
-              <div className="flex flex-1 items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-3.5 py-2.5 backdrop-blur">
-                <span className="relative flex h-11 w-11 items-center justify-center">
-                  <svg viewBox="0 0 36 36" className="h-11 w-11 -rotate-90" aria-hidden>
-                    <circle cx="18" cy="18" r={RING_R} fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="3.5" />
+            {/* صف واحد مضغوط: هدف اليوم + السلسلة برقمها */}
+            <motion.div variants={rise} className="mt-4 flex items-stretch gap-2.5">
+              <div className="flex flex-1 items-center gap-2.5 rounded-2xl border border-white/15 bg-white/10 px-3 py-2.5 backdrop-blur">
+                <span className="relative flex h-10 w-10 items-center justify-center">
+                  <svg viewBox="0 0 32 32" className="h-10 w-10 -rotate-90" aria-hidden>
+                    <circle cx="16" cy="16" r={RING_R} fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="3.5" />
                     <circle
-                      cx="18"
-                      cy="18"
+                      cx="16"
+                      cy="16"
                       r={RING_R}
                       fill="none"
-                      stroke={goalDone ? "#34D399" : "#FBBF24"}
+                      stroke="#FBBF24"
                       strokeWidth="3.5"
                       strokeLinecap="round"
                       strokeDasharray={`${Math.max(goalPct * RING_C, 2)} ${RING_C}`}
@@ -275,28 +261,27 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
                   </svg>
                   <span className="absolute">
                     {goalDone ? (
-                      <CircleCheck className="h-4.5 w-4.5 text-emerald-300" />
+                      <CircleCheck className="h-4 w-4 text-amber-300" />
                     ) : (
                       <Target className="h-4 w-4 text-amber-300" />
                     )}
                   </span>
                 </span>
                 <span className="min-w-0">
-                  <span className="block text-[10px] font-bold text-emerald-100/70">هدف اليوم</span>
-                  <span className={`block text-xs font-black ${goalDone ? "text-emerald-300" : "text-white"}`}>
+                  <span className="block text-[10px] font-bold text-white/85">هدف اليوم</span>
+                  <span className="block text-xs font-black text-white">
                     {goalDone ? "اكتمل بامتياز" : "قيد الإنجاز"}
                   </span>
                 </span>
               </div>
 
-              {/* شارة السلسلة */}
-              <div className="flex flex-1 items-center gap-3 rounded-2xl border border-white/10 bg-white/10 px-3.5 py-2.5 backdrop-blur">
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-400/20">
-                  <Flame className={`h-5.5 w-5.5 ${streak > 0 ? "text-amber-300" : "text-white/50"}`} />
+              <div className="flex flex-1 items-center gap-2.5 rounded-2xl border border-white/15 bg-white/10 px-3 py-2.5 backdrop-blur">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-400/20">
+                  <Flame className={`h-5 w-5 ${streak > 0 ? "text-amber-300" : "text-white/60"}`} />
                 </span>
                 <span className="min-w-0">
-                  <span className="block text-[10px] font-bold text-emerald-100/70">سلسلة المواصلة</span>
-                  <span className="block text-xs font-black text-white">{streakWord(streak)}</span>
+                  <span className="block text-[10px] font-bold text-white/85">سلسلة المواصلة</span>
+                  <span className="block text-xs font-black text-white">{streakText(streak)}</span>
                 </span>
               </div>
             </motion.div>
@@ -304,223 +289,91 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
         </div>
       </header>
 
-      {/* ============ البطاقات — تسحب فوق الهيرو ============ */}
+      {/* ============ المحتوى — تسحب فوق الهيرو ============ */}
       <motion.div
         initial="hidden"
         animate="show"
         variants={stagger}
-        className="relative z-10 -mt-14 space-y-4 px-4"
+        className="relative z-10 -mt-8 space-y-3 px-4"
       >
-        {/* ١. بطاقة الاختبار — الزر الدائري الجوهري بهويته المتوهجة */}
-        <motion.section
-          variants={rise}
-          aria-label="ابدأ الاختبار"
-          className="rounded-[2rem] border border-border bg-white p-6 pt-7 shadow-lift"
-        >
-          <div className="flex flex-col items-center">
-            <div className="relative flex items-center justify-center">
-              {/* توهج الحرارة المتنفس */}
-              <motion.div
+        {/* ١. بطاقة الاختبار — مصغّرة، صف واحد */}
+        <motion.section variants={rise} aria-label="ابدأ الاختبار">
+          <motion.button
+            whileTap={{ scale: 0.985 }}
+            onClick={startIntensiveSession}
+            className="flex w-full items-center gap-3 rounded-3xl border border-border bg-white p-4 text-right shadow-soft"
+          >
+            <span className="relative flex h-13 w-13 shrink-0 items-center justify-center">
+              <motion.span
                 aria-hidden
-                className="absolute h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(251,191,36,0.45),rgba(249,115,22,0.18)_55%,transparent_72%)] blur-xl"
-                animate={{ opacity: [0.55, 0.95, 0.55], scale: [0.95, 1.06, 0.95] }}
-                transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute h-13 w-13 rounded-full bg-amber-400/25"
+                animate={{ scale: [1, 1.25], opacity: [0.7, 0] }}
+                transition={{ duration: 2.6, repeat: Infinity, ease: "easeOut" }}
               />
-              {/* الأمواج البطيئة المتتالية */}
-              {[0, 1, 2].map((i) => (
-                <motion.span
-                  key={i}
-                  aria-hidden
-                  className="absolute h-40 w-40 rounded-full border-2 border-amber-400/70"
-                  animate={{ scale: [1, 1.5], opacity: [0.6, 0] }}
-                  transition={{ duration: 3.6, delay: i * 1.2, repeat: Infinity, ease: "easeOut" }}
-                />
-              ))}
-              {/* نواة الزر */}
-              <motion.button
-                whileTap={{ scale: 0.93 }}
-                onClick={startIntensiveSession}
-                aria-label="ابدأ الاختبار"
-                className="relative flex h-40 w-40 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 via-amber-400 to-orange-500 shadow-xl shadow-amber-400/50 ring-4 ring-white/60"
-              >
-                <motion.span
-                  animate={{ scale: [1, 1.07, 1] }}
-                  transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <Play className="h-14 w-14 text-white drop-shadow-md" fill="currentColor" />
-                </motion.span>
-              </motion.button>
-            </div>
-
-            <h3 className="mt-5 text-xl font-black text-gray-900">ابدأ الاختبار</h3>
-            <p className="mt-1 text-center text-xs font-bold leading-5 text-gray-600">
-              أسئلة لا تنتهي من كل المكتبة — جديدك يظهر أولًا
-            </p>
-          </div>
-        </motion.section>
-
-        {/* ٢. مختبر المعلّم — البطاقة الرائدة */}
-        <motion.section variants={rise} aria-label="مختبر المعلّم">
-          <motion.button
-            whileTap={{ scale: 0.985 }}
-            onClick={startLab}
-            className="relative w-full overflow-hidden rounded-[2rem] bg-gradient-to-bl from-[#0B2018] via-[#14532D] to-[#1B4332] p-5 text-right shadow-lift"
-          >
-            {/* قارورة زخرفية عملاقة باهتة */}
-            <FlaskConical
-              aria-hidden
-              className="pointer-events-none absolute -bottom-7 -left-5 h-32 w-32 text-white/5"
-            />
-            <div aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-28 w-28 rounded-full bg-emerald-300/10 blur-2xl" />
-
-            <div className="relative">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/12 ring-1 ring-white/20 backdrop-blur">
-                    <FlaskConical className="h-6 w-6 text-amber-300" />
-                  </span>
-                  <div>
-                    <h3 className="text-base font-black text-white">مختبر المعلّم</h3>
-                    <p className="mt-0.5 text-[11px] font-bold leading-5 text-emerald-100/80">
-                      مواقف صفّية قراراتها تغيّر الموقف — تدرّب كأنك في الصف
-                    </p>
-                  </div>
-                </div>
-                <span className="flex shrink-0 items-center gap-1 rounded-full bg-amber-400 px-2.5 py-1 text-[10px] font-black text-amber-950">
-                  <Sparkles className="h-3 w-3" /> جديد
-                </span>
-              </div>
-
-              <div className="mt-4 flex items-center justify-between gap-2">
-                <div className="flex flex-wrap gap-1.5">
-                  {["مواقف متفرعة", "خريطة كفاءات", "مرآة المعلّم"].map((c) => (
-                    <span
-                      key={c}
-                      className="rounded-full border border-white/10 bg-white/10 px-2.5 py-1 text-[10px] font-black text-emerald-100/90 backdrop-blur"
-                    >
-                      {c}
-                    </span>
-                  ))}
-                </div>
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10">
-                  <ChevronLeft className="h-4.5 w-4.5 text-white" />
-                </span>
-              </div>
-            </div>
+              <span className="relative flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-md shadow-amber-500/30">
+                <Play className="h-5.5 w-5.5 text-white" fill="currentColor" />
+              </span>
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-base font-black text-gray-900">ابدأ الاختبار</span>
+              <span className="mt-0.5 block truncate text-[11px] font-bold text-gray-500">
+                أسئلة لا تنتهي من كل الدليل — جديدك يظهر أولًا
+              </span>
+            </span>
+            <ChevronLeft className="h-5 w-5 shrink-0 text-muted-foreground" />
           </motion.button>
         </motion.section>
 
-        {/* ٣. استوديو خطط الدروس — أداة المعلم للبناء قبل الحصة */}
-        <motion.section variants={rise} aria-label="استوديو خطط الدروس">
-          <motion.button
-            whileTap={{ scale: 0.985 }}
+        {/* ٢. أداتان مميزتان كحد أقصى */}
+        <motion.section variants={rise} aria-label="أداتان مميزتان" className="space-y-3">
+          <button
             onClick={startStudio}
-            className="relative w-full overflow-hidden rounded-[2rem] border border-border bg-white p-5 text-right shadow-lift"
+            className="flex w-full items-center gap-3 rounded-3xl border border-border bg-white p-4 text-right shadow-soft"
           >
-            {/* ورقة زخرفية باهتة */}
-            <ClipboardList
-              aria-hidden
-              className="pointer-events-none absolute -bottom-6 -left-4 h-28 w-28 text-primary/5"
-            />
-            <div aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-28 w-28 rounded-full bg-teal-200/20 blur-2xl" />
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-violet-800 text-white shadow-sm">
+              <ClipboardList className="h-5 w-5" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="flex items-center gap-2">
+                <span className="truncate text-sm font-black text-gray-900">استوديو خطط الدروس</span>
+                <NewBadge tone="violet" />
+              </span>
+              <span className="mt-0.5 block truncate text-[11px] font-bold text-gray-500">
+                اصنع خطة درس موجهة وقيّمها قبل الحصة
+              </span>
+            </span>
+            <ChevronLeft className="h-4.5 w-4.5 shrink-0 text-muted-foreground" />
+          </button>
 
-            <div className="relative">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-emerald-700 text-white shadow-md shadow-teal-600/25">
-                    <ClipboardList className="h-6 w-6" />
-                  </span>
-                  <div>
-                    <h3 className="text-base font-black text-gray-900">استوديو خطط الدروس</h3>
-                    <p className="mt-0.5 text-[11px] font-bold leading-5 text-gray-600">
-                      اصنع خطة درس بخطوات موجهة وقيّمها قبل أن تصعد المنصة
-                    </p>
-                  </div>
-                </div>
-                <span className="flex shrink-0 items-center gap-1 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1 text-[10px] font-black text-teal-700">
-                  <Sparkles className="h-3 w-3" /> أداة المعلم
-                </span>
-              </div>
-
-              <div className="mt-4 flex items-center justify-between gap-2">
-                <div className="flex flex-wrap gap-1.5">
-                  {["قوالب جاهزة", "تقييم الخطة", "خططي"].map((c) => (
-                    <span
-                      key={c}
-                      className="rounded-full border border-border bg-muted/60 px-2.5 py-1 text-[10px] font-black text-gray-700"
-                    >
-                      {c}
-                    </span>
-                  ))}
-                </div>
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent">
-                  <ChevronLeft className="h-4.5 w-4.5 text-primary" />
-                </span>
-              </div>
-            </div>
-          </motion.button>
-        </motion.section>
-
-        {/* ٤. سجل التدريب الميداني — وثّق الميدان وتأمله */}
-        <motion.section variants={rise} aria-label="سجل التدريب الميداني">
-          <motion.button
-            whileTap={{ scale: 0.985 }}
+          <button
             onClick={startField}
-            className="relative w-full overflow-hidden rounded-[2rem] border border-border bg-white p-5 text-right shadow-lift"
+            className="flex w-full items-center gap-3 rounded-3xl border border-border bg-white p-4 text-right shadow-soft"
           >
-            {/* دبوس موقع زخرفي باهت */}
-            <MapPin
-              aria-hidden
-              className="pointer-events-none absolute -bottom-6 -left-4 h-28 w-28 text-primary/5"
-            />
-            <div aria-hidden className="pointer-events-none absolute -right-8 -top-10 h-28 w-28 rounded-full bg-amber-200/25 blur-2xl" />
-
-            <div className="relative">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-md shadow-amber-500/25">
-                    <Backpack className="h-6 w-6" />
-                  </span>
-                  <div>
-                    <h3 className="text-base font-black text-gray-900">سجل التدريب الميداني</h3>
-                    <p className="mt-0.5 text-[11px] font-bold leading-5 text-gray-600">
-                      وثّق زياراتك الميدانية وتأملها — من الملاحظة إلى صفك الخاص
-                    </p>
-                  </div>
-                </div>
-                <span className="flex shrink-0 items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-black text-amber-700">
-                  <Sparkles className="h-3 w-3" /> جديد
-                </span>
-              </div>
-
-              <div className="mt-4 flex items-center justify-between gap-2">
-                <div className="flex flex-wrap gap-1.5">
-                  {["جاهزية قبل الحصة", "مشاهدة وتنفيذ", "تأمل بعد الحصة"].map((c) => (
-                    <span
-                      key={c}
-                      className="rounded-full border border-border bg-muted/60 px-2.5 py-1 text-[10px] font-black text-gray-700"
-                    >
-                      {c}
-                    </span>
-                  ))}
-                </div>
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent">
-                  <ChevronLeft className="h-4.5 w-4.5 text-primary" />
-                </span>
-              </div>
-            </div>
-          </motion.button>
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm">
+              <Backpack className="h-5 w-5" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="flex items-center gap-2">
+                <span className="truncate text-sm font-black text-gray-900">سجل التدريب الميداني</span>
+                <NewBadge tone="amber" />
+              </span>
+              <span className="mt-0.5 block truncate text-[11px] font-bold text-gray-500">
+                وثّق زياراتك الميدانية وتأملها بعد الحصة
+              </span>
+            </span>
+            <ChevronLeft className="h-4.5 w-4.5 shrink-0 text-muted-foreground" />
+          </button>
         </motion.section>
 
-        {/* ٥. رحلة المحاور — خط تقدم وخطوة تالية */}
+        {/* ٣. رحلتك إلى الاحتراف */}
         <motion.section
           variants={rise}
           aria-label="رحلتك إلى الاحتراف"
-          className="rounded-[2rem] border border-border bg-white p-5 card-soft"
+          className="rounded-3xl border border-border bg-white p-5 shadow-soft"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-accent">
+              <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-accent">
                 <Route className="h-4.5 w-4.5 text-primary" />
               </span>
               <h3 className="text-sm font-black text-gray-900">رحلتك إلى الاحتراف</h3>
@@ -530,12 +383,11 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
             </span>
           </div>
 
-          {/* المسار: خط خلفي + خط تقدم + ست محطات — الخط بين مركزي أول وآخر أيقونة */}
           <div className="relative mt-5">
             <div aria-hidden className="absolute right-[7%] left-[7%] top-[17px] h-1 rounded-full bg-muted" />
             <div
               aria-hidden
-              className="absolute right-[7%] top-[17px] h-1 rounded-full bg-gradient-to-l from-[#2D6A4F] to-[#52B788] transition-all duration-700"
+              className="absolute right-[7%] top-[17px] h-1 rounded-full bg-gradient-to-l from-[#4C1D95] to-[#8B5CF6] transition-all duration-700"
               style={{ width: `calc(${fillPct} * 0.86%)` }}
             />
             <div className="relative flex items-start justify-between">
@@ -554,11 +406,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
                   >
                     <span
                       className={`flex h-10 w-10 items-center justify-center rounded-full transition-all ${
-                        isCurrent
-                          ? "text-white ring-4 ring-offset-0"
-                          : isDone
-                            ? "text-white"
-                            : "bg-muted text-muted-foreground"
+                        isCurrent ? "text-white" : isDone ? "text-white" : "bg-muted text-muted-foreground"
                       }`}
                       style={
                         isCurrent
@@ -587,17 +435,23 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
             </div>
           </div>
 
-          {/* خطوتك الآن — ديناميكية بلون المحور الحالي */}
+          {/* خطوتك الآن + رابط مختصر إلى لوحة التقدم في حسابي */}
           <div className="mt-4 flex items-center gap-2 rounded-2xl bg-muted/60 px-3.5 py-2.5">
             <span
               aria-hidden
-              className="h-2 w-2 shrink-0 rounded-full"
-              style={{ background: worlds[currentWorldIdx].color }}
+              className="h-2 w-2 shrink-0 rounded-full bg-amber-500"
             />
-            <p className="text-[11px] font-bold leading-5 text-gray-700">
+            <p className="flex-1 text-[11px] font-bold leading-5 text-gray-700">
               خطوتك الآن: {worlds[currentWorldIdx].hint}
             </p>
           </div>
+          <button
+            onClick={() => onGoTab("account")}
+            className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-2xl border border-border py-2.5 text-[11px] font-black text-primary transition-colors hover:bg-accent"
+          >
+            لوحة التقدم التفصيلية في حسابي
+            <ChevronLeft className="h-3.5 w-3.5" />
+          </button>
         </motion.section>
       </motion.div>
     </div>

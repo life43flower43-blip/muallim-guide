@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 const LENGTHS = [
   { count: 5, label: "سريع", desc: "5 أسئلة", icon: Timer, color: "#f59e0b" },
-  { count: 10, label: "قياسي", desc: "10 أسئلة", icon: Brain, color: "#0d9488" },
+  { count: 10, label: "قياسي", desc: "10 أسئلة", icon: Brain, color: "#7C3AED" },
   { count: 15, label: "شامل", desc: "15 سؤالاً", icon: Layers, color: "#8b5cf6" },
 ] as const;
 

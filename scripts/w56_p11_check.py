@@ -35,10 +35,10 @@ with sync_playwright() as p:
     ok("الرئيسية بلا لاتيني ظاهر", not lat_home, "".join(lat_home[:10]))
 
     # المكتبة → مساق → مفهوم
-    pg.click('button[aria-label="المكتبة"]'); pg.wait_for_timeout(1500)
+    pg.click('button[aria-label="دليل المعلم"]'); pg.wait_for_timeout(1500)
     body = pg.inner_text("body")
-    ok("المكتبة بلا أحرف صينية", not CJK.search(body))
-    ok("المكتبة بلا لاتيني ظاهر", not LAT.findall(body), "".join(LAT.findall(body)[:10]))
+    ok("الدليل بلا أحرف صينية", not CJK.search(body))
+    ok("الدليل بلا لاتيني ظاهر", not LAT.findall(body), "".join(LAT.findall(body)[:10]))
 
     pg.locator("text=نمو الطلاب").first.click(); pg.wait_for_timeout(1200)
     pg.locator('button:has-text("الوراثة والسلوك")').first.click(); pg.wait_for_timeout(1200)

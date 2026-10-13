@@ -23,6 +23,7 @@ interface UiState {
   stageOpen: boolean; // مِسرح الإلقاء — شرح صوتي موقوت وتقييم ذاتي
   studyOpen: boolean; // مدرسة المذاكرة — ستة دروس تفاعلية في مهارات الدراسة
   measureOpen: boolean; // معدة القياس والتقويم — حاسبات إحصائية تربوية
+  heartOpen: boolean; // قلب الصف — سلّم المشاعر التربوي وشرارة المبدع (دليل المعلم)
   peerOpen: boolean; // تحدّي الأقران — رابط يحمل التحدي بلا سيرفر
   peerIncoming: PeerPayload | null; // تحدٍّ وصل عبر رابط مفتوح — يُلتقط من معرف الرابط
   startQuiz: (c: QuizConfig) => void;
@@ -47,6 +48,8 @@ interface UiState {
   clearStudy: () => void;
   startMeasure: () => void;
   clearMeasure: () => void;
+  startHeart: () => void;
+  clearHeart: () => void;
   startPeer: () => void;
   clearPeer: () => void;
   setPeerIncoming: (p: PeerPayload | null) => void;
@@ -64,6 +67,7 @@ export const useUi = create<UiState>((set) => ({
   stageOpen: false,
   studyOpen: false,
   measureOpen: false,
+  heartOpen: false,
   peerOpen: false,
   peerIncoming: null,
   startQuiz: (c) => set({ quizConfig: c }),
@@ -88,6 +92,8 @@ export const useUi = create<UiState>((set) => ({
   clearStudy: () => set({ studyOpen: false }),
   startMeasure: () => set({ measureOpen: true }),
   clearMeasure: () => set({ measureOpen: false }),
+  startHeart: () => set({ heartOpen: true }),
+  clearHeart: () => set({ heartOpen: false }),
   startPeer: () => set({ peerOpen: true }),
   clearPeer: () => set({ peerOpen: false }),
   setPeerIncoming: (p) => set({ peerIncoming: p }),

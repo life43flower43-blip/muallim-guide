@@ -20,6 +20,7 @@ import {
   Plus,
   Trash2,
   ChevronRight,
+  ChevronLeft,
   Share2,
   StickyNote,
 } from "lucide-react";
@@ -93,10 +94,10 @@ const COURSE_SUBTITLE: Record<string, string> = {
 // ---------- مجتمع الطلاب: أمثلة يضيفها الطلاب من واقع تخصصاتهم ----------
 const SPECIALTIES = ["هندسة", "طب", "إنسانيات", "تربية", "أخرى"];
 const SPECIALTY_COLORS: Record<string, string> = {
-  "هندسة": "#0E7490",
+  "هندسة": "#7C3AED",
   "طب": "#BE185D",
   "إنسانيات": "#7C3AED",
-  "تربية": "#2D6A4F",
+  "تربية": "#6D28D9",
   "أخرى": "#B45309",
 };
 
@@ -111,11 +112,11 @@ function StudentExamplesSection({ conceptId }: { conceptId: string }) {
   const canAdd = draft.trim().length >= 10;
 
   return (
-    <div className="mt-4 rounded-3xl border border-sky-200 bg-sky-50/60 p-4">
-      <p className="flex items-center gap-2 text-sm font-black text-sky-900">
+    <div className="mt-4 rounded-3xl border border-amber-200 bg-amber-50/60 p-4">
+      <p className="flex items-center gap-2 text-sm font-black text-amber-900">
         <Users className="h-4 w-4" /> أمثلة الطلاب — مجتمع التطبيق
       </p>
-      <p className="mt-1 text-[11px] font-bold leading-5 text-sky-800/80">
+      <p className="mt-1 text-[11px] font-bold leading-5 text-amber-800/90">
         أضف مثالاً من واقع تخصصك (هندسة، طب، إنسانيات...) يثري الفهم للجميع — أمثلتك محفوظة
         على جهازك وتظهر أسفل هذا المفهوم.
       </p>
@@ -126,7 +127,7 @@ function StudentExamplesSection({ conceptId }: { conceptId: string }) {
           {mine.map((e) => (
             <div
               key={e.id}
-              className="rounded-2xl border border-sky-100 bg-white p-3"
+              className="rounded-2xl border border-amber-100 bg-white p-3"
             >
               <div className="flex items-center justify-between gap-2">
                 <span
@@ -158,8 +159,8 @@ function StudentExamplesSection({ conceptId }: { conceptId: string }) {
               onClick={() => setSpecialty(s)}
               className={`shrink-0 rounded-full border px-3 py-1.5 text-[11px] font-black transition-colors ${
                 specialty === s
-                  ? "border-sky-600 bg-sky-600 text-white"
-                  : "border-sky-200 bg-white text-sky-800"
+                  ? "border-amber-600 bg-amber-600 text-white"
+                  : "border-amber-200 bg-white text-amber-800"
               }`}
             >
               {s}
@@ -171,7 +172,7 @@ function StudentExamplesSection({ conceptId }: { conceptId: string }) {
           onChange={(e) => setDraft(e.target.value)}
           rows={3}
           placeholder={`اكتب مثالاً من واقع تخصص «${specialty}» يوضح هذا المفهوم...`}
-          className="w-full resize-none rounded-2xl border border-sky-200 bg-white p-3 text-sm leading-6 text-foreground outline-none placeholder:text-muted-foreground/60 focus:ring-2 focus:ring-sky-300"
+          className="w-full resize-none rounded-2xl border border-amber-200 bg-white p-3 text-sm leading-6 text-foreground outline-none placeholder:text-muted-foreground/60 focus:ring-2 focus:ring-amber-300"
         />
         <Button
           disabled={!canAdd}
@@ -180,12 +181,12 @@ function StudentExamplesSection({ conceptId }: { conceptId: string }) {
             addStudentExample(conceptId, draft.trim(), specialty);
             setDraft("");
           }}
-          className="h-11 w-full rounded-2xl bg-sky-600 text-sm font-black text-white hover:bg-sky-700 disabled:opacity-40"
+          className="h-11 w-full rounded-2xl bg-amber-500 text-sm font-black text-amber-950 hover:bg-amber-400 disabled:opacity-40"
         >
           <Plus className="ml-1.5 h-4 w-4" /> أضف مثالك للمجتمع
         </Button>
         {draft.trim().length > 0 && !canAdd && (
-          <p className="text-center text-[10px] font-bold text-sky-700/70">
+          <p className="text-center text-[10px] font-bold text-amber-700/70">
             اكتب مثالاً أوضح — عشرة أحرف على الأقل
           </p>
         )}
@@ -290,7 +291,7 @@ function ConceptDetail({
     >
       <div
         className="safe-top px-4 pb-4 pt-3 text-white"
-        style={{ background: COURSE_COLOR[course.id] ?? "#1B4332" }}
+        style={{ background: COURSE_COLOR[course.id] ?? "#5B21B6" }}
       >
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
@@ -328,7 +329,7 @@ function ConceptDetail({
                   }}
                   aria-label="شارك المفهوم"
                   title="شارك المفهوم"
-                  className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-100 text-sky-700 transition-colors hover:bg-sky-200 dark:bg-sky-500/20 dark:text-sky-200"
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-amber-700 transition-colors hover:bg-amber-200 dark:bg-amber-500/20 dark:text-amber-200"
                 >
                   <Share2 className="h-3.5 w-3.5" />
                 </button>
@@ -344,21 +345,21 @@ function ConceptDetail({
             </div>
           </div>
           <div className="space-y-2">
-            <p className="flex items-center gap-2 text-sm font-black text-emerald-800">
+            <p className="flex items-center gap-2 text-sm font-black text-violet-800">
               <Lightbulb className="h-4 w-4" /> أمثلة واقعية من الميدان
             </p>
             {examples.map((ex, i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4"
+                className="rounded-2xl border border-violet-100 bg-violet-50 p-4"
               >
                 <div className="flex items-start gap-2">
-                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-200/70 text-[11px] font-black text-emerald-800">
+                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-200/70 text-[11px] font-black text-violet-800">
                     {ad(i + 1)}
                   </span>
                   <div className="flex-1 space-y-2">
                     {splitArParagraphs(ex).map((p, j) => (
-                      <p key={j} className="text-sm leading-7 text-emerald-950/95">{p}</p>
+                      <p key={j} className="text-sm leading-7 text-violet-950/95">{p}</p>
                     ))}
                   </div>
                   <SpeakButton text={ex} label="استمع للمثال" />
@@ -448,6 +449,7 @@ export default function ConceptsView() {
   const pendingCourseId = useUi((s) => s.pendingCourseId);
   const clearPendingConcept = useUi((s) => s.clearPendingConcept);
   const clearPendingCourse = useUi((s) => s.clearPendingCourse);
+  const startHeart = useUi((s) => s.startHeart);
 
   // التنقل البطاقي ثلاثي المستويات (نموذج المستخدم): بطاقة محور ← بطاقات موضوعاته ← بطاقات مفاهيمه
   const [openCourseId, setOpenCourseId] = useState<string | null>(pendingCourseId);
@@ -521,7 +523,7 @@ export default function ConceptsView() {
             >
               <span
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white"
-                style={{ background: COURSE_COLOR[c.courseId] ?? "#1B4332" }}
+                style={{ background: COURSE_COLOR[c.courseId] ?? "#5B21B6" }}
               >
                 <CourseIcon id={c.courseId} className="h-4.5 w-4.5" />
               </span>
@@ -535,16 +537,45 @@ export default function ConceptsView() {
           ))}
         </div>
       ) : !openCourse ? (
-        // المستوى الأول: بطاقة لكل محور — الضغط عليها يفتح موضوعاته (نموذج بطاقات المستخدم)
+        // المستوى الأول: قلب الصف + بطاقة لكل محور
         <motion.div
           key="library-roots"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.18 }}
-          className="grid grid-cols-2 gap-2.5 px-4"
+          className="space-y-3 px-4"
         >
+          {/* قلب الصف — سلّم المشاعر التربوي وشرارة المبدع */}
+          <button
+            onClick={startHeart}
+            className="relative w-full overflow-hidden rounded-3xl border border-border bg-gradient-to-l from-[#2A1058] to-[#6D28D9] p-4 text-right shadow-soft"
+          >
+            <Heart
+              aria-hidden
+              className="pointer-events-none absolute -bottom-5 -left-4 h-24 w-24 text-white/5"
+            />
+            <div className="relative flex items-center gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/25 backdrop-blur">
+                <Heart className="h-5 w-5 text-amber-300" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center gap-2">
+                  <span className="truncate text-sm font-black text-white">قلب الصف</span>
+                  <span className="rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-black text-amber-950">
+                    سلّم المشاعر وشرارة المبدع
+                  </span>
+                </span>
+                <span className="mt-0.5 block truncate text-[11px] font-bold text-white/85">
+                  شخصيات صفك في ست عائلات من المشاعر — اقرأ واستلهم
+                </span>
+              </span>
+              <ChevronLeft className="h-4.5 w-4.5 shrink-0 text-white" />
+            </div>
+          </button>
+
+          <div className="grid grid-cols-2 gap-2.5">
           {COURSES.map((course) => {
-            const color = COURSE_COLOR[course.id] ?? "#1B4332";
+            const color = COURSE_COLOR[course.id] ?? "#5B21B6";
             return (
               <button
                 key={course.id}
@@ -569,6 +600,7 @@ export default function ConceptsView() {
               </button>
             );
           })}
+          </div>
         </motion.div>
       ) : !openChapter ? (
         // المستوى الثاني: بطاقات الموضوعات داخل المحور — كل موضوع بطاقة تفتح مفاهيمه
@@ -582,7 +614,7 @@ export default function ConceptsView() {
           <SubHeader
             title={COURSE_SHORT[openCourse.id]}
             hint={COURSE_SUBTITLE[openCourse.id]}
-            accent={COURSE_COLOR[openCourse.id] ?? "#1B4332"}
+            accent={COURSE_COLOR[openCourse.id] ?? "#5B21B6"}
             onBack={() => {
               setOpenCourseId(null);
               setOpenChapter(null);
@@ -597,7 +629,7 @@ export default function ConceptsView() {
               >
                 <span
                   className="flex h-8 w-8 items-center justify-center rounded-xl text-white"
-                  style={{ background: COURSE_COLOR[openCourse.id] ?? "#1B4332" }}
+                  style={{ background: COURSE_COLOR[openCourse.id] ?? "#5B21B6" }}
                 >
                   <CourseIcon id={openCourse.id} className="h-4 w-4" />
                 </span>
@@ -620,7 +652,7 @@ export default function ConceptsView() {
           <SubHeader
             title={chapterLabel(openChapter)}
             hint={COURSE_SHORT[openCourse.id]}
-            accent={COURSE_COLOR[openCourse.id] ?? "#1B4332"}
+            accent={COURSE_COLOR[openCourse.id] ?? "#5B21B6"}
             onBack={() => setOpenChapter(null)}
           />
           <div className="grid grid-cols-2 gap-2">
@@ -634,7 +666,7 @@ export default function ConceptsView() {
                 >
                   <span
                     className="flex h-8 w-8 items-center justify-center rounded-xl text-white"
-                    style={{ background: COURSE_COLOR[c.courseId] ?? "#1B4332" }}
+                    style={{ background: COURSE_COLOR[c.courseId] ?? "#5B21B6" }}
                   >
                     <CourseIcon id={c.courseId} className="h-4 w-4" />
                   </span>
