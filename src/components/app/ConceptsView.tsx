@@ -38,9 +38,30 @@ import type { Concept, Course } from "@/lib/types";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { shareText } from "@/lib/share";
+import { ad } from "@/lib/arabic";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import SpeakButton from "./SpeakButton";
+
+/** تقسيم نص عربي طويل إلى فقرات قراءة مريحة على حدود الجُمل (٢–٣ جمل لكل فقرة) */
+function splitArParagraphs(text: string): string[] {
+  const t = (text ?? "").trim();
+  if (!t) return [];
+  const sentences = t.split(/(?<=[.؟!…])\s+/).filter(Boolean);
+  if (sentences.length < 3 || t.length < 220) return [t];
+  const paras: string[] = [];
+  let cur = "";
+  for (const s of sentences) {
+    if (cur && cur.length > 130) {
+      paras.push(cur.trim());
+      cur = s;
+    } else {
+      cur = cur ? `${cur} ${s}` : s;
+    }
+  }
+  if (cur.trim()) paras.push(cur.trim());
+  return paras.length ? paras : [t];
+}
 
 // أيقونة كل محور — بديل أرقام المحاور (قرار المستخدم: بلا شكل كتاب مدرسي)
 const COURSE_ICONS: Record<string, React.ElementType> = {
@@ -257,6 +278,7 @@ function ConceptDetail({
   const qs = questionsOfConcept(c.id);
   const isRead = !!conceptReads[c.id];
   const examples = examplesOf(c);
+  const explainParas = splitArParagraphs(c.explanation);
 
   return (
     <motion.div
@@ -313,7 +335,13 @@ function ConceptDetail({
                 <SpeakButton text={`${c.title}. ${c.explanation}`} label="استمع للشرح" />
               </div>
             </div>
-            <p className="text-sm leading-8 text-foreground">{c.explanation}</p>
+            <div className="space-y-3">
+              {explainParas.map((p, i) => (
+                <p key={i} className={`text-[15px] leading-8 text-foreground/95 ${i === 0 ? "first-letter:text-[26px] first-letter:font-black first-letter:text-primary" : ""}`}>
+                  {p}
+                </p>
+              ))}
+            </div>
           </div>
           <div className="space-y-2">
             <p className="flex items-center gap-2 text-sm font-black text-emerald-800">
@@ -322,10 +350,19 @@ function ConceptDetail({
             {examples.map((ex, i) => (
               <div
                 key={i}
-                className="flex items-start gap-2 rounded-2xl border border-emerald-100 bg-emerald-50 p-4"
+                className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4"
               >
-                <p className="flex-1 text-sm leading-7 text-emerald-950">{ex}</p>
-                <SpeakButton text={ex} label="استمع للمثال" />
+                <div className="flex items-start gap-2">
+                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-200/70 text-[11px] font-black text-emerald-800">
+                    {ad(i + 1)}
+                  </span>
+                  <div className="flex-1 space-y-2">
+                    {splitArParagraphs(ex).map((p, j) => (
+                      <p key={j} className="text-sm leading-7 text-emerald-950/95">{p}</p>
+                    ))}
+                  </div>
+                  <SpeakButton text={ex} label="استمع للمثال" />
+                </div>
               </div>
             ))}
           </div>
