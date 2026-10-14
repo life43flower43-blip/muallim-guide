@@ -1,0 +1,178 @@
+{
+ "viewports": {
+  "مختبر 320px": {
+   "W": 320,
+   "scrollW": 328,
+   "innerW": 320,
+   "over": [
+    {
+     "tag": "DIV",
+     "cls": "pointer-events-none absolute -right-10 top-16 h-40 w-40 roun",
+     "right": 360,
+     "text": ""
+    }
+   ],
+   "overCount": 1,
+   "smallFont": 64,
+   "tinyTouch": 1,
+   "latin": [],
+   "cjkCount": 0
+  },
+  "هاتف صغير": {
+   "W": 320,
+   "H": 568,
+   "scrollW": 328,
+   "innerW": 320,
+   "over": [
+    {
+     "tag": "DIV",
+     "cls": "pointer-events-none absolute -right-10 top-16 h-40 w-40 roun",
+     "right": 360,
+     "text": ""
+    }
+   ],
+   "overCount": 1,
+   "smallFont": 25,
+   "tinyTouch": 1,
+   "latin": [],
+   "cjkCount": 0
+  },
+  "أندرويد متوسط": {
+   "W": 360,
+   "H": 740,
+   "scrollW": 360,
+   "innerW": 360,
+   "over": [
+    {
+     "tag": "DIV",
+     "cls": "pointer-events-none absolute -right-10 top-16 h-40 w-40 roun",
+     "right": 400,
+     "text": ""
+    }
+   ],
+   "overCount": 1,
+   "smallFont": 25,
+   "tinyTouch": 1,
+   "latin": [],
+   "cjkCount": 0
+  },
+  "آيفون SE": {
+   "W": 375,
+   "H": 667,
+   "scrollW": 375,
+   "innerW": 375,
+   "over": [
+    {
+     "tag": "DIV",
+     "cls": "pointer-events-none absolute -right-10 top-16 h-40 w-40 roun",
+     "right": 415,
+     "text": ""
+    }
+   ],
+   "overCount": 1,
+   "smallFont": 25,
+   "tinyTouch": 1,
+   "latin": [],
+   "cjkCount": 0
+  },
+  "آيفون بلس": {
+   "W": 414,
+   "H": 896,
+   "scrollW": 414,
+   "innerW": 414,
+   "over": [
+    {
+     "tag": "DIV",
+     "cls": "pointer-events-none absolute -right-10 top-16 h-40 w-40 roun",
+     "right": 454,
+     "text": ""
+    }
+   ],
+   "overCount": 1,
+   "smallFont": 25,
+   "tinyTouch": 1,
+   "latin": [],
+   "cjkCount": 0
+  },
+  "لوحي": {
+   "W": 768,
+   "H": 1024,
+   "scrollW": 768,
+   "innerW": 768,
+   "over": [],
+   "overCount": 0,
+   "smallFont": 25,
+   "tinyTouch": 1,
+   "latin": [],
+   "cjkCount": 0
+  },
+  "سطح مكتب": {
+   "W": 1440,
+   "H": 900,
+   "scrollW": 1440,
+   "innerW": 1440,
+   "over": [],
+   "overCount": 0,
+   "smallFont": 25,
+   "tinyTouch": 1,
+   "latin": [],
+   "cjkCount": 0
+  }
+ },
+ "flows": [
+  {
+   "name": "الرئيسية تُحمّل",
+   "ok": true
+  },
+  {
+   "name": "فتح مختبر محاكاة الصفوف",
+   "ok": true
+  },
+  {
+   "name": "فتح المحاكاة الموقوتة",
+   "ok": true
+  },
+  {
+   "name": "فتح تحديد المستوى",
+   "ok": false,
+   "err": "Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\"text=المستوى\").first to be visible\n"
+  },
+  {
+   "name": "فتح دليل المعلم",
+   "ok": true
+  }
+ ],
+ "pwa": {
+  "manifestLink": true,
+  "viewportMeta": "width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no",
+  "manifestName": "تربوي — رفيقك في علم النفس التربوي",
+  "dir": "rtl",
+  "lang": "ar",
+  "display": "standalone",
+  "icons": [
+   "/icons/icon-192.png",
+   "/icons/icon-512.png",
+   "/icons/icon-maskable-512.png"
+  ],
+  "iconsOk": [
+   "/icons/icon-192.png:200",
+   "/icons/icon-512.png:200",
+   "/icons/icon-maskable-512.png:200"
+  ],
+  "swStatus": 200
+ },
+ "perf": {
+  "qbank": {
+   "bytes": 10814728,
+   "ms": 638,
+   "enc": "gzip"
+  }
+ },
+ "console_all": [
+  "reqfail: http://localhost:3000/icons/icon-512.png",
+  "reqfail: http://localhost:3000/sw.js",
+  "reqfail: http://localhost:3000/icons/icon-192.png",
+  "reqfail: http://localhost:3000/icons/icon-maskable-512.png"
+ ],
+ "visible_latin": []
+}
