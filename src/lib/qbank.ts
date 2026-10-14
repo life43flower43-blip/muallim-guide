@@ -90,7 +90,7 @@ export const COURSE_SHORT: Record<string, string> = {
   M4: "التقويم",
   M5: "التدريس",
   G1: "ثقافة تربوية",
-  C1: "مهارات معرفية",
+  C1: "المهارات",
 };
 
 export const courseById = (id: string) => COURSES.find((c) => c.id === id);

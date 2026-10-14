@@ -34,11 +34,13 @@ def texts_of(obj, path=""):
 
 
 def main(path):
-    # المساق المتوقع يُستنتج من مجلد الدفعة: m2_batches → M2، m5_batches → M5، وما سوى ذلك → M4
+    # المساق المتوقع يُستنتج من مجلد الدفعة: m2_batches → M2، m5_batches → M5، c1_batches → C1، وما سوى ذلك → M4
     if "m2_batches" in path:
         expected_course = "M2"
     elif "m5_batches" in path:
         expected_course = "M5"
+    elif "c1_batches" in path:
+        expected_course = "C1"
     else:
         expected_course = "M4"
     spec = importlib.util.spec_from_file_location("batch", path)
