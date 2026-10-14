@@ -1,13 +1,76 @@
-import raw from "@/data/qbank.json";
 import type { Concept, Course, Question } from "./types";
 
-export const COURSES: Course[] = Object.entries(raw.courses).map(([id, name]) => ({
-  id,
-  name: name as string,
-}));
+type QbankRaw = {
+  courses: Record<string, string>;
+  concepts: Concept[];
+  questions: Question[];
+};
 
-export const CONCEPTS: Concept[] = raw.concepts as Concept[];
-export const QUESTIONS: Question[] = raw.questions as Question[];
+// الحالة القابلة للتعبئة — تُملأ بعد تحميل البنك من «/data/qbank.json» وقت التشغيل
+// (فصل البيانات عن حزمة الجافاسكربت: فتح أسرع وبنك يتسع لمئات المفاهيم)
+export let COURSES: Course[] = [];
+export let CONCEPTS: Concept[] = [];
+export let QUESTIONS: Question[] = [];
+
+let CONCEPT_MAP = new Map<string, Concept>();
+let QUESTION_MAP = new Map<string, Question>();
+
+let resolveReady: (() => void) | null = null;
+export const qbankReady = new Promise<void>((res) => {
+  resolveReady = res;
+});
+
+/** تعبئة الحالة وبناء الخرائط — تُستدعى من المحمّل بعد وصول البيانات */
+export function applyQbank(raw: QbankRaw) {
+  COURSES = Object.entries(raw.courses).map(([id, name]) => ({
+    id,
+    name: name as string,
+  }));
+  CONCEPTS = raw.concepts as Concept[];
+  QUESTIONS = raw.questions as Question[];
+  CONCEPT_MAP = new Map(CONCEPTS.map((c) => [c.id, c]));
+  QUESTION_MAP = new Map(QUESTIONS.map((q) => [q.id, q]));
+  const done = resolveReady;
+  resolveReady = null;
+  done?.();
+}
+
+/** المحمّل: جلب البنك مع مؤشر تقدم ومحاولة إعادة واحدة عند الفشل */
+export async function loadQbank(
+  onProgress?: (p: number) => void
+): Promise<void> {
+  const attempt = async () => {
+    const res = await fetch("/data/qbank.json");
+    if (!res.ok) throw new Error(`فشل تحميل البنك (${res.status})`);
+    const total = Number(res.headers.get("Content-Length") || 0);
+    if (res.body && total > 0) {
+      const reader = res.body.getReader();
+      const parts: BlobPart[] = [];
+      let received = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (value) {
+          parts.push(value);
+          received += value.length;
+          onProgress?.(Math.min(0.99, received / total));
+        }
+      }
+      const text = await new Blob(parts).text();
+      applyQbank(JSON.parse(text) as QbankRaw);
+    } else {
+      applyQbank((await res.json()) as QbankRaw);
+    }
+    onProgress?.(1);
+  };
+  try {
+    await attempt();
+  } catch (e) {
+    // محاولة إعادة واحدة بعد راحة قصيرة — لتجاوز تقطّع الشبكة العابر
+    await new Promise((r) => setTimeout(r, 900));
+    await attempt();
+  }
+}
 
 export const COURSE_COLOR: Record<string, string> = {
   M1: "#5B21B6",
@@ -31,10 +94,6 @@ export const COURSE_SHORT: Record<string, string> = {
 };
 
 export const courseById = (id: string) => COURSES.find((c) => c.id === id);
-
-// خرائط بحث فوري O(1) — الأداء مع مئات المفاهيم والأسئلة
-const CONCEPT_MAP = new Map(CONCEPTS.map((c) => [c.id, c]));
-const QUESTION_MAP = new Map(QUESTIONS.map((q) => [q.id, q]));
 
 export const conceptById = (id: string) => CONCEPT_MAP.get(id);
 export const questionById = (id: string) => QUESTION_MAP.get(id);
@@ -86,7 +145,7 @@ export const OPTION_LETTERS = ["أ", "ب", "ج", "د"];
 // مجموعة اختبار الكفاءة الشامل — توزيع متوازن على المحاور كلها ثم خلط
 // (من ميزة «ي» في بحث مشاكل الطلبة: رسوب اختبارات الترخيص)
 export function buildProficiencySet(total = 50): string[] {
-  const per = Math.ceil(total / COURSES.length);
+  const per = Math.ceil(total / Math.max(1, COURSES.length));
   const parts = COURSES.map((c) =>
     shuffle(questionsOfCourse(c.id).map((q) => q.id)).slice(0, per)
   );

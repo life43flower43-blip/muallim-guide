@@ -26,6 +26,8 @@ import PlacementView from "./PlacementView";
 import MatchGameView from "./MatchGameView";
 import SpeedRunView from "./SpeedRunView";
 import FlashcardsView from "./FlashcardsView";
+import BootBank from "./BootBank";
+import { loadQbank } from "@/lib/qbank";
 import { readPeerHash } from "@/lib/peer";
 import { Button } from "@/components/ui/button";
 
@@ -244,6 +246,20 @@ export default function AppShell() {
   const clearFlash = useUi((s) => s.clearFlash);
   const [tab, setTab] = useState("home");
 
+  // حالة تجهيز البنك التربوي — تُحمَّل البيانات مرة واحدة عند الفتح
+  const [bankLoaded, setBankLoaded] = useState(false);
+  const [bankProgress, setBankProgress] = useState(0);
+  const [bankFailed, setBankFailed] = useState(false);
+  const startBankLoad = () => {
+    loadQbank((p) => setBankProgress(p))
+      .then(() => setBankLoaded(true))
+      .catch(() => setBankFailed(true));
+  };
+  useEffect(() => {
+    startBankLoad();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // حالة الاتصال — قراءة مباشرة من المتصفح بلا setState داخل الأثر
   const isOnline = useSyncExternalStore(
     subscribeOnline,
@@ -303,6 +319,20 @@ export default function AppShell() {
   }, []);
 
   if (!hydrated) return <ShellSkeleton />;
+
+  // بوابة البنك التربوي — لا تُعرض أي شاشة قبل وصول البيانات من «/data/qbank.json»
+  if (!bankLoaded)
+    return (
+      <BootBank
+        progress={bankProgress}
+        failed={bankFailed}
+        onRetry={() => {
+          setBankFailed(false);
+          setBankProgress(0);
+          startBankLoad();
+        }}
+      />
+    );
 
   if (!onboarded) return <Onboarding />;
 

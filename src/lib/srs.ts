@@ -62,4 +62,4 @@ export function orderUnseenFirst(
   return [...shuffle(unseen), ...shuffle(seen)];
 }
 
-export const totalQuestions = QUESTIONS.length;
+export const totalQuestions = () => QUESTIONS.length;
