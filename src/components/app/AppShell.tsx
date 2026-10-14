@@ -12,6 +12,7 @@ import QuizHome from "./QuizHome";
 import AccountView from "./AccountView";
 import ScenariosView from "./ScenariosView";
 import LabView from "./LabView";
+import SimLabView from "./SimLabView";
 import StudioView from "./StudioView";
 import FieldLogView from "./FieldLogView";
 import MistakesView from "./MistakesView";
@@ -214,6 +215,7 @@ export default function AppShell() {
   const quizConfig = useUi((s) => s.quizConfig);
   const scenariosOpen = useUi((s) => s.scenariosOpen);
   const labOpen = useUi((s) => s.labOpen);
+  const simOpen = useUi((s) => s.simOpen);
   const clearLab = useUi((s) => s.clearLab);
   const clearScenarios = useUi((s) => s.clearScenarios);
   const studioOpen = useUi((s) => s.studioOpen);
@@ -420,6 +422,9 @@ export default function AppShell() {
         onTrain={() => setTab("quiz")}
         onAccount={() => setTab("account")}
       />
+
+      {/* مختبر محاكاة الصفوف — الجيل الجديد */}
+      <AnimatePresence>{simOpen && <SimLabView key="sim" />}</AnimatePresence>
 
       {/* مختبر المعلّم */}
       <AnimatePresence>{labOpen && <LabView key="lab" />}</AnimatePresence>

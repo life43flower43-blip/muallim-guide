@@ -24,6 +24,7 @@ import {
   ClipboardList,
   Backpack,
   UserRound,
+  Compass,
 } from "lucide-react";
 import { CONCEPTS, QUESTIONS, conceptById } from "@/lib/qbank";
 import { orderUnseenFirst } from "@/lib/srs";
@@ -78,6 +79,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const startQuiz = useUi((s) => s.startQuiz);
   const openCourseTab = useUi((s) => s.openCourseTab);
   const startScenarios = useUi((s) => s.startScenarios);
+  const startSim = useUi((s) => s.startSim);
   const startStudio = useUi((s) => s.startStudio);
   const startField = useUi((s) => s.startField);
 
@@ -138,7 +140,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
       icon: School,
       color: "#7C3AED",
       hint: "واجه مواقف الصف واتخذ قرارك",
-      action: startScenarios,
+      action: startSim,
     },
     {
       id: "train",
@@ -326,6 +328,34 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
 
         {/* ٢. أداتان مميزتان كحد أقصى */}
         <motion.section variants={rise} aria-label="أداتان مميزتان" className="space-y-3">
+          <button
+            onClick={startSim}
+            className="w-full rounded-3xl border-2 border-primary/25 bg-gradient-to-bl from-indigo-50 to-violet-50 p-4 text-right shadow-soft transition hover:border-primary/50"
+          >
+            <span className="flex items-center gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-700 text-white shadow-sm">
+                <Compass className="h-5 w-5" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center gap-2">
+                  <span className="truncate text-sm font-black text-gray-900">مختبر محاكاة الصفوف</span>
+                  <NewBadge tone="violet" />
+                </span>
+                <span className="mt-0.5 block truncate text-[11px] font-bold text-gray-600">
+                  مواقف حية تتغير بقرارك — وتحليل كفاءاتك وتمرين مستهدف
+                </span>
+              </span>
+              <ChevronLeft className="h-4.5 w-4.5 shrink-0 text-muted-foreground" />
+            </span>
+            <span className="mt-2.5 flex flex-wrap gap-1.5">
+              {"إدارة الصف|التواصل|فهم المتعلم|اتخاذ القرار|التقويم".split("|").map((k) => (
+                <span key={k} className="rounded-full bg-white/80 px-2 py-0.5 text-[10px] font-black text-primary">
+                  {k}
+                </span>
+              ))}
+            </span>
+          </button>
+
           <button
             onClick={startStudio}
             className="flex w-full items-center gap-3 rounded-3xl border border-border bg-white p-4 text-right shadow-soft"

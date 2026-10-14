@@ -5,6 +5,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { Attempt, SessionRecord, StudentExample } from "./types";
 import type { LabAttempt } from "./lab";
+import type { SimAttempt } from "./sim";
 import type { LessonPlan } from "./plans";
 import type { FieldVisit } from "./field";
 import { nextBox } from "./srs";
@@ -43,6 +44,7 @@ interface AppState {
   reportedQuestions: string[]; // معرفات الأسئلة التي أبلغ عنها المستخدم (نقد البند 11)
   studentExamples: Record<string, StudentExample[]>; // أمثلة مجتمع الطلاب لكل مفهوم
   labAttempts: LabAttempt[]; // سجل محاولات مختبر المعلّم — مواقف وتأملات
+  simAttempts: SimAttempt[]; // سجل محاولات مختبر محاكاة الصفوف — قرارات متفرعة وكفاءات
   lessonPlans: LessonPlan[]; // خطط الدروس المحفوظة من استوديو خطط الدروس
   fieldVisits: FieldVisit[]; // سجل التدريب الميداني — زيارات المشاهدة والتنفيذ وتأملها
   challengeStats: Record<string, { ok: number; total: number; lastTs: number }>; // إحصاء التحديات الذكية
@@ -67,6 +69,7 @@ interface AppState {
   addStudentExample: (cid: string, text: string, specialty: string) => void;
   removeStudentExample: (cid: string, id: string) => void;
   addLabAttempt: (a: LabAttempt) => void;
+  addSimAttempt: (a: SimAttempt) => void;
   saveLessonPlan: (p: LessonPlan) => void; // إضافة أو تعديل خطة حسب معرفها
   removeLessonPlan: (id: string) => void;
   addFieldVisit: (v: FieldVisit) => void; // إضافة أو تعديل زيارة ميدانية حسب معرفها
@@ -147,6 +150,7 @@ export const useApp = create<AppState>()(
       reportedQuestions: [],
       studentExamples: {},
       labAttempts: [],
+      simAttempts: [],
       lessonPlans: [],
       fieldVisits: [],
       challengeStats: {},
@@ -230,6 +234,9 @@ export const useApp = create<AppState>()(
 
       // مختبر المعلّم — تسجيل محاولة موقف متفرع مع تأملها
       addLabAttempt: (a) => set((st) => ({ labAttempts: [...st.labAttempts, a] })),
+
+      // مختبر محاكاة الصفوف — تسجيل محاولة موقف متفرع متعدد الكفاءات
+      addSimAttempt: (a) => set((st) => ({ simAttempts: [...st.simAttempts, a] })),
 
       // استوديو خطط الدروس — حفظ أو تحديث خطة حسب معرفها
       saveLessonPlan: (p) =>
@@ -321,6 +328,7 @@ export const useApp = create<AppState>()(
           reportedQuestions: [],
           studentExamples: {},
           labAttempts: [],
+          simAttempts: [],
           lessonPlans: [],
           fieldVisits: [],
           challengeStats: {},
@@ -334,7 +342,7 @@ export const useApp = create<AppState>()(
     }),
     {
       name: "turbawy-app-v1",
-      version: 6,
+      version: 7,
       // ترقية الحالة القديمة: dark المنطقي يصبح darkMode ثلاثيًا، والاهتزاز يُفعّل افتراضيًا، والمختبر يبدأ فارغًا
       migrate: (s, v) => {
         const st = s as Record<string, unknown>;
@@ -370,6 +378,7 @@ export const useApp = create<AppState>()(
             firstdayChecked: Array.isArray(out.firstdayChecked) ? out.firstdayChecked : [],
           };
         }
+        if (v < 7 && !Array.isArray(out.simAttempts)) return { ...out, simAttempts: [] };
         return out;
       },
       storage: createJSONStorage(() => localStorage),

@@ -1,0 +1,607 @@
+     1→"use client";
+     2→
+     3→// مختبر المعلّم — تدريب مهني على المواقف: قرار متفرع الأثر ← تحليل ← تأمل ← خريطة كفاءات
+     4→// + اختبار الاستقلال: مواقف جديدة تُدار بلا تقييم أثناء القرار، والتحليل بعد الختام
+     5→import { useMemo, useState } from "react";
+     6→import { motion } from "framer-motion";
+     7→import {
+     8→  X,
+     9→  FlaskConical,
+    10→  Map as MapIcon,
+    11→  Eye,
+    12→  Dumbbell,
+    13→  BookOpen,
+    14→  ArrowLeft,
+    15→  ArrowRight,
+    16→  CheckCircle2,
+    17→  CircleAlert,
+    18→  MinusCircle,
+    19→  Sparkles,
+    20→  ShieldCheck,
+    21→  Quote,
+    22→} from "lucide-react";
+    23→import { useUi } from "@/lib/ui-store";
+    24→import { useApp } from "@/lib/store";
+    25→import {
+    26→  LAB_SCENARIOS,
+    27→  LAB_EXAM_SCENARIOS,
+    28→  labScenarioById,
+    29→  isExamScenario,
+    30→  skillReports,
+    31→  skillOfConcept,
+    32→  STATUS_WORD,
+    33→  labStatusColor,
+    34→  RATING_WORD,
+    35→  type LabAttempt,
+    36→  type LabRating,
+    37→  type LabScenario,
+    38→  type QuizHint,
+    39→} from "@/lib/lab";
+    40→import { conceptById, questionById, OPTION_LETTERS } from "@/lib/qbank";
+    41→
+    42→type LabTab = "list" | "exam" | "map" | "mirror";
+    43→
+    44→const ratingIcon: Record<LabRating, typeof CheckCircle2> = {
+    45→  good: CheckCircle2,
+    46→  ok: MinusCircle,
+    47→  poor: CircleAlert,
+    48→};
+    49→const ratingCls: Record<LabRating, string> = {
+    50→  good: "text-indigo-600 border-indigo-200 bg-indigo-50",
+    51→  ok: "text-amber-600 border-amber-200 bg-amber-50",
+    52→  poor: "text-red-600 border-red-200 bg-red-50",
+    53→};
+    54→
+    55→export default function LabView() {
+    56→  const clearLab = useUi((s) => s.clearLab);
+    57→  const startScenarios = useUi((s) => s.startScenarios);
+    58→  const openConcept = useUi((s) => s.openConcept);
+    59→  const labAttempts = useApp((s) => s.labAttempts);
+    60→  const addLabAttempt = useApp((s) => s.addLabAttempt);
+    61→  const quizAttempts = useApp((s) => s.attempts);
+    62→
+    63→  const [tab, setTab] = useState<LabTab>("list");
+    64→  const [scenario, setScenario] = useState<LabScenario | null>(null);
+    65→  const [examMode, setExamMode] = useState(false);
+    66→  const [runId, setRunId] = useState(0); // مفتاح جلسة — يجعل خلط العرض ثابتاً داخل الجلسة وجديداً بين الجلسات
+    67→  const [nodeKey, setNodeKey] = useState("start");
+    68→  const [steps, setSteps] = useState<LabAttempt["steps"]>([]);
+    69→  const [pendingOutcome, setPendingOutcome] = useState<LabAttempt["steps"][number] | null>(null);
+    70→  const [reflect, setReflect] = useState<LabAttempt["reflection"]>({ success: "", failed: "", change: "" });
+    71→
+    72→  const reports = useMemo(() => skillReports(labAttempts, quizHintsOf(quizAttempts)), [labAttempts, quizAttempts]);
+    73→
+    74→  const lastStatusOf = (sid: string) => {
+    75→    const rel = labAttempts.filter((a) => a.sid === sid).sort((a, b) => a.ts - b.ts);
+    76→    if (!rel.length) return null;
+    77→    const last = rel[rel.length - 1];
+    78→    const scores = last.steps.map((s) => s.rating);
+    79→    if (scores.every((r) => r === "good")) return "متقن في آخر تجربة";
+    80→    if (scores.every((r) => r === "poor")) return "يحتاج إعادة في آخر تجربة";
+    81→    return "في تحسّن في آخر تجربة";
+    82→  };
+    83→
+    84→  const startScenario = (s: LabScenario, asExam = false) => {
+    85→    setScenario(s);
+    86→    setExamMode(asExam);
+    87→    setRunId((n) => n + 1);
+    88→    setNodeKey("start");
+    89→    setSteps([]);
+    90→    setPendingOutcome(null);
+    91→    setReflect({ success: "", failed: "", change: "" });
+    92→  };
+    93→
+    94→  const node = scenario ? scenario.nodes[nodeKey] : null;
+    95→  // خلط عرض الخيارات حتمياً ببذرة الجلسة — يكسر نمط «القرار الأفضل في موضع ثابت»
+    96→  // ويثبت الترتيب داخل الجلسة ويجديده في كل جلسة جديدة
+    97→  const shownOptions = useMemo(() => {
+    98→    if (!node || !scenario) return [];
+    99→    const seed = `${scenario.id}#${nodeKey}#${runId}`;
+   100→    let h = 0;
+   101→    for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+   102→    const arr = [...node.options];
+   103→    for (let i = arr.length - 1; i > 0; i--) {
+   104→      h = (h * 1103515245 + 12345) >>> 0;
+   105→      const j = h % (i + 1);
+   106→      [arr[i], arr[j]] = [arr[j], arr[i]];
+   107→    }
+   108→    return arr;
+   109→  }, [node, scenario, runId]);
+   110→
+   111→  const choose = (optIndex: number) => {
+   112→    if (!scenario || pendingOutcome) return;
+   113→    const opt = shownOptions[optIndex];
+   114→    const step: LabAttempt["steps"][number] = { node: nodeKey, choice: opt.text, rating: opt.rating, outcome: opt.outcome };
+   115→    if (examMode) {
+   116→      // اختبار الاستقلال: بلا تقييم ولا نتيجة أثناء القرار — انتقال مباشر
+   117→      const nextSteps = [...steps, step];
+   118→      setSteps(nextSteps);
+   119→      setNodeKey(opt.next === "end" ? "end" : opt.next);
+   120→      return;
+   121→    }
+   122→    setPendingOutcome(step);
+   123→  };
+   124→
+   125→  const proceed = () => {
+   126→    if (!scenario || !pendingOutcome) return;
+   127→    const node = scenario.nodes[pendingOutcome.node];
+   128→    const opt = node.options.find((o) => o.text === pendingOutcome.choice);
+   129→    if (!opt) return;
+   130→    const nextSteps = [...steps, pendingOutcome];
+   131→    setSteps(nextSteps);
+   132→    setPendingOutcome(null);
+   133→    setNodeKey(opt.next === "end" ? "end" : opt.next);
+   134→  };
+   135→
+   136→  const saveAttempt = () => {
+   137→    if (!scenario) return;
+   138→    addLabAttempt({ sid: scenario.id, ts: Date.now(), steps, reflection: reflect, mode: examMode ? "exam" : "train" });
+   139→    setScenario(null);
+   140→    setTab(examMode ? "exam" : "list");
+   141→  };
+   142→
+   143→  const openConceptDeep = (cid: string) => {
+   144→    clearLab();
+   145→    openConcept(cid);
+   146→  };
+   147→
+   148→  const header = (t: LabTab) => (
+   149→    <div className="sticky top-0 z-10 border-b border-border bg-white/95 px-4 pb-3 pt-4 backdrop-blur">
+   150→      <div className="flex items-center justify-between">
+   151→        <div>
+   152→          <h1 className="text-xl font-black text-foreground">مختبر المعلّم</h1>
+   153→          <p className="text-xs text-muted-foreground">تدرّب على قرار المعلم في مواقف الحصة الحقيقية</p>
+   154→        </div>
+   155→        <button
+   156→          onClick={clearLab}
+   157→          aria-label="إغلاق"
+   158→          className="rounded-full bg-muted p-2 text-muted-foreground hover:bg-accent"
+   159→        >
+   160→          <X className="h-5 w-5" />
+   161→        </button>
+   162→      </div>
+   163→      <div className="mt-3 flex gap-1.5">
+   164→        {(
+   165→          [
+   166→            ["list", "المواقف", Dumbbell],
+   167→            ["exam", "الاستقلال", ShieldCheck],
+   168→            ["map", "الخريطة", MapIcon],
+   169→            ["mirror", "مرآتي", Eye],
+   170→          ] as const
+   171→        ).map(([id, lbl, Icon]) => (
+   172→          <button
+   173→            key={id}
+   174→            onClick={() => setTab(id)}
+   175→            className={`flex flex-1 items-center justify-center gap-1 rounded-xl border-2 px-1.5 py-2 text-[11px] font-bold ${
+   176→              t === id ? "border-primary bg-accent text-primary" : "border-border bg-white text-muted-foreground"
+   177→            }`}
+   178→          >
+   179→            <Icon className="h-4 w-4" />
+   180→            {lbl}
+   181→          </button>
+   182→        ))}
+   183→      </div>
+   184→    </div>
+   185→  );
+   186→
+   187→  // ---------- شاشة تشغيل الموقف (تدريب أو اختبار استقلال) ----------
+   188→  if (scenario) {
+   189→    const finished = nodeKey === "end";
+   190→    return (
+   191→      <motion.div
+   192→        initial={{ opacity: 0, y: 24 }}
+   193→        animate={{ opacity: 1, y: 0 }}
+   194→        exit={{ opacity: 0, y: 24 }}
+   195→        className="fixed inset-0 z-50 overflow-y-auto bg-background"
+   196→      >
+   197→        <div className="mx-auto max-w-lg px-4 pb-28 pt-5">
+   198→          <div className="mb-4 flex items-center justify-between">
+   199→            <button
+   200→              onClick={() => setScenario(null)}
+   201→              className="flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-bold text-muted-foreground"
+   202→            >
+   203→              <ArrowLeft className="h-4 w-4" /> {examMode ? "إنهاء الاختبار" : "خروج من الموقف"}
+   204→            </button>
+   205→            {examMode ? (
+   206→              <span className="flex items-center gap-1 rounded-full border border-primary/30 bg-white px-3 py-1 text-xs font-bold text-primary">
+   207→                <ShieldCheck className="h-3.5 w-3.5" /> اختبار استقلال
+   208→              </span>
+   209→            ) : (
+   210→              <span className="rounded-full bg-accent px-3 py-1 text-xs font-bold text-primary">{scenario.skill}</span>
+   211→            )}
+   212→          </div>
+   213→
+   214→          <h2 className="text-lg font-black leading-8">{scenario.title}</h2>
+   215→          <p className="text-xs font-bold text-muted-foreground">{examMode ? "موقف جديد لم تتدرّب عليه — قرارك هنا بلا تلميح" : scenario.stage}</p>
+   216→
+   217→          {!finished && !pendingOutcome && node && (
+   218→            <motion.div key={nodeKey + runId} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-4 space-y-3">
+   219→              <div className="rounded-2xl border-2 border-primary/20 bg-white p-4 text-sm font-bold leading-7">{node.text}</div>
+   220→              <p className="pt-1 text-sm font-black text-primary">{examMode ? "خذ قرارك — التقييم يظهر بعد الختام" : "ماذا ستفعل؟"}</p>
+   221→              {shownOptions.map((o, i) => (
+   222→                <button
+   223→                  key={i}
+   224→                  onClick={() => choose(i)}
+   225→                  className="flex w-full items-start gap-3 rounded-2xl border-2 border-border bg-white p-4 text-right transition hover:border-primary hover:bg-accent"
+   226→                >
+   227→                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted text-sm font-black text-primary">
+   228→                    {OPTION_LETTERS[i]}
+   229→                  </span>
+   230→                  <span className="text-sm font-bold leading-6">{o.text}</span>
+   231→                </button>
+   232→              ))}
+   233→            </motion.div>
+   234→          )}
+   235→
+   236→          {pendingOutcome && (
+   237→            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-4 space-y-3">
+   238→              <div className={`flex items-center gap-2 rounded-2xl border-2 p-3 text-sm font-black ${ratingCls[pendingOutcome.rating]}`}>
+   239→                {(() => {
+   240→                  const Icon = ratingIcon[pendingOutcome.rating];
+   241→                  return <Icon className="h-5 w-5" />;
+   242→                })()}
+   243→                {RATING_WORD[pendingOutcome.rating]}
+   244→              </div>
+   245→              <div className="rounded-2xl border border-border bg-white p-4 text-sm leading-7">{pendingOutcome.outcome}</div>
+   246→              <button
+   247→                onClick={proceed}
+   248→                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-black text-primary-foreground"
+   249→              >
+   250→                ماذا حدث بعد ذلك؟ <ArrowRight className="h-4 w-4" />
+   251→              </button>
+   252→            </motion.div>
+   253→          )}
+   254→
+   255→          {finished && (
+   256→            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-4 space-y-4">
+   257→              {examMode && (
+   258→                <div className="flex items-center gap-2 rounded-2xl border-2 border-primary/30 bg-accent p-3 text-sm font-black text-primary">
+   259→                  <ShieldCheck className="h-5 w-5" /> نتيجة اختبار الاستقلال — قراراتك بلا تلميح الآن بلا تقييم
+   260→                </div>
+   261→              )}
+   262→              <div className="rounded-2xl border-2 border-primary/30 bg-accent p-4">
+   263→                <p className="mb-3 flex items-center gap-2 text-sm font-black text-primary">
+   264→                  <Sparkles className="h-4 w-4" /> قراراتك في هذا الموقف
+   265→                </p>
+   266→                <div className="space-y-2">
+   267→                  {steps.map((s, i) => (
+   268→                    <div key={i} className="rounded-xl bg-white p-3 text-xs leading-6">
+   269→                      <span className={`mr-1 font-black ${s.rating === "good" ? "text-indigo-700" : s.rating === "ok" ? "text-amber-700" : "text-red-700"}`}>
+   270→                        {RATING_WORD[s.rating]}:
+   271→                      </span>
+   272→                      <span className="font-bold">{s.choice}</span>
+   273→                    </div>
+   274→                  ))}
+   275→                </div>
+   276→              </div>
+   277→              <div className="rounded-2xl border border-border bg-white p-4 text-sm leading-7">
+   278→                <p className="mb-2 flex items-center gap-1.5 text-sm font-black text-primary">
+   279→                  <Quote className="h-4 w-4" /> خلاصة الموقف
+   280→                </p>
+   281→                {scenario.end}
+   282→              </div>
+   283→
+   284→              <div>
+   285→                <p className="mb-2 flex items-center gap-1.5 text-sm font-black">
+   286→                  <BookOpen className="h-4 w-4 text-primary" /> مفاهيم من المكتبة تخدم هذا الموقف
+   287→                </p>
+   288→                <div className="flex flex-wrap gap-2">
+   289→                  {scenario.conceptIds.map((cid) => {
+   290→                    const c = conceptById(cid);
+   291→                    if (!c) return null;
+   292→                    return (
+   293→                      <button
+   294→                        key={cid}
+   295→                        onClick={() => openConceptDeep(cid)}
+   296→                        className="rounded-full border border-primary/30 bg-white px-3 py-1.5 text-xs font-bold text-primary"
+   297→                      >
+   298→                        {c.title}
+   299→                      </button>
+   300→                    );
+   301→                  })}
+   302→                </div>
+   303→              </div>
+   304→
+   305→              <div className="rounded-2xl border-2 border-border bg-white p-4">
+   306→                <p className="mb-3 flex items-center gap-2 text-sm font-black">
+   307→                  <Eye className="h-4 w-4 text-primary" /> مرآة المعلّم — تأمل بعد التجربة
+   308→                </p>
+   309→                <div className="space-y-3">
+   310→                  {(
+   311→                    [
+   312→                      ["success", "ما الذي نجح في تصرفاتك؟"],
+   313→                      ["failed", "ما القرار الذي لم ينجح؟ ولماذا؟"],
+   314→                      ["change", "ما الذي سأغيّره في المرة المقبلة؟"],
+   315→                    ] as const
+   316→                  ).map(([k, lbl]) => (
+   317→                    <div key={k}>
+   318→                      <label className="mb-1 block text-xs font-bold text-muted-foreground">{lbl}</label>
+   319→                      <textarea
+   320→                        value={reflect[k]}
+   321→                        onChange={(e) => setReflect((r) => ({ ...r, [k]: e.target.value }))}
+   322→                        rows={2}
+   323→                        className="w-full rounded-xl border-2 border-border bg-background p-3 text-sm leading-6 outline-none focus:border-primary"
+   324→                      />
+   325→                    </div>
+   326→                  ))}
+   327→                </div>
+   328→                <button
+   329→                  onClick={saveAttempt}
+   330→                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-black text-primary-foreground"
+   331→                >
+   332→                  <CheckCircle2 className="h-5 w-5" /> {examMode ? "احفظ نتيجة الاختبار والتأمل" : "احفظ التجربة والتأمل"}
+   333→                </button>
+   334→              </div>
+   335→            </motion.div>
+   336→          )}
+   337→        </div>
+   338→      </motion.div>
+   339→    );
+   340→  }
+   341→
+   342→  // ---------- تبويب المواقف التدريبية ----------
+   343→  if (tab === "list") {
+   344→    return (
+   345→      <motion.div
+   346→        initial={{ opacity: 0, y: 24 }}
+   347→        animate={{ opacity: 1, y: 0 }}
+   348→        exit={{ opacity: 0, y: 24 }}
+   349→        className="fixed inset-0 z-50 overflow-y-auto bg-background"
+   350→      >
+   351→        {header(tab)}
+   352→        <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
+   353→          <div className="mb-4 rounded-2xl border-2 border-primary/20 bg-gradient-to-l from-accent to-white p-4">
+   354→            <p className="flex items-center gap-2 text-sm font-black text-primary">
+   355→              <FlaskConical className="h-4 w-4" /> كيف يعمل المختبر؟
+   356→            </p>
+   357→            <p className="mt-1 text-xs leading-6 text-muted-foreground">
+   358→              تدخل موقفاً صفياً حقيقياً، وتتخذ قراراتك خطوة بخطوة، فيتحول الموقف بأثرها، ثم ترى تحليل كل قرار وتتأمل في أدائك في «مرآة المعلّم».
+   359→            </p>
+   360→          </div>
+   361→
+   362→          <button
+   363→            onClick={() => {
+   364→              clearLab();
+   365→              startScenarios();
+   366→            }}
+   367→            className="mb-4 flex w-full items-center justify-between rounded-2xl border-2 border-border bg-white p-4 text-right"
+   368→          >
+   369→            <div>
+   370→              <p className="text-sm font-black">مواقف سريعة</p>
+   371→              <p className="text-xs text-muted-foreground">محاكاة قرار واحد مع تفسيره التربوي</p>
+   372→            </div>
+   373→            <ArrowLeft className="h-4 w-4 text-muted-foreground" />
+   374→          </button>
+   375→
+   376→          <div className="space-y-3">
+   377→            {LAB_SCENARIOS.map((s) => {
+   378→              const st = lastStatusOf(s.id);
+   379→              return (
+   380→                <button
+   381→                  key={s.id}
+   382→                  onClick={() => startScenario(s)}
+   383→                  className="block w-full rounded-2xl border-2 border-border bg-white p-4 text-right transition hover:border-primary"
+   384→                >
+   385→                  <div className="flex items-start justify-between gap-2">
+   386→                    <p className="text-sm font-black leading-6">{s.title}</p>
+   387→                    {st && <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{st}</span>}
+   388→                  </div>
+   389→                  <div className="mt-2 flex flex-wrap gap-1.5">
+   390→                    <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-primary">{s.skill}</span>
+   391→                    <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{s.stage}</span>
+   392→                  </div>
+   393→                </button>
+   394→              );
+   395→            })}
+   396→          </div>
+   397→        </div>
+   398→      </motion.div>
+   399→    );
+   400→  }
+   401→
+   402→  // ---------- تبويب اختبار الاستقلال ----------
+   403→  if (tab === "exam") {
+   404→    return (
+   405→      <motion.div
+   406→        initial={{ opacity: 0, y: 24 }}
+   407→        animate={{ opacity: 1, y: 0 }}
+   408→        exit={{ opacity: 0, y: 24 }}
+   409→        className="fixed inset-0 z-50 overflow-y-auto bg-background"
+   410→      >
+   411→        {header(tab)}
+   412→        <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
+   413→          <div className="mb-4 rounded-2xl border-2 border-primary/25 bg-white p-4">
+   414→            <p className="flex items-center gap-2 text-sm font-black text-primary">
+   415→              <ShieldCheck className="h-4 w-4" /> إثبات القرار بمعلم داخلك
+   416→            </p>
+   417→            <p className="mt-1 text-xs leading-6 text-muted-foreground">
+   418→              هنا مواقف جديدة لم تتدرّب عليها ولا تقرأ حلولها. أثناء القرار لا يظهر تقييم ولا نتيجة ولا شرح — التحليل الكامل يفتح عند الختام وحده. ما تحققه هنا هو دليلك الحقيقي على الاستقلال المهني، وهو ما تثبته في خريطة الكفاءات.
+   419→            </p>
+   420→          </div>
+   421→          <div className="space-y-3">
+   422→            {LAB_EXAM_SCENARIOS.map((s) => {
+   423→              const st = lastStatusOf(s.id);
+   424→              return (
+   425→                <button
+   426→                  key={s.id}
+   427→                  onClick={() => startScenario(s, true)}
+   428→                  className="block w-full rounded-2xl border-2 border-primary/20 bg-white p-4 text-right transition hover:border-primary"
+   429→                >
+   430→                  <div className="flex items-start justify-between gap-2">
+   431→                    <p className="text-sm font-black leading-6">{s.title}</p>
+   432→                    {st && <span className="shrink-0 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-primary">{st}</span>}
+   433→                  </div>
+   434→                  <div className="mt-2 flex flex-wrap gap-1.5">
+   435→                    <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{s.stage}</span>
+   436→                    <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">قرارات متتابعة بلا تلميح</span>
+   437→                  </div>
+   438→                </button>
+   439→              );
+   440→            })}
+   441→          </div>
+   442→        </div>
+   443→      </motion.div>
+   444→    );
+   445→  }
+   446→
+   447→  // ---------- تبويب خريطة الكفاءات ----------
+   448→  if (tab === "map") {
+   449→    return (
+   450→      <motion.div
+   451→        initial={{ opacity: 0, y: 24 }}
+   452→        animate={{ opacity: 1, y: 0 }}
+   453→        exit={{ opacity: 0, y: 24 }}
+   454→        className="fixed inset-0 z-50 overflow-y-auto bg-background"
+   455→      >
+   456→        {header(tab)}
+   457→        <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
+   458→          <p className="mb-4 rounded-2xl border border-border bg-white p-4 text-xs leading-6 text-muted-foreground">
+   459→            حالتك هنا تُبنى من أدلة تجاربك لا من درجات: قراراتك في المواقف، ونتائج أسئلة مفاهيم المكتبة المرتبطة بكل كفاءة، واختبار الاستقلال الذي يثبت الأثر. لا تظهر أرقام — الأدلة نصوص من عملك أنت.
+   460→          </p>
+   461→          <div className="space-y-3">
+   462→            {reports.map((r) => (
+   463→              <div key={r.skill} className="rounded-2xl border-2 border-border bg-white p-4">
+   464→                <div className="flex items-center justify-between gap-2">
+   465→                  <p className="text-sm font-black">{r.skill}</p>
+   466→                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-black ${labStatusColor[r.status]}`}>
+   467→                    {STATUS_WORD[r.status]}
+   468→                  </span>
+   469→                </div>
+   470→                {r.examVerdict && (
+   471→                  <p className="mt-3 flex items-start gap-2 rounded-xl border border-indigo-200 bg-indigo-50 p-2.5 text-[11px] leading-5 text-indigo-800">
+   472→                    <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" /> {r.examVerdict}
+   473→                  </p>
+   474→                )}
+   475→                {r.evidence.length > 0 && (
+   476→                  <div className="mt-3 space-y-1.5">
+   477→                    {r.evidence.map((ev, i) => (
+   478→                      <p key={i} className="rounded-xl bg-muted/60 p-2.5 text-[11px] leading-5 text-muted-foreground">
+   479→                        {ev}
+   480→                      </p>
+   481→                    ))}
+   482→                  </div>
+   483→                )}
+   484→                {r.quizEvidence.length > 0 && (
+   485→                  <div className="mt-2 space-y-1.5">
+   486→                    {r.quizEvidence.map((ev, i) => (
+   487→                      <p key={i} className="flex items-start gap-1.5 rounded-xl border border-amber-200 bg-amber-50/70 p-2.5 text-[11px] leading-5 text-amber-800">
+   488→                        <Quote className="mt-0.5 h-3.5 w-3.5 shrink-0" /> {ev}
+   489→                      </p>
+   490→                    ))}
+   491→                  </div>
+   492→                )}
+   493→                {r.scenarioIds.length > 0 && (
+   494→                  <div className="mt-3 flex flex-wrap gap-2">
+   495→                    {r.scenarioIds.map((sid) => {
+   496→                      const sc = labScenarioById.get(sid);
+   497→                      if (!sc) return null;
+   498→                      return (
+   499→                        <button
+   500→                          key={sid}
+   501→                          onClick={() => startScenario(sc)}
+   502→                          className="rounded-full border border-primary/30 px-3 py-1 text-[11px] font-bold text-primary"
+   503→                        >
+   504→                          جرّب: {sc.title}
+   505→                        </button>
+   506→                      );
+   507→                    })}
+   508→                    {r.examScenarioIds.map((sid) => {
+   509→                      const sc = labScenarioById.get(sid);
+   510→                      if (!sc) return null;
+   511→                      return (
+   512→                        <button
+   513→                          key={sid}
+   514→                          onClick={() => startScenario(sc, true)}
+   515→                          className="flex items-center gap-1 rounded-full border border-primary/40 px-3 py-1 text-[11px] font-bold text-primary"
+   516→                        >
+   517→                          <ShieldCheck className="h-3 w-3" /> اختبر استقلالك: {sc.title}
+   518→                        </button>
+   519→                      );
+   520→                    })}
+   521→                  </div>
+   522→                )}
+   523→              </div>
+   524→            ))}
+   525→          </div>
+   526→        </div>
+   527→      </motion.div>
+   528→    );
+   529→  }
+   530→
+   531→  // ---------- تبويب مرآتي ----------
+   532→  const mirrorList = [...labAttempts].sort((a, b) => b.ts - a.ts);
+   533→  return (
+   534→    <motion.div
+   535→      initial={{ opacity: 0, y: 24 }}
+   536→      animate={{ opacity: 1, y: 0 }}
+   537→      exit={{ opacity: 0, y: 24 }}
+   538→      className="fixed inset-0 z-50 overflow-y-auto bg-background"
+   539→    >
+   540→      {header(tab)}
+   541→      <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
+   542→        {mirrorList.length === 0 ? (
+   543→          <div className="rounded-2xl border-2 border-dashed border-border bg-white p-6 text-center">
+   544→            <Eye className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
+   545→            <p className="text-sm font-black">لا تأملات محفوظة بعد</p>
+   546→            <p className="mt-1 text-xs leading-6 text-muted-foreground">
+   547→              أكمل أي موقف من تبويب «المواقف» أو موقفاً من «الاستقلال»، وأجب عن أسئلة مرآة المعلّم في نهايته — فتجمع تأملاتك هنا لترى تطورك.
+   548→            </p>
+   549→          </div>
+   550→        ) : (
+   551→          <div className="space-y-3">
+   552→            {mirrorList.map((a, i) => {
+   553→              const sc = labScenarioById.get(a.sid);
+   554→              return (
+   555→                <div key={i} className="rounded-2xl border-2 border-border bg-white p-4">
+   556→                  <div className="mb-2 flex items-center justify-between">
+   557→                    <p className="flex items-center gap-1.5 text-sm font-black">
+   558→                      {a.mode === "exam" && <ShieldCheck className="h-4 w-4 text-primary" />}
+   559→                      {sc?.title ?? "موقف تدريبي"}
+   560→                    </p>
+   561→                    <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-primary">{sc?.skill}</span>
+   562→                  </div>
+   563→                  <div className="space-y-1.5 text-xs leading-6">
+   564→                    <p>
+   565→                      <span className="font-black text-indigo-700">ما نجح: </span>
+   566→                      <span className="text-muted-foreground">{a.reflection.success || "—"}</span>
+   567→                    </p>
+   568→                    <p>
+   569→                      <span className="font-black text-red-700">ما لم ينجح: </span>
+   570→                      <span className="text-muted-foreground">{a.reflection.failed || "—"}</span>
+   571→                    </p>
+   572→                    <p>
+   573→                      <span className="font-black text-primary">ما سأغيّره: </span>
+   574→                      <span className="text-muted-foreground">{a.reflection.change || "—"}</span>
+   575→                    </p>
+   576→                  </div>
+   577→                </div>
+   578→              );
+   579→            })}
+   580→          </div>
+   581→        )}
+   582→      </div>
+   583→    </motion.div>
+   584→  );
+   585→}
+   586→
+   587→// أدلة نوعية من سجل الأسئلة: لكل كفاءة، مفاهيمها المرتبطة عبر المواقف وآخر إجابة عن أسئلة كل مفهوم
+   588→function quizHintsOf(quizAttempts: Record<string, { correct: boolean; ts: number }>): QuizHint[] {
+   589→  const bySkill = new Map<string, { wrong: string[]; good: string[] }>();
+   590→  for (const [, skills] of skillOfConcept) for (const sk of skills) if (!bySkill.has(sk)) bySkill.set(sk, { wrong: [], good: [] });
+   591→  for (const [qid, a] of Object.entries(quizAttempts)) {
+   592→    const q = questionById(qid);
+   593→    if (!q) continue;
+   594→    const skills = skillOfConcept.get(q.conceptId);
+   595→    if (!skills?.length) continue;
+   596→    const title = conceptById(q.conceptId)?.title;
+   597→    if (!title) continue;
+   598→    for (const sk of skills) {
+   599→      const b = bySkill.get(sk);
+   600→      if (!b) continue;
+   601→      const arr = a.correct ? b.good : b.wrong;
+   602→      if (!arr.includes(title)) arr.push(title);
+   603→    }
+   604→  }
+   605→  return [...bySkill.entries()].map(([skill, b]) => ({ skill, wrong: b.wrong, good: b.good }));
+   606→}
+   607→
