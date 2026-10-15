@@ -25,6 +25,7 @@ import {
   Backpack,
   UserRound,
   Compass,
+  Sparkles,
 } from "lucide-react";
 import { CONCEPTS, QUESTIONS, conceptById } from "@/lib/qbank";
 import { orderUnseenFirst } from "@/lib/srs";
@@ -81,6 +82,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
   const startScenarios = useUi((s) => s.startScenarios);
   const startSim = useUi((s) => s.startSim);
   const startStudio = useUi((s) => s.startStudio);
+  const startAi = useUi((s) => s.startAi);
   const startField = useUi((s) => s.startField);
 
   // ---- موضع التقدم على المسار: أول محور لم تُنجز مهامه بعد ----
@@ -389,6 +391,26 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
               </span>
               <span className="mt-0.5 block truncate text-[11px] font-bold text-gray-500">
                 وثّق زياراتك الميدانية وتأملها بعد الحصة
+              </span>
+            </span>
+            <ChevronLeft className="h-4.5 w-4.5 shrink-0 text-muted-foreground" />
+          </button>
+
+          {/* المساعد الذكي — محادثة تربوية بمفتاح المستخدم */}
+          <button
+            onClick={startAi}
+            className="flex w-full items-center gap-3 rounded-3xl border-2 border-amber-400/50 bg-gradient-to-bl from-amber-50 to-orange-50 p-4 text-right shadow-soft transition hover:border-amber-500/60"
+          >
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#4C1D95] to-[#6D28D9] text-white shadow-sm">
+              <Sparkles className="h-5 w-5 text-amber-300" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="flex items-center gap-2">
+                <span className="truncate text-sm font-black text-gray-900">المساعد الذكي</span>
+                <NewBadge tone="amber" />
+              </span>
+              <span className="mt-0.5 block truncate text-[11px] font-bold text-gray-600">
+                اسأل عن أي مفهوم أو موقف تربوي — ويجيبك خطوة بخطوة
               </span>
             </span>
             <ChevronLeft className="h-4.5 w-4.5 shrink-0 text-muted-foreground" />

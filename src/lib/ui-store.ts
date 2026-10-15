@@ -32,6 +32,7 @@ interface UiState {
   matchOpen: boolean; // لعبة المطابقة — مصطلح مقابل شرحه المصغّر
   speedOpen: boolean; // سباق السرعة — مؤقت لكل سؤال وكونبو
   flashOpen: boolean; // بطاقات المفاهيم — وضع بطاقات القلب
+  aiOpen: boolean; // المساعد الذكي — محادثة تربوية عبر مفتاح المستخدم
   startQuiz: (c: QuizConfig) => void;
   clearQuiz: () => void;
   openConcept: (id: string) => void;
@@ -71,6 +72,8 @@ interface UiState {
   clearSpeed: () => void;
   startFlash: () => void;
   clearFlash: () => void;
+  startAi: () => void;
+  clearAi: () => void;
 }
 
 export const useUi = create<UiState>((set) => ({
@@ -94,6 +97,7 @@ export const useUi = create<UiState>((set) => ({
   matchOpen: false,
   speedOpen: false,
   flashOpen: false,
+  aiOpen: false,
   startQuiz: (c) => set({ quizConfig: c }),
   clearQuiz: () => set({ quizConfig: null }),
   openConcept: (id) => set({ pendingConceptId: id }),
@@ -133,4 +137,6 @@ export const useUi = create<UiState>((set) => ({
   clearSpeed: () => set({ speedOpen: false }),
   startFlash: () => set({ flashOpen: true }),
   clearFlash: () => set({ flashOpen: false }),
+  startAi: () => set({ aiOpen: true }),
+  clearAi: () => set({ aiOpen: false }),
 }));

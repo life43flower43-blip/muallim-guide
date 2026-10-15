@@ -27,6 +27,7 @@ import PlacementView from "./PlacementView";
 import MatchGameView from "./MatchGameView";
 import SpeedRunView from "./SpeedRunView";
 import FlashcardsView from "./FlashcardsView";
+import AiAssistantView from "./AiAssistantView";
 import BootBank from "./BootBank";
 import { loadQbank } from "@/lib/qbank";
 import { readPeerHash } from "@/lib/peer";
@@ -246,6 +247,8 @@ export default function AppShell() {
   const clearSpeed = useUi((s) => s.clearSpeed);
   const flashOpen = useUi((s) => s.flashOpen);
   const clearFlash = useUi((s) => s.clearFlash);
+  const aiOpen = useUi((s) => s.aiOpen);
+  const clearAi = useUi((s) => s.clearAi);
   const [tab, setTab] = useState("home");
 
   // حالة تجهيز البنك التربوي — تُحمَّل البيانات مرة واحدة عند الفتح
@@ -415,6 +418,7 @@ export default function AppShell() {
           clearMatch(); // ولعبة المطابقة
           clearSpeed(); // وسباق السرعة
           clearFlash(); // وبطاقات المفاهيم
+          clearAi(); // والمساعد الذكي
           setTab("home");
         }}
         onConcepts={() => setTab("concepts")}
@@ -478,6 +482,9 @@ export default function AppShell() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* المساعد الذكي — محادثة تربوية عبر مفتاح المستخدم */}
+      <AnimatePresence>{aiOpen && <AiAssistantView key="ai" />}</AnimatePresence>
     </div>
   );
 }
