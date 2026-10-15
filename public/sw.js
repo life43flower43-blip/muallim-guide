@@ -1,6 +1,6 @@
 // عامل خدمة: شبكة أولاً للتنقل والأصول، كاش أولاً لبنك البيانات الكبير
-// v25 — فصل بيانات البنك إلى «/data/qbank.json» وتخزينه كاش أولاً للفتح الفوري
-const CACHE = "turbawy-v25";
+// v26 — تحديث البنك: مسار الذكاء الاصطناعي في التعليم وتنظيف كتلة القدرات
+const CACHE = "turbawy-v26";
 const SHELL = ["/", "/manifest.json", "/icons/icon-192.png", "/icons/icon-512.png"];
 
 self.addEventListener("install", (e) => {

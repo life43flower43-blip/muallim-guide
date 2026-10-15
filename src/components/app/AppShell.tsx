@@ -483,7 +483,7 @@ export default function AppShell() {
         )}
       </AnimatePresence>
 
-      {/* المساعد الذكي — محادثة تربوية عبر مفتاح المستخدم */}
+      {/* المساعد الذكي — إجابات فورية من المحرك المحلي */}
       <AnimatePresence>{aiOpen && <AiAssistantView key="ai" />}</AnimatePresence>
     </div>
   );

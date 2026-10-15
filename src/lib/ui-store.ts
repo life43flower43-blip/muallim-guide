@@ -32,7 +32,7 @@ interface UiState {
   matchOpen: boolean; // لعبة المطابقة — مصطلح مقابل شرحه المصغّر
   speedOpen: boolean; // سباق السرعة — مؤقت لكل سؤال وكونبو
   flashOpen: boolean; // بطاقات المفاهيم — وضع بطاقات القلب
-  aiOpen: boolean; // المساعد الذكي — محادثة تربوية عبر مفتاح المستخدم
+  aiOpen: boolean; // المساعد الذكي — إجابات تربوية فورية من المحرك المحلي
   startQuiz: (c: QuizConfig) => void;
   clearQuiz: () => void;
   openConcept: (id: string) => void;

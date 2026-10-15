@@ -16,6 +16,7 @@ import {
   ClipboardList,
   School,
   Library,
+  Bot,
   Users,
   Plus,
   Trash2,
@@ -52,6 +53,7 @@ const COURSE_ICONS: Record<string, React.ElementType> = {
   M4: ClipboardList,
   M5: School,
   G1: Library,
+  AI1: Bot,
 };
 const CourseIcon = ({ id, className }: { id: string; className?: string }) => {
   const Icon = COURSE_ICONS[id] ?? BookOpen;
@@ -69,6 +71,7 @@ const COURSE_SUBTITLE: Record<string, string> = {
   M4: "القياس وأدوات التقويم والاختبارات",
   M5: "طرق تدريس المواد الدراسية",
   G1: "مفاهيم عامة في التربية والتعليم",
+  AI1: "تطوره ودوره في العملية التعليمية وأخلاقياته",
 };
 
 // ---------- مجتمع الطلاب: أمثلة يضيفها الطلاب من واقع تخصصاتهم ----------

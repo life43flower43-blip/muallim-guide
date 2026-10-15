@@ -396,7 +396,7 @@ export default function HomeView({ onGoTab }: { onGoTab: (t: string) => void }) 
             <ChevronLeft className="h-4.5 w-4.5 shrink-0 text-muted-foreground" />
           </button>
 
-          {/* المساعد الذكي — محادثة تربوية بمفتاح المستخدم */}
+          {/* المساعد الذكي — إجابات فورية من محرك التطبيق بلا أي إعدادات */}
           <button
             onClick={startAi}
             className="flex w-full items-center gap-3 rounded-3xl border-2 border-amber-400/50 bg-gradient-to-bl from-amber-50 to-orange-50 p-4 text-right shadow-soft transition hover:border-amber-500/60"
