@@ -6,6 +6,10 @@
 import { SIM_SCENARIOS_A } from "./sim-scenarios-a";
 import { SIM_SCENARIOS_B } from "./sim-scenarios-b";
 import { SIM_SCENARIOS_C } from "./sim-scenarios-c";
+import { SIM_SCENARIOS_D } from "./sim-scenarios-d";
+import { SIM_SCENARIOS_E } from "./sim-scenarios-e";
+import { SIM_SCENARIOS_F } from "./sim-scenarios-f";
+import { SIM_SCENARIOS_G } from "./sim-scenarios-g";
 
 // ---------- الكفاءات الخمس المقيسة ----------
 export const SIM_SKILLS = [
@@ -53,7 +57,39 @@ export interface SimScenario {
   end: string; // خلاصة الموقف — تُعرض في التقرير
 }
 
-export const SIM_SCENARIOS: SimScenario[] = [...SIM_SCENARIOS_A, ...SIM_SCENARIOS_B, ...SIM_SCENARIOS_C];
+export const SIM_SCENARIOS: SimScenario[] = [...SIM_SCENARIOS_A, ...SIM_SCENARIOS_B, ...SIM_SCENARIOS_C, ...SIM_SCENARIOS_D, ...SIM_SCENARIOS_E, ...SIM_SCENARIOS_F, ...SIM_SCENARIOS_G];
+
+/** جلسة موسعة: ثلاثة مواقف متتابعة — نحو ثلاثين قراراً في مرة واحدة */
+export const SIM_SESSION_SIZE = 3;
+
+/** ينتقي مواقف الجلسة الموسعة: يفضل غير المجرب ثم الأقل تجربة، بترتيب حتمي من بذرة الجلسة */
+export function pickSessionScenarios(
+  attemptedSids: string[],
+  size: number = SIM_SESSION_SIZE,
+  seed: number = Date.now(),
+): SimScenario[] {
+  const tried = new Set(attemptedSids);
+  const counts = new Map<string, number>();
+  for (const s of attemptedSids) counts.set(s, (counts.get(s) ?? 0) + 1);
+  const ranked = [...SIM_SCENARIOS].sort((a, b) => {
+    const ta = tried.has(a.id) ? 1 : 0;
+    const tb = tried.has(b.id) ? 1 : 0;
+    if (ta !== tb) return ta - tb;
+    return (counts.get(a.id) ?? 0) - (counts.get(b.id) ?? 0);
+  });
+  // خلط حتمي داخل كل طبقة (جرب/لم يجرب) ببذرة الجلسة
+  let s = seed || 1;
+  const rnd = () => {
+    s = (s * 1103515245 + 12345) % 2147483648;
+    return s / 2147483648;
+  };
+  const shuffled = [...ranked];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, Math.min(size, shuffled.length));
+}
 
 export const simScenarioById = new Map(SIM_SCENARIOS.map((s) => [s.id, s]));
 

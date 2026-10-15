@@ -22,17 +22,20 @@ import {
   FlaskConical,
   Gauge,
   Eye,
+  Play,
 } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { useApp } from "@/lib/store";
 import { ad } from "@/lib/arabic";
 import {
   SIM_SCENARIOS,
+  SIM_SESSION_SIZE,
   SIM_RATING_WORD,
   SIM_STATUS_WORD,
   simStatusColor,
   simProfile,
   simAggregate,
+  pickSessionScenarios,
   weakestSkill,
   buildRecommendation,
   type SimRating,
@@ -78,6 +81,12 @@ export default function SimLabView() {
   const [pendingOpt, setPendingOpt] = useState<(SimScenario["nodes"][string]["options"])[number] | null>(null);
   const savedRef = useRef(false);
 
+  // الجلسة الموسعة: ثلاثة مواقف متتابعة تعطي نحو ثلاثين قراراً بتقرير مجمّع
+  const [sessionQueue, setSessionQueue] = useState<SimScenario[]>([]);
+  const [sessionIdx, setSessionIdx] = useState(0);
+  const [sessionAttempts, setSessionAttempts] = useState<SimAttempt[]>([]);
+  const sessionActive = sessionQueue.length > 0;
+
   // خريطة كفاءتك المجمّعة من آخر أدلة كل موقف
   const aggregate = useMemo(() => simAggregate(simAttempts), [simAttempts]);
 
@@ -110,6 +119,30 @@ export default function SimLabView() {
     setPendingOutcome(null);
     setPendingOpt(null);
     savedRef.current = false;
+  };
+
+  // بدء جلسة موسعة: ينتقي ثلاثة مواقف يفضل غير المجرب فيها
+  const startSession = () => {
+    const queue = pickSessionScenarios(simAttempts.map((a) => a.sid));
+    if (!queue.length) return;
+    setSessionQueue(queue);
+    setSessionIdx(0);
+    setSessionAttempts([]);
+    startScenario(queue[0]);
+  };
+
+  const advanceSession = () => {
+    const nextIdx = sessionIdx + 1;
+    if (nextIdx >= sessionQueue.length) return;
+    setSessionIdx(nextIdx);
+    startScenario(sessionQueue[nextIdx]);
+  };
+
+  const endSession = () => {
+    setSessionQueue([]);
+    setSessionIdx(0);
+    setSessionAttempts([]);
+    setScenario(null);
   };
 
   const node = scenario ? scenario.nodes[nodeKey] : null;
@@ -147,7 +180,9 @@ export default function SimLabView() {
     const nk = pendingOpt.next;
     if (nk === "end" && !savedRef.current) {
       // حفظ تلقائي فور الختام — لا تضيع الأدلة بإغلاق متعجل
-      addSimAttempt({ sid: scenario.id, ts: Date.now(), steps: nextSteps });
+      const attempt: SimAttempt = { sid: scenario.id, ts: Date.now(), steps: nextSteps };
+      addSimAttempt(attempt);
+      if (sessionActive) setSessionAttempts((prev) => [...prev, attempt]);
       savedRef.current = true;
     }
     setNodeKey(nk === "end" ? "end" : nk);
@@ -167,6 +202,14 @@ export default function SimLabView() {
     () => (finished ? buildRecommendation(weakestSkill(profile), labCandidates) : null),
     [finished, profile, labCandidates],
   );
+
+  // خلاصة الجلسة الموسعة عند إتمام آخر موقف فيها
+  const sessionDone = sessionActive && finished && sessionIdx >= sessionQueue.length - 1;
+  const sessionProfile = useMemo(
+    () => (sessionDone && sessionAttempts.length ? simAggregate(sessionAttempts) : []),
+    [sessionDone, sessionAttempts],
+  );
+  const sessionDecisions = sessionAttempts.reduce((n, a) => n + a.steps.length, 0);
 
   const header = (
     <div className="sticky top-0 z-10 border-b border-border bg-white/95 px-4 pb-3 pt-4 backdrop-blur">
@@ -217,6 +260,23 @@ export default function SimLabView() {
               أكملت {ad(doneCount)} من {ad(SIM_SCENARIOS.length)} مواقف
             </p>
           </div>
+
+          {/* الجلسة الموسعة */}
+          <motion.button
+            whileTap={{ scale: 0.985 }}
+            onClick={startSession}
+            className="mt-4 flex w-full items-center gap-3 rounded-3xl border-2 border-primary/40 bg-gradient-to-bl from-violet-50 to-indigo-50 p-4 text-right shadow-soft transition hover:border-primary"
+          >
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+              <Play className="h-5 w-5" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-black text-gray-900">جلسة موسعة — {ad(SIM_SESSION_SIZE)} مواقف متتابعة</span>
+              <span className="mt-0.5 block text-[11px] font-bold leading-5 text-gray-600">
+                تنجز {ad(SIM_SESSION_SIZE)} مواقف وراء بعضها وتنهي نحو {ad(30)} قراراً في مرة واحدة، ثم تصلك خلاصة مجمّعة لكفاءات الجلسة كلها — وتنتقي لك المواقف التي لم تجربها بعد.
+              </span>
+            </span>
+          </motion.button>
 
           {/* بطاقة كفاءتك المجمعة — أين أدلتك الآن؟ */}
           <div className="mt-4 rounded-3xl border border-border bg-white p-5 shadow-soft">
@@ -300,15 +360,21 @@ export default function SimLabView() {
       <div className="mx-auto max-w-lg px-4 pb-28 pt-5">
         <div className="mb-4 flex items-center justify-between">
           <button
-            onClick={() => setScenario(null)}
+            onClick={() => (sessionActive ? endSession() : setScenario(null))}
             className="flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-bold text-muted-foreground"
           >
-            <ArrowLeft className="h-4 w-4" /> {finished ? "عودة إلى المواقف" : "خروج من الموقف"}
+            <ArrowLeft className="h-4 w-4" /> {sessionActive ? "إنهاء الجلسة" : finished ? "عودة إلى المواقف" : "خروج من الموقف"}
           </button>
           <span className="rounded-full bg-accent px-3 py-1 text-xs font-black text-primary">{scenario.stage}</span>
         </div>
 
         <h2 className="text-lg font-black leading-8">{scenario.title}</h2>
+
+        {sessionActive && !finished && (
+          <p className="mt-1 text-xs font-black text-primary">
+            الجلسة الموسعة — الموقف {ad(sessionIdx + 1)} من {ad(SIM_SESSION_SIZE)} · قرارات الجلسة حتى الآن: {ad(sessionDecisions)}
+          </p>
+        )}
 
         {!finished && !pendingOutcome && (
           <motion.div key={nodeKey + runId} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-4 space-y-3">
@@ -369,6 +435,34 @@ export default function SimLabView() {
 
         {finished && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-4 space-y-4">
+            {sessionDone && (
+              <div className="rounded-3xl border-2 border-primary/40 bg-gradient-to-bl from-indigo-50 to-violet-50 p-5">
+                <p className="flex items-center gap-2 text-sm font-black text-primary">
+                  <Sparkles className="h-4.5 w-4.5" /> خلاصة الجلسة الموسعة
+                </p>
+                <p className="mt-1 text-xs font-bold leading-6 text-gray-700">
+                  أنجزت {ad(SIM_SESSION_SIZE)} مواقف و{ad(sessionDecisions)} قراراً في هذه الجلسة — وهذه خريطة كفاءاتها مجمعة من قراراتك لا من حفظك.
+                </p>
+                <div className="mt-3 space-y-2.5">
+                  {sessionProfile.map((p) => (
+                    <div key={p.skill}>
+                      <div className="mb-1 flex items-center justify-between">
+                        <span className="text-xs font-black text-gray-800">{p.skill}</span>
+                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${simStatusColor[p.status]}`}>
+                          {SIM_STATUS_WORD[p.status]}
+                        </span>
+                      </div>
+                      <div className="h-2 overflow-hidden rounded-full bg-muted">
+                        <div
+                          className={`h-full rounded-full transition-all duration-700 ${barColorOf(p)}`}
+                          style={{ width: `${Math.max(p.ratio * 100, 4)}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="rounded-2xl border-2 border-primary/30 bg-accent p-4">
               <p className="mb-3 flex items-center gap-2 text-sm font-black text-primary">
                 <Sparkles className="h-4 w-4" /> قراراتك في هذا الموقف
@@ -488,18 +582,37 @@ export default function SimLabView() {
             </div>
 
             <div className="flex gap-2.5">
-              <button
-                onClick={() => startScenario(scenario)}
-                className="flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-primary/40 bg-white py-3 text-sm font-black text-primary"
-              >
-                <RotateCcw className="h-4.5 w-4.5" /> أعد المحاولة
-              </button>
-              <button
-                onClick={() => setScenario(null)}
-                className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 text-sm font-black text-primary-foreground"
-              >
-                <Users className="h-4.5 w-4.5" /> موقف آخر
-              </button>
+              {sessionActive && !sessionDone ? (
+                <>
+                  <button
+                    onClick={advanceSession}
+                    className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 text-sm font-black text-primary-foreground"
+                  >
+                    <Play className="h-4.5 w-4.5" /> الموقف التالي في الجلسة ({ad(sessionIdx + 2)} من {ad(SIM_SESSION_SIZE)})
+                  </button>
+                  <button
+                    onClick={endSession}
+                    className="flex items-center justify-center gap-2 rounded-2xl border-2 border-primary/40 bg-white px-4 py-3 text-sm font-black text-primary"
+                  >
+                    إنهاء الجلسة
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => (sessionDone ? endSession() : startScenario(scenario))}
+                    className="flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-primary/40 bg-white py-3 text-sm font-black text-primary"
+                  >
+                    <RotateCcw className="h-4.5 w-4.5" /> {sessionDone ? "إنهاء الجلسة الموسعة" : "أعد المحاولة"}
+                  </button>
+                  <button
+                    onClick={() => setScenario(null)}
+                    className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 text-sm font-black text-primary-foreground"
+                  >
+                    <Users className="h-4.5 w-4.5" /> موقف آخر
+                  </button>
+                </>
+              )}
             </div>
           </motion.div>
         )}
