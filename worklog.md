@@ -2711,3 +2711,20 @@ Stage Summary:
 - البنك الآن: ٨ مقررات، ١٣٣١ مفهوماً، ٦٠٦٧ سؤالاً — صفر أسئلة قدرات/حساب، صفر إجابات مزدوجة، ٦٢ صياغة مصلحة، مسار ذكاء اصطناعي كامل.
 - المساعد الذكي صار «افتح واسأل — يجيب فوراً»: بلا مفتاح ولا إعدادات ولا اتصال، والإجابات من داخل التطبيق.
 - سكربتات قابلة لإعادة التشغيل: edu_apply.py يبدأ من النسخة الاحتياطية ويطبق كل شيء ذرّياً.
+
+---
+Task ID: GIT-LINK
+Agent: main
+Task: ربط المشروع بحساب GitHub للمستخدم (إنشاء remote + رفع فرع main)
+
+Work Log:
+- التحقق من صلاحية PAT عبر GitHub API → اسم المستخدم: life43flower43-blip
+- اكتشاف المستودع الموجود مسبقاً: muallim-guide (public)
+- إصلاح أمني: .env كان متتبعاً (يحوي DATABASE_URL محلي) → git rm --cached + commit
+- إضافة remote مع PAT مضمّن في URL + git push -u origin main
+- تحقق نهائي: لا .env/.env.local/node_modules في المستودع البعيد
+
+Stage Summary:
+- المستودع: https://github.com/life43flower43-blip/muallim-guide
+- الفرع main مرفوع ومتتبع، الرفع المستقبلي بـ git push فقط
+- PAT مخزن محلياً في .git/config ضمن remote URL
