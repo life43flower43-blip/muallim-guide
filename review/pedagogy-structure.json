@@ -1,8 +1,8 @@
 {
  "cognitive": {
-  "application_scenario": 2935,
-  "recall_direct": 238,
-  "intermediate_other": 2894,
+  "application_scenario": 2938,
+  "recall_direct": 237,
+  "intermediate_other": 2892,
   "note": "تصنيف تقديري بأنماط نصية — ليس بديلاً عن مراجعة بشرية"
  },
  "options": {
@@ -22,7 +22,7 @@
   "under3": 177
  },
  "reasons": {
-  "avg_len": 248,
+  "avg_len": 249,
   "under60": 1
  }
 }

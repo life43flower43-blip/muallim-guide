@@ -18,8 +18,8 @@
 | [qbank-AI1.json](qbank/qbank-AI1.json) | الذكاء الاصطناعي في التعليم | 12 | 48 | 0.09 MB |
 | [qbank-C1.json](qbank/qbank-C1.json) | المهارات | 130 | 520 | 1.07 MB |
 | [qbank-G1.json](qbank/qbank-G1.json) | المكتبة التربوية العامة | 223 | 692 | 1.46 MB |
-| [qbank-M1a.json](qbank/qbank-M1a.json) | فهم نمو الطلاب: الأسس البيولوجية | — | 516 | 1.10 MB |
-| [qbank-M1b.json](qbank/qbank-M1b.json) | فهم نمو الطلاب: الأسس البيولوجية | — | 516 | 0.99 MB |
+| [qbank-M1a.json](qbank/qbank-M1a.json) | فهم نمو الطلاب: الأسس البيولوجية | — | 516 | 1.11 MB |
+| [qbank-M1b.json](qbank/qbank-M1b.json) | فهم نمو الطلاب: الأسس البيولوجية | — | 516 | 1.00 MB |
 | [qbank-M2a.json](qbank/qbank-M2a.json) | عالم المشاعر والذكاء: الأسس النفسية | — | 670 | 1.67 MB |
 | [qbank-M2b.json](qbank/qbank-M2b.json) | عالم المشاعر والذكاء: الأسس النفسية | — | 671 | 1.66 MB |
 | [qbank-M3a.json](qbank/qbank-M3a.json) | كيف يتعلم الطلاب | — | 583 | 1.43 MB |
