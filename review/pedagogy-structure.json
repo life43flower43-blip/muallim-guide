@@ -1,0 +1,28 @@
+{
+ "cognitive": {
+  "application_scenario": 2935,
+  "recall_direct": 238,
+  "intermediate_other": 2894,
+  "note": "تصنيف تقديري بأنماط نصية — ليس بديلاً عن مراجعة بشرية"
+ },
+ "options": {
+  "count_distribution": {
+   "4": 3885,
+   "2": 2182
+  },
+  "duplicate_option_questions": 0,
+  "very_short_option_questions": 2182,
+  "length_gap_flagged": 2222
+ },
+ "balance": {
+  "concepts": 1331,
+  "avg_q_per_concept": 4.56,
+  "min": 2,
+  "max": 19,
+  "under3": 177
+ },
+ "reasons": {
+  "avg_len": 248,
+  "under60": 1
+ }
+}
