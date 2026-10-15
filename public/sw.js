@@ -1,6 +1,6 @@
 // عامل خدمة: شبكة أولاً للتنقل والأصول، كاش أولاً لبنك البيانات الكبير
 // v26 — تحديث البنك: مسار الذكاء الاصطناعي في التعليم وتنظيف كتلة القدرات
-const CACHE = "turbawy-v28";
+const CACHE = "turbawy-v29";
 const SHELL = ["/", "/manifest.json", "/icons/icon-192.png", "/icons/icon-512.png"];
 
 self.addEventListener("install", (e) => {
