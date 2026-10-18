@@ -133,6 +133,13 @@ export const CHAPTER_GEN_FORMS: CountForms = {
   many: "فصلًا",
 };
 
+export const EXAMPLE_FORMS: CountForms = {
+  one: "مثال واحد",
+  two: "مثالان",
+  few: "أمثلة",
+  many: "مثالًا",
+};
+
 export const CARD_FORMS: CountForms = {
   one: "بطاقة واحدة تعليمية",
   two: "بطاقتان تعليميتان",

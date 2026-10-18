@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   BookOpen,
   CheckCircle2,
@@ -17,10 +17,8 @@ import {
   School,
   Library,
   Bot,
-  Users,
   Plus,
   Trash2,
-  ChevronRight,
   ChevronLeft,
   Share2,
   StickyNote,
@@ -40,12 +38,12 @@ import type { Concept, Course } from "@/lib/types";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { shareText } from "@/lib/share";
-import { ad, arCount, CONCEPT_FORMS, splitArParagraphs, exampleContext } from "@/lib/arabic";
+import { ad, arCount, CONCEPT_FORMS, CHAPTER_FORMS, EXAMPLE_FORMS, QUESTION_FORMS, splitArParagraphs, exampleContext } from "@/lib/arabic";
 import { toast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
 import SpeakButton from "./SpeakButton";
+import { Card, Chip, Divided, EmptyState, PageTitle, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, pct } from "./ui-kit";
 
-// أيقونة كل محور — بديل أرقام المحاور (قرار المستخدم: بلا شكل كتاب مدرسي)
+// أيقونة كل مقرر
 const COURSE_ICONS: Record<string, React.ElementType> = {
   M1: Dna,
   M2: Heart,
@@ -55,18 +53,18 @@ const COURSE_ICONS: Record<string, React.ElementType> = {
   G1: Library,
   AI1: Bot,
 };
-const CourseIcon = ({ id, className }: { id: string; className?: string }) => {
+function CourseIcon({ id, className }: { id: string; className?: string }) {
   const Icon = COURSE_ICONS[id] ?? BookOpen;
   return <Icon className={className} />;
-};
+}
 
-// عرض أسماء الموضوعات — تُنظّف من حروف الترقيم الكتابية (أ. ب. ج.) حتى لا تشبه فهرس كتاب
+// أسماء الفصول تُعرض بلا حروف الترقيم الكتابية (أ. ب. ج.)
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
 
-// وصف موجز لكل محور في بطاقات المكتبة — مستمد من موضوعاته نفسها
+// وصف موجز لكل مقرر
 const COURSE_SUBTITLE: Record<string, string> = {
   M1: "النمو بمراحله ومجالاته وتطبيقاته في الصف",
-  M2: "الغرائز والعواطف والذكاء",
+  M2: "الدوافع والانفعالات والذكاء والفروق الفردية",
   M3: "التعلم ونظرياته والذاكرة والدافعية",
   M4: "القياس وأدوات التقويم والاختبارات",
   M5: "طرق تدريس المواد الدراسية",
@@ -74,76 +72,50 @@ const COURSE_SUBTITLE: Record<string, string> = {
   AI1: "تطوره ودوره في العملية التعليمية وأخلاقياته",
 };
 
-// ---------- مجتمع الطلاب: أمثلة يضيفها الطلاب من واقع تخصصاتهم ----------
-const SPECIALTIES = ["هندسة", "طب", "إنسانيات", "تربية", "أخرى"];
-const SPECIALTY_COLORS: Record<string, string> = {
-  "هندسة": "#14919B",
-  "طب": "#BE185D",
-  "إنسانيات": "#14919B",
-  "تربية": "#0E7C86",
-  "أخرى": "#B45309",
-};
+const SPECIALTIES = ["تربية", "إنسانيات", "علوم", "هندسة", "طب", "أخرى"];
 
+const textareaCls =
+  "w-full resize-none rounded-xl border border-input bg-card p-3 text-[15px] leading-7 outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20";
+
+// ---------- أمثلة من تخصصي: يكتبها المتعلم وتُحفظ على جهازه ----------
 function StudentExamplesSection({ conceptId }: { conceptId: string }) {
   const studentExamples = useApp((s) => s.studentExamples);
   const addStudentExample = useApp((s) => s.addStudentExample);
   const removeStudentExample = useApp((s) => s.removeStudentExample);
-
   const [draft, setDraft] = useState("");
   const [specialty, setSpecialty] = useState<string>("تربية");
   const mine = studentExamples[conceptId] ?? [];
   const canAdd = draft.trim().length >= 10;
 
   return (
-    <div className="mt-4 rounded-2xl border border-gem/30 bg-gem-soft/60 p-4">
-      <p className="flex items-center gap-2 text-sm font-semibold text-gem">
-        <Users className="h-4 w-4" /> أمثلة الطلاب — مجتمع التطبيق
-      </p>
-      <p className="mt-1 text-xs font-bold leading-5 text-gem/90">
-        أضف مثالاً من واقع تخصصك (هندسة، طب، إنسانيات...) يثري الفهم للجميع — أمثلتك محفوظة
-        على جهازك وتظهر أسفل هذا المفهوم.
-      </p>
-
-      {/* أمثلة الطالب المضافة */}
-      {mine.length > 0 && (
-        <div className="mt-3 space-y-2">
-          {mine.map((e) => (
-            <div
-              key={e.id}
-              className="rounded-2xl border border-gem/30 bg-card p-3"
-            >
-              <div className="flex items-center justify-between gap-2">
-                <span
-                  className="rounded-full px-2.5 py-0.5 text-xs font-semibold text-white"
-                  style={{ background: SPECIALTY_COLORS[e.specialty] ?? "#B45309" }}
-                >
-                  {e.specialty}
-                </span>
-                <button
-                  onClick={() => removeStudentExample(conceptId, e.id)}
-                  aria-label="حذف المثال"
-                  className="rounded-full p-1 text-muted-foreground transition-colors hover:bg-danger-soft hover:text-destructive"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </button>
-              </div>
-              <p className="mt-1.5 text-xs leading-6 text-secondary-foreground">{e.text}</p>
+    <section>
+      <SectionHeader title="أمثلة من تخصصي" sub="اكتب مثالًا من مجال تخصصك يوضح المفهوم، ويُحفظ على جهازك" />
+      <Card className="space-y-3 p-4">
+        {mine.map((e) => (
+          <div key={e.id} className="flex items-start gap-3 rounded-lg bg-muted p-3">
+            <div className="min-w-0 flex-1">
+              <Chip tone="primary">{e.specialty}</Chip>
+              <p className="mt-2 text-sm leading-7 text-secondary-foreground">{e.text}</p>
             </div>
-          ))}
-        </div>
-      )}
-
-      {/* نموذج الإضافة */}
-      <div className="mt-3 space-y-2">
-        <div className="no-scrollbar flex gap-1.5 overflow-x-auto">
+            <button
+              type="button"
+              onClick={() => removeStudentExample(conceptId, e.id)}
+              aria-label="حذف المثال"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-danger-soft hover:text-destructive"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+        ))}
+        <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1">
           {SPECIALTIES.map((s) => (
             <button
               key={s}
+              type="button"
+              aria-pressed={specialty === s}
               onClick={() => setSpecialty(s)}
-              className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
-                specialty === s
-                  ? "border-amber-600 bg-amber-600 text-white"
-                  : "border-gem/30 bg-card text-gem"
+              className={`min-h-[36px] shrink-0 rounded-full border px-3 text-sm transition-colors ${
+                specialty === s ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-secondary-foreground hover:bg-muted"
               }`}
             >
               {s}
@@ -154,31 +126,28 @@ function StudentExamplesSection({ conceptId }: { conceptId: string }) {
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           rows={3}
-          placeholder={`اكتب مثالاً من واقع تخصص «${specialty}» يوضح هذا المفهوم...`}
-          className="w-full resize-none rounded-2xl border border-gem/30 bg-card p-3 text-sm leading-6 text-foreground outline-none placeholder:text-muted-foreground/60 focus:ring-2 focus:ring-amber-300"
+          aria-label="مثالك"
+          placeholder={`مثال من مجال «${specialty}»`}
+          className={textareaCls}
         />
-        <Button
-          disabled={!canAdd}
-          onClick={() => {
-            if (!canAdd) return;
-            addStudentExample(conceptId, draft.trim(), specialty);
-            setDraft("");
-          }}
-          className="h-11 w-full rounded-2xl bg-amber-500 text-sm font-semibold text-gem hover:bg-amber-400 disabled:opacity-40"
-        >
-          <Plus className="ml-1.5 h-4 w-4" /> أضف مثالك للمجتمع
-        </Button>
-        {draft.trim().length > 0 && !canAdd && (
-          <p className="text-center text-xs font-bold text-gem/70">
-            اكتب مثالاً أوضح — عشرة أحرف على الأقل
-          </p>
-        )}
-      </div>
-    </div>
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-[13px] text-muted-foreground">{draft.trim().length > 0 && !canAdd ? "عشرة أحرف على الأقل" : ""}</span>
+          <SecondaryButton
+            disabled={!canAdd}
+            onClick={() => {
+              addStudentExample(conceptId, draft.trim(), specialty);
+              setDraft("");
+            }}
+          >
+            <Plus className="h-4 w-4" /> أضف المثال
+          </SecondaryButton>
+        </div>
+      </Card>
+    </section>
   );
 }
 
-// ---------- ملاحظاتي: ملاحظة مرتبطة بالمفهوم — من ميزة «ملاحظاتي» ضد ضياع الملاحظات ----------
+// ---------- ملاحظاتي على المفهوم ----------
 function MyNotesSection({ conceptId }: { conceptId: string }) {
   const notes = useApp((s) => s.notes);
   const addNote = useApp((s) => s.addNote);
@@ -188,567 +157,412 @@ function MyNotesSection({ conceptId }: { conceptId: string }) {
   const canAdd = draft.trim().length >= 5;
 
   return (
-    <div className="mt-4 rounded-2xl border border-gem/30 bg-gem-soft/60 p-4">
-      <p className="flex items-center gap-2 text-sm font-semibold text-gem">
-        <StickyNote className="h-4 w-4" /> ملاحظاتي على هذا المفهوم
-      </p>
-      <p className="mt-1 text-xs font-bold leading-5 text-gem/80">
-        دون ما يخطرك أثناء المحاضرة أو القراءة بلغتك الخاصة — ملاحظاتك محفوظة على جهازك وتعود معك كلما فتحت المفهوم.
-      </p>
-
-      {mine.length > 0 && (
-        <div className="mt-3 space-y-2">
-          {mine.map((n) => (
-            <div key={n.id} className="flex items-start gap-2 rounded-2xl border border-gem/30 bg-card p-3">
-              <p className="flex-1 whitespace-pre-wrap text-xs leading-6 text-secondary-foreground">{n.text}</p>
-              <button
-                onClick={() => removeNote(conceptId, n.id)}
-                aria-label="حذف الملاحظة"
-                className="rounded-full p-1 text-muted-foreground transition-colors hover:bg-danger-soft hover:text-destructive"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          ))}
+    <section>
+      <SectionHeader title="ملاحظاتي" sub="تعود معك كلما فتحت المفهوم" />
+      <Card className="space-y-3 p-4">
+        {mine.map((n) => (
+          <div key={n.id} className="flex items-start gap-3 rounded-lg bg-muted p-3">
+            <StickyNote className="mt-1 h-4 w-4 shrink-0 text-gem" />
+            <p className="min-w-0 flex-1 whitespace-pre-wrap text-sm leading-7 text-secondary-foreground">{n.text}</p>
+            <button
+              type="button"
+              onClick={() => removeNote(conceptId, n.id)}
+              aria-label="حذف الملاحظة"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-danger-soft hover:text-destructive"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+        ))}
+        <textarea value={draft} onChange={(e) => setDraft(e.target.value)} rows={2} aria-label="ملاحظة جديدة" placeholder="اكتب ملاحظة بلغتك" className={textareaCls} />
+        <div className="flex justify-end">
+          <SecondaryButton
+            disabled={!canAdd}
+            onClick={() => {
+              addNote(conceptId, draft.trim());
+              setDraft("");
+            }}
+          >
+            <Plus className="h-4 w-4" /> احفظ الملاحظة
+          </SecondaryButton>
         </div>
-      )}
-
-      <div className="mt-3 space-y-2">
-        <textarea
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          rows={2}
-          placeholder="ملاحظة سريعة بلغتك..."
-          className="w-full resize-none rounded-2xl border border-gem/30 bg-card p-3 text-sm leading-6 text-foreground outline-none placeholder:text-muted-foreground/60 focus:ring-2 focus:ring-amber-300"
-        />
-        <Button
-          disabled={!canAdd}
-          onClick={() => {
-            if (!canAdd) return;
-            addNote(conceptId, draft.trim());
-            setDraft("");
-          }}
-          className="h-11 w-full rounded-2xl bg-amber-500 text-sm font-semibold text-white hover:bg-amber-600 disabled:opacity-40"
-        >
-          <Plus className="ml-1.5 h-4 w-4" /> احفظ الملاحظة
-        </Button>
-      </div>
-    </div>
+      </Card>
+    </section>
   );
 }
 
-function ConceptDetail({
-  conceptId,
-  onClose,
-}: {
-  conceptId: string;
-  onClose: () => void;
-}) {
+// ---------- صفحة المفهوم: قراءة هادئة ثم تدريب ----------
+function ConceptDetail({ conceptId, onClose }: { conceptId: string; onClose: () => void }) {
   const readConcept = useApp((s) => s.readConcept);
   const conceptReads = useApp((s) => s.conceptReads);
   const startQuiz = useUi((s) => s.startQuiz);
 
-  let concept: { concept: Concept; course: Course } | null = null;
+  let found: { concept: Concept; course: Course } | null = null;
   for (const c of COURSES) {
-    const found = conceptsOfCourse(c.id).find((x) => x.id === conceptId);
-    if (found) {
-      concept = { concept: found, course: c };
+    const x = conceptsOfCourse(c.id).find((y) => y.id === conceptId);
+    if (x) {
+      found = { concept: x, course: c };
       break;
     }
   }
-
-  if (!concept) return null;
-  const { concept: c, course } = concept;
+  if (!found) return null;
+  const { concept: c, course } = found;
   const qs = questionsOfConcept(c.id);
   const isRead = !!conceptReads[c.id];
   const examples = examplesOf(c);
   const explainParas = splitArParagraphs(c.explanation);
 
+  const share = async () => {
+    const r = await shareText(c.title, `${c.explanation}${examples.length ? "\n\n" + examples.map((e) => `• ${e}`).join("\n\n") : ""}\n\nمن تطبيق «تربوي»`);
+    if (r === "copied") toast({ title: "نُسخ المفهوم" });
+  };
+
   return (
-    <motion.div
-      initial={{ y: "100%" }}
-      animate={{ y: 0 }}
-      exit={{ y: "100%" }}
-      transition={{ type: "spring", damping: 30, stiffness: 300 }}
-      className="fixed inset-0 z-50 flex flex-col bg-background"
-    >
-      <div
-        className="safe-top relative overflow-hidden px-4 pb-5 pt-3 text-white"
-        style={{ background: `linear-gradient(135deg, ${COURSE_COLOR[course.id] ?? "#0E7C86"}, #0A5A62)` }}
-      >
-        {/* أشكال زخرفية */}
-        <span aria-hidden className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-white/10" />
-        <span aria-hidden className="pointer-events-none absolute -bottom-14 -right-8 h-36 w-36 rounded-full bg-white/5" />
-        <span aria-hidden className="pointer-events-none absolute bottom-6 left-16 h-16 w-16 rounded-full bg-amber-300/10" />
-        <div className="relative flex items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="flex items-center gap-1.5 text-xs font-bold opacity-90">
-              <CourseIcon id={course.id} className="h-3.5 w-3.5" /> {chapterLabel(c.chapter)}
-            </p>
-            <h2 className="mt-1 text-xl font-semibold leading-8">{c.title}</h2>
-            {/* شرائح إحصاء */}
-            <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-              <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-semibold ring-1 ring-white/20 backdrop-blur">
-                {ad(examples.length)} شواهد تطبيقية
-              </span>
-              <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-xs font-semibold ring-1 ring-white/20 backdrop-blur">
-                {ad(qs.length)} سؤال تدريب
-              </span>
-              {isRead && (
-                <span className="flex items-center gap-1 rounded-full bg-amber-400/90 px-2.5 py-0.5 text-xs font-semibold text-gem">
-                  <CheckCircle2 className="h-3 w-3" /> تمت القراءة
-                </span>
-              )}
-            </div>
-          </div>
-          <button onClick={onClose} className="rounded-full bg-white/20 p-2 ring-1 ring-white/25 backdrop-blur" aria-label="إغلاق">
-            <X className="h-5 w-5" />
+    <ScreenShell
+      title={c.title}
+      sub={`${COURSE_SHORT[course.id] ?? course.name}، ${chapterLabel(c.chapter)}`}
+      onClose={onClose}
+      actions={
+        <>
+          <SpeakButton text={`${c.title}. ${c.explanation}`} label="استمع للشرح" />
+          <button type="button" onClick={share} aria-label="شارك المفهوم" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted">
+            <Share2 className="h-5 w-5" />
           </button>
-        </div>
-      </div>
-
-      <div className="no-scrollbar flex-1 overflow-y-auto px-4 py-4">
-        <div className="card-soft space-y-4 rounded-2xl border border-border bg-card p-5">
-          <div>
-            <div className="mb-1 flex items-center justify-between gap-2">
-              <p className="flex items-center gap-2 text-sm font-semibold text-primary">
-                <BookOpen className="h-4 w-4" /> المضمون العلمي
-              </p>
-              <div className="flex items-center gap-1.5">
-                <button
-                  onClick={async () => {
-                    const exs = examples;
-                    const r = await shareText(
-                      c.title,
-                      `${c.explanation}${
-                        exs.length
-                          ? "\n\n" + exs.map((e) => `• ${e}`).join("\n\n")
-                          : ""
-                      }\n\n— من تطبيق مساعد إعداد المعلم`
-                    );
-                    if (r === "copied") toast({ title: "نُسخ المفهوم — الصقه حيث تريد" });
-                  }}
-                  aria-label="شارك المفهوم"
-                  title="شارك المفهوم"
-                  className="flex h-7 w-7 items-center justify-center rounded-full bg-gem-soft text-gem transition-colors hover:bg-amber-200 dark:bg-amber-500/20 dark:text-amber-200"
-                >
-                  <Share2 className="h-3.5 w-3.5" />
-                </button>
-                <SpeakButton text={`${c.title}. ${c.explanation}`} label="استمع للشرح" />
-              </div>
-            </div>
-            <div className="space-y-3">
-              {explainParas.map((p, i) => (
-                <p key={i} className={`text-[15px] leading-8 text-foreground/95 ${i === 0 ? "first-letter:text-[26px] first-letter:font-semibold first-letter:text-primary" : ""}`}>
-                  {p}
-                </p>
-              ))}
-            </div>
-          </div>
-          <div className="space-y-3">
-            <p className="flex items-center gap-2 text-sm font-semibold text-accent-foreground">
-              <Lightbulb className="h-4 w-4" /> الشواهد التطبيقية من الميدان
-            </p>
-            <p className="text-xs font-bold leading-5 text-muted-foreground">
-              مواقف حقيقية مُعاد تركيبها تُجسّد المفهوم في سياقه التربوي — تُقرأ كل شاهدة كحالة مستقلة تُلاحظ ثم تُحلَّل.
-            </p>
-            <div className="relative space-y-3 pr-5">
-              {/* الخط الزمني الرأسي */}
-              <span
-                aria-hidden
-                className="absolute bottom-3 right-[11px] top-3 w-0.5 rounded-full bg-gradient-to-b from-cyan-300 via-cyan-200 to-cyan-100"
-              />
-              {examples.map((ex, i) => (
-                <div key={i} className="relative">
-                  {/* عقدة الرقم على الخط */}
-                  <span className="absolute -right-5 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-cyan-600 to-cyan-800 text-xs font-semibold text-white ring-2 ring-white">
-                    {ad(i + 1)}
-                  </span>
-                  <div className="rounded-2xl border border-primary/20 bg-gradient-to-bl from-cyan-50/80 to-white p-4 shadow-[0_2px_10px_rgba(109,40,217,0.05)]">
-                    <div className="flex items-start gap-2">
-                      <div className="flex-1 space-y-2">
-                        <span className="inline-block rounded-full bg-card px-2.5 py-0.5 text-xs font-semibold text-accent-foreground ring-1 ring-cyan-200">
-                          سياق: {exampleContext(ex)}
-                        </span>
-                        {splitArParagraphs(ex).map((p, j) => (
-                          <p key={j} className="text-sm leading-7 text-accent-foreground/95">{p}</p>
-                        ))}
-                      </div>
-                      <SpeakButton text={ex} label="استمع للمثال" />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          {/* ملاحظاتي — قبل أمثلة المجتمع لأنها شخصية أولًا */}
-          <MyNotesSection conceptId={c.id} />
-          {/* مجتمع الطلاب: مساحة لإثراء المفهوم بأمثلة من تخصصات الطلاب */}
-          <StudentExamplesSection conceptId={c.id} />
-        </div>
-      </div>
-
-      <div className="safe-bottom space-y-2 border-t border-border bg-card px-4 pt-3">
-        <Button
-          className="h-13 w-full rounded-2xl bg-gradient-to-l from-cyan-700 to-cyan-900 py-3.5 text-base font-semibold text-white"
-          onClick={() => {
-            readConcept(c.id);
-            startQuiz({
-              mode: "training",
-              label: `تدريب: ${c.title}`,
-              qids: shuffle(qs).map((q) => q.id),
-              conceptId: c.id,
-            });
-          }}
-        >
-          <Dumbbell className="ml-2 h-5 w-5" /> تدريب على هذا المفهوم
-        </Button>
-        {!isRead && (
-          <Button
-            variant="outline"
-            className="w-full rounded-2xl border text-sm font-bold"
+        </>
+      }
+      footer={
+        <>
+          {!isRead && (
+            <SecondaryButton onClick={() => readConcept(c.id)} className="flex-1 sm:flex-none">
+              <CheckCircle2 className="h-4 w-4" /> قرأته
+            </SecondaryButton>
+          )}
+          <PrimaryButton
+            className="flex-1"
+            disabled={qs.length === 0}
             onClick={() => {
               readConcept(c.id);
-              onClose();
+              startQuiz({ mode: "training", label: `تدريب: ${c.title}`, qids: shuffle(qs).map((q) => q.id), conceptId: c.id });
             }}
           >
-            <CheckCircle2 className="ml-1 h-4 w-4 text-success" /> تعليم كمقروء
-          </Button>
-        )}
-      </div>
-    </motion.div>
-  );
-}
+            <Dumbbell className="h-4 w-4" /> تدرّب ({ad(qs.length)})
+          </PrimaryButton>
+        </>
+      }
+    >
+      <article className="space-y-8">
+        <header>
+          <div className="flex flex-wrap items-center gap-2">
+            <Chip tone="primary">{COURSE_SHORT[course.id] ?? course.name}</Chip>
+            {isRead && (
+              <Chip tone="success">
+                <CheckCircle2 className="h-3.5 w-3.5" /> قرأته
+              </Chip>
+            )}
+          </div>
+          <h1 className="mt-3 font-display text-2xl font-bold leading-[1.6]">{c.title}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {chapterLabel(c.chapter)}، {arCount(examples.length, EXAMPLE_FORMS)}، {arCount(qs.length, QUESTION_FORMS)}
+          </p>
+        </header>
 
-// ---------- ترويسة المستويات الداخلية: زر عودة + عنوان ملون بنقطة المحور ----------
-function SubHeader({
-  title,
-  hint,
-  accent,
-  onBack,
-}: {
-  title: string;
-  hint?: string;
-  accent: string;
-  onBack: () => void;
-}) {
-  return (
-    <div className="flex items-center gap-2.5">
-      <button
-        onClick={onBack}
-        aria-label="عودة"
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-border bg-card text-secondary-foreground transition-colors active:bg-accent"
-      >
-        <ChevronRight className="h-5 w-5" />
-      </button>
-      <div className="min-w-0">
-        <h2 className="flex items-center gap-1.5 text-base font-semibold leading-6 text-foreground">
-          <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: accent }} />
-          <span className="truncate">{title}</span>
-        </h2>
-        {hint && (
-          <p className="truncate text-xs font-bold text-muted-foreground">{hint}</p>
+        <section className="space-y-4">
+          {explainParas.map((p, i) => (
+            <p key={i} className="text-base leading-9">
+              {p}
+            </p>
+          ))}
+        </section>
+
+        {examples.length > 0 && (
+          <section>
+            <SectionHeader title="أمثلة من الميدان" sub="مواقف صفية تجسّد المفهوم في سياقه" />
+            <div className="space-y-3">
+              {examples.map((ex, i) => (
+                <Card key={i} className="p-4">
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-semibold text-accent-foreground">{ad(i + 1)}</span>
+                    <div className="min-w-0 flex-1 space-y-2">
+                      <p className="flex items-center gap-1.5 text-[13px] font-medium text-muted-foreground">
+                        <Lightbulb className="h-4 w-4 text-gem" /> {exampleContext(ex)}
+                      </p>
+                      {splitArParagraphs(ex).map((p, j) => (
+                        <p key={j} className="text-[15px] leading-8 text-secondary-foreground">
+                          {p}
+                        </p>
+                      ))}
+                    </div>
+                    <SpeakButton text={ex} label="استمع للمثال" />
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </section>
         )}
-      </div>
-    </div>
+
+        <MyNotesSection conceptId={c.id} />
+        <StudentExamplesSection conceptId={c.id} />
+      </article>
+    </ScreenShell>
   );
 }
 
 export default function ConceptsView() {
-  const { conceptReads } = useApp();
+  const conceptReads = useApp((s) => s.conceptReads);
+  const startQuiz = useUi((s) => s.startQuiz);
 
-  // طلبات فتح من خارج الشاشة (مفهوم اليوم / عوالم الأساس وأعرف في الرئيسية)
-  // تُستهلك عند التحميل الأول لتهيئة الحالة مباشرة — بلا setState داخل التأثيرات
+  // طلبات فتح من خارج الشاشة تُستهلك عند التحميل الأول
   const pendingConceptId = useUi((s) => s.pendingConceptId);
   const pendingCourseId = useUi((s) => s.pendingCourseId);
   const clearPendingConcept = useUi((s) => s.clearPendingConcept);
   const clearPendingCourse = useUi((s) => s.clearPendingCourse);
-  const startHeart = useUi((s) => s.startHeart);
 
-  // التنقل البطاقي ثلاثي المستويات (نموذج المستخدم): بطاقة محور ← بطاقات موضوعاته ← بطاقات مفاهيمه
+  // التنقل: مقرر ← فصل ← مفهوم
   const [openCourseId, setOpenCourseId] = useState<string | null>(pendingCourseId);
   const [openChapter, setOpenChapter] = useState<string | null>(null);
   const [detailId, setDetailId] = useState<string | null>(pendingConceptId);
   const [query, setQuery] = useState("");
 
-  // مسح الطلب المعلق بعد الاستهلاك (تحديث مخزن خارجي فقط — لا حالة محلية هنا)
   useEffect(() => {
     if (pendingConceptId) clearPendingConcept();
     if (pendingCourseId) clearPendingCourse();
   }, [pendingConceptId, pendingCourseId, clearPendingConcept, clearPendingCourse]);
 
-  // البحث الفوري في العنوان والموضوع — فوق أي مستوى
   const searchResults = useMemo(() => {
     const q = query.trim();
     if (!q) return null;
-    return CONCEPTS.filter(
-      (c) => c.title.includes(q) || chapterLabel(c.chapter).includes(q)
-    ).slice(0, 40);
+    return CONCEPTS.filter((c) => c.title.includes(q) || chapterLabel(c.chapter).includes(q)).slice(0, 40);
   }, [query]);
 
   const openCourse = COURSES.find((c) => c.id === openCourseId) ?? null;
-
-  // موضوعات المحور المفتوح بترتيب ظهورها فيه
-  const chapters = useMemo(
-    () => (openCourse ? chaptersOfCourse(openCourse.id) : []),
-    [openCourse]
-  );
-
-  // مفاهيم الموضوع المفتوح
+  const chapters = useMemo(() => (openCourse ? chaptersOfCourse(openCourse.id) : []), [openCourse]);
   const chapterConcepts = useMemo(
-    () =>
-      openCourse && openChapter
-        ? conceptsOfCourse(openCourse.id).filter((c) => c.chapter === openChapter)
-        : [],
+    () => (openCourse && openChapter ? conceptsOfCourse(openCourse.id).filter((c) => c.chapter === openChapter) : []),
     [openCourse, openChapter]
   );
 
+  const detail = detailId && <ConceptDetail conceptId={detailId} onClose={() => setDetailId(null)} />;
+
+  const trainOn = (label: string, concepts: Concept[]) =>
+    startQuiz({ mode: "training", label, qids: shuffle(concepts.flatMap((c) => questionsOfConcept(c.id))).slice(0, 10).map((q) => q.id) });
+
+  // ---------- الفصل: قائمة مفاهيمه ----------
+  if (openCourse && openChapter) {
+    const read = chapterConcepts.filter((c) => conceptReads[c.id]).length;
+    return (
+      <>
+        <ScreenShell
+          title={chapterLabel(openChapter)}
+          sub={COURSE_SHORT[openCourse.id] ?? openCourse.name}
+          onBack={() => setOpenChapter(null)}
+          footer={
+            <PrimaryButton className="w-full" onClick={() => trainOn(`تدريب: ${chapterLabel(openChapter)}`, chapterConcepts)}>
+              <Dumbbell className="h-4 w-4" /> تدرّب على الفصل
+            </PrimaryButton>
+          }
+        >
+          <div className="space-y-5">
+            <div className="flex items-center gap-3">
+              <ProgressBar value={chapterConcepts.length ? (read / chapterConcepts.length) * 100 : 0} className="flex-1" />
+              <span className="shrink-0 text-[13px] text-muted-foreground">
+                قرأت {ad(read)} من {ad(chapterConcepts.length)}
+              </span>
+            </div>
+            <Divided>
+              {chapterConcepts.map((c, i) => {
+                const isRead = !!conceptReads[c.id];
+                const n = questionsOfConcept(c.id).length;
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => setDetailId(c.id)}
+                    className="flex min-h-[60px] w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
+                  >
+                    {isRead ? (
+                      <CheckCircle2 className="h-5 w-5 shrink-0 text-success" aria-label="مقروء" />
+                    ) : (
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-input text-xs text-muted-foreground">{ad(i + 1)}</span>
+                    )}
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[15px] font-medium leading-6">{c.title}</span>
+                      <span className="text-[13px] text-muted-foreground">{arCount(n, QUESTION_FORMS)}</span>
+                    </span>
+                    <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground/60" />
+                  </button>
+                );
+              })}
+            </Divided>
+          </div>
+        </ScreenShell>
+        {detail}
+      </>
+    );
+  }
+
+  // ---------- المقرر: فصوله ----------
+  if (openCourse) {
+    const all = conceptsOfCourse(openCourse.id);
+    const read = all.filter((c) => conceptReads[c.id]).length;
+    const color = COURSE_COLOR[openCourse.id] ?? "var(--primary)";
+    return (
+      <>
+        <ScreenShell title={openCourse.name} sub={COURSE_SUBTITLE[openCourse.id]} onBack={() => setOpenCourseId(null)}>
+          <div className="space-y-6">
+            <Card className="p-5">
+              <div className="flex items-start gap-4">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl" style={{ background: `color-mix(in srgb, ${color} 12%, transparent)`, color }}>
+                  <CourseIcon id={openCourse.id} className="h-6 w-6" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h2 className="font-display text-lg font-semibold leading-8">{openCourse.name}</h2>
+                  <p className="text-sm text-muted-foreground">
+                    {arCount(chapters.length, CHAPTER_FORMS)}، {arCount(all.length, CONCEPT_FORMS)}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 flex items-center gap-3">
+                <ProgressBar value={all.length ? (read / all.length) * 100 : 0} className="flex-1" />
+                <span className="shrink-0 text-[13px] font-medium">{pct(all.length ? (read / all.length) * 100 : 0)}</span>
+              </div>
+            </Card>
+
+            <section>
+              <SectionHeader title="الفصول" />
+              <Divided>
+                {chapters.map((ch, i) => {
+                  const cs = all.filter((c) => c.chapter === ch);
+                  const r = cs.filter((c) => conceptReads[c.id]).length;
+                  const done = cs.length > 0 && r === cs.length;
+                  return (
+                    <button
+                      key={ch}
+                      type="button"
+                      onClick={() => setOpenChapter(ch)}
+                      className="flex min-h-[64px] w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
+                    >
+                      <span
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${done ? "bg-success-soft text-success" : "bg-muted text-secondary-foreground"}`}
+                      >
+                        {done ? <CheckCircle2 className="h-4 w-4" /> : ad(i + 1)}
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-[15px] font-medium leading-6">{chapterLabel(ch)}</span>
+                        <span className="mt-1 flex items-center gap-2">
+                          <ProgressBar value={cs.length ? (r / cs.length) * 100 : 0} height={4} className="max-w-[120px] flex-1" />
+                          <span className="text-xs text-muted-foreground">
+                            {ad(r)} من {ad(cs.length)}
+                          </span>
+                        </span>
+                      </span>
+                      <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground/60" />
+                    </button>
+                  );
+                })}
+              </Divided>
+            </section>
+          </div>
+        </ScreenShell>
+        {detail}
+      </>
+    );
+  }
+
+  // ---------- المكتبة: كل المقررات والبحث ----------
   return (
-    <div className="space-y-4 pb-6">
-      {!openCourse && searchResults === null && (
-        <div>
-          <h1 className="font-display text-2xl font-bold lg:text-[28px]">التعلّم</h1>
-          <p className="mt-1 text-sm leading-6 text-muted-foreground">المقررات بفصولها ومفاهيمها، لكل مفهوم شرح وأمثلة من الميدان وأسئلة.</p>
-        </div>
-      )}
-      {/* البحث في كل المفاهيم */}
+    <div className="space-y-6 pb-6">
+      <PageTitle title="التعلّم" sub="المقررات بفصولها ومفاهيمها، ولكل مفهوم شرح وأمثلة وأسئلة" />
+
       <div className="flex h-12 items-center gap-2 rounded-xl border border-input bg-card px-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
         <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="ابحث عن مفهوم أو نظرية..."
+          placeholder="ابحث عن مفهوم أو نظرية"
           aria-label="ابحث عن مفهوم"
-          className="w-full bg-transparent text-[15px] text-foreground outline-none placeholder:text-muted-foreground"
+          className="w-full bg-transparent text-[15px] outline-none placeholder:text-muted-foreground"
         />
         {query && (
-          <button onClick={() => setQuery("")} aria-label="مسح البحث" className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
-            <X className="h-3.5 w-3.5 text-muted-foreground" />
+          <button type="button" onClick={() => setQuery("")} aria-label="مسح البحث" className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-muted">
+            <X className="h-4 w-4 text-muted-foreground" />
           </button>
         )}
       </div>
 
       {searchResults !== null ? (
-        // نتائج البحث فوق أي مستوى
-        <div className="space-y-2">
-          <p className="text-xs font-bold text-muted-foreground">
-            {searchResults.length > 0
-              ? "نتائج البحث"
-              : "لا نتائج مطابقة — جرّب كلمة أقصر أو مختلفة"}
-          </p>
-          {searchResults.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => setDetailId(c.id)}
-              className="flex w-full items-center gap-3 rounded-2xl border border-border bg-card px-3 py-3 text-right transition-colors active:bg-accent"
-            >
-              <span
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white"
-                style={{ background: COURSE_COLOR[c.courseId] ?? "#0E7C86" }}
-              >
-                <CourseIcon id={c.courseId} className="h-4.5 w-4.5" />
-              </span>
-              <span className="flex-1">
-                <span className="block text-sm font-bold leading-6">{c.title}</span>
-                <span className="text-xs text-muted-foreground">
-                  {chapterLabel(c.chapter)}
-                </span>
-              </span>
-            </button>
-          ))}
-        </div>
-      ) : !openCourse ? (
-        // المستوى الأول: قلب الصف + بطاقة لكل محور
-        <motion.div
-          key="library-roots"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.18 }}
-          className="space-y-3"
-        >
-          <div className="grid gap-3 sm:grid-cols-2">
+        searchResults.length === 0 ? (
+          <EmptyState icon={Search} title="لا نتائج مطابقة" sub="جرّب كلمة أقصر أو مختلفة" />
+        ) : (
+          <section>
+            <SectionHeader title="نتائج البحث" sub={arCount(searchResults.length, CONCEPT_FORMS)} />
+            <Divided>
+              {searchResults.map((c) => {
+                            const color = COURSE_COLOR[c.courseId] ?? "var(--primary)";
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => setDetailId(c.id)}
+                    className="flex min-h-[60px] w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
+                  >
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ background: `color-mix(in srgb, ${color} 12%, transparent)`, color }}>
+                      <CourseIcon id={c.courseId} className="h-4 w-4" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[15px] font-medium leading-6">{c.title}</span>
+                      <span className="block truncate text-[13px] text-muted-foreground">
+                        {COURSE_SHORT[c.courseId]}، {chapterLabel(c.chapter)}
+                      </span>
+                    </span>
+                    {conceptReads[c.id] ? <CheckCircle2 className="h-4 w-4 shrink-0 text-success" /> : <Circle className="h-4 w-4 shrink-0 text-input" />}
+                  </button>
+                );
+              })}
+            </Divided>
+          </section>
+        )
+      ) : (
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }} className="grid gap-3 sm:grid-cols-2">
           {COURSES.map((course) => {
-            const color = COURSE_COLOR[course.id] ?? "#0E7C86";
-            const courseConcepts = conceptsOfCourse(course.id);
-            const readCount = courseConcepts.filter((cc) => conceptReads[cc.id]).length;
-            const pct = courseConcepts.length ? Math.round((readCount / courseConcepts.length) * 100) : 0;
+            const color = COURSE_COLOR[course.id] ?? "var(--primary)";
+                    const cs = conceptsOfCourse(course.id);
+            const readCount = cs.filter((cc) => conceptReads[cc.id]).length;
+            const v = cs.length ? (readCount / cs.length) * 100 : 0;
             return (
               <button
                 key={course.id}
+                type="button"
                 onClick={() => {
                   setOpenCourseId(course.id);
                   setOpenChapter(null);
                 }}
-                className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 text-right card-soft transition-colors hover:bg-muted/40"
+                className="card-soft flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 text-right transition-colors hover:bg-muted/40"
               >
                 <span className="flex items-start gap-3">
-                  <span
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
-                    style={{ background: `color-mix(in srgb, ${color} 12%, transparent)`, color }}
-                  >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl" style={{ background: `color-mix(in srgb, ${color} 12%, transparent)`, color }}>
                     <CourseIcon id={course.id} className="h-5 w-5" />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] font-semibold leading-6 text-foreground">{course.name}</span>
+                    <span className="block text-[15px] font-semibold leading-6">{course.name}</span>
                     <span className="mt-0.5 block text-[13px] leading-5 text-muted-foreground">{COURSE_SUBTITLE[course.id]}</span>
                   </span>
                 </span>
-                <span className="mt-auto">
+                <span className="mt-auto block">
                   <span className="mb-1.5 flex items-center justify-between text-xs text-muted-foreground">
-                    <span>{arCount(courseConcepts.length, CONCEPT_FORMS)}، قرأت {ad(readCount)}</span>
-                    <span className="font-medium text-foreground">{ad(pct)}٪</span>
+                    <span>
+                      {arCount(cs.length, CONCEPT_FORMS)}، قرأت {ad(readCount)}
+                    </span>
+                    <span className="font-medium text-foreground">{pct(v)}</span>
                   </span>
-                  <span className="block h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                    <span className="block h-full rounded-full bg-primary transition-all" style={{ width: `${pct}%` }} />
-                  </span>
+                  <ProgressBar value={v} />
                 </span>
               </button>
             );
           })}
-          </div>
-        </motion.div>
-      ) : !openChapter ? (
-        // المستوى الثاني: بطاقات الموضوعات داخل المحور — كل موضوع بطاقة تفتح مفاهيمه
-        <motion.div
-          key={`course-${openCourse.id}`}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.18 }}
-          className="space-y-3"
-        >
-          <SubHeader
-            title={COURSE_SHORT[openCourse.id]}
-            hint={COURSE_SUBTITLE[openCourse.id]}
-            accent={COURSE_COLOR[openCourse.id] ?? "#0E7C86"}
-            onBack={() => {
-              setOpenCourseId(null);
-              setOpenChapter(null);
-            }}
-          />
-          <div className="grid grid-cols-2 gap-2.5">
-            {chapters.map((ch, chIdx) => {
-              const chConcepts = conceptsOfCourse(openCourse.id).filter((c) => c.chapter === ch);
-              const chRead = chConcepts.filter((c) => conceptReads[c.id]).length;
-              const chPct = chConcepts.length ? Math.round((chRead / chConcepts.length) * 100) : 0;
-              const color = COURSE_COLOR[openCourse.id] ?? "#0E7C86";
-              return (
-              <button
-                key={ch}
-                onClick={() => setOpenChapter(ch)}
-                className="group relative flex min-h-[112px] flex-col overflow-hidden rounded-2xl border border-success/40 bg-card p-3.5 text-right shadow-[0_2px_8px_rgba(49,46,129,0.04),0_10px_26px_rgba(49,46,129,0.06)] transition-all active:scale-[0.98]"
-              >
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute -left-5 -top-5 h-16 w-16 rounded-full opacity-[0.07]"
-                  style={{ background: color }}
-                />
-                <span className="relative flex items-start justify-between">
-                  <span
-                    className="flex h-9 w-9 items-center justify-center rounded-xl text-white"
-                    style={{ background: `linear-gradient(135deg, ${color}, ${color}c0)` }}
-                  >
-                    <span className="text-[13px] font-semibold">{ad(chIdx + 1)}</span>
-                  </span>
-                  {chPct === 100 && (
-                    <span
-                      className="rounded-full px-2 py-0.5 text-xs font-semibold"
-                      style={{ background: `${color}14`, color }}
-                    >
-                      مكتمل
-                    </span>
-                  )}
-                </span>
-                <span className="relative mt-2 line-clamp-2 text-[13px] font-semibold leading-5 text-foreground">
-                  {chapterLabel(ch)}
-                </span>
-                <span className="relative mt-auto pt-2">
-                  <span className="mb-1 flex items-center justify-between text-xs font-semibold">
-                    <span className="text-muted-foreground">{ad(chConcepts.length)} مفاهيم</span>
-                    <span style={{ color: chPct > 0 ? color : undefined }}>{ad(chPct)}٪</span>
-                  </span>
-                  <span className="block h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                    <span
-                      className="block h-full rounded-full"
-                      style={{ width: `${chPct}%`, background: color }}
-                    />
-                  </span>
-                </span>
-              </button>
-              );
-            })}
-          </div>
-        </motion.div>
-      ) : (
-        // المستوى الثالث: بطاقات المفاهيم داخل الموضوع — كل مفهوم وحده
-        <motion.div
-          key={`chapter-${openCourse.id}-${openChapter}`}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.18 }}
-          className="space-y-3"
-        >
-          <SubHeader
-            title={chapterLabel(openChapter)}
-            hint={COURSE_SHORT[openCourse.id]}
-            accent={COURSE_COLOR[openCourse.id] ?? "#0E7C86"}
-            onBack={() => setOpenChapter(null)}
-          />
-          <div className="grid grid-cols-2 gap-2.5">
-            {chapterConcepts.map((c, cIdx) => {
-              const isRead = !!conceptReads[c.id];
-              const color = COURSE_COLOR[c.courseId] ?? "#0E7C86";
-              const cQs = questionsOfConcept(c.id).length;
-              return (
-                <button
-                  key={c.id}
-                  onClick={() => setDetailId(c.id)}
-                  className={`group relative flex min-h-[124px] flex-col overflow-hidden rounded-2xl border p-3 text-right shadow-[0_2px_8px_rgba(49,46,129,0.04),0_10px_26px_rgba(49,46,129,0.06)] transition-all active:scale-[0.98] ${
-                    isRead ? "border-success/40 bg-success-soft/40" : "border-success/40 bg-card"
-                  }`}
-                >
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute -left-4 -top-4 h-14 w-14 rounded-full opacity-[0.07]"
-                    style={{ background: color }}
-                  />
-                  <span className="relative flex items-start justify-between">
-                    <span
-                      className="flex h-9 w-9 items-center justify-center rounded-xl text-white"
-                      style={{ background: `linear-gradient(135deg, ${color}, ${color}c0)` }}
-                    >
-                      {isRead ? <CheckCircle2 className="h-4.5 w-4.5" /> : <span className="text-[13px] font-semibold">{ad(cIdx + 1)}</span>}
-                    </span>
-                    {!isRead && cQs > 0 && (
-                      <span className="rounded-full bg-gem-soft px-2 py-0.5 text-xs font-semibold text-gem ring-1 ring-amber-100">
-                        {ad(cQs)} سؤال
-                      </span>
-                    )}
-                  </span>
-                  <span className="relative mt-2 line-clamp-2 text-[13px] font-semibold leading-5 text-foreground">
-                    {c.title}
-                  </span>
-                  <span className="relative mt-auto flex items-center gap-1 text-xs font-bold text-muted-foreground">
-                    {isRead ? (
-                      <>
-                        <CheckCircle2 className="h-3 w-3" style={{ color }} /> تمت القراءة
-                      </>
-                    ) : (
-                      <>
-                        <Circle className="h-3 w-3 text-border" /> جديد
-                      </>
-                    )}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
         </motion.div>
       )}
 
-      {/* التفاصيل تُعرض فوق أي مستوى */}
-      <AnimatePresence>
-        {detailId && <ConceptDetail conceptId={detailId} onClose={() => setDetailId(null)} />}
-      </AnimatePresence>
+      {detail}
     </div>
   );
 }
