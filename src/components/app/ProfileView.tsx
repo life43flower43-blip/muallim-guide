@@ -183,7 +183,6 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
   const fileRef = useRef<HTMLInputElement>(null);
   const [installEvt, setInstallEvt] = useState<InstallPromptEvent | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<"login" | "register" | null>(null);
 
   useEffect(() => {
     const onPrompt = (e: Event) => {
@@ -318,36 +317,25 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             </span>
             <div className="min-w-0 flex-1">
               <p className="font-display text-lg font-semibold">ضيف</p>
-              <p className="mt-0.5 text-[13px] leading-6 text-muted-foreground">تقدمك محفوظ على هذا الجهاز فقط. أنشئ حسابًا لتتابع من أي جهاز، ولك ٥٠ جوهرة ترحيب.</p>
+              <p className="mt-0.5 text-[13px] leading-6 text-muted-foreground">تقدمك محفوظ على هذا الجهاز فقط. ادخل بحساب Google لتتابع من أي جهاز، ولك ٥٠ جوهرة ترحيب.</p>
             </div>
           </div>
-          <div className="mt-4 flex gap-3">
-            <PrimaryButton onClick={() => setAuthMode("register")} className="flex-1">
-              أنشئ حسابًا
-            </PrimaryButton>
-            <SecondaryButton onClick={() => setAuthMode("login")} className="flex-1">
-              لدي حساب
-            </SecondaryButton>
+          <div className="mt-4">
+            <AuthPanel />
           </div>
         </Card>
-      )}
-      {authMode && (
-        <ScreenShell title={authMode === "login" ? "تسجيل الدخول" : "إنشاء حساب"} onClose={() => setAuthMode(null)}>
-          <div className="mx-auto max-w-md">
-            <AuthPanel initialMode={authMode} onDone={() => setAuthMode(null)} />
-          </div>
-        </ScreenShell>
       )}
 
       {/* المستوى */}
       <Card className="p-5">
         <div className="flex items-center gap-4">
-          <span className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl bg-accent text-accent-foreground">
-            <span className="text-[10px] leading-none">المستوى</span>
-            <span className="font-display text-xl font-bold leading-tight">{ad(levelFromXp(xp))}</span>
+          <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-accent font-display text-2xl font-bold text-accent-foreground" aria-hidden="true">
+            {ad(levelFromXp(xp))}
           </span>
           <div className="min-w-0 flex-1">
-            <p className="font-display text-lg font-semibold">{levelTitle(levelFromXp(xp))}</p>
+            <p className="font-display text-lg font-semibold">
+              المستوى {ad(levelFromXp(xp))}، {levelTitle(levelFromXp(xp))}
+            </p>
             <ProgressBar value={(xpInLevel(xp) / LEVEL_XP) * 100} className="mt-2" />
             <p className="mt-1.5 text-xs text-muted-foreground">
               {ad(xpInLevel(xp))} من {ad(LEVEL_XP)} نقطة إلى المستوى {ad(levelFromXp(xp) + 1)}

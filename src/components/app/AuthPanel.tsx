@@ -1,18 +1,13 @@
 "use client";
 
 // ============================================================================
-// الدخول وإنشاء الحساب — بحساب Google (كما في أوريندو) أو بالبريد وكلمة المرور
+// الدخول بحساب Google وحده — كما في أوريندو: زر واحد، بلا نماذج ولا كلمات مرور
+// ============================================================================
+// الخادم يتولى كل شيء عبر /api/auth/google، ويُنشئ الحساب في أول دخول
+// ومعه جواهر الترحيب، وينقل تقدم الضيف من هذا الجهاز تلقائيًا.
 // ============================================================================
 
-import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
-import { afterSignIn, register, signIn } from "@/lib/account-client";
-import { toast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
-import { PrimaryButton } from "./ui-kit";
-
-function GoogleIcon() {
+export function GoogleIcon({ className = "h-5 w-5" }: { className?: string }) {
   return (
     <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -23,117 +18,17 @@ function GoogleIcon() {
   );
 }
 
-const inputCls =
-  "h-12 w-full rounded-xl border border-input bg-card px-4 text-[15px] text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20";
 
-export default function AuthPanel({ onDone, initialMode = "register" }: { onDone?: () => void; initialMode?: "login" | "register" }) {
-  const queryClient = useQueryClient();
-  const [mode, setMode] = useState<"login" | "register">(initialMode);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setBusy(true);
-    const res = mode === "login" ? await signIn(email, password) : await register(name, email, password);
-    if (!res.ok) {
-      setBusy(false);
-      setError(res.error ?? "تعذّر الاتصال");
-      return;
-    }
-    await afterSignIn(queryClient);
-    setBusy(false);
-    toast({ title: mode === "login" ? "تم تسجيل الدخول" : "أُنشئ حسابك — ومعه ٥٠ جوهرة ترحيب" });
-    onDone?.();
-  };
-
+/** onDone يُستدعى قبل الانتقال إلى Google (مثلًا لإنهاء شاشة البداية فلا تعود بعد الدخول) */
+export default function AuthPanel({ label = "المتابعة بحساب Google", onDone }: { label?: string; onDone?: () => void }) {
   return (
-    <div className="space-y-5">
-      <a
-        href="/api/auth/google"
-        className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-xl border border-input bg-card text-[15px] font-semibold text-secondary-foreground transition-colors hover:bg-muted"
-      >
-        <GoogleIcon />
-        المتابعة بحساب Google
-      </a>
-
-      <div className="flex items-center gap-3 text-xs text-muted-foreground">
-        <span className="h-px flex-1 bg-border" />
-        أو بالبريد الإلكتروني
-        <span className="h-px flex-1 bg-border" />
-      </div>
-
-      <div role="tablist" aria-label="نوع الدخول" className="grid grid-cols-2 rounded-xl bg-muted p-1">
-        {(["register", "login"] as const).map((m) => (
-          <button
-            key={m}
-            type="button"
-            role="tab"
-            aria-selected={mode === m}
-            onClick={() => {
-              setMode(m);
-              setError(null);
-            }}
-            className={cn(
-              "min-h-[40px] rounded-lg text-sm font-medium transition-colors",
-              mode === m ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
-            )}
-          >
-            {m === "register" ? "حساب جديد" : "لدي حساب"}
-          </button>
-        ))}
-      </div>
-
-      <form onSubmit={submit} className="space-y-3">
-        {mode === "register" && (
-          <label className="block space-y-1.5">
-            <span className="text-sm font-medium text-secondary-foreground">الاسم</span>
-            <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" required maxLength={80} />
-          </label>
-        )}
-        <label className="block space-y-1.5">
-          <span className="text-sm font-medium text-secondary-foreground">البريد الإلكتروني</span>
-          <input
-            className={inputCls}
-            type="email"
-            dir="ltr"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email"
-            required
-          />
-        </label>
-        <label className="block space-y-1.5">
-          <span className="text-sm font-medium text-secondary-foreground">كلمة المرور</span>
-          <input
-            className={inputCls}
-            type="password"
-            dir="ltr"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete={mode === "login" ? "current-password" : "new-password"}
-            minLength={mode === "register" ? 8 : undefined}
-            required
-          />
-          {mode === "register" && <span className="block text-xs text-muted-foreground">ثمانية أحرف على الأقل</span>}
-        </label>
-        {error && (
-          <p role="alert" className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-destructive">
-            {error}
-          </p>
-        )}
-        <PrimaryButton type="submit" disabled={busy} className="w-full">
-          {busy && <Loader2 className="h-4 w-4 animate-spin" />}
-          {mode === "login" ? "تسجيل الدخول" : "إنشاء الحساب"}
-        </PrimaryButton>
-      </form>
-      <p className="text-center text-xs leading-5 text-muted-foreground">
-        يُنقل تقدمك وأخطاؤك وجواهرك من هذا الجهاز إلى حسابك تلقائيًا.
-      </p>
-    </div>
+    <a
+      href="/api/auth/google"
+      onClick={() => onDone?.()}
+      className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-xl border border-input bg-card px-4 text-[15px] font-semibold text-foreground transition-colors hover:bg-muted"
+    >
+      <GoogleIcon />
+      {label}
+    </a>
   );
 }

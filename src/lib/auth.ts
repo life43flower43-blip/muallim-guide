@@ -1,9 +1,8 @@
 // ============================================================================
-// auth.ts — نظام المصادقة (JWT + bcrypt)، منقول من أوريندو
+// auth.ts — نظام المصادقة (JWT، والدخول بحساب Google وحده)، منقول من أوريندو
 // 🛡️ أمني: JWT_SECRET يجب أن يُضبط كمتغيّر بيئة (>= 32 حرفًا) في الإنتاج
 // ============================================================================
 
-import bcrypt from 'bcryptjs'
 import { SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
 
@@ -54,14 +53,6 @@ export async function verifyToken(token: string): Promise<{ userId: string } | n
   } catch {
     return null
   }
-}
-
-export async function hashPassword(password: string): Promise<string> {
-  return bcrypt.hash(password, 10)
-}
-
-export async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
-  return bcrypt.compare(password, hashedPassword)
 }
 
 /** معرّف المستخدم الحالي من كوكي الجلسة، أو null للضيف */

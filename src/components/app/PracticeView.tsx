@@ -70,14 +70,14 @@ function ActionCard({ icon, title, sub, onClick, primary }: { icon: React.Elemen
       type="button"
       onClick={onClick}
       className={cn(
-        "flex flex-col gap-3 rounded-2xl border p-4 text-right transition-colors",
+        "flex min-h-[76px] items-center gap-3 rounded-2xl border p-4 text-right transition-colors",
         primary ? "border-primary bg-primary text-primary-foreground hover:opacity-95" : "card-soft border-border bg-card hover:border-primary/40"
       )}
     >
-      <span className={cn("flex h-10 w-10 items-center justify-center rounded-xl", primary ? "bg-white/15" : "bg-accent text-primary")}>
+      <span className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", primary ? "bg-white/15" : "bg-accent text-primary")}>
         <Icon className="h-5 w-5" />
       </span>
-      <span>
+      <span className="min-w-0 flex-1">
         <span className="block text-[15px] font-semibold">{title}</span>
         <span className={cn("mt-0.5 block text-[13px] leading-5", primary ? "text-primary-foreground/85" : "text-muted-foreground")}>{sub}</span>
       </span>
@@ -119,12 +119,15 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
       {/* لوحة الأداء */}
       <Card className="p-5 lg:p-6">
         <div className="flex flex-wrap items-center gap-5">
-          <Ring value={summary.readiness} size={96} stroke={8}>
-            <span className="text-center">
-              <span className="block font-display text-xl font-bold">{pct(summary.readiness)}</span>
-              <span className="block text-[11px] text-muted-foreground">جاهزية</span>
-            </span>
-          </Ring>
+          <div className="flex items-center gap-3">
+            <Ring value={summary.readiness} size={72} stroke={7}>
+              <span className="font-display text-base font-bold">{pct(summary.readiness)}</span>
+            </Ring>
+            <div>
+              <p className="font-display text-base font-semibold">جاهزيتك</p>
+              <p className="text-xs text-muted-foreground">الدقة مع تغطية البنك</p>
+            </div>
+          </div>
           <div className="grid min-w-[220px] flex-1 grid-cols-3 gap-3 text-center">
             <div>
               <p className="font-display text-xl font-bold">{ad(summary.answered)}</p>
@@ -157,7 +160,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
       </Card>
 
       {/* الإجراءات */}
-      <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <section className="grid gap-3 sm:grid-cols-2">
         <ActionCard primary icon={Sparkles} title="تدريب ذكي" sub="عشرة أسئلة تبدأ بأضعف فصولك" onClick={() => startSmart()} />
         <ActionCard icon={SlidersHorizontal} title="أنشئ اختبارك" sub="اختر المقررات والعدد والنمط" onClick={() => setBuilder(true)} />
         <ActionCard

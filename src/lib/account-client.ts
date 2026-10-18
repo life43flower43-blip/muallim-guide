@@ -61,19 +61,6 @@ export async function afterSignIn(queryClient: QueryClient) {
   await queryClient.invalidateQueries()
 }
 
-async function postJson(url: string, body: unknown): Promise<{ ok: boolean; error?: string }> {
-  try {
-    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-    const json = await res.json().catch(() => ({}))
-    return res.ok ? { ok: true } : { ok: false, error: json.error || 'تعذّر الاتصال، حاول مرة أخرى' }
-  } catch {
-    return { ok: false, error: 'لا يوجد اتصال بالإنترنت' }
-  }
-}
-
-export const signIn = (email: string, password: string) => postJson('/api/auth/login', { email, password })
-export const register = (name: string, email: string, password: string) => postJson('/api/auth/register', { name, email, password })
-
 export async function signOut(queryClient: QueryClient) {
   stopProgressSync()
   await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {})

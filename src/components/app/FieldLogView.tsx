@@ -351,7 +351,7 @@ export default function FieldLogView() {
                   role="radio"
                   aria-checked={form.kind === k}
                   onClick={() => setField("kind", k)}
-                  className={`flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-xl border text-sm transition-colors ${
+                  className={`flex min-h-[52px] items-center justify-center gap-2 rounded-xl border px-3 text-sm transition-colors ${
                     form.kind === k ? "border-primary bg-accent font-medium text-accent-foreground ring-1 ring-primary" : "border-border bg-card text-secondary-foreground"
                   }`}
                 >

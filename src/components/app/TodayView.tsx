@@ -296,16 +296,16 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const toolsSection = (
     <section>
       <SectionHeader title="أدوات الإعداد" />
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {tools.map((t) => (
           <button
             key={t.label}
             type="button"
             onClick={t.run}
-            className="flex flex-col items-start gap-3 rounded-2xl border border-border bg-card p-4 text-right card-soft transition-colors hover:bg-muted/40"
+            className="flex min-h-[72px] items-center gap-3 rounded-2xl border border-border bg-card p-4 text-right card-soft transition-colors hover:bg-muted/40"
           >
             <IconTile icon={t.icon} />
-            <span>
+            <span className="min-w-0 flex-1">
               <span className="block text-[15px] font-semibold">{t.label}</span>
               <span className="mt-0.5 block text-[13px] text-muted-foreground">{t.sub}</span>
             </span>

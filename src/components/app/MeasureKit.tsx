@@ -76,7 +76,7 @@ export default function MeasureKit() {
               role="tab"
               aria-selected={on}
               onClick={() => setTool(t.id)}
-              className={`flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-xl border px-2 text-[13px] transition-colors ${
+              className={`flex min-h-[52px] items-center justify-center gap-2 rounded-xl border px-3 text-[13px] transition-colors ${
                 on ? "border-primary bg-accent font-medium text-accent-foreground ring-1 ring-primary" : "border-border bg-card text-secondary-foreground hover:bg-muted"
               }`}
             >

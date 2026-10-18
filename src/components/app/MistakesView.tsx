@@ -18,6 +18,7 @@ import { ad, arCount, ERROR_OBJ_FORMS, splitReason } from "@/lib/arabic";
 import { cn } from "@/lib/utils";
 import type { Tab } from "./AppShell";
 import { ConceptReader } from "./ConceptsView";
+import AuthPanel from "./AuthPanel";
 import { Card, Chip, EmptyState, PageTitle, PrimaryButton, ProgressBar, SecondaryButton, SectionHeader } from "./ui-kit";
 
 const TIMES = { one: "مرة واحدة", two: "مرتين", few: "مرات", many: "مرة" };
@@ -201,8 +202,10 @@ export default function MistakesView({ onGoTab }: { onGoTab: (t: Tab) => void })
 
       {data.isGuest && (
         <Card className="flex flex-wrap items-center gap-3 p-4">
-          <p className="min-w-0 flex-1 text-sm leading-6 text-muted-foreground">أخطاؤك محفوظة على هذا الجهاز فقط. سجّل الدخول لتحفظها في حسابك وتراها على أي جهاز.</p>
-          <SecondaryButton onClick={() => onGoTab("profile")}>تسجيل الدخول</SecondaryButton>
+          <p className="min-w-0 flex-1 text-sm leading-6 text-muted-foreground">أخطاؤك محفوظة على هذا الجهاز فقط. ادخل بحساب Google لتحفظها وتراها على أي جهاز.</p>
+          <div className="w-full sm:w-auto">
+            <AuthPanel label="الدخول بحساب Google" />
+          </div>
         </Card>
       )}
 
