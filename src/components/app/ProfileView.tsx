@@ -28,9 +28,12 @@ import {
   Trophy,
   Upload,
   Zap,
+  Settings,
+  ChevronLeft,
+  UserRound,
 } from "lucide-react";
 import { useApp, type LearnerGoal } from "@/lib/store";
-import { COURSES, chaptersOfCourse } from "@/lib/qbank";
+import { COURSES, LEVEL_XP, chaptersOfCourse, levelFromXp, levelTitle, xpInLevel } from "@/lib/qbank";
 import { chapterStats } from "@/lib/practice-bank";
 import { useMistakes } from "@/lib/mistakes-client";
 import { GEM_RULES, MAX_STREAK_FREEZES } from "@/lib/gems-rules";
@@ -52,7 +55,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { Tab } from "./AppShell";
 import AuthPanel from "./AuthPanel";
-import { Card, IconTile, PageTitle, ProgressBar, SecondaryButton, SectionHeader, pct } from "./ui-kit";
+import { Card, IconTile, PageTitle, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, pct } from "./ui-kit";
 
 interface InstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -89,6 +92,88 @@ function Segmented<T extends string>({ value, options, onChange, label }: { valu
   );
 }
 
+// ---------- خريطة النشاط: أسئلة كل يوم في الأسابيع الأخيرة (نمط GitHub وDuolingo) ----------
+const WEEKS = 18;
+const dayKey = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+const dayLong = new Intl.DateTimeFormat("ar-u-nu-arab", { weekday: "long", day: "numeric", month: "long" });
+const monthFmt = new Intl.DateTimeFormat("ar-u-nu-arab", { month: "short" });
+
+function ActivityMap({ sessions }: { sessions: { ts: number; total: number; durationSec: number }[] }) {
+  const { cells, months, week, activeDays } = useMemo(() => {
+    const perDay = new Map<string, number>();
+    for (const s of sessions) perDay.set(dayKey(new Date(s.ts)), (perDay.get(dayKey(new Date(s.ts))) ?? 0) + s.total);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    // آخر عمود ينتهي باليوم، وتبدأ الأعمدة بالسبت
+    const end = new Date(today);
+    const startOffset = (today.getDay() + 1) % 7; // السبت = ٠
+    const start = new Date(today);
+    start.setDate(today.getDate() - startOffset - (WEEKS - 1) * 7);
+    const cells: { date: Date; n: number; future: boolean }[] = [];
+    const months: { col: number; label: string }[] = [];
+    for (let i = 0; i < WEEKS * 7; i++) {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      if (d.getDate() === 1 || i === 0) months.push({ col: Math.floor(i / 7), label: monthFmt.format(d) });
+      cells.push({ date: d, n: perDay.get(dayKey(d)) ?? 0, future: d > end });
+    }
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - 6);
+    const recent = sessions.filter((s) => s.ts >= weekStart.getTime());
+    const week = { questions: recent.reduce((a, s) => a + s.total, 0), minutes: Math.round(recent.reduce((a, s) => a + s.durationSec, 0) / 60), sessions: recent.length };
+    return { cells, months, week, activeDays: cells.filter((c) => c.n > 0).length };
+  }, [sessions]);
+  const level = (n: number) => (n === 0 ? 0 : n < 10 ? 1 : n < 25 ? 2 : n < 50 ? 3 : 4);
+  const colors = ["var(--muted)", "color-mix(in srgb, var(--primary) 30%, var(--card))", "color-mix(in srgb, var(--primary) 55%, var(--card))", "color-mix(in srgb, var(--primary) 80%, var(--card))", "var(--primary)"];
+
+  return (
+    <Card className="p-5">
+      <div className="grid grid-cols-3 gap-3 text-center">
+        <div>
+          <p className="font-display text-xl font-bold">{ad(week.questions)}</p>
+          <p className="text-xs text-muted-foreground">سؤالًا في ٧ أيام</p>
+        </div>
+        <div>
+          <p className="font-display text-xl font-bold">{ad(week.minutes)}</p>
+          <p className="text-xs text-muted-foreground">دقيقة تعلّم</p>
+        </div>
+        <div>
+          <p className="font-display text-xl font-bold">{ad(activeDays)}</p>
+          <p className="text-xs text-muted-foreground">يوم نشاط</p>
+        </div>
+      </div>
+      <div className="no-scrollbar mt-5 overflow-x-auto">
+        <div className="inline-block min-w-full">
+          <div className="relative mb-1 h-4 text-[11px] text-muted-foreground" style={{ width: WEEKS * 16 }}>
+            {months.map((m) => (
+              <span key={m.col + m.label} className="absolute" style={{ right: m.col * 16 }}>
+                {m.label}
+              </span>
+            ))}
+          </div>
+          <div className="grid grid-flow-col grid-rows-7 gap-1" style={{ width: WEEKS * 16 }} role="img" aria-label={`أيام النشاط في آخر ${ad(WEEKS)} أسبوعًا`}>
+            {cells.map((c) => (
+              <span
+                key={c.date.getTime()}
+                title={c.future ? undefined : `${dayLong.format(c.date)}: ${ad(c.n)} سؤال`}
+                className="h-3 w-3 rounded-[3px]"
+                style={{ background: c.future ? "transparent" : colors[level(c.n)] }}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="mt-3 flex items-center justify-end gap-1.5 text-[11px] text-muted-foreground">
+        أقل
+        {colors.map((c) => (
+          <span key={c} className="h-3 w-3 rounded-[3px]" style={{ background: c }} />
+        ))}
+        أكثر
+      </div>
+    </Card>
+  );
+}
+
 export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const queryClient = useQueryClient();
   const { user, isLoading } = useAccount();
@@ -97,6 +182,8 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
   const st = useApp();
   const fileRef = useRef<HTMLInputElement>(null);
   const [installEvt, setInstallEvt] = useState<InstallPromptEvent | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<"login" | "register" | null>(null);
 
   useEffect(() => {
     const onPrompt = (e: Event) => {
@@ -133,6 +220,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
     };
   }, [st.attempts, st.best, st.conceptReads]);
   const fixed = mistakes?.stats.mastered ?? 0;
+  const daysLeft = st.examDate ? Math.ceil((new Date(st.examDate).setHours(0, 0, 0, 0) - new Date().setHours(0, 0, 0, 0)) / 86400000) : null;
   const xp = user ? Math.max(user.xp, st.xp) : st.xp;
 
   // الإنجازات بمستويات (كما في أوريندو)
@@ -192,7 +280,15 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
 
   return (
     <div className="space-y-6">
-      <PageTitle title="حسابي" />
+      <PageTitle
+        title="حسابي"
+        action={
+          <SecondaryButton onClick={() => setSettingsOpen(true)} aria-label="الإعدادات" className="px-3">
+            <Settings className="h-5 w-5" />
+            <span className="hidden sm:inline">الإعدادات</span>
+          </SecondaryButton>
+        }
+      />
 
       {/* من أنت */}
       {isLoading ? (
@@ -216,13 +312,65 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
         </Card>
       ) : (
         <Card className="p-5">
-          <h2 className="font-display text-lg font-semibold">احفظ تقدمك في حساب</h2>
-          <p className="mb-5 mt-1 text-sm leading-6 text-muted-foreground">
-            تعمل الآن ضيفًا: تقدمك وجواهرك على هذا الجهاز فقط. بالحساب تتابع من أي جهاز، وتحصل على ٥٠ جوهرة ترحيب.
-          </p>
-          <AuthPanel />
+          <div className="flex items-center gap-4">
+            <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+              <UserRound className="h-8 w-8" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="font-display text-lg font-semibold">ضيف</p>
+              <p className="mt-0.5 text-[13px] leading-6 text-muted-foreground">تقدمك محفوظ على هذا الجهاز فقط. أنشئ حسابًا لتتابع من أي جهاز، ولك ٥٠ جوهرة ترحيب.</p>
+            </div>
+          </div>
+          <div className="mt-4 flex gap-3">
+            <PrimaryButton onClick={() => setAuthMode("register")} className="flex-1">
+              أنشئ حسابًا
+            </PrimaryButton>
+            <SecondaryButton onClick={() => setAuthMode("login")} className="flex-1">
+              لدي حساب
+            </SecondaryButton>
+          </div>
         </Card>
       )}
+      {authMode && (
+        <ScreenShell title={authMode === "login" ? "تسجيل الدخول" : "إنشاء حساب"} onClose={() => setAuthMode(null)}>
+          <div className="mx-auto max-w-md">
+            <AuthPanel initialMode={authMode} onDone={() => setAuthMode(null)} />
+          </div>
+        </ScreenShell>
+      )}
+
+      {/* المستوى */}
+      <Card className="p-5">
+        <div className="flex items-center gap-4">
+          <span className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl bg-accent text-accent-foreground">
+            <span className="text-[10px] leading-none">المستوى</span>
+            <span className="font-display text-xl font-bold leading-tight">{ad(levelFromXp(xp))}</span>
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="font-display text-lg font-semibold">{levelTitle(levelFromXp(xp))}</p>
+            <ProgressBar value={(xpInLevel(xp) / LEVEL_XP) * 100} className="mt-2" />
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              {ad(xpInLevel(xp))} من {ad(LEVEL_XP)} نقطة إلى المستوى {ad(levelFromXp(xp) + 1)}
+            </p>
+          </div>
+        </div>
+        {st.examDate && (
+          <button type="button" onClick={() => setSettingsOpen(true)} className="mt-4 flex min-h-[44px] w-full items-center gap-3 border-t border-border pt-4 text-right text-sm">
+            <CalendarClock className="h-5 w-5 shrink-0 text-primary" />
+            <span className="flex-1">
+              موعد اختبارك {dateFmt.format(new Date(st.examDate))}
+              {daysLeft !== null && daysLeft >= 0 && <span className="text-muted-foreground">، بعد {arCount(daysLeft, DAY_FORMS)}</span>}
+            </span>
+            <ChevronLeft className="h-4 w-4 text-muted-foreground" />
+          </button>
+        )}
+      </Card>
+
+      {/* النشاط */}
+      <section>
+        <SectionHeader title="نشاطك" sub={`آخر ${ad(WEEKS)} أسبوعًا`} />
+        <ActivityMap sessions={st.sessions} />
+      </section>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* الجواهر */}
@@ -336,8 +484,11 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
         </Card>
       </section>
 
+      {settingsOpen && (
+        <ScreenShell title="الإعدادات" onClose={() => setSettingsOpen(false)}>
+          <div className="space-y-6">
       {/* الهدف والإعدادات */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6">
         <Card className="space-y-4 p-5">
           <SectionHeader title="هدفك" />
           <Segmented label="هدفك" value={st.goal ?? "job"} options={GOALS.map((g) => [g.id, g.label] as const)} onChange={st.setGoal} />
@@ -356,12 +507,14 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
 
         <Card className="space-y-4 p-5">
           <SectionHeader title="العرض" />
+          <p className="text-sm font-medium text-secondary-foreground">المظهر</p>
           <Segmented
             label="وضع العرض"
             value={st.darkMode}
             onChange={st.setDarkMode}
             options={[["light", "فاتح", Sun], ["auto", "تلقائي", Monitor], ["dark", "ليلي", Moon]] as const}
           />
+          <p className="text-sm font-medium text-secondary-foreground">حجم الخط</p>
           <Segmented label="حجم الخط" value={st.fontScale} onChange={st.setFontScale} options={[["normal", "عادي"], ["large", "كبير"], ["bigger", "أكبر"]] as const} />
           <button
             type="button"
@@ -461,11 +614,9 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           </>
         )}
       </Card>
-      <p className="text-center text-xs text-muted-foreground">
-        <button type="button" onClick={() => onGoTab("today")} className="min-h-[36px]">
-          العودة إلى اليوم
-        </button>
-      </p>
+          </div>
+        </ScreenShell>
+      )}
     </div>
   );
 }

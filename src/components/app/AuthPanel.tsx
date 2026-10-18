@@ -26,9 +26,9 @@ function GoogleIcon() {
 const inputCls =
   "h-12 w-full rounded-xl border border-input bg-card px-4 text-[15px] text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20";
 
-export default function AuthPanel({ onDone }: { onDone?: () => void }) {
+export default function AuthPanel({ onDone, initialMode = "register" }: { onDone?: () => void; initialMode?: "login" | "register" }) {
   const queryClient = useQueryClient();
-  const [mode, setMode] = useState<"login" | "register">("register");
+  const [mode, setMode] = useState<"login" | "register">(initialMode);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
