@@ -86,7 +86,7 @@ function RunScreen({
   const banner =
     graded && choice !== null
       ? {
-          best: { text: "قرار ممتاز! هذا ما يفعله المعلم المحترف", cls: "bg-indigo-600", icon: ThumbsUp },
+          best: { text: "قرار ممتاز! هذا ما يفعله المعلم المحترف", cls: "bg-emerald-600", icon: ThumbsUp },
           ok: { text: "قرار مقبول — لكن هناك خيار أزكى", cls: "bg-amber-500", icon: Lightbulb },
           poor: { text: "قرار فيه مخاطرة — انظر القرار الأفضل", cls: "bg-red-500", icon: ShieldAlert },
         }[chosenScore(sc, choice)]
@@ -134,10 +134,10 @@ function RunScreen({
             {sc.options.map((o, i) => {
               let cls = "border-border bg-white";
               if (graded) {
-                if (i === choice && o.score === "best") cls = "border-indigo-600 bg-indigo-50 ring-1 ring-indigo-600";
+                if (i === choice && o.score === "best") cls = "border-emerald-600 bg-emerald-50 ring-1 ring-emerald-600";
                 else if (i === choice && o.score === "ok") cls = "border-amber-500 bg-amber-50 ring-1 ring-amber-500";
                 else if (i === choice && o.score === "poor") cls = "border-red-500 bg-red-50 ring-1 ring-red-500";
-                else if (i === best && choice !== best) cls = "border-indigo-600 bg-indigo-50/70";
+                else if (i === best && choice !== best) cls = "border-emerald-600 bg-emerald-50/70";
                 else cls = "border-border bg-muted/30 opacity-60";
               }
               return (
@@ -151,7 +151,7 @@ function RunScreen({
                   <span
                     className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xl text-xs font-black ${
                       graded && (i === choice || (i === best && choice !== best))
-                        ? "bg-indigo-600 text-white"
+                        ? "bg-emerald-600 text-white"
                         : "bg-muted text-foreground/70"
                     }`}
                   >
@@ -159,7 +159,7 @@ function RunScreen({
                   </span>
                   <span className="flex-1 text-sm font-bold leading-6 text-foreground">{o.text}</span>
                   {graded && i === best && choice !== best && (
-                    <span className="shrink-0 rounded-full bg-indigo-600 px-2 py-0.5 text-[9px] font-black text-white">
+                    <span className="shrink-0 rounded-full bg-emerald-600 px-2 py-0.5 text-[9px] font-black text-white">
                       الأفضل
                     </span>
                   )}
@@ -183,11 +183,11 @@ function RunScreen({
                 <div className="p-4">
                   <p className="text-sm leading-8 text-foreground">{sc.options[choice].feedback}</p>
                   {choice !== best && (
-                    <div className="mt-3 rounded-2xl border border-indigo-200 bg-indigo-50 p-3">
-                      <p className="mb-1 flex items-center gap-1.5 text-xs font-black text-indigo-800">
+                    <div className="mt-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-3">
+                      <p className="mb-1 flex items-center gap-1.5 text-xs font-black text-emerald-800">
                         <Award className="h-4 w-4" /> القرار الأفضل: {LETTERS[best]} — {sc.options[best].text}
                       </p>
-                      <p className="text-xs leading-7 text-indigo-900/90">{sc.options[best].feedback}</p>
+                      <p className="text-xs leading-7 text-emerald-900/90">{sc.options[best].feedback}</p>
                     </div>
                   )}
                 </div>
@@ -223,8 +223,8 @@ function ResultScreen({ scores, run, onAgain, onExit }: { scores: ScenarioScore[
       <div className="safe-top" />
       <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
       <motion.div initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", damping: 12 }}>
-        <span className="flex h-24 w-24 items-center justify-center rounded-full bg-indigo-100">
-          <School className="h-12 w-12 text-indigo-700" />
+        <span className="flex h-24 w-24 items-center justify-center rounded-full bg-emerald-100">
+          <School className="h-12 w-12 text-emerald-700" />
         </span>
       </motion.div>
       <h2 className="mt-4 text-2xl font-black">{headline}</h2>
@@ -366,7 +366,7 @@ export default function ScenariosView() {
                             <Circle className="h-5 w-5 shrink-0 text-border" />
                           ) : (
                             <CheckCircle2
-                              className={`h-5 w-5 shrink-0 ${sc === "best" ? "text-indigo-600" : sc === "ok" ? "text-amber-500" : "text-red-500"}`}
+                              className={`h-5 w-5 shrink-0 ${sc === "best" ? "text-emerald-600" : sc === "ok" ? "text-amber-500" : "text-red-500"}`}
                             />
                           )}
                           <span className="flex-1">

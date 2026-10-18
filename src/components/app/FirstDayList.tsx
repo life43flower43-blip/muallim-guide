@@ -70,7 +70,7 @@ export default function FirstDayList() {
               <div className="min-w-0">
                 <h3 className="flex items-center gap-1.5 text-sm font-black">
                   <ClipboardCheck
-                    className={`h-4 w-4 shrink-0 ${allDone ? "text-indigo-600" : "text-primary"}`}
+                    className={`h-4 w-4 shrink-0 ${allDone ? "text-emerald-600" : "text-primary"}`}
                   />
                   {section.title}
                 </h3>
@@ -79,7 +79,7 @@ export default function FirstDayList() {
                 </p>
               </div>
               {allDone && (
-                <span className="shrink-0 rounded-full bg-indigo-100 px-2.5 py-1 text-[10px] font-black text-indigo-700">
+                <span className="shrink-0 rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-black text-emerald-700">
                   اكتمل القسم
                 </span>
               )}
@@ -94,17 +94,17 @@ export default function FirstDayList() {
                     onClick={() => toggleFirstday(item.id)}
                     aria-pressed={on}
                     className={`flex w-full items-start gap-2.5 rounded-xl border-2 p-2.5 text-right transition ${
-                      on ? "border-indigo-300 bg-indigo-50" : "border-border bg-white"
+                      on ? "border-emerald-300 bg-emerald-50" : "border-border bg-white"
                     }`}
                   >
                     <span
                       className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 ${
-                        on ? "border-indigo-600 bg-indigo-600 text-white" : "border-border bg-white"
+                        on ? "border-emerald-600 bg-emerald-600 text-white" : "border-border bg-white"
                       }`}
                     >
                       {on && <span className="text-[10px] font-black">✓</span>}
                     </span>
-                    <span className={`text-xs font-bold leading-6 ${on ? "text-indigo-900" : "text-foreground"}`}>
+                    <span className={`text-xs font-bold leading-6 ${on ? "text-emerald-900" : "text-foreground"}`}>
                       {item.text}
                     </span>
                   </button>

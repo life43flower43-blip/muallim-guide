@@ -406,7 +406,7 @@ export default function PeerChallenge() {
           <motion.div key={q.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="space-y-3">
             {concept && (
               <span className="rounded-full bg-muted px-3 py-1 text-[11px] font-bold text-muted-foreground">
-                {COURSE_SHORT[concept.courseId]} · {concept.chapter}
+                {COURSE_SHORT[concept.courseId]}، {concept.chapter}
               </span>
             )}
             <h2 className="text-lg font-extrabold leading-8">{q.question}</h2>
@@ -415,7 +415,7 @@ export default function PeerChallenge() {
                 const isSel = selected === o.text;
                 const isCorrect = o.isCorrect;
                 let cls = "border-border bg-white";
-                if (graded !== null && isCorrect) cls = "border-indigo-500 bg-indigo-50";
+                if (graded !== null && isCorrect) cls = "border-emerald-500 bg-emerald-50";
                 else if (graded === false && isSel) cls = "border-red-400 bg-red-50";
                 else if (isSel) cls = "border-primary bg-accent";
                 return (
@@ -426,7 +426,7 @@ export default function PeerChallenge() {
                     className={`flex w-full items-center gap-3 rounded-2xl border-2 p-3.5 text-right ${cls}`}
                   >
                     <span className="min-w-0 flex-1 text-sm font-bold leading-6">{o.text}</span>
-                    {graded !== null && isCorrect && <CheckCircle2 className="h-5 w-5 shrink-0 text-indigo-600" />}
+                    {graded !== null && isCorrect && <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" />}
                     {graded === false && isSel && <XCircle className="h-5 w-5 shrink-0 text-red-500" />}
                   </button>
                 );
@@ -437,7 +437,7 @@ export default function PeerChallenge() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={`rounded-xl p-3 text-xs font-bold leading-6 ${
-                  graded ? "bg-indigo-50 text-indigo-900" : "bg-red-50 text-red-900"
+                  graded ? "bg-emerald-50 text-emerald-900" : "bg-red-50 text-red-900"
                 }`}
               >
                 {graded ? "إجابة صحيحة — أحسنت" : `الصحيح: ${q.correct} — ${q.reason}`}
@@ -557,14 +557,14 @@ export default function PeerChallenge() {
                 <details key={r.qid} className="rounded-2xl border border-border bg-white p-3.5">
                   <summary className="flex cursor-pointer list-none items-start gap-2.5">
                     {r.ok ? (
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                     ) : (
                       <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
                     )}
                     <span className="text-xs font-bold leading-6">{rq.question}</span>
                   </summary>
                   {!r.ok && (
-                    <p className="mt-2 rounded-lg bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-800">
+                    <p className="mt-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-800">
                       الإجابة الصحيحة: {rq.correct}
                     </p>
                   )}

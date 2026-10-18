@@ -52,12 +52,12 @@ const ratingIcon: Record<SimRating, typeof CheckCircle2> = {
   poor: CircleAlert,
 };
 const ratingCls: Record<SimRating, string> = {
-  good: "text-indigo-600 border-indigo-200 bg-indigo-50",
+  good: "text-emerald-600 border-emerald-200 bg-emerald-50",
   ok: "text-amber-600 border-amber-200 bg-amber-50",
   poor: "text-red-600 border-red-200 bg-red-50",
 };
 const ratingTxt: Record<SimRating, string> = {
-  good: "text-indigo-700",
+  good: "text-emerald-700",
   ok: "text-amber-700",
   poor: "text-red-700",
 };
@@ -215,7 +215,7 @@ export default function SimLabView() {
     <div className="sticky top-0 z-10 border-b border-border bg-white/95 px-4 pb-3 pt-4 backdrop-blur">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-700 text-white shadow-sm">
+          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-cyan-700 text-white shadow-sm">
             <Compass className="h-5 w-5" />
           </span>
           <div>
@@ -247,7 +247,7 @@ export default function SimLabView() {
         {header}
         <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
           {/* شريط الفلسفة */}
-          <div className="rounded-3xl border-2 border-primary/20 bg-gradient-to-bl from-indigo-50 to-violet-50 p-5">
+          <div className="rounded-3xl border-2 border-primary/20 bg-gradient-to-bl from-emerald-50 to-cyan-50 p-5">
             <p className="flex items-center gap-2 text-sm font-black text-primary">
               <FlaskConical className="h-4.5 w-4.5" /> من يعرف المعلومات… إلى معلم يتصرف بذكاء
             </p>
@@ -265,7 +265,7 @@ export default function SimLabView() {
           <motion.button
             whileTap={{ scale: 0.985 }}
             onClick={startSession}
-            className="mt-4 flex w-full items-center gap-3 rounded-3xl border-2 border-primary/40 bg-gradient-to-bl from-violet-50 to-indigo-50 p-4 text-right shadow-soft transition hover:border-primary"
+            className="mt-4 flex w-full items-center gap-3 rounded-3xl border-2 border-primary/40 bg-gradient-to-bl from-cyan-50 to-emerald-50 p-4 text-right shadow-soft transition hover:border-primary"
           >
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
               <Play className="h-5 w-5" />
@@ -372,14 +372,14 @@ export default function SimLabView() {
 
         {sessionActive && !finished && (
           <p className="mt-1 text-xs font-black text-primary">
-            الجلسة الموسعة — الموقف {ad(sessionIdx + 1)} من {ad(SIM_SESSION_SIZE)} · قرارات الجلسة حتى الآن: {ad(sessionDecisions)}
+            الجلسة الموسعة — الموقف {ad(sessionIdx + 1)} من {ad(SIM_SESSION_SIZE)}، قرارات الجلسة حتى الآن: {ad(sessionDecisions)}
           </p>
         )}
 
         {!finished && !pendingOutcome && (
           <motion.div key={nodeKey + runId} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-4 space-y-3">
             {nodeKey === "start" && (
-              <div className="rounded-2xl border-2 border-primary/20 bg-gradient-to-bl from-indigo-50 to-violet-50 p-4 text-sm font-bold leading-7 text-gray-800">
+              <div className="rounded-2xl border-2 border-primary/20 bg-gradient-to-bl from-emerald-50 to-cyan-50 p-4 text-sm font-bold leading-7 text-gray-800">
                 {scenario.intro}
               </div>
             )}
@@ -436,7 +436,7 @@ export default function SimLabView() {
         {finished && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-4 space-y-4">
             {sessionDone && (
-              <div className="rounded-3xl border-2 border-primary/40 bg-gradient-to-bl from-indigo-50 to-violet-50 p-5">
+              <div className="rounded-3xl border-2 border-primary/40 bg-gradient-to-bl from-emerald-50 to-cyan-50 p-5">
                 <p className="flex items-center gap-2 text-sm font-black text-primary">
                   <Sparkles className="h-4.5 w-4.5" /> خلاصة الجلسة الموسعة
                 </p>

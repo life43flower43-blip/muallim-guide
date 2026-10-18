@@ -40,7 +40,7 @@ import type { Concept, Course } from "@/lib/types";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { shareText } from "@/lib/share";
-import { ad, splitArParagraphs, exampleContext } from "@/lib/arabic";
+import { ad, arCount, CONCEPT_FORMS, splitArParagraphs, exampleContext } from "@/lib/arabic";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import SpeakButton from "./SpeakButton";
@@ -77,10 +77,10 @@ const COURSE_SUBTITLE: Record<string, string> = {
 // ---------- مجتمع الطلاب: أمثلة يضيفها الطلاب من واقع تخصصاتهم ----------
 const SPECIALTIES = ["هندسة", "طب", "إنسانيات", "تربية", "أخرى"];
 const SPECIALTY_COLORS: Record<string, string> = {
-  "هندسة": "#7C3AED",
+  "هندسة": "#0E6B7C",
   "طب": "#BE185D",
-  "إنسانيات": "#7C3AED",
-  "تربية": "#6D28D9",
+  "إنسانيات": "#0E6B7C",
+  "تربية": "#0B5563",
   "أخرى": "#B45309",
 };
 
@@ -274,7 +274,7 @@ function ConceptDetail({
     >
       <div
         className="safe-top relative overflow-hidden px-4 pb-5 pt-3 text-white"
-        style={{ background: `linear-gradient(135deg, ${COURSE_COLOR[course.id] ?? "#5B21B6"}, #2A1058)` }}
+        style={{ background: `linear-gradient(135deg, ${COURSE_COLOR[course.id] ?? "#0B5563"}, #06343C)` }}
       >
         {/* أشكال زخرفية */}
         <span aria-hidden className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-white/10" />
@@ -346,7 +346,7 @@ function ConceptDetail({
             </div>
           </div>
           <div className="space-y-3">
-            <p className="flex items-center gap-2 text-sm font-black text-violet-800">
+            <p className="flex items-center gap-2 text-sm font-black text-cyan-800">
               <Lightbulb className="h-4 w-4" /> الشواهد التطبيقية من الميدان
             </p>
             <p className="text-[11px] font-bold leading-5 text-muted-foreground">
@@ -356,22 +356,22 @@ function ConceptDetail({
               {/* الخط الزمني الرأسي */}
               <span
                 aria-hidden
-                className="absolute bottom-3 right-[11px] top-3 w-0.5 rounded-full bg-gradient-to-b from-violet-300 via-violet-200 to-violet-100"
+                className="absolute bottom-3 right-[11px] top-3 w-0.5 rounded-full bg-gradient-to-b from-cyan-300 via-cyan-200 to-cyan-100"
               />
               {examples.map((ex, i) => (
                 <div key={i} className="relative">
                   {/* عقدة الرقم على الخط */}
-                  <span className="absolute -right-5 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-violet-800 text-[11px] font-black text-white shadow-md ring-2 ring-white">
+                  <span className="absolute -right-5 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-cyan-600 to-cyan-800 text-[11px] font-black text-white shadow-md ring-2 ring-white">
                     {ad(i + 1)}
                   </span>
-                  <div className="rounded-3xl border border-violet-100 bg-gradient-to-bl from-violet-50/80 to-white p-4 shadow-[0_2px_10px_rgba(109,40,217,0.05)]">
+                  <div className="rounded-3xl border border-cyan-100 bg-gradient-to-bl from-cyan-50/80 to-white p-4 shadow-[0_2px_10px_rgba(109,40,217,0.05)]">
                     <div className="flex items-start gap-2">
                       <div className="flex-1 space-y-2">
-                        <span className="inline-block rounded-full bg-white px-2.5 py-0.5 text-[10px] font-black text-violet-700 ring-1 ring-violet-200">
+                        <span className="inline-block rounded-full bg-white px-2.5 py-0.5 text-[10px] font-black text-cyan-700 ring-1 ring-cyan-200">
                           سياق: {exampleContext(ex)}
                         </span>
                         {splitArParagraphs(ex).map((p, j) => (
-                          <p key={j} className="text-sm leading-7 text-violet-950/95">{p}</p>
+                          <p key={j} className="text-sm leading-7 text-cyan-950/95">{p}</p>
                         ))}
                       </div>
                       <SpeakButton text={ex} label="استمع للمثال" />
@@ -390,7 +390,7 @@ function ConceptDetail({
 
       <div className="safe-bottom space-y-2 border-t border-border bg-white px-4 pt-3">
         <Button
-          className="h-13 w-full rounded-2xl bg-gradient-to-l from-violet-700 to-violet-900 py-3.5 text-base font-black text-white shadow-lg shadow-violet-900/20"
+          className="h-13 w-full rounded-2xl bg-gradient-to-l from-cyan-700 to-cyan-900 py-3.5 text-base font-black text-white shadow-lg shadow-cyan-900/20"
           onClick={() => {
             readConcept(c.id);
             startQuiz({
@@ -412,7 +412,7 @@ function ConceptDetail({
               onClose();
             }}
           >
-            <CheckCircle2 className="ml-1 h-4 w-4 text-indigo-600" /> تعليم كمقروء
+            <CheckCircle2 className="ml-1 h-4 w-4 text-emerald-600" /> تعليم كمقروء
           </Button>
         )}
       </div>
@@ -504,18 +504,25 @@ export default function ConceptsView() {
   );
 
   return (
-    <div className="space-y-3 pb-6">
+    <div className="space-y-4 pb-6">
+      {!openCourse && searchResults === null && (
+        <div>
+          <h1 className="font-display text-2xl font-bold lg:text-[28px]">التعلّم</h1>
+          <p className="mt-1 text-sm leading-6 text-muted-foreground">المقررات بفصولها ومفاهيمها، لكل مفهوم شرح وأمثلة من الميدان وأسئلة.</p>
+        </div>
+      )}
       {/* البحث في كل المفاهيم */}
-      <div className="mx-4 flex items-center gap-2 rounded-2xl border border-border bg-white px-3">
+      <div className="flex h-12 items-center gap-2 rounded-xl border border-input bg-card px-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
         <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="ابحث عن مفهوم..."
-          className="w-full bg-transparent py-3 text-sm font-bold text-foreground outline-none placeholder:text-muted-foreground/70"
+          placeholder="ابحث عن مفهوم أو نظرية..."
+          aria-label="ابحث عن مفهوم"
+          className="w-full bg-transparent text-[15px] text-foreground outline-none placeholder:text-muted-foreground"
         />
         {query && (
-          <button onClick={() => setQuery("")} aria-label="مسح البحث" className="rounded-full bg-muted p-1.5">
+          <button onClick={() => setQuery("")} aria-label="مسح البحث" className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
             <X className="h-3.5 w-3.5 text-muted-foreground" />
           </button>
         )}
@@ -523,7 +530,7 @@ export default function ConceptsView() {
 
       {searchResults !== null ? (
         // نتائج البحث فوق أي مستوى
-        <div className="space-y-2 px-4">
+        <div className="space-y-2">
           <p className="text-xs font-bold text-muted-foreground">
             {searchResults.length > 0
               ? "نتائج البحث"
@@ -537,7 +544,7 @@ export default function ConceptsView() {
             >
               <span
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white"
-                style={{ background: COURSE_COLOR[c.courseId] ?? "#5B21B6" }}
+                style={{ background: COURSE_COLOR[c.courseId] ?? "#0B5563" }}
               >
                 <CourseIcon id={c.courseId} className="h-4.5 w-4.5" />
               </span>
@@ -557,39 +564,11 @@ export default function ConceptsView() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.18 }}
-          className="space-y-3 px-4"
+          className="space-y-3"
         >
-          {/* قلب الصف — سلّم المشاعر التربوي وشرارة المبدع */}
-          <button
-            onClick={startHeart}
-            className="relative w-full overflow-hidden rounded-3xl border border-border bg-gradient-to-l from-[#2A1058] to-[#6D28D9] p-4 text-right shadow-soft"
-          >
-            <Heart
-              aria-hidden
-              className="pointer-events-none absolute -bottom-5 -left-4 h-24 w-24 text-white/5"
-            />
-            <div className="relative flex items-center gap-3">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/25 backdrop-blur">
-                <Heart className="h-5 w-5 text-amber-300" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="flex items-center gap-2">
-                  <span className="truncate text-sm font-black text-white">قلب الصف</span>
-                  <span className="rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-black text-amber-950">
-                    سلّم المشاعر وشرارة المبدع
-                  </span>
-                </span>
-                <span className="mt-0.5 block truncate text-[11px] font-bold text-white/85">
-                  شخصيات صفك في ست عائلات من المشاعر — اقرأ واستلهم
-                </span>
-              </span>
-              <ChevronLeft className="h-4.5 w-4.5 shrink-0 text-white" />
-            </div>
-          </button>
-
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-3 sm:grid-cols-2">
           {COURSES.map((course) => {
-            const color = COURSE_COLOR[course.id] ?? "#5B21B6";
+            const color = COURSE_COLOR[course.id] ?? "#0B5563";
             const courseConcepts = conceptsOfCourse(course.id);
             const readCount = courseConcepts.filter((cc) => conceptReads[cc.id]).length;
             const pct = courseConcepts.length ? Math.round((readCount / courseConcepts.length) * 100) : 0;
@@ -600,50 +579,27 @@ export default function ConceptsView() {
                   setOpenCourseId(course.id);
                   setOpenChapter(null);
                 }}
-                className="group relative flex min-h-[128px] flex-col overflow-hidden rounded-3xl border border-indigo-100/80 bg-white p-3.5 text-right shadow-[0_2px_10px_rgba(49,46,129,0.05),0_14px_34px_rgba(49,46,129,0.07)] transition-all active:scale-[0.98]"
+                className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 text-right card-soft transition-colors hover:bg-muted/40"
               >
-                {/* غشاء تدرّج علوي فاتح بلون المحور */}
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute inset-x-0 top-0 h-16 opacity-[0.08]"
-                  style={{ background: `linear-gradient(180deg, ${color}, transparent)` }}
-                />
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute -left-6 -top-6 h-20 w-20 rounded-full opacity-[0.06]"
-                  style={{ background: color }}
-                />
-                <span className="relative flex items-start justify-between">
+                <span className="flex items-start gap-3">
                   <span
-                    className="flex h-11 w-11 items-center justify-center rounded-2xl text-white shadow-lg"
-                    style={{ background: `linear-gradient(135deg, ${color}, ${color}cc)` }}
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+                    style={{ background: `color-mix(in srgb, ${color} 12%, transparent)`, color }}
                   >
                     <CourseIcon id={course.id} className="h-5 w-5" />
                   </span>
-                  <span
-                    className="rounded-full px-2 py-0.5 text-[9px] font-black"
-                    style={{ background: `${color}14`, color }}
-                  >
-                    {ad(courseConcepts.length)} مفهومًا
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[15px] font-semibold leading-6 text-foreground">{course.name}</span>
+                    <span className="mt-0.5 block text-[13px] leading-5 text-muted-foreground">{COURSE_SUBTITLE[course.id]}</span>
                   </span>
                 </span>
-                <span className="relative mt-2.5 text-sm font-black leading-6 text-gray-900">
-                  {COURSE_SHORT[course.id]}
-                </span>
-                <span className="relative mt-0.5 line-clamp-2 text-[10px] font-bold leading-4 text-muted-foreground">
-                  {COURSE_SUBTITLE[course.id]}
-                </span>
-                {/* شريط تقدم القراءة */}
-                <span className="relative mt-auto pt-2.5">
-                  <span className="mb-1 flex items-center justify-between text-[9px] font-black">
-                    <span className="text-muted-foreground">قرأت {ad(readCount)}</span>
-                    <span style={{ color }}>{ad(pct)}٪</span>
+                <span className="mt-auto">
+                  <span className="mb-1.5 flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{arCount(courseConcepts.length, CONCEPT_FORMS)}، قرأت {ad(readCount)}</span>
+                    <span className="font-medium text-foreground">{ad(pct)}٪</span>
                   </span>
-                  <span className="block h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
-                    <span
-                      className="block h-full rounded-full transition-all"
-                      style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${color}, ${color}aa)` }}
-                    />
+                  <span className="block h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                    <span className="block h-full rounded-full bg-primary transition-all" style={{ width: `${pct}%` }} />
                   </span>
                 </span>
               </button>
@@ -658,12 +614,12 @@ export default function ConceptsView() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.18 }}
-          className="space-y-3 px-4"
+          className="space-y-3"
         >
           <SubHeader
             title={COURSE_SHORT[openCourse.id]}
             hint={COURSE_SUBTITLE[openCourse.id]}
-            accent={COURSE_COLOR[openCourse.id] ?? "#5B21B6"}
+            accent={COURSE_COLOR[openCourse.id] ?? "#0B5563"}
             onBack={() => {
               setOpenCourseId(null);
               setOpenChapter(null);
@@ -674,12 +630,12 @@ export default function ConceptsView() {
               const chConcepts = conceptsOfCourse(openCourse.id).filter((c) => c.chapter === ch);
               const chRead = chConcepts.filter((c) => conceptReads[c.id]).length;
               const chPct = chConcepts.length ? Math.round((chRead / chConcepts.length) * 100) : 0;
-              const color = COURSE_COLOR[openCourse.id] ?? "#5B21B6";
+              const color = COURSE_COLOR[openCourse.id] ?? "#0B5563";
               return (
               <button
                 key={ch}
                 onClick={() => setOpenChapter(ch)}
-                className="group relative flex min-h-[112px] flex-col overflow-hidden rounded-3xl border border-indigo-100/70 bg-white p-3.5 text-right shadow-[0_2px_8px_rgba(49,46,129,0.04),0_10px_26px_rgba(49,46,129,0.06)] transition-all active:scale-[0.98]"
+                className="group relative flex min-h-[112px] flex-col overflow-hidden rounded-3xl border border-emerald-100/70 bg-white p-3.5 text-right shadow-[0_2px_8px_rgba(49,46,129,0.04),0_10px_26px_rgba(49,46,129,0.06)] transition-all active:scale-[0.98]"
               >
                 <span
                   aria-hidden
@@ -729,25 +685,25 @@ export default function ConceptsView() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.18 }}
-          className="space-y-3 px-4"
+          className="space-y-3"
         >
           <SubHeader
             title={chapterLabel(openChapter)}
             hint={COURSE_SHORT[openCourse.id]}
-            accent={COURSE_COLOR[openCourse.id] ?? "#5B21B6"}
+            accent={COURSE_COLOR[openCourse.id] ?? "#0B5563"}
             onBack={() => setOpenChapter(null)}
           />
           <div className="grid grid-cols-2 gap-2.5">
             {chapterConcepts.map((c, cIdx) => {
               const isRead = !!conceptReads[c.id];
-              const color = COURSE_COLOR[c.courseId] ?? "#5B21B6";
+              const color = COURSE_COLOR[c.courseId] ?? "#0B5563";
               const cQs = questionsOfConcept(c.id).length;
               return (
                 <button
                   key={c.id}
                   onClick={() => setDetailId(c.id)}
                   className={`group relative flex min-h-[124px] flex-col overflow-hidden rounded-3xl border p-3 text-right shadow-[0_2px_8px_rgba(49,46,129,0.04),0_10px_26px_rgba(49,46,129,0.06)] transition-all active:scale-[0.98] ${
-                    isRead ? "border-indigo-200 bg-indigo-50/40" : "border-indigo-100/70 bg-white"
+                    isRead ? "border-emerald-200 bg-emerald-50/40" : "border-emerald-100/70 bg-white"
                   }`}
                 >
                   <span

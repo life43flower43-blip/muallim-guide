@@ -9,7 +9,7 @@ export function RingProgress({
   value,
   size = 64,
   stroke = 7,
-  color = "#4F46E5",
+  color = "#0B5563",
   track = "#e0e7ff",
   children,
 }: {
@@ -59,7 +59,7 @@ export function StatCard({
   icon,
   value,
   label,
-  color = "#4F46E5",
+  color = "#0B5563",
 }: {
   icon: string;
   value: string | number;
@@ -139,7 +139,7 @@ export function NewBadge({ tone = "amber" }: { tone?: "amber" | "violet" }) {
       className={`flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-black ${
         tone === "amber"
           ? "bg-amber-400 text-amber-950"
-          : "bg-violet-600 text-white"
+          : "bg-cyan-600 text-white"
       }`}
     >
       <Sparkles className="h-3 w-3" /> جديد
@@ -173,7 +173,7 @@ export function ToolRow({
         className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-white shadow-sm ${
           tone === "amber"
             ? "bg-gradient-to-br from-amber-500 to-orange-500"
-            : "bg-gradient-to-br from-violet-600 to-violet-800"
+            : "bg-gradient-to-br from-cyan-600 to-cyan-800"
         }`}
       >
         <Icon className="h-5 w-5" />

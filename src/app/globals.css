@@ -6,8 +6,13 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, system-ui, sans-serif;
-  --font-mono: "IBM Plex Sans Arabic", monospace;
+  --font-sans: "Noto Sans Arabic", "Segoe UI", Tahoma, system-ui, sans-serif;
+  --font-display: "Noto Kufi Arabic", "Noto Sans Arabic", system-ui, sans-serif;
+  --font-mono: "Noto Sans Arabic", monospace;
+  --color-gem: var(--gem);
+  --color-gem-soft: var(--gem-soft);
+  --color-success-soft: var(--success-soft);
+  --color-danger-soft: var(--danger-soft);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -38,32 +43,37 @@
 }
 
 :root {
-  --radius: 1rem;
-  --background: #FAF9F8;
-  --foreground: #2B2340;
+  /* هوية «تربوي»: أزرق مخضرّ داكن هادئ، رماديات باردة، وبرتقالي للجواهر وحدها */
+  --radius: 0.75rem;
+  --background: #F7F8FA;
+  --foreground: #101828;
   --card: #ffffff;
-  --card-foreground: #2B2340;
+  --card-foreground: #101828;
   --popover: #ffffff;
-  --popover-foreground: #2B2340;
-  --primary: #5B21B6;
-  --primary-foreground: #FAF5FF;
-  --secondary: #EDE9FE;
-  --secondary-foreground: #4C1D95;
-  --muted: #F2EFF8;
-  --muted-foreground: #6E6486;
-  --accent: #F3EEFC;
-  --accent-foreground: #4C1D95;
-  --destructive: #dc2626;
-  --border: #E8E2F2;
-  --input: #DFD7EE;
-  --ring: #7C3AED;
-  --success: #16a34a;
-  --warning: #f59e0b;
-  --teal: #7c3aed;
-  --amber: #f59e0b;
-  --rose: #f43f5e;
-  --violet: #8b5cf6;
-  --mint: #10b981;
+  --popover-foreground: #101828;
+  --primary: #0B5563;
+  --primary-foreground: #ffffff;
+  --secondary: #F2F4F7;
+  --secondary-foreground: #344054;
+  --muted: #F2F4F7;
+  --muted-foreground: #475467;
+  --accent: #E7F2F4;
+  --accent-foreground: #0B5563;
+  --destructive: #B42318;
+  --border: #E4E7EC;
+  --input: #D0D5DD;
+  --ring: #0B5563;
+  --success: #067647;
+  --warning: #B54708;
+  --teal: #0B5563;
+  --amber: #B54708;
+  --rose: #B42318;
+  --violet: #5925DC;
+  --mint: #067647;
+  --gem: #B54708;
+  --gem-soft: #FEF6E7;
+  --success-soft: #ECFDF3;
+  --danger-soft: #FEF3F2;
 }
 
 * {
@@ -78,7 +88,7 @@ body {
 
 body {
   @apply bg-background text-foreground;
-  font-family: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, system-ui, sans-serif;
+  font-family: "Noto Sans Arabic", "Segoe UI", Tahoma, system-ui, sans-serif;
   -webkit-tap-highlight-color: transparent;
   text-rendering: optimizeLegibility;
 }
@@ -89,7 +99,7 @@ body {
   height: 4px;
 }
 .nice-scroll::-webkit-scrollbar-thumb {
-  background: rgba(124, 58, 237, 0.25);
+  background: rgba(11, 85, 99, 0.25);
   border-radius: 999px;
 }
 .nice-scroll::-webkit-scrollbar-track {
@@ -112,13 +122,13 @@ body {
 .shadow-lift {
   box-shadow:
     0 2px 4px rgba(28, 22, 40, 0.05),
-    0 16px 40px -16px rgba(124, 58, 237, 0.25);
+    0 16px 40px -16px rgba(16, 24, 40, 0.18);
 }
 
 /* dotted ambient background for desktop sides */
 .ambient-bg {
-  background-color: #efecf6;
-  background-image: radial-gradient(rgba(124, 58, 237, 0.08) 1px, transparent 1px);
+  background-color: #EEF1F4;
+  background-image: none;
   background-size: 22px 22px;
 }
 
@@ -198,9 +208,7 @@ body {
 
 /* ظل ناعم للبطاقات */
 .card-soft {
-  box-shadow:
-    0 1px 2px rgba(28, 22, 40, 0.05),
-    0 12px 32px -16px rgba(91, 33, 182, 0.18);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
 }
 
 /* أشرطة التقدم */
@@ -257,23 +265,30 @@ body {
 /* تفعيله بصف .dark على الجذر من مفتاح «حسابي»، وتغير متغيرات الثيم كلها */
 
 .dark {
-  --background: #131020;
-  --foreground: #E9E4F5;
-  --card: #1B1630;
-  --card-foreground: #E9E4F5;
-  --popover: #1B1630;
-  --popover-foreground: #E9E4F5;
-  --primary: #A78BFA;
-  --primary-foreground: #2A1058;
-  --secondary: #2A2145;
-  --secondary-foreground: #CFC2EE;
-  --muted: #221B38;
-  --muted-foreground: #A79BC7;
-  --accent: #2A2145;
-  --accent-foreground: #D5C8F3;
-  --border: #2C2347;
-  --input: #372B57;
-  --ring: #8B5CF6;
+  --background: #0C1416;
+  --foreground: #E6EDEF;
+  --card: #121D20;
+  --card-foreground: #E6EDEF;
+  --popover: #121D20;
+  --popover-foreground: #E6EDEF;
+  --primary: #5FB3C1;
+  --primary-foreground: #06262B;
+  --secondary: #18262A;
+  --secondary-foreground: #C9D6DA;
+  --muted: #18262A;
+  --muted-foreground: #9AABB0;
+  --accent: #12323A;
+  --accent-foreground: #A9DCE4;
+  --border: #22343A;
+  --input: #2C4148;
+  --ring: #5FB3C1;
+  --success: #47CD89;
+  --warning: #FDB022;
+  --destructive: #F97066;
+  --gem: #FDB022;
+  --gem-soft: rgba(253, 176, 34, 0.12);
+  --success-soft: rgba(71, 205, 137, 0.12);
+  --danger-soft: rgba(249, 112, 102, 0.12);
 }
 
 /* إعادة خريطة الأصناف الثابتة الشائعة داخل الواجهة — الطبقة الداكنة فقط */
@@ -297,6 +312,27 @@ body {
 }
 
 /* صناديق التوجيه والأمثلة الملونة — نفس الدلالة بإضاءة منخفضة */
+.dark .bg-cyan-50 {
+  background-color: rgba(95, 179, 193, 0.1);
+}
+.dark .bg-cyan-100 {
+  background-color: rgba(95, 179, 193, 0.16);
+}
+.dark .border-cyan-100 {
+  border-color: rgba(95, 179, 193, 0.22);
+}
+.dark .border-cyan-200 {
+  border-color: rgba(95, 179, 193, 0.3);
+}
+.dark .text-cyan-950,
+.dark .text-cyan-900 {
+  color: #cdeaf0;
+}
+.dark .text-cyan-800,
+.dark .text-cyan-700 {
+  color: #a9dce4;
+}
+
 .dark .bg-violet-50 {
   background-color: rgba(139, 92, 246, 0.12);
 }
@@ -428,6 +464,11 @@ body {
 
 /* الخلفية المحيطة على الشاشات الكبيرة */
 .dark .ambient-bg {
-  background-color: #0e0b18;
-  background-image: radial-gradient(rgba(167, 139, 250, 0.06) 1px, transparent 1px);
+  background-color: #081012;
+  background-image: none;
+}
+
+/* عناوين الهوية: خط كوفي هادئ للعناوين، والنص بخط نسخي حديث */
+.font-display {
+  font-family: var(--font-display);
 }

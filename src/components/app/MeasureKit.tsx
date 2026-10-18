@@ -73,7 +73,7 @@ export default function MeasureKit() {
       <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#7C3AED] text-white">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0E6B7C] text-white">
               <Calculator className="h-5 w-5" />
             </span>
             <h2 className="text-xl font-black">معدة القياس والتقويم</h2>
@@ -83,7 +83,7 @@ export default function MeasureKit() {
           </button>
         </div>
 
-        <p className="mb-3 rounded-2xl border-2 border-[#7C3AED]/20 bg-gradient-to-l from-[#7C3AED]/10 to-transparent p-3.5 text-xs font-bold leading-6 text-foreground">
+        <p className="mb-3 rounded-2xl border-2 border-[#0E6B7C]/20 bg-gradient-to-l from-[#0E6B7C]/10 to-transparent p-3.5 text-xs font-bold leading-6 text-foreground">
           حاسباتك الأربع لورقة التقويم: أدخل درجات طلابك أو إجاباتهم وستقرأ النتيجة مع تربويها — كل
           الحساب يجري على جهازك ولا يغادره.
         </p>
@@ -98,7 +98,7 @@ export default function MeasureKit() {
                 onClick={() => setTool(t.id)}
                 className={`flex flex-col items-center gap-1 rounded-xl border-2 px-1 py-2 text-[10px] font-black leading-4 ${
                   tool === t.id
-                    ? "border-[#7C3AED] bg-[#7C3AED]/10 text-[#7C3AED]"
+                    ? "border-[#0E6B7C] bg-[#0E6B7C]/10 text-[#0E6B7C]"
                     : "border-border bg-white text-muted-foreground"
                 }`}
               >
@@ -210,13 +210,13 @@ function DifficultyTool() {
             <span
               className={`rounded-full px-3 py-1 text-sm font-black ${
                 res.tone === "easy"
-                  ? "bg-indigo-100 text-indigo-700"
+                  ? "bg-emerald-100 text-emerald-700"
                   : res.tone === "mid"
                     ? "bg-sky-100 text-sky-700"
                     : "bg-red-100 text-red-700"
               }`}
             >
-              {res.word} · {pct(res.p)}
+              {res.word}، {pct(res.p)}
             </span>
           </div>
           <div className="progress-track h-3">
@@ -259,8 +259,8 @@ function DiscrimTool() {
         desc="قارن المجموعة العليا بالدنيا في نتيجة الاختبار"
       />
       <div className="mt-3 space-y-2">
-        <div className="rounded-xl bg-indigo-50 p-3">
-          <p className="mb-2 text-center text-[11px] font-black text-indigo-800">
+        <div className="rounded-xl bg-emerald-50 p-3">
+          <p className="mb-2 text-center text-[11px] font-black text-emerald-800">
             المجموعة العليا — أعلى الدرجات
           </p>
           <div className="grid grid-cols-2 gap-2">
@@ -310,13 +310,13 @@ function DiscrimTool() {
             <span
               className={`rounded-full px-3 py-1 text-sm font-black ${
                 res.tone === "great" || res.tone === "good"
-                  ? "bg-indigo-100 text-indigo-700"
+                  ? "bg-emerald-100 text-emerald-700"
                   : res.tone === "neg"
                     ? "bg-red-100 text-red-700"
                     : "bg-amber-100 text-amber-700"
               }`}
             >
-              {res.word} · {ad(res.d.toFixed(2))}
+              {res.word}، {ad(res.d.toFixed(2))}
             </span>
           </div>
           <Note>{res.note}</Note>

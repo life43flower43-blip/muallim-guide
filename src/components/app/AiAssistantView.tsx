@@ -118,7 +118,7 @@ export default function AiAssistantView() {
       className="fixed inset-0 z-50 flex flex-col bg-background"
     >
       {/* ======= الرأس ======= */}
-      <div className="safe-top shrink-0 bg-gradient-to-bl from-[#2A1058] via-[#4C1D95] to-[#6D28D9] px-4 pb-4">
+      <div className="safe-top shrink-0 bg-gradient-to-bl from-[#06343C] via-[#0A4652] to-[#0B5563] px-4 pb-4">
         <div className="flex items-center justify-between pt-3">
           <div className="flex items-center gap-2.5">
             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/15 backdrop-blur">
@@ -205,7 +205,7 @@ function EmptyState({ onPick }: { onPick: (t: string) => void }) {
   return (
     <div className="mx-auto max-w-md pt-6">
       <div className="rounded-3xl border border-border bg-white p-5 text-center shadow-sm">
-        <span className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-bl from-[#4C1D95] to-[#6D28D9]">
+        <span className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-bl from-[#0A4652] to-[#0B5563]">
           <Sparkles className="h-7 w-7 text-amber-300" />
         </span>
         <h2 className="text-lg font-black text-foreground">كيف أساعدك اليوم؟</h2>

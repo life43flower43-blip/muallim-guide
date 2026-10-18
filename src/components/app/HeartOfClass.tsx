@@ -57,7 +57,7 @@ export default function HeartOfClass() {
       className="fixed inset-0 z-50 flex flex-col bg-background"
     >
       {/* رأس الطبقة */}
-      <div className="safe-top bg-gradient-to-bl from-[#2A1058] via-[#4C1D95] to-[#6D28D9] px-4 pb-4 pt-3 text-white">
+      <div className="safe-top bg-gradient-to-bl from-[#06343C] via-[#0A4652] to-[#0B5563] px-4 pb-4 pt-3 text-white">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
             <p className="flex items-center gap-1.5 text-[11px] font-bold text-white/85">
@@ -104,7 +104,7 @@ export default function HeartOfClass() {
               transition={{ duration: 0.16 }}
               className="space-y-3"
             >
-              <p className="rounded-2xl border border-violet-100 bg-violet-50 p-3.5 text-[12px] font-bold leading-6 text-violet-900">
+              <p className="rounded-2xl border border-cyan-100 bg-cyan-50 p-3.5 text-[12px] font-bold leading-6 text-cyan-900">
                 صفك قلب ينبض بمشاعر لا تراها على الدفاتر. ست عائلات من المشاعر تشرح أكثر
                 تصرفات الطلاب — اقرأ العائلة، تعرّف على الشخصية، وسِر على السلّم خطوة خطوة.
               </p>
@@ -116,7 +116,7 @@ export default function HeartOfClass() {
                       <h3 className="text-sm font-black text-gray-900">{f.name}</h3>
                       <p className="mt-0.5 text-[11px] font-bold leading-5 text-gray-500">{f.hint}</p>
                     </div>
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-violet-800 text-white">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-600 to-cyan-800 text-white">
                       <Heart className="h-4.5 w-4.5" />
                     </span>
                   </div>
@@ -125,20 +125,20 @@ export default function HeartOfClass() {
                     {f.personas.map((p) => {
                       const isOpen = openPersona === p.id;
                       return (
-                        <div key={p.id} className="overflow-hidden rounded-2xl border border-violet-100 bg-violet-50/60">
+                        <div key={p.id} className="overflow-hidden rounded-2xl border border-cyan-100 bg-cyan-50/60">
                           <button
                             onClick={() => setOpenPersona(isOpen ? null : p.id)}
                             className="flex w-full items-center gap-2.5 px-3.5 py-3 text-right"
                             aria-expanded={isOpen}
                           >
                             <span className="min-w-0 flex-1">
-                              <span className="block text-[13px] font-black text-violet-950">{p.name}</span>
-                              <span className="mt-0.5 block truncate text-[11px] font-bold text-violet-800/80">
+                              <span className="block text-[13px] font-black text-cyan-950">{p.name}</span>
+                              <span className="mt-0.5 block truncate text-[11px] font-bold text-cyan-800/80">
                                 {p.tag}
                               </span>
                             </span>
                             <ChevronDown
-                              className={`h-4.5 w-4.5 shrink-0 text-violet-700 transition-transform ${
+                              className={`h-4.5 w-4.5 shrink-0 text-cyan-700 transition-transform ${
                                 isOpen ? "rotate-180" : ""
                               }`}
                             />
@@ -153,16 +153,16 @@ export default function HeartOfClass() {
                                 transition={{ duration: 0.22 }}
                                 className="overflow-hidden"
                               >
-                                <div className="space-y-3 border-t border-violet-100 px-3.5 pb-4 pt-3">
+                                <div className="space-y-3 border-t border-cyan-100 px-3.5 pb-4 pt-3">
                                   {/* العلامات */}
                                   <div>
-                                    <p className="flex items-center gap-1.5 text-[11px] font-black text-violet-900">
+                                    <p className="flex items-center gap-1.5 text-[11px] font-black text-cyan-900">
                                       <Eye className="h-3.5 w-3.5" /> {SIGNALS_LABEL}
                                     </p>
                                     <ul className="mt-1.5 space-y-1">
                                       {p.signals.map((s, i) => (
-                                        <li key={i} className="flex items-start gap-1.5 text-[12px] font-bold leading-6 text-violet-950/90">
-                                          <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-400" />
+                                        <li key={i} className="flex items-start gap-1.5 text-[12px] font-bold leading-6 text-cyan-950/90">
+                                          <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400" />
                                           {s}
                                         </li>
                                       ))}
@@ -171,10 +171,10 @@ export default function HeartOfClass() {
 
                                   {/* ما بداخله */}
                                   <div>
-                                    <p className="flex items-center gap-1.5 text-[11px] font-black text-violet-900">
+                                    <p className="flex items-center gap-1.5 text-[11px] font-black text-cyan-900">
                                       <HeartHandshake className="h-3.5 w-3.5" /> {INSIDE_LABEL}
                                     </p>
-                                    <p className="mt-1 text-[12px] font-bold leading-6 text-violet-950/90">{p.inside}</p>
+                                    <p className="mt-1 text-[12px] font-bold leading-6 text-cyan-950/90">{p.inside}</p>
                                   </div>
 
                                   {/* ما يحتاجه */}
@@ -187,13 +187,13 @@ export default function HeartOfClass() {
 
                                   {/* الخطوات */}
                                   <div>
-                                    <p className="flex items-center gap-1.5 text-[11px] font-black text-violet-900">
+                                    <p className="flex items-center gap-1.5 text-[11px] font-black text-cyan-900">
                                       <Footprints className="h-3.5 w-3.5" /> {STEPS_LABEL}
                                     </p>
                                     <ol className="mt-1.5 space-y-1.5">
                                       {p.steps.map((s, i) => (
-                                        <li key={i} className="flex items-start gap-2 text-[12px] font-bold leading-6 text-violet-950/90">
-                                          <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-600 text-[10px] font-black text-white">
+                                        <li key={i} className="flex items-start gap-2 text-[12px] font-bold leading-6 text-cyan-950/90">
+                                          <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cyan-600 text-[10px] font-black text-white">
                                             {["١", "٢", "٣"][i] ?? "•"}
                                           </span>
                                           {s}

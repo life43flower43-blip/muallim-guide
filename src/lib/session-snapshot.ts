@@ -12,7 +12,7 @@ const MAX_AGE = 7 * 86400000; // أسبوع واحد ثم تُهمل اللقط�
 export interface SessionSnapshot {
   config: QuizConfig;
   idx: number;
-  review: { qid: string; ok: boolean }[];
+  review: { qid: string; ok: boolean; answer?: string }[];
   sessionXp: number;
   savedAt: number;
 }

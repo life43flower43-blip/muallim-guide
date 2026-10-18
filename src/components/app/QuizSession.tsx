@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckCircle2,
@@ -16,6 +17,7 @@ import {
   Flag,
   Target,
   Award,
+  Gem,
 } from "lucide-react";
 import { questionById, conceptById, examplesOf, OPTION_LETTERS, COURSES, COURSE_SHORT, shuffle } from "@/lib/qbank";
 import { useApp } from "@/lib/store";
@@ -37,19 +39,19 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import type { Question } from "@/lib/types";
+import { recordMistake, recordReviewResult, MISTAKES_QUERY_KEY } from "@/lib/mistakes-client";
+import { completeSession, USER_QUERY_KEY } from "@/lib/account-client";
 
 // ---------- مكونات صغيرة ----------
 
-// شارة النتيجة النوعية — بلا نسب ولا أرقام (قرار المستخدم: حذف الأرقام لا إخفاؤها)
+// شارة النتيجة — ومعها عدد الصحيح ونسبته كما في منصات الاختبار العالمية
 function ResultBadge({ tone }: { tone: "great" | "good" | "fair" | "weak" }) {
   const toneCls =
-    tone === "great"
-      ? "bg-indigo-100 text-indigo-700"
-      : tone === "good"
-        ? "bg-indigo-100 text-indigo-700"
-        : tone === "fair"
-          ? "bg-amber-100 text-amber-700"
-          : "bg-red-100 text-red-600";
+    tone === "great" || tone === "good"
+      ? "bg-success-soft text-success"
+      : tone === "fair"
+        ? "bg-gem-soft text-gem"
+        : "bg-danger-soft text-destructive";
   const Icon = tone === "weak" ? XCircle : Trophy;
   return (
     <span className={`flex h-24 w-24 items-center justify-center rounded-full ${toneCls}`}>
@@ -196,7 +198,7 @@ function AcademicReason({ reason, compact }: { reason: string; compact?: boolean
   const { base, rest } = useMemo(() => splitReason(reason), [reason]);
   return (
     <div className="space-y-2">
-      <div className="rounded-xl border border-primary/15 bg-violet-50/70 p-3">
+      <div className="rounded-xl border border-primary/15 bg-cyan-50/70 p-3">
         <p className={`font-black text-primary ${compact ? "text-[11px]" : "text-xs"}`}>أساس الصواب</p>
         <p className={`mt-1 leading-7 ${compact ? "text-[13px]" : "text-sm"} text-foreground/95`}>{base}</p>
       </div>
@@ -279,8 +281,12 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
   const [recorded, setRecorded] = useState(false);
   const [wrongShake, setWrongShake] = useState(false);
   const [sessionXp, setSessionXp] = useState(resumed?.sessionXp ?? 0);
-  const [review, setReview] = useState<{ qid: string; ok: boolean }[]>(resumed?.review ?? []);
+  const [review, setReview] = useState<{ qid: string; ok: boolean; answer?: string }[]>(resumed?.review ?? []);
+  const [gemsEarned, setGemsEarned] = useState<number | null>(null);
   const startedAt = useRef(Date.now());
+  const sessionId = useRef(typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `s-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  const queryClient = useQueryClient();
+  const recordBest = useApp((s) => s.recordBest);
 
   const questions = useMemo(
     () => config.qids.map((id) => questionById(id)).filter(Boolean) as Question[],
@@ -332,6 +338,13 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
         durationSec,
       });
       clearSnapshot(); // انتهت الجلسة — لا لقطة للاستئناف
+      // أفضل نتيجة للموضوع (نجوم الفصل أو نسبة الاختبار)، ثم جواهر الجلسة
+      if (config.topicKey && questions.length > 0) recordBest(config.topicKey, (correctCount / questions.length) * 100);
+      const answers = review.filter((r) => r.answer !== undefined).map((r) => ({ qid: r.qid, answer: r.answer as string }));
+      if (answers.length > 0) {
+        completeSession(queryClient, config.mode === "review" ? "review" : "practice", sessionId.current, answers, correctCount).then(setGemsEarned);
+      }
+      if (config.mode === "review") queryClient.invalidateQueries({ queryKey: MISTAKES_QUERY_KEY });
     }
   }, [finished, recorded, review, sessionXp, config, questions.length, finishSession]);
 
@@ -370,6 +383,13 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     if (!ok) setWrongShake(true);
     setTimeout(() => setWrongShake(false), 450);
     recordAttempt(q.id, ok, selected ?? undefined);
+    // الأخطاء: في المراجعة تُرسل النتيجة صحيحة أو خاطئة، وفي غيرها يُسجَّل الخطأ وحده
+    if (config.mode === "review") {
+      const isGuest = !queryClient.getQueryData(USER_QUERY_KEY);
+      recordReviewResult(q.id, ok, selected, isGuest);
+    } else if (!ok) {
+      recordMistake(q.id, selected, queryClient);
+    }
     const wasUnseen = !attempts[q.id];
     const gain = ok
       ? wasUnseen
@@ -381,7 +401,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
         : 6
       : 0;
     setSessionXp((x) => x + gain);
-    setReview((r) => [...r, { qid: q.id, ok }]);
+    setReview((r) => [...r, { qid: q.id, ok, answer: selected }]);
   };
 
   const next = () => {
@@ -447,7 +467,15 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
         <div className="no-scrollbar flex-1 overflow-y-auto px-4 pb-8">
           <div className="pop-in flex flex-col items-center gap-3 py-4">
             <ResultBadge tone={tone} />
-            <h2 className="text-xl font-black">{msg}</h2>
+            <h2 className="font-display text-xl font-bold">{msg}</h2>
+            <p className="text-sm text-muted-foreground">
+              {ad(correctCount)} من {ad(questions.length)} صحيحة، {ad(Math.round(pct))}٪
+            </p>
+            {gemsEarned !== null && gemsEarned > 0 && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-gem-soft px-3 py-1.5 text-sm font-semibold text-gem">
+                <Gem className="h-4 w-4" /> +{ad(gemsEarned)} جوهرة
+              </span>
+            )}
             {review.length < questions.length && (
               <p className="rounded-2xl bg-red-50 px-4 py-2 text-xs font-bold leading-6 text-red-700">
                 لم تُجب عن بعض الأسئلة قبل انتهاء الوقت — احتُسبت خطأً كالامتحان الحقيقي.
@@ -459,12 +487,12 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
           {isProficiency && (
             <div
               className={`pop-in rounded-3xl border-2 p-4 ${
-                passed ? "border-indigo-300 bg-indigo-50" : "border-red-200 bg-red-50"
+                passed ? "border-emerald-300 bg-emerald-50" : "border-red-200 bg-red-50"
               }`}
             >
               <div className="flex items-center gap-3">
                 {passed ? (
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-600 text-white">
                     <Award className="h-6 w-6" />
                   </span>
                 ) : (
@@ -473,7 +501,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   </span>
                 )}
                 <div className="min-w-0">
-                  <p className={`text-base font-black ${passed ? "text-indigo-800" : "text-red-800"}`}>
+                  <p className={`text-base font-black ${passed ? "text-emerald-800" : "text-red-800"}`}>
                     {passed ? "نجحت في اختبار الكفاءة" : "لم تنجح هذه المرة — وسبيلك واضح"}
                   </p>
                   <p className="text-xs font-bold leading-6 text-muted-foreground">
@@ -494,7 +522,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                         <span
                           className={
                             rowPct >= 0.6
-                              ? "text-indigo-700"
+                              ? "text-emerald-700"
                               : rowPct >= 0.4
                                 ? "text-amber-700"
                                 : "text-red-600"
@@ -528,14 +556,14 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                 <details key={r.qid} className="card-soft rounded-2xl border border-border bg-white p-4">
                   <summary className="flex cursor-pointer list-none items-start gap-3">
                     {r.ok ? (
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                     ) : (
                       <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
                     )}
                     <span className="text-sm font-bold leading-6">{rq.question}</span>
                   </summary>
                   {!r.ok && (
-                    <p className="mt-2 rounded-lg bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-800">
+                    <p className="mt-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-800">
                       الإجابة الصحيحة: {rq.correct}
                     </p>
                   )}
@@ -601,7 +629,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               <span
                 className={`rounded-full px-3 py-1 text-xs font-bold ${
                   q.difficulty === "سهل"
-                    ? "bg-indigo-100 text-indigo-700"
+                    ? "bg-emerald-100 text-emerald-700"
                     : q.difficulty === "متوسط"
                       ? "bg-amber-100 text-amber-700"
                       : "bg-red-100 text-red-600"
@@ -628,7 +656,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   const isCorrect = o.isCorrect;
                   // كشف الصواب/الخطأ فقط في الأنماط ذات التغذية الفورية — المحاكاة لا تكشف الإجابة
                   let cls = "border-border bg-white";
-                  if (instantFeedback && graded !== null && isCorrect) cls = "border-indigo-500 bg-indigo-50";
+                  if (instantFeedback && graded !== null && isCorrect) cls = "border-emerald-500 bg-emerald-50";
                   else if (instantFeedback && graded === false && isSel) cls = "border-red-400 bg-red-50";
                   else if (isSel) cls = "border-primary bg-accent shadow-sm";
                   return (
@@ -641,7 +669,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                       }`}
                     >
                       {o.text === "صح" ? (
-                        <CheckCircle2 className="h-6 w-6 text-indigo-600" />
+                        <CheckCircle2 className="h-6 w-6 text-emerald-600" />
                       ) : (
                         <XCircle className="h-6 w-6 text-red-500" />
                       )}
@@ -657,7 +685,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   const isCorrect = o.isCorrect;
                   // كشف الصواب/الخطأ فقط في الأنماط ذات التغذية الفورية — المحاكاة لا تكشف الإجابة
                   let cls = "border-border bg-white";
-                  if (instantFeedback && graded !== null && isCorrect) cls = "border-indigo-500 bg-indigo-50";
+                  if (instantFeedback && graded !== null && isCorrect) cls = "border-emerald-500 bg-emerald-50";
                   else if (instantFeedback && graded === false && isSel) cls = "border-red-400 bg-red-50";
                   else if (isSel) cls = "border-primary bg-accent shadow-sm";
                   return (
@@ -689,16 +717,16 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                 <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
                   <div
                     className={`flex items-center gap-3 rounded-2xl border p-4 ${
-                      graded ? "border-indigo-200 bg-indigo-50" : "border-red-200 bg-red-50"
+                      graded ? "border-emerald-200 bg-emerald-50" : "border-red-200 bg-red-50"
                     }`}
                   >
                     {graded ? (
-                      <CheckCircle2 className="h-8 w-8 shrink-0 text-indigo-600" />
+                      <CheckCircle2 className="h-8 w-8 shrink-0 text-emerald-600" />
                     ) : (
                       <XCircle className="h-8 w-8 shrink-0 text-red-500" />
                     )}
                     <div>
-                      <p className={`font-black ${graded ? "text-indigo-800" : "text-red-700"}`}>
+                      <p className={`font-black ${graded ? "text-emerald-800" : "text-red-700"}`}>
                         {graded ? "أحسنت! إجابة صحيحة" : "إجابة غير صحيحة"}
                       </p>
                       {!graded && (
@@ -762,7 +790,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               !instantFeedback
                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
                 : graded
-                  ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                  ? "bg-emerald-600 text-white hover:bg-emerald-700"
                   : "bg-red-500 text-white"
             }`}
           >

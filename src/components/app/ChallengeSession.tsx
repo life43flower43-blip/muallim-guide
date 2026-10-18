@@ -58,7 +58,7 @@ const shuffle = <T,>(arr: T[]): T[] => {
 
 function KindBadge({ kind }: { kind: Challenge["kind"] }) {
   const map = {
-    order: { icon: ListOrdered, cls: "bg-violet-100 text-violet-700" },
+    order: { icon: ListOrdered, cls: "bg-cyan-100 text-cyan-700" },
     fill: { icon: Puzzle, cls: "bg-sky-100 text-sky-700" },
     produce: { icon: PenLine, cls: "bg-amber-100 text-amber-700" },
   } as const;
@@ -101,7 +101,7 @@ function OrderPlay({
               className={`flex min-h-[52px] items-center gap-3 rounded-2xl border-2 border-dashed p-2 ${
                 graded !== null && item !== undefined
                   ? isRight
-                    ? "border-indigo-400 bg-indigo-50"
+                    ? "border-emerald-400 bg-emerald-50"
                     : isWrongSpot
                       ? "border-red-300 bg-red-50"
                       : "border-border bg-white"
@@ -178,7 +178,7 @@ function FillPlay({
             chosen
               ? graded !== null
                 ? chosen === c.right
-                  ? "border-indigo-400 bg-indigo-50 text-indigo-800"
+                  ? "border-emerald-400 bg-emerald-50 text-emerald-800"
                   : "border-red-300 bg-red-50 text-red-700"
                 : "border-primary bg-accent text-primary"
               : "border-border text-muted-foreground"
@@ -248,7 +248,7 @@ function ProducePlay({
                 <li
                   key={i}
                   className={`flex items-center gap-2 text-xs font-bold ${
-                    g.ok ? "text-indigo-700" : "text-amber-800"
+                    g.ok ? "text-emerald-700" : "text-amber-800"
                   }`}
                 >
                   {g.ok ? (
@@ -261,7 +261,7 @@ function ProducePlay({
               ))}
               <li
                 className={`flex items-center gap-2 text-xs font-bold ${
-                  words >= c.minWords ? "text-indigo-700" : "text-amber-800"
+                  words >= c.minWords ? "text-emerald-700" : "text-amber-800"
                 }`}
               >
                 {words >= c.minWords ? (
@@ -299,15 +299,15 @@ function ProducePlay({
             <p className="mb-1 text-xs font-black text-muted-foreground">كتابتك</p>
             <p className="whitespace-pre-wrap text-sm font-bold leading-8">{text}</p>
           </div>
-          <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4">
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
             <button
               onClick={() => setShowModel((s) => !s)}
-              className="flex w-full items-center justify-between text-sm font-black text-indigo-900"
+              className="flex w-full items-center justify-between text-sm font-black text-emerald-900"
             >
               <span>نموذج إجابة للمقارنة</span>
               <ArrowLeft className={`h-4 w-4 transition-transform ${showModel ? "rotate-90" : ""}`} />
             </button>
-            {showModel && <p className="mt-2 text-sm leading-8 text-indigo-950">{c.model}</p>}
+            {showModel && <p className="mt-2 text-sm leading-8 text-emerald-950">{c.model}</p>}
           </div>
           {graded === null && (
             <>
@@ -319,7 +319,7 @@ function ProducePlay({
               <div className="grid grid-cols-1 gap-2">
                 <Button
                   onClick={() => onAnswer(true)}
-                  className="h-12 w-full rounded-2xl bg-indigo-600 text-base font-black text-white hover:bg-indigo-700"
+                  className="h-12 w-full rounded-2xl bg-emerald-600 text-base font-black text-white hover:bg-emerald-700"
                 >
                   <Trophy className="ml-2 h-5 w-5" /> أنجزت بجدارة — احتسبها صحيحة
                 </Button>
@@ -408,7 +408,7 @@ export default function ChallengeSession() {
         </div>
         <div className="no-scrollbar flex-1 overflow-y-auto px-4 pb-8">
           <div className="pop-in flex flex-col items-center gap-3 py-4">
-            <span className="flex h-24 w-24 items-center justify-center rounded-full bg-indigo-100 text-indigo-700">
+            <span className="flex h-24 w-24 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
               <Trophy className="h-12 w-12" />
             </span>
             <h2 className="text-xl font-black">{msg}</h2>
@@ -421,7 +421,7 @@ export default function ChallengeSession() {
                 <div key={r.id} className="card-soft rounded-2xl border border-border bg-white p-4">
                   <div className="flex items-start gap-3">
                     {r.ok ? (
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                     ) : (
                       <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
                     )}
@@ -434,12 +434,12 @@ export default function ChallengeSession() {
                             : rc.prompt}
                       </p>
                       {!r.ok && rc.kind === "order" && (
-                        <p className="mt-1 rounded-lg bg-indigo-50 px-3 py-2 text-xs font-bold leading-6 text-indigo-800">
+                        <p className="mt-1 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold leading-6 text-emerald-800">
                           الترتيب الصحيح: {rc.items.join(" ← ")}
                         </p>
                       )}
                       {!r.ok && rc.kind === "fill" && (
-                        <p className="mt-1 rounded-lg bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-800">
+                        <p className="mt-1 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-800">
                           الإجابة: {rc.right}
                         </p>
                       )}
@@ -511,16 +511,16 @@ export default function ChallengeSession() {
                 <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
                   <div
                     className={`flex items-center gap-3 rounded-2xl border p-4 ${
-                      graded ? "border-indigo-200 bg-indigo-50" : "border-red-200 bg-red-50"
+                      graded ? "border-emerald-200 bg-emerald-50" : "border-red-200 bg-red-50"
                     }`}
                   >
                     {graded ? (
-                      <CheckCircle2 className="h-8 w-8 shrink-0 text-indigo-600" />
+                      <CheckCircle2 className="h-8 w-8 shrink-0 text-emerald-600" />
                     ) : (
                       <XCircle className="h-8 w-8 shrink-0 text-red-500" />
                     )}
                     <div>
-                      <p className={`font-black ${graded ? "text-indigo-800" : "text-red-700"}`}>
+                      <p className={`font-black ${graded ? "text-emerald-800" : "text-red-700"}`}>
                         {graded ? "أحسنت! تحدٍّ مكتمل" : "لم يكتمل الترتيب كما ينبغي"}
                       </p>
                       {!graded && c.kind === "order" && (

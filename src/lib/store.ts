@@ -10,7 +10,6 @@ import type { LessonPlan } from "./plans";
 import type { FieldVisit } from "./field";
 import { nextBox } from "./srs";
 import { SCENARIOS } from "./scenarios";
-import { STUDY_LESSONS } from "./study-school";
 
 export interface ScenarioChoice {
   opt: number; // فهرس الخيار المختار
@@ -31,6 +30,8 @@ export interface SpeechRecord {
   durSec: number; // مدة التسجيل بالثواني
   score: number; // متوسط التقييم الذاتي من خمسة
 }
+
+export type LearnerGoal = "job" | "university" | "teacher";
 
 interface AppState {
   name: string;
@@ -54,6 +55,12 @@ interface AppState {
   studyDone: Record<string, number>; // دروس مدرسة المذاكرة المكتملة — معرف الدرس إلى زمن إتمامه
   firstdayChecked: string[]; // بنود قائمة اليوم الأول المشطّطة
   onboarded: boolean;
+  // ---- منقول من أوريندو: الجواهر وأفضل النتائج، ومعها هدف المتعلم وموعد اختباره ----
+  gems: number; // جواهر الضيف على جهازه — للمسجَّل يحفظها الخادم
+  best: Record<string, number>; // أفضل نتيجة (٪) لكل موضوع تدريب: «M3::الدافعية والتعلم» أو «M3::exam»
+  goal: LearnerGoal | null; // هدف المتعلم من شاشة البداية
+  examDate: string | null; // موعد اختبار التوظيف YYYY-MM-DD
+  lastStudy: { courseId: string; chapter: string; ts: number } | null; // آخر فصل درسه — لـ«تابع من حيث توقفت»
   // وضع العرض — فاتح / يتبع النظام / ليلي (ترقية عن dark المنطقي القديم عبر migrate)
   darkMode: "light" | "auto" | "dark";
   fontScale: "normal" | "large" | "bigger"; // حجم خط القراءة — تفضيل عرض كالوضع الليلي
@@ -61,6 +68,12 @@ interface AppState {
 
   setName: (n: string) => void;
   setOnboarded: () => void;
+  setGoal: (g: LearnerGoal) => void;
+  setExamDate: (d: string | null) => void;
+  setLastStudy: (courseId: string, chapter: string) => void;
+  recordBest: (topicKey: string, percent: number) => void;
+  addLocalGems: (n: number) => void;
+  spendLocalGems: (n: number) => boolean;
   readConcept: (cid: string) => void;
   recordAttempt: (qid: string, correct: boolean, answer?: string) => void;
   recordScenarioChoice: (sid: string, opt: number) => void;
@@ -160,12 +173,30 @@ export const useApp = create<AppState>()(
       studyDone: {},
       firstdayChecked: [],
       onboarded: false,
+      gems: 0,
+      best: {},
+      goal: null,
+      examDate: null,
+      lastStudy: null,
       darkMode: "light",
       fontScale: "normal",
       haptics: true,
 
       setName: (n) => set({ name: n }),
       setOnboarded: () => set({ onboarded: true }),
+      setGoal: (g) => set({ goal: g }),
+      setExamDate: (d) => set({ examDate: d }),
+      setLastStudy: (courseId, chapter) => set({ lastStudy: { courseId, chapter, ts: Date.now() } }),
+      recordBest: (topicKey, percent) =>
+        set((st) =>
+          (st.best[topicKey] ?? -1) >= percent ? {} : { best: { ...st.best, [topicKey]: Math.round(percent) } }
+        ),
+      addLocalGems: (n) => set((st) => ({ gems: st.gems + Math.max(0, n) })),
+      spendLocalGems: (n) => {
+        if (get().gems < n) return false;
+        set((st) => ({ gems: st.gems - n }));
+        return true;
+      },
 
       readConcept: (cid) =>
         set((st) => ({ conceptReads: { ...st.conceptReads, [cid]: Date.now() } })),
@@ -338,11 +369,16 @@ export const useApp = create<AppState>()(
           studyDone: {},
           firstdayChecked: [],
           onboarded: false,
+          gems: 0,
+          best: {},
+          goal: null,
+          examDate: null,
+          lastStudy: null,
         }),
     }),
     {
       name: "turbawy-app-v1",
-      version: 7,
+      version: 8,
       // ترقية الحالة القديمة: dark المنطقي يصبح darkMode ثلاثيًا، والاهتزاز يُفعّل افتراضيًا، والمختبر يبدأ فارغًا
       migrate: (s, v) => {
         const st = s as Record<string, unknown>;
@@ -359,11 +395,12 @@ export const useApp = create<AppState>()(
             haptics: st.haptics === false ? false : true,
           };
         }
-        if (v < 2 && !Array.isArray(out.labAttempts)) return { ...out, labAttempts: [] };
-        if (v < 3 && !Array.isArray(out.lessonPlans)) return { ...out, lessonPlans: [] };
-        if (v < 4 && !Array.isArray(out.fieldVisits)) return { ...out, fieldVisits: [] };
+        // كل ترقية تبني على ما قبلها — حالة قديمة جدًا تمر بها كلها بالترتيب
+        if (v < 2 && !Array.isArray(out.labAttempts)) out = { ...out, labAttempts: [] };
+        if (v < 3 && !Array.isArray(out.lessonPlans)) out = { ...out, lessonPlans: [] };
+        if (v < 4 && !Array.isArray(out.fieldVisits)) out = { ...out, fieldVisits: [] };
         if (v < 5) {
-          return {
+          out = {
             ...out,
             challengeStats: out.challengeStats ?? {},
             notes: out.notes ?? {},
@@ -371,14 +408,24 @@ export const useApp = create<AppState>()(
           };
         }
         if (v < 6) {
-          return {
+          out = {
             ...out,
             speechRecords: Array.isArray(out.speechRecords) ? out.speechRecords : [],
             studyDone: out.studyDone ?? {},
             firstdayChecked: Array.isArray(out.firstdayChecked) ? out.firstdayChecked : [],
           };
         }
-        if (v < 7 && !Array.isArray(out.simAttempts)) return { ...out, simAttempts: [] };
+        if (v < 7 && !Array.isArray(out.simAttempts)) out = { ...out, simAttempts: [] };
+        if (v < 8) {
+          out = {
+            ...out,
+            gems: typeof out.gems === "number" ? out.gems : 0,
+            best: out.best ?? {},
+            goal: out.goal ?? null,
+            examDate: out.examDate ?? null,
+            lastStudy: out.lastStudy ?? null,
+          };
+        }
         return out;
       },
       storage: createJSONStorage(() => localStorage),
@@ -410,8 +457,6 @@ export interface Achievement {
     scenarioChoices: Record<string, ScenarioChoice>;
     lessonPlans?: LessonPlan[];
     fieldVisits?: FieldVisit[];
-    speechRecords?: SpeechRecord[];
-    studyDone?: Record<string, number>;
   }) => boolean;
 }
 
@@ -499,20 +544,6 @@ export const ACHIEVEMENTS: Achievement[] = [
     desc: "وثّقت أول زيارة في سجل التدريب الميداني",
     icon: "MapPin",
     earned: (s) => (s.fieldVisits?.length ?? 0) >= 1,
-  },
-  {
-    id: "firstspeech",
-    title: "أول وقفة على المسرح",
-    desc: "سجلت أول شرح صوتي في مِسرح الإلقاء",
-    icon: "Mic",
-    earned: (s) => (s.speechRecords?.length ?? 0) >= 1,
-  },
-  {
-    id: "studyschool",
-    title: "خريج مدرسة المذاكرة",
-    desc: "أكملت دروس مهارات المذاكرة الستة كلها",
-    icon: "GraduationCap",
-    earned: (s) => Object.keys(s.studyDone ?? {}).length >= STUDY_LESSONS.length,
   },
   {
     id: "proficiency",

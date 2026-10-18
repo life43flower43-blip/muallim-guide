@@ -304,7 +304,7 @@ export default function ExamSimView() {
 
           <div
             className="mt-4 rounded-3xl p-5 text-white"
-            style={{ background: `linear-gradient(135deg, ${bp.color}, #2A1058)` }}
+            style={{ background: `linear-gradient(135deg, ${bp.color}, #06343C)` }}
           >
             <h2 className="text-xl font-black">{bp.name}</h2>
             <p className="mt-1.5 text-xs leading-6 text-white/90">{bp.desc}</p>
@@ -323,7 +323,7 @@ export default function ExamSimView() {
                 <div key={s.courseId} className="flex items-center gap-2.5">
                   <span
                     className="h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ background: COURSE_COLOR[s.courseId] ?? "#5B21B6" }}
+                    style={{ background: COURSE_COLOR[s.courseId] ?? "#0B5563" }}
                   />
                   <span className="flex-1 text-xs font-bold">{COURSE_SHORT[s.courseId] ?? s.courseId}</span>
                   <span className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-black text-muted-foreground">
@@ -403,7 +403,7 @@ export default function ExamSimView() {
               <div className="mb-2 flex items-center gap-2">
                 <span
                   className="rounded-full px-2.5 py-1 text-[10px] font-black text-white"
-                  style={{ background: COURSE_COLOR[items[idx].courseId] ?? "#5B21B6" }}
+                  style={{ background: COURSE_COLOR[items[idx].courseId] ?? "#0B5563" }}
                 >
                   {COURSE_SHORT[items[idx].courseId] ?? ""}
                 </span>
@@ -623,7 +623,7 @@ export default function ExamSimView() {
           {/* الدرجة والمحك */}
           <div
             className={`mt-4 rounded-3xl p-6 text-center text-white ${
-              result.passed ? "bg-gradient-to-bl from-[#4C1D95] to-[#6D28D9]" : "bg-gradient-to-bl from-[#7F1D1D] to-[#B91C1C]"
+              result.passed ? "bg-gradient-to-bl from-[#0A4652] to-[#0B5563]" : "bg-gradient-to-bl from-[#7F1D1D] to-[#B91C1C]"
             }`}
           >
             <p className="text-xs font-bold text-white/85">{result.bpName}</p>
@@ -656,7 +656,7 @@ export default function ExamSimView() {
                         className="progress-fill h-full"
                         style={{
                           width: `${pct}%`,
-                          background: COURSE_COLOR[s.courseId] ?? "#5B21B6",
+                          background: COURSE_COLOR[s.courseId] ?? "#0B5563",
                         }}
                       />
                     </div>

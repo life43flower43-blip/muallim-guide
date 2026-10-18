@@ -5,6 +5,8 @@ import type { PeerPayload } from "./peer";
 
 export interface QuizConfig {
   mode: "training" | "exam" | "quick" | "review" | "redo" | "intensive" | "proficiency";
+  /** مفتاح موضوع التدريب (فصل أو اختبار مقرر) — لحفظ أفضل نتيجة */
+  topicKey?: string;
   label: string;
   qids: string[];
   timeLimitSec?: number;
@@ -21,8 +23,6 @@ interface UiState {
   challengesOpen: boolean; // التحديات الذكية — ترتيب وإكمال وإنتاج كتابي
   studioOpen: boolean; // استوديو خطط الدروس — نموذج موجّه وتقييم الخطة وخططي
   fieldOpen: boolean; // سجل التدريب الميداني — جاهزية وزيارات وتأملها
-  stageOpen: boolean; // مِسرح الإلقاء — شرح صوتي موقوت وتقييم ذاتي
-  studyOpen: boolean; // مدرسة المذاكرة — ستة دروس تفاعلية في مهارات الدراسة
   measureOpen: boolean; // معدة القياس والتقويم — حاسبات إحصائية تربوية
   heartOpen: boolean; // قلب الصف — سلّم المشاعر التربوي وشرارة المبدع (دليل المعلم)
   peerOpen: boolean; // تحدّي الأقران — رابط يحمل التحدي بلا سيرفر
@@ -30,7 +30,6 @@ interface UiState {
   examsimOpen: boolean; // محاكي الرخصة والمسابقات — بلاتنات موقوتة بأقسام ومحك
   placementOpen: boolean; // اختبار تحديد المستوى — تشخيص ثلاثي المستويات
   matchOpen: boolean; // لعبة المطابقة — مصطلح مقابل شرحه المصغّر
-  speedOpen: boolean; // سباق السرعة — مؤقت لكل سؤال وكونبو
   flashOpen: boolean; // بطاقات المفاهيم — وضع بطاقات القلب
   aiOpen: boolean; // المساعد الذكي — إجابات تربوية فورية من المحرك المحلي
   startQuiz: (c: QuizConfig) => void;
@@ -51,10 +50,6 @@ interface UiState {
   clearStudio: () => void;
   startField: () => void;
   clearField: () => void;
-  startStage: () => void;
-  clearStage: () => void;
-  startStudy: () => void;
-  clearStudy: () => void;
   startMeasure: () => void;
   clearMeasure: () => void;
   startHeart: () => void;
@@ -68,12 +63,12 @@ interface UiState {
   clearPlacement: () => void;
   startMatch: () => void;
   clearMatch: () => void;
-  startSpeed: () => void;
-  clearSpeed: () => void;
   startFlash: () => void;
   clearFlash: () => void;
   startAi: () => void;
   clearAi: () => void;
+  /** يغلق كل الطبقات المفتوحة عند الانتقال بين الوجهات */
+  closeOverlays: () => void;
 }
 
 export const useUi = create<UiState>((set) => ({
@@ -86,8 +81,6 @@ export const useUi = create<UiState>((set) => ({
   challengesOpen: false,
   studioOpen: false,
   fieldOpen: false,
-  stageOpen: false,
-  studyOpen: false,
   measureOpen: false,
   heartOpen: false,
   peerOpen: false,
@@ -95,7 +88,6 @@ export const useUi = create<UiState>((set) => ({
   examsimOpen: false,
   placementOpen: false,
   matchOpen: false,
-  speedOpen: false,
   flashOpen: false,
   aiOpen: false,
   startQuiz: (c) => set({ quizConfig: c }),
@@ -116,10 +108,6 @@ export const useUi = create<UiState>((set) => ({
   clearStudio: () => set({ studioOpen: false }),
   startField: () => set({ fieldOpen: true }),
   clearField: () => set({ fieldOpen: false }),
-  startStage: () => set({ stageOpen: true }),
-  clearStage: () => set({ stageOpen: false }),
-  startStudy: () => set({ studyOpen: true }),
-  clearStudy: () => set({ studyOpen: false }),
   startMeasure: () => set({ measureOpen: true }),
   clearMeasure: () => set({ measureOpen: false }),
   startHeart: () => set({ heartOpen: true }),
@@ -133,10 +121,25 @@ export const useUi = create<UiState>((set) => ({
   clearPlacement: () => set({ placementOpen: false }),
   startMatch: () => set({ matchOpen: true }),
   clearMatch: () => set({ matchOpen: false }),
-  startSpeed: () => set({ speedOpen: true }),
-  clearSpeed: () => set({ speedOpen: false }),
   startFlash: () => set({ flashOpen: true }),
   clearFlash: () => set({ flashOpen: false }),
   startAi: () => set({ aiOpen: true }),
   clearAi: () => set({ aiOpen: false }),
+  closeOverlays: () =>
+    set({
+      scenariosOpen: false,
+      labOpen: false,
+      simOpen: false,
+      studioOpen: false,
+      fieldOpen: false,
+      challengesOpen: false,
+      measureOpen: false,
+      heartOpen: false,
+      peerOpen: false,
+      examsimOpen: false,
+      placementOpen: false,
+      matchOpen: false,
+      flashOpen: false,
+      aiOpen: false,
+    }),
 }));
