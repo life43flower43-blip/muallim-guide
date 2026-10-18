@@ -85,7 +85,7 @@ function Timer({ seconds, onTimeout }: { seconds: number; onTimeout: () => void 
   return (
     <div
       className={`flex items-center gap-1 rounded-full px-3 py-1 text-sm font-bold tabular-nums ${
-        danger ? "bg-red-100 text-red-700 pulse-ring" : "bg-secondary text-primary"
+        danger ? "bg-danger-soft text-destructive pulse-ring" : "bg-secondary text-primary"
       }`}
     >
       <TimerIcon className="h-4 w-4" />
@@ -103,12 +103,12 @@ function SocraticBox({ q }: { q: Question }) {
   const done = stepIdx >= steps.length;
 
   return (
-    <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+    <div className="rounded-2xl border border-gem/30 bg-gem-soft p-4">
       <div className="mb-3 flex items-center gap-2">
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-400">
-          <Lightbulb className="h-4 w-4 text-amber-950" />
+          <Lightbulb className="h-4 w-4 text-gem" />
         </div>
-        <p className="text-sm font-extrabold text-amber-900">المدرّب السقراطي — فكّر معي</p>
+        <p className="text-sm font-semibold text-gem">المدرّب السقراطي — فكّر معي</p>
       </div>
       {!done ? (
         <div className="space-y-3">
@@ -117,14 +117,14 @@ function SocraticBox({ q }: { q: Question }) {
             <Button
               size="sm"
               variant="outline"
-              className="rounded-full border-amber-300 bg-white text-amber-900"
+              className="rounded-full border-gem/30 bg-card text-gem"
               onClick={() => setShowHint(true)}
             >
               <Brain className="ml-1 h-4 w-4" /> جرب أول نفسي
             </Button>
           ) : (
             <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
-              <p className="rounded-xl border border-amber-200 bg-white p-3 text-sm leading-7 text-amber-950">
+              <p className="rounded-xl border border-gem/30 bg-card p-3 text-sm leading-7 text-gem">
                 {steps[stepIdx].hint}
               </p>
             </motion.div>
@@ -146,7 +146,7 @@ function SocraticBox({ q }: { q: Question }) {
       ) : (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2">
           <p className="text-sm leading-7 text-foreground">
-            <span className="font-extrabold text-primary">الإجابة الصحيحة: </span>
+            <span className="font-semibold text-primary">الإجابة الصحيحة: </span>
             {q.correct}
           </p>
           <AcademicReason reason={q.reason} compact />
@@ -163,7 +163,7 @@ function ConceptExamplesBox({ q }: { q: Question }) {
   if (!concept) return null;
   return (
     <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4">
-      <p className="mb-1.5 flex items-center gap-2 text-sm font-extrabold text-sky-900">
+      <p className="mb-1.5 flex items-center gap-2 text-sm font-semibold text-sky-900">
         <BookOpen className="h-4 w-4" /> المفهوم الذي خطأت فيه: {concept.title}
       </p>
       <div className="space-y-2">
@@ -173,20 +173,20 @@ function ConceptExamplesBox({ q }: { q: Question }) {
       </div>
       {examples.length > 0 && (
         <div className="mt-3 space-y-2">
-          <p className="flex items-center gap-1.5 text-xs font-black text-sky-800">
+          <p className="flex items-center gap-1.5 text-xs font-semibold text-sky-800">
             <Lightbulb className="h-3.5 w-3.5" /> شواهد تطبيقية من الميدان
           </p>
           {examples.map((ex, i) => (
             <p
               key={i}
-              className="rounded-xl border border-sky-100 bg-white p-3 text-xs leading-6 text-gray-700"
+              className="rounded-xl border border-sky-100 bg-card p-3 text-xs leading-6 text-secondary-foreground"
             >
               {ex}
             </p>
           ))}
         </div>
       )}
-      <p className="mt-3 flex items-center gap-1.5 text-[11px] font-bold text-sky-700">
+      <p className="mt-3 flex items-center gap-1.5 text-xs font-bold text-sky-700">
         <Target className="h-3.5 w-3.5" /> سجلنا هذا الخطأ في صفحة «أخطائي» مع شرح المفهوم وأمثلته
       </p>
     </div>
@@ -198,14 +198,14 @@ function AcademicReason({ reason, compact }: { reason: string; compact?: boolean
   const { base, rest } = useMemo(() => splitReason(reason), [reason]);
   return (
     <div className="space-y-2">
-      <div className="rounded-xl border border-primary/15 bg-cyan-50/70 p-3">
-        <p className={`font-black text-primary ${compact ? "text-[11px]" : "text-xs"}`}>أساس الصواب</p>
+      <div className="rounded-xl border border-primary/15 bg-accent/70 p-3">
+        <p className={`font-semibold text-primary ${compact ? "text-xs" : "text-xs"}`}>أساس الصواب</p>
         <p className={`mt-1 leading-7 ${compact ? "text-[13px]" : "text-sm"} text-foreground/95`}>{base}</p>
       </div>
       {rest && (
-        <div className="rounded-xl border border-amber-200/70 bg-amber-50/60 p-3">
-          <p className={`font-black text-amber-800 ${compact ? "text-[11px]" : "text-xs"}`}>موقف البدائل</p>
-          <p className={`mt-1 leading-7 ${compact ? "text-[13px]" : "text-sm"} text-amber-950/90`}>{rest}</p>
+        <div className="rounded-xl border border-gem/30/70 bg-gem-soft/60 p-3">
+          <p className={`font-semibold text-gem ${compact ? "text-xs" : "text-xs"}`}>موقف البدائل</p>
+          <p className={`mt-1 leading-7 ${compact ? "text-[13px]" : "text-sm"} text-gem/90`}>{rest}</p>
         </div>
       )}
     </div>
@@ -358,7 +358,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     return (
       <div className="flex h-dvh flex-col items-center justify-center gap-4 bg-background p-8 text-center">
         <Brain className="h-14 w-14 text-primary" />
-        <h2 className="text-xl font-black">لا توجد أسئلة في هذه الجلسة</h2>
+        <h2 className="text-xl font-semibold">لا توجد أسئلة في هذه الجلسة</h2>
         <p className="text-sm text-muted-foreground">
           {config.mode === "review"
             ? "لا توجد أسئلة مستحقة للمراجعة الآن — أنجز تدريباً جديداً وستظهر المراجعة المتباعدة لاحقاً."
@@ -459,7 +459,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     return (
       <div className="flex h-dvh flex-col bg-background">
         <div className="safe-top flex items-center justify-between px-4 pb-2">
-          <p className="text-lg font-black text-primary">النتيجة</p>
+          <p className="text-lg font-semibold text-primary">النتيجة</p>
           <button onClick={clearQuiz} className="rounded-full bg-muted p-2" aria-label="إغلاق">
             <X className="h-5 w-5" />
           </button>
@@ -477,7 +477,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               </span>
             )}
             {review.length < questions.length && (
-              <p className="rounded-2xl bg-red-50 px-4 py-2 text-xs font-bold leading-6 text-red-700">
+              <p className="rounded-2xl bg-danger-soft px-4 py-2 text-xs font-bold leading-6 text-destructive">
                 لم تُجب عن بعض الأسئلة قبل انتهاء الوقت — احتُسبت خطأً كالامتحان الحقيقي.
               </p>
             )}
@@ -486,22 +486,22 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
           {/* خطاب اختبار الكفاءة — نجاح أو رسوب مع تفصيل المحاور */}
           {isProficiency && (
             <div
-              className={`pop-in rounded-3xl border-2 p-4 ${
-                passed ? "border-emerald-300 bg-emerald-50" : "border-red-200 bg-red-50"
+              className={`pop-in rounded-2xl border p-4 ${
+                passed ? "border-success/40 bg-success-soft" : "border-destructive/40 bg-danger-soft"
               }`}
             >
               <div className="flex items-center gap-3">
                 {passed ? (
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-600 text-white">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-success text-white">
                     <Award className="h-6 w-6" />
                   </span>
                 ) : (
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-red-500 text-white">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-destructive text-white">
                     <XCircle className="h-6 w-6" />
                   </span>
                 )}
                 <div className="min-w-0">
-                  <p className={`text-base font-black ${passed ? "text-emerald-800" : "text-red-800"}`}>
+                  <p className={`text-base font-semibold ${passed ? "text-success" : "text-destructive"}`}>
                     {passed ? "نجحت في اختبار الكفاءة" : "لم تنجح هذه المرة — وسبيلك واضح"}
                   </p>
                   <p className="text-xs font-bold leading-6 text-muted-foreground">
@@ -511,21 +511,21 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                 </div>
               </div>
 
-              <p className="mt-3 text-xs font-black text-foreground">خطابك على المحاور:</p>
+              <p className="mt-3 text-xs font-semibold text-foreground">خطابك على المحاور:</p>
               <div className="mt-2 space-y-2">
                 {courseRows.map((row) => {
                   const rowPct = row.total > 0 ? row.ok / row.total : 0;
                   return (
                     <div key={row.id}>
-                      <div className="mb-1 flex items-center justify-between text-[11px] font-black">
+                      <div className="mb-1 flex items-center justify-between text-xs font-semibold">
                         <span>{row.name}</span>
                         <span
                           className={
                             rowPct >= 0.6
-                              ? "text-emerald-700"
+                              ? "text-success"
                               : rowPct >= 0.4
-                                ? "text-amber-700"
-                                : "text-red-600"
+                                ? "text-gem"
+                                : "text-destructive"
                           }
                         >
                           {ad(row.ok)} من {ad(row.total)}
@@ -539,36 +539,36 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                 })}
               </div>
 
-              <p className="mt-3 rounded-xl bg-white/80 p-3 text-[11px] font-bold leading-6 text-foreground">
+              <p className="mt-3 rounded-xl bg-white/80 p-3 text-xs font-bold leading-6 text-foreground">
                 {passed
                   ? "أنت الآن قادر على اجتياز هذا المستوى من الكفاءة — راجع المحاور الأضعف في الخطاب أعلاه لتثبيت الأفضلية."
                   : "ركّز مذاكرتك على المحاور الأدنى في الخطاب أعلاه: تدريب حسب المحور ثم المراجعة الذكية — ثم عد لاختبار الكفاءة من جديد."}
               </p>
             </div>
           )}
-          <p className="mb-2 mt-4 px-1 text-sm font-extrabold text-muted-foreground">
+          <p className="mb-2 mt-4 px-1 text-sm font-semibold text-muted-foreground">
             مراجعة الأسئلة — اضغط لعرض التفسير
           </p>
           <div className="space-y-2">
             {review.map((r) => {
               const rq = questionById(r.qid)!;
               return (
-                <details key={r.qid} className="card-soft rounded-2xl border border-border bg-white p-4">
+                <details key={r.qid} className="card-soft rounded-2xl border border-border bg-card p-4">
                   <summary className="flex cursor-pointer list-none items-start gap-3">
                     {r.ok ? (
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success" />
                     ) : (
-                      <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
+                      <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
                     )}
                     <span className="text-sm font-bold leading-6">{rq.question}</span>
                   </summary>
                   {!r.ok && (
-                    <p className="mt-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-800">
+                    <p className="mt-2 rounded-lg bg-success-soft px-3 py-2 text-xs font-bold text-success">
                       الإجابة الصحيحة: {rq.correct}
                     </p>
                   )}
                   <p className="mt-2 text-xs leading-6 text-muted-foreground">
-                    <span className="font-black text-primary/80">التعليل: </span>
+                    <span className="font-semibold text-primary/80">التعليل: </span>
                     {rq.reason}
                   </p>
                 </details>
@@ -576,10 +576,10 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
             })}
           </div>
         </div>
-        <div className="safe-bottom border-t border-border bg-white px-4 pt-3">
+        <div className="safe-bottom border-t border-border bg-card px-4 pt-3">
           <Button
             onClick={clearQuiz}
-            className="h-14 w-full rounded-2xl bg-primary text-lg font-black text-primary-foreground"
+            className="h-14 w-full rounded-2xl bg-primary text-lg font-semibold text-primary-foreground"
           >
             <Trophy className="ml-2 h-5 w-5" /> متابعة رحلة التعلم
           </Button>
@@ -629,10 +629,10 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               <span
                 className={`rounded-full px-3 py-1 text-xs font-bold ${
                   q.difficulty === "سهل"
-                    ? "bg-emerald-100 text-emerald-700"
+                    ? "bg-success-soft text-success"
                     : q.difficulty === "متوسط"
-                      ? "bg-amber-100 text-amber-700"
-                      : "bg-red-100 text-red-600"
+                      ? "bg-gem-soft text-gem"
+                      : "bg-danger-soft text-destructive"
                 }`}
               >
                 {q.difficulty}
@@ -645,7 +645,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
             </div>
 
             <div className="flex items-start justify-between gap-2">
-              <h2 className="text-xl font-extrabold leading-9">{q.question}</h2>
+              <h2 className="text-xl font-semibold leading-9">{q.question}</h2>
               <SpeakButton text={q.question} label="استمع إلى السؤال" tone="sky" />
             </div>
 
@@ -655,23 +655,23 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   const isSel = selected === o.text;
                   const isCorrect = o.isCorrect;
                   // كشف الصواب/الخطأ فقط في الأنماط ذات التغذية الفورية — المحاكاة لا تكشف الإجابة
-                  let cls = "border-border bg-white";
-                  if (instantFeedback && graded !== null && isCorrect) cls = "border-emerald-500 bg-emerald-50";
-                  else if (instantFeedback && graded === false && isSel) cls = "border-red-400 bg-red-50";
-                  else if (isSel) cls = "border-primary bg-accent shadow-sm";
+                  let cls = "border-border bg-card";
+                  if (instantFeedback && graded !== null && isCorrect) cls = "border-success/40 bg-success-soft";
+                  else if (instantFeedback && graded === false && isSel) cls = "border-destructive/40 bg-danger-soft";
+                  else if (isSel) cls = "border-primary bg-accent";
                   return (
                     <button
                       key={i}
                       disabled={graded !== null}
                       onClick={() => setSelected(o.text)}
-                      className={`opt-btn flex h-20 items-center justify-center gap-2 rounded-2xl border-2 text-xl font-black ${cls} ${
+                      className={`opt-btn flex h-20 items-center justify-center gap-2 rounded-2xl border text-xl font-semibold ${cls} ${
                         wrongShake && isSel && instantFeedback ? "shake" : ""
                       }`}
                     >
                       {o.text === "صح" ? (
-                        <CheckCircle2 className="h-6 w-6 text-emerald-600" />
+                        <CheckCircle2 className="h-6 w-6 text-success" />
                       ) : (
-                        <XCircle className="h-6 w-6 text-red-500" />
+                        <XCircle className="h-6 w-6 text-destructive" />
                       )}
                       {o.text}
                     </button>
@@ -684,21 +684,21 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   const isSel = selected === o.text;
                   const isCorrect = o.isCorrect;
                   // كشف الصواب/الخطأ فقط في الأنماط ذات التغذية الفورية — المحاكاة لا تكشف الإجابة
-                  let cls = "border-border bg-white";
-                  if (instantFeedback && graded !== null && isCorrect) cls = "border-emerald-500 bg-emerald-50";
-                  else if (instantFeedback && graded === false && isSel) cls = "border-red-400 bg-red-50";
-                  else if (isSel) cls = "border-primary bg-accent shadow-sm";
+                  let cls = "border-border bg-card";
+                  if (instantFeedback && graded !== null && isCorrect) cls = "border-success/40 bg-success-soft";
+                  else if (instantFeedback && graded === false && isSel) cls = "border-destructive/40 bg-danger-soft";
+                  else if (isSel) cls = "border-primary bg-accent";
                   return (
                     <button
                       key={i}
                       disabled={graded !== null}
                       onClick={() => setSelected(o.text)}
-                      className={`opt-btn flex w-full items-center gap-3 rounded-2xl border-2 p-4 text-right ${cls} ${
+                      className={`opt-btn flex w-full items-center gap-3 rounded-2xl border p-4 text-right ${cls} ${
                         wrongShake && isSel && instantFeedback ? "shake" : ""
                       }`}
                     >
                       <span
-                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-base font-black ${
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-base font-semibold ${
                           isSel ? "bg-primary text-primary-foreground" : "bg-muted text-primary"
                         }`}
                       >
@@ -717,20 +717,20 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                 <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
                   <div
                     className={`flex items-center gap-3 rounded-2xl border p-4 ${
-                      graded ? "border-emerald-200 bg-emerald-50" : "border-red-200 bg-red-50"
+                      graded ? "border-success/40 bg-success-soft" : "border-destructive/40 bg-danger-soft"
                     }`}
                   >
                     {graded ? (
-                      <CheckCircle2 className="h-8 w-8 shrink-0 text-emerald-600" />
+                      <CheckCircle2 className="h-8 w-8 shrink-0 text-success" />
                     ) : (
-                      <XCircle className="h-8 w-8 shrink-0 text-red-500" />
+                      <XCircle className="h-8 w-8 shrink-0 text-destructive" />
                     )}
                     <div>
-                      <p className={`font-black ${graded ? "text-emerald-800" : "text-red-700"}`}>
+                      <p className={`font-semibold ${graded ? "text-success" : "text-destructive"}`}>
                         {graded ? "أحسنت! إجابة صحيحة" : "إجابة غير صحيحة"}
                       </p>
                       {!graded && (
-                        <p className="text-sm text-red-600">
+                        <p className="text-sm text-destructive">
                           الإجابة الصحيحة: <b>{q.correct}</b>
                         </p>
                       )}
@@ -741,7 +741,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                     <>
                       <button
                         onClick={() => setSocratic((s) => !s)}
-                        className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-amber-300 bg-amber-50 py-3 text-sm font-black text-amber-900"
+                        className="flex w-full items-center justify-center gap-2 rounded-full border border-gem/30 bg-gem-soft py-3 text-sm font-semibold text-gem"
                       >
                         <Lightbulb className="h-4 w-4" />
                         {socratic ? "إخفاء المدرّب" : "لا تفهم فقط — افهم لماذا (توجيه سقراطي)"}
@@ -755,13 +755,13 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
 
                   {/* زر أبلغ عن خطأ داخل منطقة الشرح بعد الإجابة (نقد البند 11) */}
                   {reported ? (
-                    <span className="flex items-center gap-1.5 self-start rounded-full bg-muted px-3 py-1.5 text-[11px] font-bold text-muted-foreground">
+                    <span className="flex items-center gap-1.5 self-start rounded-full bg-muted px-3 py-1.5 text-xs font-bold text-muted-foreground">
                       <Flag className="h-3.5 w-3.5" /> تم الإبلاغ عن هذا السؤال
                     </span>
                   ) : (
                     <button
                       onClick={handleReport}
-                      className="flex items-center gap-1.5 self-start rounded-full px-3 py-1.5 text-[11px] font-bold text-muted-foreground transition-colors hover:bg-muted"
+                      className="flex items-center gap-1.5 self-start rounded-full px-3 py-1.5 text-xs font-bold text-muted-foreground transition-colors hover:bg-muted"
                     >
                       <Flag className="h-3.5 w-3.5" /> أبلغ عن خطأ
                     </button>
@@ -774,24 +774,24 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
       </div>
 
       {/* زر التحقق/التالي */}
-      <div className="safe-bottom border-t border-border bg-white px-4 pt-3">
+      <div className="safe-bottom border-t border-border bg-card px-4 pt-3">
         {graded === null ? (
           <Button
             disabled={selected === null}
             onClick={grade}
-            className="h-14 w-full rounded-2xl bg-primary text-lg font-black text-primary-foreground disabled:opacity-40"
+            className="h-14 w-full rounded-2xl bg-primary text-lg font-semibold text-primary-foreground disabled:opacity-40"
           >
             {instantFeedback ? "تحقق" : "تأكيد الاختيار"}
           </Button>
         ) : (
           <Button
             onClick={next}
-            className={`h-14 w-full rounded-2xl text-lg font-black ${
+            className={`h-14 w-full rounded-2xl text-lg font-semibold ${
               !instantFeedback
                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
                 : graded
-                  ? "bg-emerald-600 text-white hover:bg-emerald-700"
-                  : "bg-red-500 text-white"
+                  ? "bg-success text-white hover:bg-success"
+                  : "bg-destructive text-white"
             }`}
           >
             {idx + 1 >= questions.length ? "عرض النتيجة" : "متابعة"}
@@ -801,7 +801,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
 
       {/* تأكيد الخروج */}
       <AlertDialog open={exiting} onOpenChange={setExiting}>
-        <AlertDialogContent className="rounded-3xl">
+        <AlertDialogContent className="rounded-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle>الخروج من الجلسة؟</AlertDialogTitle>
             <AlertDialogDescription>
@@ -812,7 +812,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
           <AlertDialogFooter>
             <AlertDialogCancel className="rounded-full">متابعة الجلسة</AlertDialogCancel>
             <AlertDialogAction
-              className="rounded-full bg-red-500 hover:bg-red-600"
+              className="rounded-full bg-destructive hover:bg-destructive"
               onClick={() => {
                 clearSnapshot();
                 clearQuiz();

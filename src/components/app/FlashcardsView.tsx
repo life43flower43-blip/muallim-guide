@@ -65,8 +65,8 @@ export default function FlashcardsView() {
             setIndex(0);
             setFlipped(false);
           }}
-          className={`shrink-0 rounded-full px-4 py-2 text-xs font-black transition-colors ${
-            courseFilter === "all" ? "bg-primary text-primary-foreground" : "bg-white text-foreground/70 border border-border"
+          className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
+            courseFilter === "all" ? "bg-primary text-primary-foreground" : "bg-card text-foreground/70 border border-border"
           }`}
         >
           الكل
@@ -81,8 +81,8 @@ export default function FlashcardsView() {
                 setIndex(0);
                 setFlipped(false);
               }}
-              className={`shrink-0 rounded-full px-4 py-2 text-xs font-black transition-colors ${
-                active ? "text-white" : "bg-white text-foreground/70 border border-border"
+              className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
+                active ? "text-white" : "bg-card text-foreground/70 border border-border"
               }`}
               style={active ? { background: COURSE_COLOR[c.id] ?? "#0E7C86" } : undefined}
             >
@@ -100,7 +100,7 @@ export default function FlashcardsView() {
             style={{ width: `${((safeIndex + 1) / deck.length) * 100}%` }}
           />
         </div>
-        <p className="mt-1.5 text-center text-[11px] font-bold text-foreground/60">
+        <p className="mt-1.5 text-center text-xs font-bold text-foreground/60">
           البطاقة {ad(safeIndex + 1)} من {ad(deck.length)}
         </p>
       </div>
@@ -114,16 +114,16 @@ export default function FlashcardsView() {
           onClick={flip}
         >
           {/* الوجه الأمامي: اسم المفهوم */}
-          <div className="absolute inset-0 flex flex-col rounded-3xl border border-border bg-white p-5 shadow-lg [backface-visibility:hidden]">
+          <div className="absolute inset-0 flex flex-col rounded-2xl border border-border bg-card p-5 [backface-visibility:hidden]">
             <div className="flex items-center justify-between">
               <span
-                className="flex h-10 w-10 items-center justify-center rounded-2xl px-2 text-center text-[10px] font-black leading-tight text-white"
+                className="flex h-10 w-10 items-center justify-center rounded-2xl px-2 text-center text-xs font-semibold leading-tight text-white"
                 style={{ background: color }}
               >
                 {COURSE_SHORT[card.courseId] ?? ""}
               </span>
               {isRead && (
-                <span className="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-black text-emerald-700">
+                <span className="rounded-full bg-success-soft px-3 py-1 text-xs font-semibold text-success">
                   قُرئت سابقاً
                 </span>
               )}
@@ -132,34 +132,34 @@ export default function FlashcardsView() {
               <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent">
                 <BookOpen className="h-6 w-6" style={{ color }} />
               </span>
-              <h2 className="text-2xl font-black leading-10 text-foreground">{card.title}</h2>
-              <p className="mt-3 text-[11px] font-bold text-foreground/50">{card.chapter}</p>
+              <h2 className="text-2xl font-semibold leading-10 text-foreground">{card.title}</h2>
+              <p className="mt-3 text-xs font-bold text-foreground/50">{card.chapter}</p>
             </div>
-            <p className="flex items-center justify-center gap-1.5 text-[11px] font-black" style={{ color }}>
+            <p className="flex items-center justify-center gap-1.5 text-xs font-semibold" style={{ color }}>
               <RotateCw className="h-3.5 w-3.5" /> اضغط البطاقة لقلبها وعرض الشرح
             </p>
           </div>
 
           {/* الوجه الخلفي: الشرح والمثال */}
-          <div className="absolute inset-0 flex flex-col overflow-hidden rounded-3xl border border-border bg-white shadow-lg [backface-visibility:hidden] [transform:rotateY(180deg)]">
+          <div className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-border bg-card [backface-visibility:hidden] [transform:rotateY(180deg)]">
             <div className="px-4 py-3 text-white" style={{ background: color }}>
-              <p className="text-sm font-black leading-6">{card.title}</p>
-              <p className="text-[10px] opacity-80">{course?.name}</p>
+              <p className="text-sm font-semibold leading-6">{card.title}</p>
+              <p className="text-xs opacity-80">{course?.name}</p>
             </div>
             <div className="no-scrollbar flex-1 space-y-3 overflow-y-auto p-4">
               <div>
-                <p className="mb-1 flex items-center gap-1.5 text-xs font-black" style={{ color }}>
+                <p className="mb-1 flex items-center gap-1.5 text-xs font-semibold" style={{ color }}>
                   <BookOpen className="h-3.5 w-3.5" /> الشرح
                 </p>
                 <p className="text-[13px] leading-7 text-foreground">{card.explanation}</p>
               </div>
               <div className="space-y-2">
-                <p className="flex items-center gap-1.5 text-xs font-black text-amber-800">
+                <p className="flex items-center gap-1.5 text-xs font-semibold text-gem">
                   <Lightbulb className="h-3.5 w-3.5" /> أمثلة واقعية من الميدان
                 </p>
                 {examplesOf(card).map((ex, i) => (
-                  <div key={i} className="rounded-2xl bg-amber-50 p-3">
-                    <p className="text-[12px] leading-6 text-amber-950/90">{ex}</p>
+                  <div key={i} className="rounded-2xl bg-gem-soft p-3">
+                    <p className="text-[12px] leading-6 text-gem/90">{ex}</p>
                   </div>
                 ))}
               </div>
@@ -172,12 +172,12 @@ export default function FlashcardsView() {
       <div className="flex items-center gap-2">
         <button
           onClick={() => go(-1)}
-          className="card-soft flex h-12 flex-1 items-center justify-center gap-1 rounded-2xl border border-border bg-white text-sm font-black"
+          className="card-soft flex h-12 flex-1 items-center justify-center gap-1 rounded-2xl border border-border bg-card text-sm font-semibold"
         >
           <ChevronRight className="h-5 w-5" /> السابقة
         </button>
         <Button
-          className="h-12 flex-1 rounded-2xl bg-primary text-sm font-black"
+          className="h-12 flex-1 rounded-2xl bg-primary text-sm font-semibold"
           onClick={() => {
             readConcept(card.id);
             startQuiz({
@@ -192,13 +192,13 @@ export default function FlashcardsView() {
         </Button>
         <button
           onClick={() => go(1)}
-          className="card-soft flex h-12 flex-1 items-center justify-center gap-1 rounded-2xl border border-border bg-white text-sm font-black"
+          className="card-soft flex h-12 flex-1 items-center justify-center gap-1 rounded-2xl border border-border bg-card text-sm font-semibold"
         >
           التالية <ChevronLeft className="h-5 w-5" />
         </button>
       </div>
 
-      <p className="flex items-center justify-center gap-1.5 pt-1 text-center text-[10px] text-muted-foreground">
+      <p className="flex items-center justify-center gap-1.5 pt-1 text-center text-xs text-muted-foreground">
         <Layers className="h-3.5 w-3.5" /> قلب البطاقة يعلمها كمقروءة تلقائياً
       </p>
     </div>

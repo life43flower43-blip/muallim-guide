@@ -34,8 +34,8 @@ export default function FirstDayList() {
 
   return (
     <div className="space-y-3">
-      <div className="rounded-2xl border-2 border-amber-500/30 bg-gradient-to-l from-amber-500/10 to-transparent p-4">
-        <p className="flex items-center gap-2 text-sm font-black text-amber-900">
+      <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-l from-amber-500/10 to-transparent p-4">
+        <p className="flex items-center gap-2 text-sm font-semibold text-gem">
           <Sunrise className="h-4 w-4" /> يومك الأول في المدرسة
         </p>
         <p className="mt-1 text-xs font-bold leading-6 text-muted-foreground">
@@ -49,7 +49,7 @@ export default function FirstDayList() {
               style={{ width: `${total > 0 ? (progress / total) * 100 : 0}%` }}
             />
           </div>
-          <span className="rounded-full bg-amber-100 px-3 py-1 text-[11px] font-black text-amber-900">
+          <span className="rounded-full bg-gem-soft px-3 py-1 text-xs font-semibold text-gem">
             {firstDayReadinessWord(firstdayChecked)}
           </span>
         </div>
@@ -64,22 +64,22 @@ export default function FirstDayList() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: si * 0.04 }}
-            className="rounded-2xl border-2 border-border bg-white p-4"
+            className="rounded-2xl border border-border bg-card p-4"
           >
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <h3 className="flex items-center gap-1.5 text-sm font-black">
+                <h3 className="flex items-center gap-1.5 text-sm font-semibold">
                   <ClipboardCheck
-                    className={`h-4 w-4 shrink-0 ${allDone ? "text-emerald-600" : "text-primary"}`}
+                    className={`h-4 w-4 shrink-0 ${allDone ? "text-success" : "text-primary"}`}
                   />
                   {section.title}
                 </h3>
-                <p className="mt-0.5 text-[11px] font-bold leading-5 text-muted-foreground">
+                <p className="mt-0.5 text-xs font-bold leading-5 text-muted-foreground">
                   {section.guide}
                 </p>
               </div>
               {allDone && (
-                <span className="shrink-0 rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-black text-emerald-700">
+                <span className="shrink-0 rounded-full bg-success-soft px-2.5 py-1 text-xs font-semibold text-success">
                   اكتمل القسم
                 </span>
               )}
@@ -93,18 +93,18 @@ export default function FirstDayList() {
                     key={item.id}
                     onClick={() => toggleFirstday(item.id)}
                     aria-pressed={on}
-                    className={`flex w-full items-start gap-2.5 rounded-xl border-2 p-2.5 text-right transition ${
-                      on ? "border-emerald-300 bg-emerald-50" : "border-border bg-white"
+                    className={`flex w-full items-start gap-2.5 rounded-xl border p-2.5 text-right transition ${
+                      on ? "border-success/40 bg-success-soft" : "border-border bg-card"
                     }`}
                   >
                     <span
-                      className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 ${
-                        on ? "border-emerald-600 bg-emerald-600 text-white" : "border-border bg-white"
+                      className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${
+                        on ? "border-success/40 bg-success text-white" : "border-border bg-card"
                       }`}
                     >
-                      {on && <span className="text-[10px] font-black">✓</span>}
+                      {on && <span className="text-xs font-semibold">✓</span>}
                     </span>
-                    <span className={`text-xs font-bold leading-6 ${on ? "text-emerald-900" : "text-foreground"}`}>
+                    <span className={`text-xs font-bold leading-6 ${on ? "text-success" : "text-foreground"}`}>
                       {item.text}
                     </span>
                   </button>
@@ -113,13 +113,13 @@ export default function FirstDayList() {
             </div>
 
             {section.scripts && (
-              <div className="mt-3 rounded-xl border-2 border-sky-200 bg-sky-50 p-3">
-                <p className="flex items-center gap-1.5 text-[11px] font-black text-sky-900">
+              <div className="mt-3 rounded-xl border border-sky-200 bg-sky-50 p-3">
+                <p className="flex items-center gap-1.5 text-xs font-semibold text-sky-900">
                   <MessageSquareQuote className="h-3.5 w-3.5" /> جمل جاهزة احفظها كما هي
                 </p>
                 <div className="mt-2 space-y-1.5">
                   {section.scripts.map((s, i) => (
-                    <p key={i} className="rounded-lg border border-sky-100 bg-white p-2.5 text-xs font-bold leading-6 text-sky-950">
+                    <p key={i} className="rounded-lg border border-sky-100 bg-card p-2.5 text-xs font-bold leading-6 text-sky-950">
                       «{s}»
                     </p>
                   ))}
@@ -132,7 +132,7 @@ export default function FirstDayList() {
 
       <button
         onClick={shareList}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-primary/30 bg-accent py-3.5 text-sm font-black text-primary"
+        className="flex w-full items-center justify-center gap-2 rounded-2xl border border-primary/30 bg-accent py-3.5 text-sm font-semibold text-primary"
       >
         <Share2 className="h-4.5 w-4.5" />
         انسخ قائمتي أو شاركها

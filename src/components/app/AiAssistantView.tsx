@@ -125,8 +125,8 @@ export default function AiAssistantView() {
               <Sparkles className="h-5 w-5 text-amber-300" />
             </span>
             <div>
-              <h1 className="text-base font-black leading-5 text-white">المساعد الذكي</h1>
-              <p className="text-[10px] font-bold text-white/85">يجيبك فوراً — بلا إعدادات ولا انتظار</p>
+              <h1 className="text-base font-semibold leading-5 text-white">المساعد الذكي</h1>
+              <p className="text-xs font-bold text-white/85">يجيبك فوراً — بلا إعدادات ولا انتظار</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
@@ -165,7 +165,7 @@ export default function AiAssistantView() {
       </div>
 
       {/* ======= صف الإدخال ======= */}
-      <div className="safe-bottom shrink-0 border-t border-border bg-white px-3 pb-2 pt-2.5">
+      <div className="safe-bottom shrink-0 border-t border-border bg-card px-3 pb-2 pt-2.5">
         <div className="mx-auto flex max-w-md items-end gap-2">
           <textarea
             ref={inputRef}
@@ -204,18 +204,18 @@ export default function AiAssistantView() {
 function EmptyState({ onPick }: { onPick: (t: string) => void }) {
   return (
     <div className="mx-auto max-w-md pt-6">
-      <div className="rounded-3xl border border-border bg-white p-5 text-center shadow-sm">
+      <div className="rounded-2xl border border-border bg-card p-5 text-center">
         <span className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-bl from-[#0B6870] to-[#0E7C86]">
           <Sparkles className="h-7 w-7 text-amber-300" />
         </span>
-        <h2 className="text-lg font-black text-foreground">كيف أساعدك اليوم؟</h2>
+        <h2 className="text-lg font-semibold text-foreground">كيف أساعدك اليوم؟</h2>
         <p className="mx-auto mt-1.5 max-w-[19rem] text-xs font-semibold leading-6 text-muted-foreground">
           اسألني عن المفاهيم التربوية، وإدارة الصف، وخطط الدروس، وأساليب التقويم، وتطور الذكاء
           الاصطناعي ودوره في التعليم — وسأجيبك فوراً من داخل التطبيق.
         </p>
       </div>
 
-      <p className="mb-2 mt-4 px-1 text-xs font-black text-muted-foreground">جرّب أحد هذه الأسئلة:</p>
+      <p className="mb-2 mt-4 px-1 text-xs font-semibold text-muted-foreground">جرّب أحد هذه الأسئلة:</p>
       <div className="grid grid-cols-1 gap-2">
         {QUICK_PROMPTS.map((p) => {
           const Icon = p.icon;
@@ -223,7 +223,7 @@ function EmptyState({ onPick }: { onPick: (t: string) => void }) {
             <button
               key={p.text}
               onClick={() => onPick(p.text)}
-              className="flex items-center gap-3 rounded-2xl border border-border bg-white p-3.5 text-right transition hover:border-primary/40 hover:bg-primary/5"
+              className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3.5 text-right transition hover:border-primary/40 hover:bg-primary/5"
             >
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                 <Icon className="h-4.5 w-4.5 text-primary" />
@@ -243,7 +243,7 @@ function ChatBubble({ msg }: { msg: ChatMsg }) {
   if (msg.role === "user") {
     return (
       <div className="flex justify-start">
-        <div className="max-w-[85%] rounded-3xl rounded-br-lg bg-primary px-4 py-3">
+        <div className="max-w-[85%] rounded-2xl rounded-br-lg bg-primary px-4 py-3">
           <p className="whitespace-pre-wrap text-sm font-bold leading-7 text-primary-foreground">
             {msg.content}
           </p>
@@ -254,8 +254,8 @@ function ChatBubble({ msg }: { msg: ChatMsg }) {
   return (
     <div className="flex justify-end">
       <div
-        className={`max-w-[92%] rounded-3xl rounded-bl-lg border px-4 py-3 ${
-          msg.error ? "border-red-200 bg-red-50" : "border-border bg-white"
+        className={`max-w-[92%] rounded-2xl rounded-bl-lg border px-4 py-3 ${
+          msg.error ? "border-destructive/40 bg-danger-soft" : "border-border bg-card"
         }`}
       >
         {msg.pending ? (
@@ -266,7 +266,7 @@ function ChatBubble({ msg }: { msg: ChatMsg }) {
         ) : (
           <>
             {msg.error && (
-              <span className="mb-1.5 flex items-center gap-1.5 text-[11px] font-black text-red-700">
+              <span className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-destructive">
                 <AlertTriangle className="h-3.5 w-3.5" /> تعذر إتمام الطلب
               </span>
             )}
@@ -278,7 +278,7 @@ function ChatBubble({ msg }: { msg: ChatMsg }) {
               ))}
             </div>
             {msg.meta && !msg.error && (
-              <p className="mt-2 border-t border-border/60 pt-1.5 text-[10px] font-bold text-muted-foreground">
+              <p className="mt-2 border-t border-border/60 pt-1.5 text-xs font-bold text-muted-foreground">
                 {msg.meta}
               </p>
             )}

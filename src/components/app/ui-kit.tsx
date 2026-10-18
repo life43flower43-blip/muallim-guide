@@ -7,7 +7,7 @@
 // وأهداف لمس لا تقل عن ٤٤ بكسل. كل الصفحات تُبنى منها كي تبقى متسقة.
 // ============================================================================
 
-import { ChevronLeft, Flame, Gem } from "lucide-react";
+import { ArrowRight, ChevronLeft, Flame, Gem, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ad } from "@/lib/arabic";
 
@@ -217,3 +217,166 @@ export function EmptyState({ icon: Icon, title, sub, action }: { icon: React.Ele
 }
 
 export const pct = (v: number) => `${ad(Math.round(v))}٪`;
+
+// ============================================================================
+// الشاشات الكاملة (الأدوات والمختبرات): نمط «الحوار بملء الشاشة» في Material 3
+// شريط علوي ثابت بزر إغلاق أو رجوع وعنوان، ومحتوى في عمود مقروء،
+// وشريط إجراء سفلي اختياري للخطوة الرئيسية.
+// ============================================================================
+
+export function ScreenShell({
+  title,
+  sub,
+  onClose,
+  onBack,
+  actions,
+  footer,
+  children,
+  wide = false,
+}: {
+  title: string;
+  sub?: string;
+  onClose?: () => void;
+  onBack?: () => void;
+  actions?: React.ReactNode;
+  footer?: React.ReactNode;
+  children: React.ReactNode;
+  wide?: boolean;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col bg-background">
+      <header className="safe-top shrink-0 border-b border-border bg-card">
+        <div className={cn("mx-auto flex min-h-[60px] items-center gap-2 px-2", wide ? "max-w-5xl" : "max-w-3xl")}>
+          {onBack ? (
+            <button type="button" onClick={onBack} aria-label="رجوع" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground hover:bg-muted">
+              <ArrowRight className="h-5 w-5" />
+            </button>
+          ) : onClose ? (
+            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground hover:bg-muted">
+              <X className="h-5 w-5" />
+            </button>
+          ) : null}
+          <div className="min-w-0 flex-1 px-1">
+            <h1 className="truncate font-display text-[17px] font-semibold leading-7">{title}</h1>
+            {sub && <p className="truncate text-xs text-muted-foreground">{sub}</p>}
+          </div>
+          {actions}
+          {onBack && onClose && (
+            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted">
+              <X className="h-5 w-5" />
+            </button>
+          )}
+        </div>
+      </header>
+      <div className="no-scrollbar flex-1 overflow-y-auto">
+        <div className={cn("mx-auto px-4 pb-10 pt-5", wide ? "max-w-5xl lg:px-8" : "max-w-3xl")}>{children}</div>
+      </div>
+      {footer && (
+        <div className="safe-bottom shrink-0 border-t border-border bg-card">
+          <div className={cn("mx-auto flex gap-3 px-4 py-3", wide ? "max-w-5xl" : "max-w-3xl")}>{footer}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** شارة صغيرة: محايدة أو بلون دلالي */
+export function Chip({ children, tone = "neutral", className }: { children: React.ReactNode; tone?: "neutral" | "primary" | "success" | "warning" | "danger"; className?: string }) {
+  const tones = {
+    neutral: "bg-muted text-secondary-foreground",
+    primary: "bg-accent text-accent-foreground",
+    success: "bg-success-soft text-success",
+    warning: "bg-gem-soft text-gem",
+    danger: "bg-danger-soft text-destructive",
+  } as const;
+  return <span className={cn("inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium", tones[tone], className)}>{children}</span>;
+}
+
+/** فقرة مميزة: معلومة، أو نجاح، أو تنبيه، أو خطأ */
+export function Callout({
+  tone = "info",
+  icon: Icon,
+  title,
+  children,
+  className,
+}: {
+  tone?: "info" | "success" | "warning" | "danger" | "neutral";
+  icon?: React.ElementType;
+  title?: React.ReactNode;
+  children?: React.ReactNode;
+  className?: string;
+}) {
+  const tones = {
+    info: "bg-accent text-accent-foreground",
+    success: "bg-success-soft text-success",
+    warning: "bg-gem-soft text-gem",
+    danger: "bg-danger-soft text-destructive",
+    neutral: "bg-muted text-secondary-foreground",
+  } as const;
+  return (
+    <div className={cn("rounded-xl p-4", tones[tone], className)}>
+      {title && (
+        <p className="flex items-center gap-2 text-sm font-semibold">
+          {Icon && <Icon className="h-4 w-4 shrink-0" />}
+          {title}
+        </p>
+      )}
+      {children && <div className={cn("text-sm leading-7 text-foreground/85", title && "mt-1.5")}>{children}</div>}
+    </div>
+  );
+}
+
+/** شريط كفاءة أو محور: الاسم، الحالة، والنسبة */
+export function SkillBar({ label, value, status, tone = "primary" }: { label: string; value: number; status?: string; tone?: "primary" | "success" | "warning" | "danger" | "muted" }) {
+  const colors = { primary: "var(--primary)", success: "var(--success)", warning: "var(--warning)", danger: "var(--destructive)", muted: "var(--input)" } as const;
+  return (
+    <div>
+      <div className="mb-1.5 flex items-center justify-between gap-2 text-sm">
+        <span className="text-secondary-foreground">{label}</span>
+        {status && <span className="text-xs font-medium text-muted-foreground">{status}</span>}
+      </div>
+      <ProgressBar value={value} color={colors[tone]} />
+    </div>
+  );
+}
+
+/** زر خيار في سؤال أو موقف: حرف، نص، وحالة بعد التقييم */
+export function OptionButton({
+  letter,
+  children,
+  state = "idle",
+  onClick,
+  disabled,
+}: {
+  letter?: string;
+  children: React.ReactNode;
+  state?: "idle" | "selected" | "correct" | "wrong" | "dim";
+  onClick?: () => void;
+  disabled?: boolean;
+}) {
+  const cls = {
+    idle: "border-border bg-card hover:border-primary/50 hover:bg-accent/40",
+    selected: "border-primary bg-accent ring-1 ring-primary",
+    correct: "border-success bg-success-soft",
+    wrong: "border-destructive bg-danger-soft",
+    dim: "border-border bg-card opacity-60",
+  }[state];
+  const letterCls = {
+    idle: "bg-muted text-secondary-foreground",
+    selected: "bg-primary text-primary-foreground",
+    correct: "bg-success text-white",
+    wrong: "bg-destructive text-white",
+    dim: "bg-muted text-muted-foreground",
+  }[state];
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={cn("flex w-full items-start gap-3 rounded-xl border p-4 text-right transition-colors disabled:cursor-default", cls)}
+    >
+      {letter && <span className={cn("flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm font-semibold", letterCls)}>{letter}</span>}
+      <span className="flex-1 text-[15px] leading-7">{children}</span>
+    </button>
+  );
+}

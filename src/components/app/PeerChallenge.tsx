@@ -208,14 +208,14 @@ export default function PeerChallenge() {
               <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0E7C86] text-white">
                 <Users className="h-5 w-5" />
               </span>
-              <h2 className="text-xl font-black">تحدّي الأقران</h2>
+              <h2 className="text-xl font-semibold">تحدّي الأقران</h2>
             </div>
             <button onClick={clearPeer} className="rounded-full bg-muted p-2" aria-label="إغلاق التحدي">
               <X className="h-5 w-5" />
             </button>
           </div>
 
-          <p className="mb-4 rounded-2xl border-2 border-[#0E7C86]/20 bg-gradient-to-l from-[#0E7C86]/10 to-transparent p-4 text-sm font-bold leading-7">
+          <p className="mb-4 rounded-2xl border border-[#0E7C86]/20 bg-gradient-to-l from-[#0E7C86]/10 to-transparent p-4 text-sm font-bold leading-7">
             الدرس يثبت أكثر حين تنافس فيه زميلك: أنشئ تحديًا من أسئلة البنك، وشارك رابطه مع زميل —
             سيجيب عن الأسئلة نفسها في تطبيقه ويقارن نتيجتكم. كل شيء ينتقل في الرابط نفسه بلا حسابات
             ولا سيرفرات.
@@ -224,13 +224,13 @@ export default function PeerChallenge() {
           <div className="space-y-3">
             <button
               onClick={() => setScreen("create")}
-              className="card-soft flex w-full items-center gap-3 rounded-2xl border-2 border-[#0E7C86]/30 bg-[#0E7C86]/5 p-4 text-right transition hover:border-[#0E7C86]"
+              className="card-soft flex w-full items-center gap-3 rounded-2xl border border-[#0E7C86]/30 bg-[#0E7C86]/5 p-4 text-right transition hover:border-[#0E7C86]"
             >
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0E7C86] text-white">
                 <Swords className="h-6 w-6" />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-base font-black">أنشئ تحديًا وشاركه</span>
+                <span className="block text-base font-semibold">أنشئ تحديًا وشاركه</span>
                 <span className="mt-0.5 block text-xs font-bold leading-6 text-muted-foreground">
                   اختر المحور وعدد الأسئلة، حلّها، ثم أرسل الرابط لزميلك
                 </span>
@@ -240,13 +240,13 @@ export default function PeerChallenge() {
 
             <button
               onClick={() => setScreen("paste")}
-              className="card-soft flex w-full items-center gap-3 rounded-2xl border-2 border-border bg-white p-4 text-right transition hover:border-primary"
+              className="card-soft flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-4 text-right transition hover:border-primary"
             >
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-muted text-primary">
                 <ClipboardPaste className="h-6 w-6" />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-base font-black">وصلني رابط تحدٍّ</span>
+                <span className="block text-base font-semibold">وصلني رابط تحدٍّ</span>
                 <span className="mt-0.5 block text-xs font-bold leading-6 text-muted-foreground">
                   ألصق الرابط الذي أرسله زميلك وابدأ الحل والمقارنة
                 </span>
@@ -277,14 +277,14 @@ export default function PeerChallenge() {
             <ChevronRight className="h-4 w-4" /> عودة
           </button>
 
-          <h2 className="text-lg font-black">جهّز تحديك</h2>
+          <h2 className="text-lg font-semibold">جهّز تحديك</h2>
 
-          <p className="mt-4 mb-2 text-sm font-black text-muted-foreground">من أي محور تكون الأسئلة؟</p>
+          <p className="mt-4 mb-2 text-sm font-semibold text-muted-foreground">من أي محور تكون الأسئلة؟</p>
           <div className="space-y-1.5">
             <button
               onClick={() => setScope("all")}
-              className={`w-full rounded-xl border-2 p-3 text-right text-sm font-black transition ${
-                scope === "all" ? "border-[#0E7C86] bg-[#0E7C86]/5" : "border-border bg-white"
+              className={`w-full rounded-xl border p-3 text-right text-sm font-semibold transition ${
+                scope === "all" ? "border-[#0E7C86] bg-[#0E7C86]/5" : "border-border bg-card"
               }`}
             >
               كل المحاور — تحدٍّ عام
@@ -293,8 +293,8 @@ export default function PeerChallenge() {
               <button
                 key={c.id}
                 onClick={() => setScope(c.id)}
-                className={`w-full rounded-xl border-2 p-3 text-right text-sm font-black transition ${
-                  scope === c.id ? "border-[#0E7C86] bg-[#0E7C86]/5" : "border-border bg-white"
+                className={`w-full rounded-xl border p-3 text-right text-sm font-semibold transition ${
+                  scope === c.id ? "border-[#0E7C86] bg-[#0E7C86]/5" : "border-border bg-card"
                 }`}
               >
                 {COURSE_SHORT[c.id]}
@@ -302,14 +302,14 @@ export default function PeerChallenge() {
             ))}
           </div>
 
-          <p className="mt-4 mb-2 text-sm font-black text-muted-foreground">كم سؤالًا في التحدي؟</p>
+          <p className="mt-4 mb-2 text-sm font-semibold text-muted-foreground">كم سؤالًا في التحدي؟</p>
           <div className="grid grid-cols-2 gap-2">
             {[5, 10].map((n) => (
               <button
                 key={n}
                 onClick={() => setSize(n)}
-                className={`rounded-xl border-2 p-3 text-center text-sm font-black transition ${
-                  size === n ? "border-[#0E7C86] bg-[#0E7C86]/5" : "border-border bg-white"
+                className={`rounded-xl border p-3 text-center text-sm font-semibold transition ${
+                  size === n ? "border-[#0E7C86] bg-[#0E7C86]/5" : "border-border bg-card"
                 }`}
               >
                 {ad(n)} أسئلة
@@ -319,12 +319,12 @@ export default function PeerChallenge() {
 
           <Button
             onClick={startOwnChallenge}
-            className="mt-5 h-14 w-full rounded-2xl bg-[#0E7C86] text-base font-black text-white hover:bg-[#92400E]"
+            className="mt-5 h-14 w-full rounded-2xl bg-[#0E7C86] text-base font-semibold text-white hover:bg-[#92400E]"
           >
             <Swords className="ml-2 h-5 w-5" />
             حلّ التحدي الآن وأرسل الرابط
           </Button>
-          <p className="mt-2 text-center text-[11px] font-bold text-muted-foreground">
+          <p className="mt-2 text-center text-xs font-bold text-muted-foreground">
             ستحل أولًا لتُعرف نتيجتك، ثم يُبنى الرابط حاملًا الأسئلة ونتيجتك معًا
           </p>
         </div>
@@ -349,7 +349,7 @@ export default function PeerChallenge() {
           >
             <ChevronRight className="h-4 w-4" /> عودة
           </button>
-          <h2 className="text-lg font-black">ألصق رابط التحدي</h2>
+          <h2 className="text-lg font-semibold">ألصق رابط التحدي</h2>
           <p className="mt-1 text-xs font-bold leading-6 text-muted-foreground">
             الصق الرابط كاملًا كما أرسله زميلك — نقرأ منه الأسئلة ونتيجته ونبدأ مقارنتكم
           </p>
@@ -358,13 +358,13 @@ export default function PeerChallenge() {
             onChange={(e) => setPasteInput(e.target.value)}
             rows={3}
             placeholder="ألصق الرابط هنا…"
-            className="mt-3 w-full rounded-xl border-2 border-border bg-background p-3 text-xs font-bold leading-6 outline-none focus:border-primary"
+            className="mt-3 w-full rounded-xl border border-border bg-background p-3 text-xs font-bold leading-6 outline-none focus:border-primary"
             dir="ltr"
           />
           <Button
             onClick={tryPaste}
             disabled={!pasteInput.trim()}
-            className="mt-3 h-14 w-full rounded-2xl bg-[#0E7C86] text-base font-black text-white hover:bg-[#92400E] disabled:opacity-40"
+            className="mt-3 h-14 w-full rounded-2xl bg-[#0E7C86] text-base font-semibold text-white hover:bg-[#92400E] disabled:opacity-40"
           >
             <Link2 className="ml-2 h-5 w-5" />
             ابدأ حل التحدي
@@ -393,7 +393,7 @@ export default function PeerChallenge() {
             <div className="progress-track h-3.5 flex-1">
               <div className="progress-fill h-full" style={{ width: `${progress}%` }} />
             </div>
-            <span className="rounded-full bg-muted px-3 py-1 text-xs font-black text-muted-foreground">
+            <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
               {ad(idx + 1)} من {ad(questions.length)}
             </span>
           </div>
@@ -405,29 +405,29 @@ export default function PeerChallenge() {
         <div className="no-scrollbar flex-1 overflow-y-auto px-4 pb-4">
           <motion.div key={q.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="space-y-3">
             {concept && (
-              <span className="rounded-full bg-muted px-3 py-1 text-[11px] font-bold text-muted-foreground">
+              <span className="rounded-full bg-muted px-3 py-1 text-xs font-bold text-muted-foreground">
                 {COURSE_SHORT[concept.courseId]}، {concept.chapter}
               </span>
             )}
-            <h2 className="text-lg font-extrabold leading-8">{q.question}</h2>
+            <h2 className="text-lg font-semibold leading-8">{q.question}</h2>
             <div className="space-y-2.5">
               {opts.map((o, i) => {
                 const isSel = selected === o.text;
                 const isCorrect = o.isCorrect;
-                let cls = "border-border bg-white";
-                if (graded !== null && isCorrect) cls = "border-emerald-500 bg-emerald-50";
-                else if (graded === false && isSel) cls = "border-red-400 bg-red-50";
+                let cls = "border-border bg-card";
+                if (graded !== null && isCorrect) cls = "border-success/40 bg-success-soft";
+                else if (graded === false && isSel) cls = "border-destructive/40 bg-danger-soft";
                 else if (isSel) cls = "border-primary bg-accent";
                 return (
                   <button
                     key={i}
                     disabled={graded !== null}
                     onClick={() => setSelected(o.text)}
-                    className={`flex w-full items-center gap-3 rounded-2xl border-2 p-3.5 text-right ${cls}`}
+                    className={`flex w-full items-center gap-3 rounded-2xl border p-3.5 text-right ${cls}`}
                   >
                     <span className="min-w-0 flex-1 text-sm font-bold leading-6">{o.text}</span>
-                    {graded !== null && isCorrect && <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" />}
-                    {graded === false && isSel && <XCircle className="h-5 w-5 shrink-0 text-red-500" />}
+                    {graded !== null && isCorrect && <CheckCircle2 className="h-5 w-5 shrink-0 text-success" />}
+                    {graded === false && isSel && <XCircle className="h-5 w-5 shrink-0 text-destructive" />}
                   </button>
                 );
               })}
@@ -437,7 +437,7 @@ export default function PeerChallenge() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={`rounded-xl p-3 text-xs font-bold leading-6 ${
-                  graded ? "bg-emerald-50 text-emerald-900" : "bg-red-50 text-red-900"
+                  graded ? "bg-success-soft text-success" : "bg-danger-soft text-destructive"
                 }`}
               >
                 {graded ? "إجابة صحيحة — أحسنت" : `الصحيح: ${q.correct} — ${q.reason}`}
@@ -446,17 +446,17 @@ export default function PeerChallenge() {
           </motion.div>
         </div>
 
-        <div className="safe-bottom border-t border-border bg-white px-4 pt-3">
+        <div className="safe-bottom border-t border-border bg-card px-4 pt-3">
           {graded === null ? (
             <Button
               disabled={selected === null}
               onClick={grade}
-              className="h-14 w-full rounded-2xl bg-primary text-lg font-black text-primary-foreground disabled:opacity-40"
+              className="h-14 w-full rounded-2xl bg-primary text-lg font-semibold text-primary-foreground disabled:opacity-40"
             >
               تحقق
             </Button>
           ) : (
-            <Button onClick={next} className="h-14 w-full rounded-2xl bg-primary text-lg font-black text-primary-foreground">
+            <Button onClick={next} className="h-14 w-full rounded-2xl bg-primary text-lg font-semibold text-primary-foreground">
               {idx + 1 >= questions.length ? "عرض المقارنة" : "السؤال التالي"}
               <ArrowLeft className="mr-2 h-5 w-5" />
             </Button>
@@ -485,7 +485,7 @@ export default function PeerChallenge() {
         <div className="mx-auto max-w-lg px-4 pb-28 pt-5">
           <div className="flex flex-col items-center text-center">
             <Trophy className={`h-16 w-16 ${tie ? "text-amber-500" : iWon ? "text-amber-500" : "text-muted-foreground"}`} />
-            <h2 className="mt-3 text-2xl font-black">
+            <h2 className="mt-3 text-2xl font-semibold">
               {isReceiver ? (tie ? "تعادلتما!" : iWon ? "تفوقت على زميلك!" : "زميلك تفوق هذه المرة") : "تحديك جاهز للإرسال"}
             </h2>
           </div>
@@ -512,59 +512,59 @@ export default function PeerChallenge() {
             <Button
               onClick={shareMyResult}
               variant="outline"
-              className="mt-4 h-13 w-full rounded-2xl border-2 border-[#0E7C86]/40 text-sm font-black text-[#0E7C86]"
+              className="mt-4 h-13 w-full rounded-2xl border border-[#0E7C86]/40 text-sm font-semibold text-[#0E7C86]"
             >
               <Share2 className="ml-2 h-5 w-5" />
               شارك نتيجتك مع زميلك
             </Button>
           ) : (
             <>
-              <div className="mt-4 rounded-2xl border-2 border-border bg-white p-4">
-                <p className="flex items-center gap-1.5 text-sm font-black">
+              <div className="mt-4 rounded-2xl border border-border bg-card p-4">
+                <p className="flex items-center gap-1.5 text-sm font-semibold">
                   <Link2 className="h-4 w-4 text-[#0E7C86]" /> رابط التحدي — الأسئلة ونتيجتك فيه معًا
                 </p>
-                <p className="mt-2 break-all rounded-xl bg-muted/70 p-3 text-[11px] leading-5 text-muted-foreground" dir="ltr">
+                <p className="mt-2 break-all rounded-xl bg-muted/70 p-3 text-xs leading-5 text-muted-foreground" dir="ltr">
                   {linkText}
                 </p>
                 <div className="mt-3 flex gap-2">
                   <Button
                     onClick={copyLink}
-                    className="h-12 flex-1 rounded-xl bg-[#0E7C86] text-sm font-black text-white hover:bg-[#92400E]"
+                    className="h-12 flex-1 rounded-xl bg-[#0E7C86] text-sm font-semibold text-white hover:bg-[#92400E]"
                   >
                     <Copy className="ml-1.5 h-4 w-4" /> انسخ الرابط
                   </Button>
                   <Button
                     onClick={shareLink}
                     variant="outline"
-                    className="h-12 flex-1 rounded-xl border-2 border-border text-sm font-black"
+                    className="h-12 flex-1 rounded-xl border border-border text-sm font-semibold"
                   >
                     <Share2 className="ml-1.5 h-4 w-4" /> شارك
                   </Button>
                 </div>
               </div>
-              <p className="mt-2 text-center text-[11px] font-bold leading-6 text-muted-foreground">
+              <p className="mt-2 text-center text-xs font-bold leading-6 text-muted-foreground">
                 من يفتح الرابط في التطبيق سيجيب عن الأسئلة نفسها وستقارن نتيجتاكم تلقائيًا — بلا حسابات ولا سيرفرات
               </p>
             </>
           )}
 
           {/* مراجعة الأسئلة */}
-          <p className="mb-2 mt-5 text-sm font-extrabold text-muted-foreground">مراجعة أسئلة التحدي</p>
+          <p className="mb-2 mt-5 text-sm font-semibold text-muted-foreground">مراجعة أسئلة التحدي</p>
           <div className="space-y-2">
             {review.map((r) => {
               const rq = questionById(r.qid)!;
               return (
-                <details key={r.qid} className="rounded-2xl border border-border bg-white p-3.5">
+                <details key={r.qid} className="rounded-2xl border border-border bg-card p-3.5">
                   <summary className="flex cursor-pointer list-none items-start gap-2.5">
                     {r.ok ? (
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success" />
                     ) : (
-                      <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
+                      <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
                     )}
                     <span className="text-xs font-bold leading-6">{rq.question}</span>
                   </summary>
                   {!r.ok && (
-                    <p className="mt-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-800">
+                    <p className="mt-2 rounded-lg bg-success-soft px-3 py-2 text-xs font-bold text-success">
                       الإجابة الصحيحة: {rq.correct}
                     </p>
                   )}
@@ -577,11 +577,11 @@ export default function PeerChallenge() {
             <Button
               onClick={() => setScreen("menu")}
               variant="outline"
-              className="h-13 flex-1 rounded-2xl border-2 border-border text-sm font-black"
+              className="h-13 flex-1 rounded-2xl border border-border text-sm font-semibold"
             >
               تحدٍّ جديد
             </Button>
-            <Button onClick={clearPeer} className="h-13 flex-1 rounded-2xl bg-primary text-sm font-black text-primary-foreground">
+            <Button onClick={clearPeer} className="h-13 flex-1 rounded-2xl bg-primary text-sm font-semibold text-primary-foreground">
               إغلاق
             </Button>
           </div>
@@ -606,12 +606,12 @@ function ScoreTile({
 }) {
   return (
     <div
-      className={`rounded-2xl border-2 p-4 text-center ${
-        highlight ? "border-[#0E7C86] bg-[#0E7C86]/5" : "border-border bg-white"
+      className={`rounded-2xl border p-4 text-center ${
+        highlight ? "border-[#0E7C86] bg-[#0E7C86]/5" : "border-border bg-card"
       }`}
     >
-      <p className="truncate text-xs font-black text-muted-foreground">{name}</p>
-      <p className="mt-1 text-3xl font-black tabular-nums" dir="ltr">
+      <p className="truncate text-xs font-semibold text-muted-foreground">{name}</p>
+      <p className="mt-1 text-3xl font-semibold tabular-nums" dir="ltr">
         {ad(correct)}/{ad(total)}
       </p>
     </div>

@@ -33,7 +33,7 @@ const TOOLS: { id: ToolId; label: string; icon: typeof Gauge; desc: string }[] =
 const pct = (v: number) => `${ad(Math.round(v * 100))}٪`;
 
 const inputCls =
-  "w-full rounded-xl border-2 border-border bg-background p-3 text-center text-sm font-black tabular-nums outline-none focus:border-primary";
+  "w-full rounded-xl border border-border bg-background p-3 text-center text-sm font-semibold tabular-nums outline-none focus:border-primary";
 
 function ToolHeader({ icon: Icon, label, desc }: { icon: typeof Gauge; label: string; desc: string }) {
   return (
@@ -42,8 +42,8 @@ function ToolHeader({ icon: Icon, label, desc }: { icon: typeof Gauge; label: st
         <Icon className="h-5 w-5 text-primary" />
       </span>
       <div>
-        <h3 className="text-sm font-black">{label}</h3>
-        <p className="text-[11px] font-bold text-muted-foreground">{desc}</p>
+        <h3 className="text-sm font-semibold">{label}</h3>
+        <p className="text-xs font-bold text-muted-foreground">{desc}</p>
       </div>
     </div>
   );
@@ -76,14 +76,14 @@ export default function MeasureKit() {
             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#14919B] text-white">
               <Calculator className="h-5 w-5" />
             </span>
-            <h2 className="text-xl font-black">معدة القياس والتقويم</h2>
+            <h2 className="text-xl font-semibold">معدة القياس والتقويم</h2>
           </div>
           <button onClick={clearMeasure} className="rounded-full bg-muted p-2" aria-label="إغلاق المعدة">
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <p className="mb-3 rounded-2xl border-2 border-[#14919B]/20 bg-gradient-to-l from-[#14919B]/10 to-transparent p-3.5 text-xs font-bold leading-6 text-foreground">
+        <p className="mb-3 rounded-2xl border border-[#14919B]/20 bg-gradient-to-l from-[#14919B]/10 to-transparent p-3.5 text-xs font-bold leading-6 text-foreground">
           حاسباتك الأربع لورقة التقويم: أدخل درجات طلابك أو إجاباتهم وستقرأ النتيجة مع تربويها — كل
           الحساب يجري على جهازك ولا يغادره.
         </p>
@@ -96,10 +96,10 @@ export default function MeasureKit() {
               <button
                 key={t.id}
                 onClick={() => setTool(t.id)}
-                className={`flex flex-col items-center gap-1 rounded-xl border-2 px-1 py-2 text-[10px] font-black leading-4 ${
+                className={`flex flex-col items-center gap-1 rounded-xl border px-1 py-2 text-xs font-semibold leading-4 ${
                   tool === t.id
                     ? "border-[#14919B] bg-[#14919B]/10 text-[#14919B]"
-                    : "border-border bg-white text-muted-foreground"
+                    : "border-border bg-card text-muted-foreground"
                 }`}
               >
                 <Icon className="h-4.5 w-4.5" />
@@ -109,7 +109,7 @@ export default function MeasureKit() {
           })}
         </div>
 
-        <div className="mt-4 rounded-2xl border-2 border-border bg-white p-4">
+        <div className="mt-4 rounded-2xl border border-border bg-card p-4">
           {tool === "stats" && <StatsTool />}
           {tool === "difficulty" && <DifficultyTool />}
           {tool === "discrim" && <DiscrimTool />}
@@ -141,7 +141,7 @@ function StatsTool() {
         className={`${inputCls} mt-3 text-right`}
       />
       {scores.length > 0 && (
-        <p className="mt-1.5 text-[11px] font-bold text-muted-foreground">
+        <p className="mt-1.5 text-xs font-bold text-muted-foreground">
           فسّرنا {ad(scores.length)} {scores.length === 1 ? "درجة" : "درجات"} من إدخالك
         </p>
       )}
@@ -178,7 +178,7 @@ function DifficultyTool() {
       />
       <div className="mt-3 grid grid-cols-2 gap-2">
         <div>
-          <label className="mb-1 block text-center text-[11px] font-black text-muted-foreground">
+          <label className="mb-1 block text-center text-xs font-semibold text-muted-foreground">
             عدد المجيبين كلهم
           </label>
           <input
@@ -190,7 +190,7 @@ function DifficultyTool() {
           />
         </div>
         <div>
-          <label className="mb-1 block text-center text-[11px] font-black text-muted-foreground">
+          <label className="mb-1 block text-center text-xs font-semibold text-muted-foreground">
             منهم أجاب صحيحًا
           </label>
           <input
@@ -206,14 +206,14 @@ function DifficultyTool() {
       {res ? (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-3 space-y-2">
           <div className="flex items-center justify-between rounded-xl bg-muted/70 p-3">
-            <span className="text-sm font-black">مؤشر الصعوبة</span>
+            <span className="text-sm font-semibold">مؤشر الصعوبة</span>
             <span
-              className={`rounded-full px-3 py-1 text-sm font-black ${
+              className={`rounded-full px-3 py-1 text-sm font-semibold ${
                 res.tone === "easy"
-                  ? "bg-emerald-100 text-emerald-700"
+                  ? "bg-success-soft text-success"
                   : res.tone === "mid"
                     ? "bg-sky-100 text-sky-700"
-                    : "bg-red-100 text-red-700"
+                    : "bg-danger-soft text-destructive"
               }`}
             >
               {res.word}، {pct(res.p)}
@@ -229,7 +229,7 @@ function DifficultyTool() {
         </motion.div>
       ) : (
         (totalRaw !== "" || correctRaw !== "") && (
-          <p className="mt-3 text-xs font-bold text-red-600">
+          <p className="mt-3 text-xs font-bold text-destructive">
             أدخل عددًا صحيحًا في كل خانة، والمجيبون الصحيحون لا يفوقون المجموع
           </p>
         )
@@ -259,8 +259,8 @@ function DiscrimTool() {
         desc="قارن المجموعة العليا بالدنيا في نتيجة الاختبار"
       />
       <div className="mt-3 space-y-2">
-        <div className="rounded-xl bg-emerald-50 p-3">
-          <p className="mb-2 text-center text-[11px] font-black text-emerald-800">
+        <div className="rounded-xl bg-success-soft p-3">
+          <p className="mb-2 text-center text-xs font-semibold text-success">
             المجموعة العليا — أعلى الدرجات
           </p>
           <div className="grid grid-cols-2 gap-2">
@@ -280,8 +280,8 @@ function DiscrimTool() {
             />
           </div>
         </div>
-        <div className="rounded-xl bg-amber-50 p-3">
-          <p className="mb-2 text-center text-[11px] font-black text-amber-800">
+        <div className="rounded-xl bg-gem-soft p-3">
+          <p className="mb-2 text-center text-xs font-semibold text-gem">
             المجموعة الدنيا — أدنى الدرجات
           </p>
           <div className="grid grid-cols-2 gap-2">
@@ -306,14 +306,14 @@ function DiscrimTool() {
       {res && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-3 space-y-2">
           <div className="flex items-center justify-between rounded-xl bg-muted/70 p-3">
-            <span className="text-sm font-black">مؤشر التمييز</span>
+            <span className="text-sm font-semibold">مؤشر التمييز</span>
             <span
-              className={`rounded-full px-3 py-1 text-sm font-black ${
+              className={`rounded-full px-3 py-1 text-sm font-semibold ${
                 res.tone === "great" || res.tone === "good"
-                  ? "bg-emerald-100 text-emerald-700"
+                  ? "bg-success-soft text-success"
                   : res.tone === "neg"
-                    ? "bg-red-100 text-red-700"
-                    : "bg-amber-100 text-amber-700"
+                    ? "bg-danger-soft text-destructive"
+                    : "bg-gem-soft text-gem"
               }`}
             >
               {res.word}، {ad(res.d.toFixed(2))}
@@ -343,7 +343,7 @@ function WeightTool() {
       <ToolHeader icon={Scale} label="وزن الدرجة" desc="كم يمثل هذا السؤال من الدرجة الكلية؟" />
       <div className="mt-3 grid grid-cols-2 gap-2">
         <div>
-          <label className="mb-1 block text-center text-[11px] font-black text-muted-foreground">
+          <label className="mb-1 block text-center text-xs font-semibold text-muted-foreground">
             درجة السؤال
           </label>
           <input
@@ -355,7 +355,7 @@ function WeightTool() {
           />
         </div>
         <div>
-          <label className="mb-1 block text-center text-[11px] font-black text-muted-foreground">
+          <label className="mb-1 block text-center text-xs font-semibold text-muted-foreground">
             الدرجة الكلية للاختبار
           </label>
           <input
@@ -371,8 +371,8 @@ function WeightTool() {
       {res ? (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-3 space-y-2">
           <div className="flex items-center justify-between rounded-xl bg-muted/70 p-3">
-            <span className="text-sm font-black">وزن السؤال</span>
-            <span className="rounded-full bg-sky-100 px-3 py-1 text-sm font-black text-sky-700">
+            <span className="text-sm font-semibold">وزن السؤال</span>
+            <span className="rounded-full bg-sky-100 px-3 py-1 text-sm font-semibold text-sky-700">
               {pct(res.pct / 100)}
             </span>
           </div>
@@ -380,7 +380,7 @@ function WeightTool() {
         </motion.div>
       ) : (
         (scoreRaw !== "" || totalRaw !== "") && (
-          <p className="mt-3 text-xs font-bold text-red-600">
+          <p className="mt-3 text-xs font-bold text-destructive">
             أدخل عددًا موجبًا في كل خانة، ودرجة السؤال لا تفوق الكلية
           </p>
         )
@@ -392,12 +392,12 @@ function WeightTool() {
 // بلاطة نتيجة — القيمة بأرقام مشرقية والشرح تحتها
 function ResultTile({ label, value, hint }: { label: string; value: string; hint: string }) {
   return (
-    <div className="rounded-xl border-2 border-border bg-white p-3 text-center">
-      <p className="text-[11px] font-black text-muted-foreground">{label}</p>
-      <p className="mt-0.5 text-2xl font-black tabular-nums text-primary" dir="ltr">
+    <div className="rounded-xl border border-border bg-card p-3 text-center">
+      <p className="text-xs font-semibold text-muted-foreground">{label}</p>
+      <p className="mt-0.5 text-2xl font-semibold tabular-nums text-primary" dir="ltr">
         {value}
       </p>
-      <p className="mt-0.5 text-[10px] font-bold text-muted-foreground">{hint}</p>
+      <p className="mt-0.5 text-xs font-bold text-muted-foreground">{hint}</p>
     </div>
   );
 }

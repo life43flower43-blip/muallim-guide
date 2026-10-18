@@ -123,7 +123,7 @@ export default function PlacementView() {
       >
         <div className="mx-auto max-w-lg px-4 pb-16 pt-5">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-black text-primary">نتيجة تحديد المستوى</p>
+            <p className="text-sm font-semibold text-primary">نتيجة تحديد المستوى</p>
             <button
               onClick={close}
               aria-label="إنهاء"
@@ -135,43 +135,43 @@ export default function PlacementView() {
 
           {/* بطاقة المستوى */}
           <div
-            className="mt-4 rounded-3xl p-6 text-center text-white"
+            className="mt-4 rounded-2xl p-6 text-center text-white"
             style={{ background: `linear-gradient(135deg, ${level.color}, #0A5A62)` }}
           >
             <Compass className="mx-auto h-9 w-9 opacity-90" />
-            <p className="mt-2 text-2xl font-black">{level.title}</p>
+            <p className="mt-2 text-2xl font-semibold">{level.title}</p>
             <p className="mt-2 text-xs font-bold leading-6 text-white/90">{level.desc}</p>
-            <p className="mt-3 text-[11px] font-black text-white/80">
+            <p className="mt-3 text-xs font-semibold text-white/80">
               أجبت صوابًا عن {arCount(result.correctCount, QUESTION_OBJ_FORMS)} من {ad(result.total)}
             </p>
           </div>
 
           {/* القوة والفجوة */}
           <div className="mt-4 grid grid-cols-2 gap-2.5">
-            <div className="card-soft rounded-3xl border border-border bg-white p-4">
-              <p className="flex items-center gap-1.5 text-xs font-black text-primary">
+            <div className="card-soft rounded-2xl border border-border bg-card p-4">
+              <p className="flex items-center gap-1.5 text-xs font-semibold text-primary">
                 <TrendingUp className="h-4 w-4" /> نقاط قوتك
               </p>
               <div className="mt-2 space-y-1.5">
                 {result.strong.map((s) => (
                   <span
                     key={s.courseId}
-                    className="block rounded-xl bg-accent px-3 py-2 text-[11px] font-black text-primary"
+                    className="block rounded-xl bg-accent px-3 py-2 text-xs font-semibold text-primary"
                   >
                     {COURSE_SHORT[s.courseId] ?? s.courseId}
                   </span>
                 ))}
               </div>
             </div>
-            <div className="card-soft rounded-3xl border border-border bg-white p-4">
-              <p className="flex items-center gap-1.5 text-xs font-black text-amber-700">
+            <div className="card-soft rounded-2xl border border-border bg-card p-4">
+              <p className="flex items-center gap-1.5 text-xs font-semibold text-gem">
                 <Target className="h-4 w-4" /> فجواتك
               </p>
               <div className="mt-2 space-y-1.5">
                 {result.weak.map((s) => (
                   <span
                     key={s.courseId}
-                    className="block rounded-xl bg-amber-50 px-3 py-2 text-[11px] font-black text-amber-800"
+                    className="block rounded-xl bg-gem-soft px-3 py-2 text-xs font-semibold text-gem"
                   >
                     {COURSE_SHORT[s.courseId] ?? s.courseId}
                   </span>
@@ -181,14 +181,14 @@ export default function PlacementView() {
           </div>
 
           {/* التوزيع على المحاور */}
-          <div className="mt-4 card-soft rounded-3xl border border-border bg-white p-4">
-            <p className="text-sm font-black text-primary">أداؤك على المحاور</p>
+          <div className="mt-4 card-soft rounded-2xl border border-border bg-card p-4">
+            <p className="text-sm font-semibold text-primary">أداؤك على المحاور</p>
             <div className="mt-3 space-y-2.5">
               {result.perCourse.map((r) => {
                 const pct = r.total ? (r.correct / r.total) * 100 : 0;
                 return (
                   <div key={r.courseId}>
-                    <div className="flex items-center justify-between text-[11px] font-bold">
+                    <div className="flex items-center justify-between text-xs font-bold">
                       <span>{COURSE_SHORT[r.courseId] ?? r.courseId}</span>
                       <span className="text-muted-foreground">
                         {ad(r.correct)} / {ad(r.total)}
@@ -207,8 +207,8 @@ export default function PlacementView() {
           </div>
 
           {/* الخطة المقترحة */}
-          <div className="mt-4 card-soft rounded-3xl border border-border bg-white p-4">
-            <p className="text-sm font-black text-primary">خطتك المقترحة الآن</p>
+          <div className="mt-4 card-soft rounded-2xl border border-border bg-card p-4">
+            <p className="text-sm font-semibold text-primary">خطتك المقترحة الآن</p>
             <div className="mt-3 space-y-2">
               <button
                 onClick={trainWeak}
@@ -218,8 +218,8 @@ export default function PlacementView() {
                   <Dumbbell className="h-5 w-5" />
                 </span>
                 <span className="flex-1">
-                  <span className="block text-xs font-black">درّب نفسك على أضعف محاورك</span>
-                  <span className="block text-[10px] font-bold text-muted-foreground">
+                  <span className="block text-xs font-semibold">درّب نفسك على أضعف محاورك</span>
+                  <span className="block text-xs font-bold text-muted-foreground">
                     جلسة تدريب كاملة على {weakest ? COURSE_SHORT[weakest.courseId] : "المحور الأضعف"} — الجديد يأتي أولاً
                   </span>
                 </span>
@@ -229,12 +229,12 @@ export default function PlacementView() {
                 onClick={() => startExamsim()}
                 className="flex w-full items-center gap-3 rounded-2xl border border-border p-3 text-right transition-colors hover:bg-muted/40"
               >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-400 text-amber-950">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-400 text-gem">
                   <GraduationCap className="h-5 w-5" />
                 </span>
                 <span className="flex-1">
-                  <span className="block text-xs font-black">اختبر جاهزيتك في المحاكي</span>
-                  <span className="block text-[10px] font-bold text-muted-foreground">
+                  <span className="block text-xs font-semibold">اختبر جاهزيتك في المحاكي</span>
+                  <span className="block text-xs font-bold text-muted-foreground">
                     محاكاة موقوتة بأقسام ومحك نجاح — كالاختبار الرسمي
                   </span>
                 </span>
@@ -243,7 +243,7 @@ export default function PlacementView() {
             </div>
           </div>
 
-          <p className="mt-3 text-center text-[10px] font-bold leading-5 text-muted-foreground">
+          <p className="mt-3 text-center text-xs font-bold leading-5 text-muted-foreground">
             تحديد المستوى تشخيص أولي — كرره بعد أسبوع من التدريب لترى إزاحة مستواك ومحاورك
           </p>
         </div>
@@ -261,7 +261,7 @@ export default function PlacementView() {
     >
       <div className="mx-auto max-w-lg px-4 pb-10 pt-5">
         <div className="flex items-center justify-between">
-          <p className="flex items-center gap-2 text-sm font-black text-primary">
+          <p className="flex items-center gap-2 text-sm font-semibold text-primary">
             <Compass className="h-5 w-5" /> اختبار تحديد المستوى
           </p>
           <button
@@ -277,15 +277,15 @@ export default function PlacementView() {
           <div className="progress-track h-2">
             <div className="progress-fill h-full" style={{ width: `${((idx + 1) / items.length) * 100}%` }} />
           </div>
-          <p className="mt-1.5 text-center text-[11px] font-bold text-muted-foreground">
+          <p className="mt-1.5 text-center text-xs font-bold text-muted-foreground">
             السؤال {ad(idx + 1)} من {ad(items.length)} — سؤالان من كل محور، بلا توجيه حتى النهاية
           </p>
         </div>
 
         {current && (
           <motion.div key={current.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="mt-4 rounded-3xl border border-border bg-white p-4 shadow-soft">
-              <p className="text-[15px] font-black leading-8">{current.question}</p>
+            <div className="mt-4 rounded-2xl border border-border bg-card p-4">
+              <p className="text-[15px] font-semibold leading-8">{current.question}</p>
               <div className="mt-4 space-y-2.5">
                 {current.options.map((o, i) => {
                   const selected = answers[current.id] === o.text;
@@ -297,12 +297,12 @@ export default function PlacementView() {
                       className={`flex w-full items-center gap-3 rounded-2xl border p-3.5 text-right transition-all ${
                         selected
                           ? "border-primary bg-accent ring-1 ring-primary"
-                          : "border-border bg-white hover:bg-muted/40"
+                          : "border-border bg-card hover:bg-muted/40"
                       }`}
                     >
                       {showLetter && (
                         <span
-                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-black ${
+                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-semibold ${
                             selected ? "bg-primary text-white" : "bg-muted text-muted-foreground"
                           }`}
                         >
@@ -328,7 +328,7 @@ export default function PlacementView() {
           <Button
             onClick={() => finish(answers)}
             variant="outline"
-            className="h-11 rounded-2xl px-6 text-xs font-black"
+            className="h-11 rounded-2xl px-6 text-xs font-semibold"
           >
             إنهاء وأعرض مستواي الآن
           </Button>

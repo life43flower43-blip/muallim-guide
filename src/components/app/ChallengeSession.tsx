@@ -20,7 +20,7 @@ import {
   RotateCcw,
   ArrowLeft,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Callout, Card, Chip, Divided, PrimaryButton, ProgressBar, Ring, ScreenShell, SecondaryButton } from "./ui-kit";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -58,14 +58,14 @@ const shuffle = <T,>(arr: T[]): T[] => {
 
 function KindBadge({ kind }: { kind: Challenge["kind"] }) {
   const map = {
-    order: { icon: ListOrdered, cls: "bg-cyan-100 text-cyan-700" },
-    fill: { icon: Puzzle, cls: "bg-sky-100 text-sky-700" },
-    produce: { icon: PenLine, cls: "bg-amber-100 text-amber-700" },
+    order: { icon: ListOrdered, cls: "bg-accent text-accent-foreground" },
+    fill: { icon: Puzzle, cls: "bg-muted text-secondary-foreground" },
+    produce: { icon: PenLine, cls: "bg-gem-soft text-gem" },
   } as const;
   const M = map[kind];
   const Icon = M.icon;
   return (
-    <span className={`flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${M.cls}`}>
+    <span className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium ${M.cls}`}>
       <Icon className="h-3.5 w-3.5" /> {CHALLENGE_KIND_LABEL[kind]}
     </span>
   );
@@ -88,7 +88,7 @@ function OrderPlay({
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-extrabold leading-8">{c.title}</h2>
+      <h2 className="font-display text-lg font-semibold leading-8">{c.title}</h2>
       {/* الخطوط المرقمة */}
       <div className="space-y-2">
         {c.items.map((_, i) => {
@@ -98,17 +98,17 @@ function OrderPlay({
           return (
             <div
               key={i}
-              className={`flex min-h-[52px] items-center gap-3 rounded-2xl border-2 border-dashed p-2 ${
+              className={`flex min-h-[52px] items-center gap-3 rounded-2xl border border-dashed p-2 ${
                 graded !== null && item !== undefined
                   ? isRight
-                    ? "border-emerald-400 bg-emerald-50"
+                    ? "border-success/40 bg-success-soft"
                     : isWrongSpot
-                      ? "border-red-300 bg-red-50"
-                      : "border-border bg-white"
-                  : "border-border bg-white"
+                      ? "border-destructive/40 bg-danger-soft"
+                      : "border-border bg-card"
+                  : "border-border bg-card"
               }`}
             >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-black text-primary">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-primary">
                 {ad(i + 1)}
               </span>
               {item ? (
@@ -135,7 +135,7 @@ function OrderPlay({
               whileTap={{ scale: 0.94 }}
               key={r}
               onClick={() => setPlaced((p) => [...p, r])}
-              className="rounded-full border-2 border-border bg-white px-4 py-2 text-sm font-bold shadow-sm"
+              className="rounded-full border border-border bg-card px-4 py-2 text-sm font-bold"
             >
               {r}
             </motion.button>
@@ -143,13 +143,13 @@ function OrderPlay({
         </div>
       )}
       {graded === null && (
-        <Button
+        <PrimaryButton
           disabled={!full}
           onClick={() => onAnswer(placed.every((p, i) => p === c.items[i]))}
-          className="h-13 w-full rounded-2xl bg-primary py-3 text-lg font-black text-primary-foreground"
+          className="w-full"
         >
           تحقق من الترتيب
-        </Button>
+        </PrimaryButton>
       )}
     </div>
   );
@@ -170,16 +170,16 @@ function FillPlay({
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-extrabold leading-8">أكمل الفراغ بالكلمة الأنسب:</h2>
-      <p className="rounded-2xl border border-border bg-white p-4 text-base font-bold leading-9">
+      <h2 className="font-display text-lg font-semibold leading-8">أكمل الفراغ بالكلمة الأنسب:</h2>
+      <p className="rounded-xl border border-border bg-card p-5 text-base leading-9">
         {c.before}{" "}
         <span
-          className={`mx-1 inline-block min-w-24 rounded-xl border-2 border-dashed px-3 py-0.5 text-center ${
+          className={`mx-1 inline-block min-w-24 rounded-xl border border-dashed px-3 py-0.5 text-center ${
             chosen
               ? graded !== null
                 ? chosen === c.right
-                  ? "border-emerald-400 bg-emerald-50 text-emerald-800"
-                  : "border-red-300 bg-red-50 text-red-700"
+                  ? "border-success/40 bg-success-soft text-success"
+                  : "border-destructive/40 bg-danger-soft text-destructive"
                 : "border-primary bg-accent text-primary"
               : "border-border text-muted-foreground"
           }`}
@@ -195,8 +195,8 @@ function FillPlay({
               whileTap={{ scale: 0.94 }}
               key={t}
               onClick={() => setChosen(t)}
-              className={`rounded-full border-2 px-4 py-2 text-sm font-bold shadow-sm ${
-                chosen === t ? "border-primary bg-accent text-primary" : "border-border bg-white"
+              className={`rounded-full border px-4 py-2 text-sm font-bold ${
+                chosen === t ? "border-primary bg-accent text-primary" : "border-border bg-card"
               }`}
             >
               {t}
@@ -205,13 +205,13 @@ function FillPlay({
         </div>
       )}
       {graded === null && (
-        <Button
+        <PrimaryButton
           disabled={!chosen}
           onClick={() => onAnswer(chosen === c.right)}
-          className="h-13 w-full rounded-2xl bg-primary py-3 text-lg font-black text-primary-foreground"
+          className="w-full"
         >
           تحقق من الإكمال
-        </Button>
+        </PrimaryButton>
       )}
     </div>
   );
@@ -236,11 +236,11 @@ function ProducePlay({
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-extrabold leading-8">{c.prompt}</h2>
+      <h2 className="font-display text-lg font-semibold leading-8">{c.prompt}</h2>
       {graded === null && !submitted && (
         <>
-          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3">
-            <p className="mb-1.5 flex items-center gap-1.5 text-xs font-black text-amber-900">
+          <div className="rounded-2xl border border-gem/30 bg-gem-soft p-3">
+            <p className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-gem">
               <Sparkles className="h-3.5 w-3.5" /> عناصر يجب أن تظهر في كتابتك — تُرصد وهي حية
             </p>
             <ul className="space-y-1.5">
@@ -248,7 +248,7 @@ function ProducePlay({
                 <li
                   key={i}
                   className={`flex items-center gap-2 text-xs font-bold ${
-                    g.ok ? "text-emerald-700" : "text-amber-800"
+                    g.ok ? "text-success" : "text-gem"
                   }`}
                 >
                   {g.ok ? (
@@ -261,7 +261,7 @@ function ProducePlay({
               ))}
               <li
                 className={`flex items-center gap-2 text-xs font-bold ${
-                  words >= c.minWords ? "text-emerald-700" : "text-amber-800"
+                  words >= c.minWords ? "text-success" : "text-gem"
                 }`}
               >
                 {words >= c.minWords ? (
@@ -278,16 +278,12 @@ function ProducePlay({
             onChange={(e) => setText(e.target.value)}
             rows={5}
             placeholder="اكتب إجابتك هنا بلغتك الخاصة..."
-            className="w-full resize-none rounded-2xl border-2 border-border bg-white p-4 text-base leading-8 outline-none focus:border-primary"
+            className="w-full resize-none rounded-2xl border border-border bg-card p-4 text-base leading-8 outline-none focus:border-primary"
           />
-          <Button
-            disabled={!allOk}
-            onClick={() => setSubmitted(true)}
-            className="h-12 w-full rounded-2xl bg-primary py-3 text-lg font-black text-primary-foreground"
-          >
+          <PrimaryButton disabled={!allOk} onClick={() => setSubmitted(true)} className="w-full">
             أرسل إجابتي
-          </Button>
-          <p className="text-center text-[11px] font-bold text-muted-foreground">
+          </PrimaryButton>
+          <p className="text-center text-xs font-bold text-muted-foreground">
             يُفتح الزر عند استيفاء كل العناصر — بعد الإرسال قارن بنموذج الإجابة واحكم على نفسك بأمانة
           </p>
         </>
@@ -295,19 +291,19 @@ function ProducePlay({
 
       {(submitted || graded !== null) && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
-          <div className="rounded-2xl border border-border bg-white p-4">
-            <p className="mb-1 text-xs font-black text-muted-foreground">كتابتك</p>
+          <div className="rounded-2xl border border-border bg-card p-4">
+            <p className="mb-1 text-xs font-semibold text-muted-foreground">كتابتك</p>
             <p className="whitespace-pre-wrap text-sm font-bold leading-8">{text}</p>
           </div>
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+          <div className="rounded-2xl border border-success/40 bg-success-soft p-4">
             <button
               onClick={() => setShowModel((s) => !s)}
-              className="flex w-full items-center justify-between text-sm font-black text-emerald-900"
+              className="flex w-full items-center justify-between text-sm font-semibold text-success"
             >
               <span>نموذج إجابة للمقارنة</span>
               <ArrowLeft className={`h-4 w-4 transition-transform ${showModel ? "rotate-90" : ""}`} />
             </button>
-            {showModel && <p className="mt-2 text-sm leading-8 text-emerald-950">{c.model}</p>}
+            {showModel && <p className="mt-2 text-sm leading-8 text-success">{c.model}</p>}
           </div>
           {graded === null && (
             <>
@@ -317,19 +313,12 @@ function ProducePlay({
                 </p>
               )}
               <div className="grid grid-cols-1 gap-2">
-                <Button
-                  onClick={() => onAnswer(true)}
-                  className="h-12 w-full rounded-2xl bg-emerald-600 text-base font-black text-white hover:bg-emerald-700"
-                >
-                  <Trophy className="ml-2 h-5 w-5" /> أنجزت بجدارة — احتسبها صحيحة
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => onAnswer(false)}
-                  className="h-12 w-full rounded-2xl border-2 border-amber-300 bg-amber-50 text-base font-black text-amber-900 hover:bg-amber-100"
-                >
-                  <RotateCcw className="ml-2 h-5 w-5" /> تحتاج إعادة — احتسبها غير مكتملة
-                </Button>
+                <PrimaryButton onClick={() => onAnswer(true)} className="w-full">
+                  <CheckCircle2 className="h-4 w-4" /> استوفيت الفكرة، احتسبها صحيحة
+                </PrimaryButton>
+                <SecondaryButton onClick={() => onAnswer(false)} className="w-full">
+                  <RotateCcw className="h-4 w-4" /> تحتاج إعادة، احتسبها غير مكتملة
+                </SecondaryButton>
               </div>
             </>
           )}
@@ -399,66 +388,40 @@ export default function ChallengeSession() {
     const msg =
       pct === 100 ? "تحدي مكتمل! قمة الأداء" : pct >= 70 ? "أداء قوي، استمر" : "لا بأس — التحدي طريق الإتقان";
     return (
-      <div className="flex h-dvh flex-col bg-background">
-        <div className="safe-top flex items-center justify-between px-4 pb-2">
-          <p className="text-lg font-black text-primary">نتيجة التحديات</p>
-          <button onClick={clearChallenges} className="rounded-full bg-muted p-2" aria-label="إغلاق">
-            <X className="h-5 w-5" />
-          </button>
+      <ScreenShell
+        title="نتيجة التحديات"
+        onClose={clearChallenges}
+        footer={
+          <PrimaryButton onClick={clearChallenges} className="w-full">
+            إنهاء
+          </PrimaryButton>
+        }
+      >
+        <div className="flex flex-col items-center py-6 text-center">
+          <Ring value={pct} size={120} stroke={10}>
+            <span className="font-display text-2xl font-bold text-primary">{ad(Math.round(pct))}٪</span>
+          </Ring>
+          <h2 className="mt-5 font-display text-xl font-bold">{msg}</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {ad(correctCount)} من {ad(set.length)} صحيحة
+          </p>
         </div>
-        <div className="no-scrollbar flex-1 overflow-y-auto px-4 pb-8">
-          <div className="pop-in flex flex-col items-center gap-3 py-4">
-            <span className="flex h-24 w-24 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-              <Trophy className="h-12 w-12" />
-            </span>
-            <h2 className="text-xl font-black">{msg}</h2>
-          </div>
-          <p className="mb-2 mt-4 px-1 text-sm font-extrabold text-muted-foreground">مراجعة التحديات</p>
-          <div className="space-y-2">
-            {review.map((r) => {
-              const rc = set.find((x) => x.id === r.id)!;
-              return (
-                <div key={r.id} className="card-soft rounded-2xl border border-border bg-white p-4">
-                  <div className="flex items-start gap-3">
-                    {r.ok ? (
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
-                    ) : (
-                      <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
-                    )}
-                    <div className="min-w-0">
-                      <p className="text-sm font-bold leading-6">
-                        {rc.kind === "order"
-                          ? rc.title
-                          : rc.kind === "fill"
-                            ? `${rc.before} ـــــــ ${rc.after}`
-                            : rc.prompt}
-                      </p>
-                      {!r.ok && rc.kind === "order" && (
-                        <p className="mt-1 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold leading-6 text-emerald-800">
-                          الترتيب الصحيح: {rc.items.join(" ← ")}
-                        </p>
-                      )}
-                      {!r.ok && rc.kind === "fill" && (
-                        <p className="mt-1 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-800">
-                          الإجابة: {rc.right}
-                        </p>
-                      )}
-                    </div>
-                  </div>
+        <Divided>
+          {review.map((r) => {
+            const rc = set.find((x) => x.id === r.id)!;
+            return (
+              <div key={r.id} className="flex items-start gap-3 px-4 py-4">
+                {r.ok ? <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-success" /> : <XCircle className="mt-1 h-5 w-5 shrink-0 text-destructive" />}
+                <div className="min-w-0 flex-1">
+                  <p className="text-[15px] leading-7">{rc.kind === "order" ? rc.title : rc.kind === "fill" ? `${rc.before} ـــــ ${rc.after}` : rc.prompt}</p>
+                  {!r.ok && rc.kind === "order" && <p className="mt-1 text-sm leading-6 text-success">الترتيب الصحيح: {rc.items.join("، ثم ")}</p>}
+                  {!r.ok && rc.kind === "fill" && <p className="mt-1 text-sm text-success">الإجابة: {rc.right}</p>}
                 </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="safe-bottom border-t border-border bg-white px-4 pt-3">
-          <Button
-            onClick={clearChallenges}
-            className="h-14 w-full rounded-2xl bg-primary text-lg font-black text-primary-foreground"
-          >
-            <Trophy className="ml-2 h-5 w-5" /> متابعة رحلة التعلم
-          </Button>
-        </div>
-      </div>
+              </div>
+            );
+          })}
+        </Divided>
+      </ScreenShell>
     );
   }
 
@@ -466,110 +429,61 @@ export default function ChallengeSession() {
   const progress = (idx / set.length) * 100;
 
   return (
-    <div className="tap-none flex h-dvh flex-col bg-background">
-      <div className="safe-top px-4 pb-2 pt-2">
-        <div className="mb-2 flex items-center gap-3">
-          <button onClick={() => (review.length === 0 ? clearChallenges() : setExiting(true))} className="rounded-full p-1.5 text-muted-foreground" aria-label="خروج">
-            <X className="h-6 w-6" />
-          </button>
-          <div className="progress-track h-3.5 flex-1">
-            <div className="progress-fill h-full" style={{ width: `${progress}%` }} />
+    <>
+    <ScreenShell
+      title="التحديات الذكية"
+      sub={`التحدي ${ad(idx + 1)} من ${ad(set.length)}`}
+      onClose={() => (review.length === 0 ? clearChallenges() : setExiting(true))}
+      footer={
+        graded !== null ? (
+          <PrimaryButton onClick={next} className="w-full">
+            {idx + 1 >= set.length ? "النتيجة" : "التحدي التالي"}
+          </PrimaryButton>
+        ) : undefined
+      }
+    >
+      <ProgressBar value={progress} className="mb-5" />
+      <AnimatePresence mode="wait">
+        <motion.div key={c.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="space-y-5">
+          <div className="flex flex-wrap items-center gap-2">
+            <KindBadge kind={c.kind} />
+            <Chip>{c.domain}</Chip>
           </div>
-          <span className="rounded-full bg-secondary px-3 py-1 text-xs font-bold text-primary">
-            {ad(idx + 1)} من {ad(set.length)}
-          </span>
-        </div>
-        <p className="text-center text-xs font-bold text-muted-foreground">التحديات الذكية</p>
-      </div>
 
-      <div className="no-scrollbar flex-1 overflow-y-auto px-4 pb-4">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={c.id}
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 30 }}
-            transition={{ duration: 0.25 }}
-            className="space-y-4"
-          >
-            <div className="flex flex-wrap items-center gap-2 pt-1">
-              <KindBadge kind={c.kind} />
-              <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-                {c.domain}
-              </span>
-              <span className="rounded-full bg-accent px-3 py-1 text-xs font-bold text-primary">
-                نقاط: {ad(CHALLENGE_XP[c.kind])}
-              </span>
-            </div>
+          {c.kind === "order" && <OrderPlay c={c} graded={graded} onAnswer={answer} />}
+          {c.kind === "fill" && <FillPlay c={c} graded={graded} onAnswer={answer} />}
+          {c.kind === "produce" && <ProducePlay c={c} graded={graded} onAnswer={answer} />}
 
-            {c.kind === "order" && <OrderPlay c={c} graded={graded} onAnswer={answer} />}
-            {c.kind === "fill" && <FillPlay c={c} graded={graded} onAnswer={answer} />}
-            {c.kind === "produce" && <ProducePlay c={c} graded={graded} onAnswer={answer} />}
-
-            <AnimatePresence>
-              {graded !== null && c.kind !== "produce" && (
-                <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
-                  <div
-                    className={`flex items-center gap-3 rounded-2xl border p-4 ${
-                      graded ? "border-emerald-200 bg-emerald-50" : "border-red-200 bg-red-50"
-                    }`}
-                  >
-                    {graded ? (
-                      <CheckCircle2 className="h-8 w-8 shrink-0 text-emerald-600" />
-                    ) : (
-                      <XCircle className="h-8 w-8 shrink-0 text-red-500" />
-                    )}
-                    <div>
-                      <p className={`font-black ${graded ? "text-emerald-800" : "text-red-700"}`}>
-                        {graded ? "أحسنت! تحدٍّ مكتمل" : "لم يكتمل الترتيب كما ينبغي"}
-                      </p>
-                      {!graded && c.kind === "order" && (
-                        <p className="mt-1 text-sm leading-7 text-red-700">
-                          الترتيب الصحيح: {c.items.join(" ← ")}
-                        </p>
-                      )}
-                      {!graded && c.kind === "fill" && (
-                        <p className="mt-1 text-sm text-red-700">
-                          الإجابة الصحيحة: <b>{c.right}</b>
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <p className="rounded-2xl border border-sky-200 bg-sky-50 p-3 text-sm leading-7 text-sky-950">
-                    <b className="text-sky-900">التفسير التربوي: </b>
-                    {c.explain}
-                  </p>
-                </motion.div>
-              )}
-              {graded !== null && c.kind === "produce" && (
-                <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}>
-                  <p className="rounded-2xl border border-sky-200 bg-sky-50 p-3 text-sm leading-7 text-sky-950">
-                    <b className="text-sky-900">عناصر الإتقان في هذا التحدي: </b>
-                    {c.tips.join(" • ")}
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      <div className="safe-bottom border-t border-border bg-white px-4 pt-3">
-        {graded !== null && (
-          <Button onClick={next} className="h-14 w-full rounded-2xl text-lg font-black text-primary-foreground bg-primary hover:bg-primary/90">
-            {idx + 1 >= set.length ? "عرض النتيجة" : "التحدي التالي"}
-          </Button>
-        )}
-        {graded === null && (
-          <div className="flex h-11 items-center justify-center gap-2 text-xs font-bold text-muted-foreground">
-            <Brain className="h-4 w-4" />
-            تحدٍّ جديد من بنك التحديات — يُبنى عشوائيًا في كل جلسة
-          </div>
-        )}
-      </div>
+          {graded !== null && c.kind !== "produce" && (
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
+              <Callout tone={graded ? "success" : "danger"} icon={graded ? CheckCircle2 : XCircle} title={graded ? "أحسنت، تحدٍّ مكتمل" : "الإجابة غير مكتملة"}>
+                {!graded && c.kind === "order" && <>الترتيب الصحيح: {c.items.join("، ثم ")}</>}
+                {!graded && c.kind === "fill" && (
+                  <>
+                    الإجابة الصحيحة: <b>{c.right}</b>
+                  </>
+                )}
+              </Callout>
+              <Callout tone="info" icon={Brain} title="التفسير التربوي">
+                {c.explain}
+              </Callout>
+            </motion.div>
+          )}
+          {graded !== null && c.kind === "produce" && (
+            <Callout tone="info" icon={Brain} title="عناصر الإتقان في هذا التحدي">
+              <ul className="list-disc space-y-1 pr-5">
+                {c.tips.map((t) => (
+                  <li key={t}>{t}</li>
+                ))}
+              </ul>
+            </Callout>
+          )}
+        </motion.div>
+      </AnimatePresence>
+    </ScreenShell>
 
       <AlertDialog open={exiting} onOpenChange={setExiting}>
-        <AlertDialogContent className="rounded-3xl">
+        <AlertDialogContent className="rounded-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle>الخروج من التحديات؟</AlertDialogTitle>
             <AlertDialogDescription>تقدمك في هذه الجلسة سيُهدر، ويمكنك بدء جلسة جديدة في أي وقت.</AlertDialogDescription>
@@ -577,7 +491,7 @@ export default function ChallengeSession() {
           <AlertDialogFooter>
             <AlertDialogCancel className="rounded-full">متابعة الجلسة</AlertDialogCancel>
             <AlertDialogAction
-              className="rounded-full bg-red-500 hover:bg-red-600"
+              className="rounded-full bg-destructive hover:bg-destructive"
               onClick={clearChallenges}
             >
               خروج
@@ -585,6 +499,6 @@ export default function ChallengeSession() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </>
   );
 }

@@ -67,11 +67,11 @@ const emptyForm = (): VisitForm => ({
 });
 
 const inputCls =
-  "w-full rounded-xl border-2 border-border bg-background p-3 text-sm leading-6 outline-none focus:border-primary";
+  "w-full rounded-xl border border-border bg-background p-3 text-sm leading-6 outline-none focus:border-primary";
 const chipOff =
-  "rounded-full border-2 border-border bg-white px-3 py-1.5 text-xs font-bold text-muted-foreground transition hover:border-primary";
+  "rounded-full border border-border bg-card px-3 py-1.5 text-xs font-bold text-muted-foreground transition hover:border-primary";
 const chipOn =
-  "rounded-full border-2 border-primary bg-accent px-3 py-1.5 text-xs font-black text-primary";
+  "rounded-full border border-primary bg-accent px-3 py-1.5 text-xs font-semibold text-primary";
 
 // بطاقة قسم موجه — أيقونة وعنوان وسؤال توجيهي
 function SectionCard({
@@ -86,14 +86,14 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border-2 border-border bg-white p-4">
+    <section className="rounded-2xl border border-border bg-card p-4">
       <div className="flex items-start gap-2.5">
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent">
           <Icon className="h-4.5 w-4.5 text-primary" />
         </span>
         <div className="min-w-0">
-          <h3 className="text-sm font-black leading-6">{title}</h3>
-          {guide && <p className="text-[11px] font-bold leading-4 text-muted-foreground">{guide}</p>}
+          <h3 className="text-sm font-semibold leading-6">{title}</h3>
+          {guide && <p className="text-xs font-bold leading-4 text-muted-foreground">{guide}</p>}
         </div>
       </div>
       <div className="mt-3">{children}</div>
@@ -106,8 +106,8 @@ function VisitLines({ title, body }: { title: string; body: string }) {
   const lines = body.split(/\n+/).map((s) => s.trim()).filter(Boolean);
   if (!lines.length) return null;
   return (
-    <div className="rounded-2xl border-2 border-border bg-white p-4">
-      <h3 className="text-sm font-black">{title}</h3>
+    <div className="rounded-2xl border border-border bg-card p-4">
+      <h3 className="text-sm font-semibold">{title}</h3>
       <div className="mt-2 space-y-1">
         {lines.map((ln, i) => (
           <p key={i} className="text-xs font-bold leading-6">
@@ -215,38 +215,38 @@ export default function FieldLogView() {
             <ChevronRight className="h-4 w-4" /> عودة إلى سجل الزيارات
           </button>
 
-          <div className="rounded-2xl border-2 border-amber-500/30 bg-amber-500/10 p-4">
+          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4">
             <div className="flex items-start justify-between gap-2">
-              <h2 className="text-lg font-black leading-7">{selected.school}</h2>
-              <span className="shrink-0 rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-black text-amber-800">
+              <h2 className="text-lg font-semibold leading-7">{selected.school}</h2>
+              <span className="shrink-0 rounded-full bg-gem-soft px-2.5 py-1 text-xs font-semibold text-gem">
                 {VISIT_KIND_LABEL[selected.kind]}
               </span>
             </div>
             <p className="mt-1 text-xs font-bold text-muted-foreground">{selected.topic}</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {selected.grade && (
-                <span className="rounded-full border border-amber-200 bg-white px-2.5 py-1 text-[10px] font-black text-amber-800">{selected.grade}</span>
+                <span className="rounded-full border border-gem/30 bg-card px-2.5 py-1 text-xs font-semibold text-gem">{selected.grade}</span>
               )}
               {selected.subject && (
-                <span className="rounded-full border border-amber-200 bg-white px-2.5 py-1 text-[10px] font-black text-amber-800">{selected.subject}</span>
+                <span className="rounded-full border border-gem/30 bg-card px-2.5 py-1 text-xs font-semibold text-gem">{selected.subject}</span>
               )}
               {selected.supervisor && (
-                <span className="rounded-full border border-amber-200 bg-white px-2.5 py-1 text-[10px] font-black text-amber-800">المشرف: {selected.supervisor}</span>
+                <span className="rounded-full border border-gem/30 bg-card px-2.5 py-1 text-xs font-semibold text-gem">المشرف: {selected.supervisor}</span>
               )}
               {selected.size && (
-                <span className="rounded-full border border-border bg-muted/60 px-2.5 py-1 text-[10px] font-black text-muted-foreground">{selected.size}</span>
+                <span className="rounded-full border border-border bg-muted/60 px-2.5 py-1 text-xs font-semibold text-muted-foreground">{selected.size}</span>
               )}
-              <span className="rounded-full bg-muted px-2.5 py-1 text-[10px] font-black text-muted-foreground">{visitDayWord(selected.ts)}</span>
+              <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">{visitDayWord(selected.ts)}</span>
             </div>
           </div>
 
           <div className="mt-4 space-y-3">
             {selected.observed.length > 0 && (
-              <div className="rounded-2xl border-2 border-border bg-white p-4">
-                <h3 className="text-sm font-black">ما لاحظته أثناء الحصة</h3>
+              <div className="rounded-2xl border border-border bg-card p-4">
+                <h3 className="text-sm font-semibold">ما لاحظته أثناء الحصة</h3>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {selected.observed.map((o) => (
-                    <span key={o} className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-black text-primary">
+                    <span key={o} className="rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-primary">
                       {o}
                     </span>
                   ))}
@@ -258,11 +258,11 @@ export default function FieldLogView() {
               <VisitLines key={f.key} title={f.label} body={selected[f.key]} />
             ))}
             {selected.rating && (
-              <div className="rounded-2xl border-2 border-amber-200 bg-amber-50 p-4">
-                <p className="flex items-center gap-1.5 text-sm font-black text-amber-900">
+              <div className="rounded-2xl border border-gem/30 bg-gem-soft p-4">
+                <p className="flex items-center gap-1.5 text-sm font-semibold text-gem">
                   <Star className="h-4 w-4" /> تقييم الحصة
                 </p>
-                <p className="mt-1 text-xs font-black text-amber-800">{selected.rating}</p>
+                <p className="mt-1 text-xs font-semibold text-gem">{selected.rating}</p>
               </div>
             )}
           </div>
@@ -270,29 +270,29 @@ export default function FieldLogView() {
           <div className="mt-4 flex gap-2">
             <button
               onClick={() => share(selected)}
-              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-black text-primary-foreground"
+              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-semibold text-primary-foreground"
             >
               <Share2 className="h-4.5 w-4.5" /> مشاركة أو نسخ
             </button>
             <button
               onClick={() => startEdit(selected)}
               aria-label="تعديل الزيارة"
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-border bg-white text-muted-foreground"
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-border bg-card text-muted-foreground"
             >
               <Pencil className="h-4.5 w-4.5" />
             </button>
             <button
               onClick={() => doDelete(selected.id)}
               aria-label={confirmDel === selected.id ? "تأكيد حذف الزيارة" : "حذف الزيارة"}
-              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 ${
-                confirmDel === selected.id ? "border-red-300 bg-red-50 text-red-600" : "border-border bg-white text-muted-foreground"
+              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border ${
+                confirmDel === selected.id ? "border-destructive/40 bg-danger-soft text-destructive" : "border-border bg-card text-muted-foreground"
               }`}
             >
               <Trash2 className="h-4.5 w-4.5" />
             </button>
           </div>
           {confirmDel === selected.id && (
-            <p className="mt-2 text-center text-xs font-bold text-red-600">اضغط زر الحذف مجددًا للتأكيد</p>
+            <p className="mt-2 text-center text-xs font-bold text-destructive">اضغط زر الحذف مجددًا للتأكيد</p>
           )}
         </div>
       </motion.div>
@@ -310,11 +310,11 @@ export default function FieldLogView() {
       <div className="sticky top-0 z-10 border-b border-border bg-white/95 px-4 pb-3 pt-4 backdrop-blur">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#14919B] to-[#0E7C86] text-white shadow-md shadow-amber-500/25">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#14919B] to-[#0E7C86] text-white">
               <Backpack className="h-5.5 w-5.5" />
             </span>
             <div>
-              <h1 className="text-xl font-black text-foreground">سجل التدريب الميداني</h1>
+              <h1 className="text-xl font-semibold text-foreground">سجل التدريب الميداني</h1>
               <p className="text-xs text-muted-foreground">وثّق زياراتك وتأملها — من الملاحظة إلى صفك الخاص</p>
             </div>
           </div>
@@ -337,8 +337,8 @@ export default function FieldLogView() {
             <button
               key={id}
               onClick={() => setTab(id)}
-              className={`flex flex-1 items-center justify-center gap-1 rounded-xl border-2 px-1.5 py-2 text-[11px] font-bold ${
-                tab === id ? "border-primary bg-accent text-primary" : "border-border bg-white text-muted-foreground"
+              className={`flex flex-1 items-center justify-center gap-1 rounded-xl border px-1.5 py-2 text-xs font-bold ${
+                tab === id ? "border-primary bg-accent text-primary" : "border-border bg-card text-muted-foreground"
               }`}
             >
               <Icon className="h-4 w-4" /> {lbl}
@@ -350,8 +350,8 @@ export default function FieldLogView() {
       <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
         {tab === "new" ? (
           <div className="space-y-3">
-            <div className="rounded-2xl border-2 border-amber-500/30 bg-amber-500/10 p-4">
-              <p className="flex items-center gap-2 text-sm font-black text-amber-900">
+            <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4">
+              <p className="flex items-center gap-2 text-sm font-semibold text-gem">
                 <Footprints className="h-4 w-4" /> كيف يعمل السجل؟
               </p>
               <p className="mt-1 text-xs leading-6 text-muted-foreground">
@@ -374,25 +374,25 @@ export default function FieldLogView() {
                       key={i}
                       onClick={() => toggleReady(i)}
                       aria-pressed={on}
-                      className={`flex w-full items-start gap-2.5 rounded-xl border-2 p-2.5 text-right transition ${
-                        on ? "border-emerald-300 bg-emerald-50" : "border-border bg-white"
+                      className={`flex w-full items-start gap-2.5 rounded-xl border p-2.5 text-right transition ${
+                        on ? "border-success/40 bg-success-soft" : "border-border bg-card"
                       }`}
                     >
                       <span
-                        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 ${
-                          on ? "border-emerald-600 bg-emerald-600 text-white" : "border-border bg-white"
+                        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${
+                          on ? "border-success/40 bg-success text-white" : "border-border bg-card"
                         }`}
                       >
-                        {on && <span className="text-[10px] font-black">✓</span>}
+                        {on && <span className="text-xs font-semibold">✓</span>}
                       </span>
-                      <span className={`text-xs font-bold leading-5 ${on ? "text-emerald-900" : "text-foreground"}`}>
+                      <span className={`text-xs font-bold leading-5 ${on ? "text-success" : "text-foreground"}`}>
                         {item}
                       </span>
                     </button>
                   );
                 })}
               </div>
-              <p className="mt-2.5 rounded-xl bg-muted/60 px-3 py-2 text-xs font-black text-primary">
+              <p className="mt-2.5 rounded-xl bg-muted/60 px-3 py-2 text-xs font-semibold text-primary">
                 جاهزيتك الآن: {readinessWord(checked.length)}
               </p>
             </SectionCard>
@@ -410,10 +410,10 @@ export default function FieldLogView() {
                     key={k}
                     onClick={() => setField("kind", k)}
                     aria-pressed={form.kind === k}
-                    className={`flex min-h-[64px] flex-col items-center justify-center gap-1 rounded-2xl text-xs font-black transition-colors ${
+                    className={`flex min-h-[64px] flex-col items-center justify-center gap-1 rounded-2xl text-xs font-semibold transition-colors ${
                       form.kind === k
                         ? "bg-primary text-primary-foreground"
-                        : "border-2 border-border bg-white text-muted-foreground"
+                        : "border border-border bg-card text-muted-foreground"
                     }`}
                   >
                     <Icon className="h-5 w-5" />
@@ -519,15 +519,15 @@ export default function FieldLogView() {
               <div className="space-y-3">
                 {REFLECT_FIELDS.map((f) => (
                   <div key={f.key} className="rounded-xl bg-muted/50 p-3">
-                    <p className="text-xs font-black text-primary">{f.label}</p>
-                    <p className="text-[11px] font-bold leading-4 text-muted-foreground">{f.guide}</p>
+                    <p className="text-xs font-semibold text-primary">{f.label}</p>
+                    <p className="text-xs font-bold leading-4 text-muted-foreground">{f.guide}</p>
                     <textarea
                       value={form[f.key]}
                       onChange={(e) => setField(f.key, e.target.value)}
                       rows={2}
                       placeholder={f.placeholder}
                       aria-label={f.label}
-                      className={`${inputCls} mt-2 bg-white`}
+                      className={`${inputCls} mt-2 bg-card`}
                     />
                   </div>
                 ))}
@@ -551,11 +551,11 @@ export default function FieldLogView() {
 
             <button
               onClick={doSave}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 font-black text-primary-foreground"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 font-semibold text-primary-foreground"
             >
               <Save className="h-5 w-5" /> {editingId ? "احفظ التعديل" : "احفظ الزيارة في السجل"}
             </button>
-            {formErr && <p className="text-center text-xs font-black text-red-600">{formErr}</p>}
+            {formErr && <p className="text-center text-xs font-semibold text-destructive">{formErr}</p>}
             {editingId && (
               <button
                 onClick={() => {
@@ -572,18 +572,18 @@ export default function FieldLogView() {
         ) : tab === "first" ? (
           <FirstDayList />
         ) : fieldVisits.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-border bg-white p-8 text-center">
+          <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center">
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent">
               <Backpack className="h-7 w-7 text-primary" />
             </span>
-            <h3 className="mt-3 text-sm font-black">لم تسجل زيارة بعد</h3>
+            <h3 className="mt-3 text-sm font-semibold">لم تسجل زيارة بعد</h3>
             <p className="mt-1 text-xs font-bold leading-5 text-muted-foreground">
               {fieldJourneyWord(0)} — من تبويب «زيارة جديدة»: جاهزيتك قبل الحصة، وما لاحظته، وتأملك بعدها
             </p>
           </div>
         ) : (
           <div className="space-y-3">
-            <p className="rounded-2xl border-2 border-amber-200 bg-amber-50 px-4 py-2.5 text-center text-xs font-black text-amber-900">
+            <p className="rounded-2xl border border-gem/30 bg-gem-soft px-4 py-2.5 text-center text-xs font-semibold text-gem">
               رحلتك الميدانية: {fieldJourneyWord(fieldVisits.length)}
             </p>
             {fieldVisits.map((v) => (
@@ -601,21 +601,21 @@ export default function FieldLogView() {
                     setConfirmDel(null);
                   }
                 }}
-                className="block w-full cursor-pointer rounded-2xl border-2 border-border bg-white p-4 text-right transition hover:border-primary"
+                className="block w-full cursor-pointer rounded-2xl border border-border bg-card p-4 text-right transition hover:border-primary"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="text-sm font-black leading-6">{v.school}</p>
-                    <p className="truncate text-[11px] font-bold text-muted-foreground">{v.topic}</p>
+                    <p className="text-sm font-semibold leading-6">{v.school}</p>
+                    <p className="truncate text-xs font-bold text-muted-foreground">{v.topic}</p>
                   </div>
-                  <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-black text-amber-800">
+                  <span className="shrink-0 rounded-full bg-gem-soft px-2 py-0.5 text-xs font-semibold text-gem">
                     {VISIT_KIND_LABEL[v.kind]}
                   </span>
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1.5">
-                  <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{visitDayWord(v.ts)}</span>
-                  {v.grade && <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-primary">{v.grade}</span>}
-                  {v.rating && <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{v.rating}</span>}
+                  <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground">{visitDayWord(v.ts)}</span>
+                  {v.grade && <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-bold text-primary">{v.grade}</span>}
+                  {v.rating && <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground">{v.rating}</span>}
                 </div>
                 <div className="mt-3 flex items-center gap-2">
                   <button
@@ -623,7 +623,7 @@ export default function FieldLogView() {
                       e.stopPropagation();
                       startEdit(v);
                     }}
-                    className="flex items-center gap-1 rounded-full border border-primary/30 bg-white px-3 py-1 text-[11px] font-black text-primary"
+                    className="flex items-center gap-1 rounded-full border border-primary/30 bg-card px-3 py-1 text-xs font-semibold text-primary"
                   >
                     <Pencil className="h-3 w-3" /> تعديل
                   </button>
@@ -632,8 +632,8 @@ export default function FieldLogView() {
                       e.stopPropagation();
                       doDelete(v.id);
                     }}
-                    className={`flex items-center gap-1 rounded-full border px-3 py-1 text-[11px] font-black ${
-                      confirmDel === v.id ? "border-red-300 bg-red-50 text-red-600" : "border-border bg-white text-muted-foreground"
+                    className={`flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold ${
+                      confirmDel === v.id ? "border-destructive/40 bg-danger-soft text-destructive" : "border-border bg-card text-muted-foreground"
                     }`}
                   >
                     <Trash2 className="h-3 w-3" /> {confirmDel === v.id ? "اضغط مجددًا للتأكيد" : "حذف"}

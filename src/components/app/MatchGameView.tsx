@@ -142,7 +142,7 @@ export default function MatchGameView() {
     >
       <div className="mx-auto max-w-lg px-4 pb-16 pt-5">
         <div className="flex items-center justify-between">
-          <p className="flex items-center gap-2 text-sm font-black text-primary">
+          <p className="flex items-center gap-2 text-sm font-semibold text-primary">
             <Puzzle className="h-5 w-5" /> لعبة المطابقة
             <NewBadge tone="violet" />
           </p>
@@ -154,26 +154,26 @@ export default function MatchGameView() {
             <X className="h-5 w-5" />
           </button>
         </div>
-        <p className="mt-1.5 text-[11px] font-bold leading-5 text-muted-foreground">
+        <p className="mt-1.5 text-xs font-bold leading-5 text-muted-foreground">
           صِل كل مصطلح بشرحه المصغّر — البلاطتان المتقابلتان تختفيان، والأخطاء تُحسب عليك
         </p>
 
         {/* شريط الحالة */}
         <div className="mt-3 grid grid-cols-3 gap-2">
-          <div className="flex items-center justify-center gap-1.5 rounded-2xl border border-border bg-white py-2.5">
+          <div className="flex items-center justify-center gap-1.5 rounded-2xl border border-border bg-card py-2.5">
             <Timer className="h-4 w-4 text-primary" />
-            <span className="text-sm font-black tabular-nums">{ad(elapsed)}</span>
-            <span className="text-[10px] font-bold text-muted-foreground">ثانية</span>
+            <span className="text-sm font-semibold tabular-nums">{ad(elapsed)}</span>
+            <span className="text-xs font-bold text-muted-foreground">ثانية</span>
           </div>
-          <div className="flex items-center justify-center gap-1.5 rounded-2xl border border-border bg-white py-2.5">
-            <Flame className="h-4 w-4 text-red-500" />
-            <span className="text-sm font-black tabular-nums">{ad(mistakes)}</span>
-            <span className="text-[10px] font-bold text-muted-foreground">خطأ</span>
+          <div className="flex items-center justify-center gap-1.5 rounded-2xl border border-border bg-card py-2.5">
+            <Flame className="h-4 w-4 text-destructive" />
+            <span className="text-sm font-semibold tabular-nums">{ad(mistakes)}</span>
+            <span className="text-xs font-bold text-muted-foreground">خطأ</span>
           </div>
-          <div className="flex items-center justify-center gap-1.5 rounded-2xl border border-border bg-white py-2.5">
+          <div className="flex items-center justify-center gap-1.5 rounded-2xl border border-border bg-card py-2.5">
             <Puzzle className="h-4 w-4 text-amber-500" />
-            <span className="text-sm font-black tabular-nums">{ad(matchedCount)}/{ad(6)}</span>
-            <span className="text-[10px] font-bold text-muted-foreground">أزواج</span>
+            <span className="text-sm font-semibold tabular-nums">{ad(matchedCount)}/{ad(6)}</span>
+            <span className="text-xs font-bold text-muted-foreground">أزواج</span>
           </div>
         </div>
 
@@ -194,18 +194,18 @@ export default function MatchGameView() {
                 }
                 transition={{ duration: 0.4 }}
                 onClick={() => tap(t)}
-                className={`flex min-h-[86px] items-center justify-center rounded-2xl border p-2.5 text-center text-[10.5px] font-black leading-4 transition-colors ${
+                className={`flex min-h-[86px] items-center justify-center rounded-2xl border p-2.5 text-center text-[10.5px] font-semibold leading-4 transition-colors ${
                   st === "matched"
                     ? "border-border bg-muted text-muted-foreground/50"
                     : st === "sel"
                       ? t.kind === "term"
-                        ? "border-primary bg-primary text-white shadow-md"
-                        : "border-amber-500 bg-amber-400 text-amber-950 shadow-md"
+                        ? "border-primary bg-primary text-white"
+                        : "border-amber-500 bg-amber-400 text-gem"
                       : st === "wrong"
-                        ? "border-red-400 bg-red-50 text-red-600"
+                        ? "border-destructive/40 bg-danger-soft text-destructive"
                         : t.kind === "term"
                           ? "border-primary/25 bg-accent text-foreground"
-                          : "border-amber-200 bg-amber-50 text-foreground"
+                          : "border-gem/30 bg-gem-soft text-foreground"
                 }`}
               >
                 {t.text}
@@ -215,12 +215,12 @@ export default function MatchGameView() {
         </div>
 
         {/* مفتاح الألوان */}
-        <div className="mt-3 flex items-center justify-center gap-4 text-[10px] font-bold text-muted-foreground">
+        <div className="mt-3 flex items-center justify-center gap-4 text-xs font-bold text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <span className="h-3 w-3 rounded bg-accent ring-1 ring-primary/25" /> المصطلح
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-3 w-3 rounded bg-amber-50 ring-1 ring-amber-200" /> الشرح المصغّر
+            <span className="h-3 w-3 rounded bg-gem-soft ring-1 ring-amber-200" /> الشرح المصغّر
           </span>
         </div>
 
@@ -229,22 +229,22 @@ export default function MatchGameView() {
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="mt-5 rounded-3xl border border-border bg-white p-6 text-center shadow-soft"
+            className="mt-5 rounded-2xl border border-border bg-card p-6 text-center"
           >
             <Trophy className="mx-auto h-10 w-10 text-amber-500" />
-            <p className="mt-2 text-lg font-black">
+            <p className="mt-2 text-lg font-semibold">
               {mistakes === 0 ? "مطابقة كاملة بلا خطأ — ذاكرة صفّية حادة!" : "أكملت المطابقة"}
             </p>
             <p className="mt-1 text-xs font-bold text-muted-foreground">
               الزمن {ad(elapsed)} ثانية — والأخطاء {ad(mistakes)}
               {mistakes === 0 ? "" : " — أعد الجولة لتخفيضها"}
             </p>
-            <p className="mt-2 flex items-center justify-center gap-1 text-[11px] font-black text-primary">
+            <p className="mt-2 flex items-center justify-center gap-1 text-xs font-semibold text-primary">
               <Sparkles className="h-3.5 w-3.5" /> أضيفت لك نقاط خبرة على هذا الأداء
             </p>
             <Button
               onClick={restart}
-              className="mt-4 h-12 w-full rounded-2xl bg-primary text-sm font-black"
+              className="mt-4 h-12 w-full rounded-2xl bg-primary text-sm font-semibold"
             >
               <RotateCcw className="ml-1.5 h-4 w-4" /> جولة جديدة بمفاهيم أخرى
             </Button>
@@ -252,7 +252,7 @@ export default function MatchGameView() {
         )}
 
         {!started && !finished && (
-          <p className="mt-4 text-center text-[11px] font-bold text-muted-foreground">
+          <p className="mt-4 text-center text-xs font-bold text-muted-foreground">
             اضغط أي بلاطة لتبدأ — المؤقت يتحرك مع أول لمسة
           </p>
         )}

@@ -27,7 +27,8 @@ import {
 import { buildScenarioRun } from "@/lib/scenarios";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { Button } from "@/components/ui/button";
+import { ad } from "@/lib/arabic";
+import { Callout, Card, Chip, Divided, IconTile, OptionButton, PrimaryButton, ProgressBar, Ring, ScreenShell, SecondaryButton, SectionHeader } from "./ui-kit";
 
 const LETTERS = ["أ", "ب", "ج", "د"];
 
@@ -83,130 +84,68 @@ function RunScreen({
     }
   };
 
-  const banner =
+  const verdict =
     graded && choice !== null
       ? {
-          best: { text: "قرار ممتاز! هذا ما يفعله المعلم المحترف", cls: "bg-emerald-600", icon: ThumbsUp },
-          ok: { text: "قرار مقبول — لكن هناك خيار أزكى", cls: "bg-amber-500", icon: Lightbulb },
-          poor: { text: "قرار فيه مخاطرة — انظر القرار الأفضل", cls: "bg-red-500", icon: ShieldAlert },
+          best: { text: "قرار ممتاز: هذا ما يفعله المعلم المحترف", tone: "success" as const, icon: ThumbsUp },
+          ok: { text: "قرار مقبول، وهناك خيار أفضل", tone: "warning" as const, icon: Lightbulb },
+          poor: { text: "قرار فيه مخاطرة، انظر القرار الأفضل", tone: "danger" as const, icon: ShieldAlert },
         }[chosenScore(sc, choice)]
       : null;
 
-  const BannerIcon = banner?.icon ?? ThumbsUp;
-
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-background">
-      <div className="safe-top bg-gradient-to-l from-[#0A5A62] to-[#0E7C86] px-4 pb-3 pt-3 text-white">
-        <div className="flex items-center gap-3">
-          <button onClick={onExit} className="rounded-full bg-white/20 p-2" aria-label="إغلاق الجولة">
-            <X className="h-5 w-5" />
-          </button>
-          <div className="flex-1">
-            <p className="text-xs font-bold opacity-90">محاكاة الصف — جولة قرارات</p>
-            <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-white/25">
-              <motion.div
-                className="h-full rounded-full bg-amber-400"
-                animate={{ width: `${((idx + (graded ? 1 : 0)) / run.length) * 100}%` }}
-                transition={{ duration: 0.4 }}
-              />
-            </div>
-          </div>
+    <ScreenShell
+      title="جولة قرارات"
+      sub={`الموقف ${ad(idx + 1)} من ${ad(run.length)}`}
+      onClose={onExit}
+      footer={
+        <PrimaryButton disabled={!graded} onClick={next} className="w-full">
+          {isLast ? "النتيجة" : "الموقف التالي"} <ChevronLeft className="h-4 w-4" />
+        </PrimaryButton>
+      }
+    >
+      <ProgressBar value={((idx + (graded ? 1 : 0)) / run.length) * 100} className="mb-5" />
+      <motion.div key={sc.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+        <div>
+          <Chip tone="primary">{sc.category}</Chip>
+          <h2 className="mt-3 font-display text-lg font-semibold leading-8">{sc.title}</h2>
         </div>
-      </div>
-
-      <div className="no-scrollbar flex-1 overflow-y-auto px-4 py-4">
-        <motion.div key={sc.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.25 }}>
-          <div className="card-soft rounded-3xl border border-border bg-white p-5">
-            <span className="rounded-full bg-cyan-100 px-3 py-1 text-[10px] font-black text-cyan-700">
-              {sc.category}
-            </span>
-            <h2 className="mt-2 text-base font-black leading-7">{sc.title}</h2>
-            <div className="mt-3 rounded-2xl bg-muted/70 p-4">
-              <p className="text-sm leading-8 text-foreground">{sc.situation}</p>
-            </div>
-          </div>
-
-          <p className="mt-5 mb-2 flex items-center gap-2 text-sm font-black text-foreground">
-            <Target className="h-4 w-4 text-primary" /> ماذا ستفعل؟
-          </p>
-
-          <div className="space-y-2">
+        <Card className="p-5">
+          <p className="text-base leading-8">{sc.situation}</p>
+        </Card>
+        <div>
+          <p className="mb-3 font-display text-base font-semibold">ماذا ستفعل؟</p>
+          <div className="space-y-3">
             {sc.options.map((o, i) => {
-              let cls = "border-border bg-white";
+              let state: "idle" | "correct" | "wrong" | "dim" | "selected" = "idle";
               if (graded) {
-                if (i === choice && o.score === "best") cls = "border-emerald-600 bg-emerald-50 ring-1 ring-emerald-600";
-                else if (i === choice && o.score === "ok") cls = "border-amber-500 bg-amber-50 ring-1 ring-amber-500";
-                else if (i === choice && o.score === "poor") cls = "border-red-500 bg-red-50 ring-1 ring-red-500";
-                else if (i === best && choice !== best) cls = "border-emerald-600 bg-emerald-50/70";
-                else cls = "border-border bg-muted/30 opacity-60";
+                if (i === best) state = "correct";
+                else if (i === choice) state = o.score === "ok" ? "selected" : "wrong";
+                else state = "dim";
               }
               return (
-                <motion.button
-                  key={i}
-                  whileTap={graded ? undefined : { scale: 0.98 }}
-                  disabled={graded}
-                  onClick={() => pick(i)}
-                  className={`flex w-full items-start gap-3 rounded-2xl border-2 p-3.5 text-right transition-colors ${cls}`}
-                >
-                  <span
-                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xl text-xs font-black ${
-                      graded && (i === choice || (i === best && choice !== best))
-                        ? "bg-emerald-600 text-white"
-                        : "bg-muted text-foreground/70"
-                    }`}
-                  >
-                    {LETTERS[i]}
-                  </span>
-                  <span className="flex-1 text-sm font-bold leading-6 text-foreground">{o.text}</span>
-                  {graded && i === best && choice !== best && (
-                    <span className="shrink-0 rounded-full bg-emerald-600 px-2 py-0.5 text-[9px] font-black text-white">
-                      الأفضل
-                    </span>
-                  )}
-                </motion.button>
+                <OptionButton key={i} letter={LETTERS[i]} state={state} disabled={graded} onClick={() => pick(i)}>
+                  {o.text}
+                  {graded && i === best && <span className="mr-2 inline-block align-middle"><Chip tone="success">الأفضل</Chip></span>}
+                </OptionButton>
               );
             })}
           </div>
-
-          <AnimatePresence>
-            {graded && banner && choice !== null && (
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="mt-4 overflow-hidden rounded-3xl border border-border bg-white"
-              >
-                <div className={`flex items-center gap-2 ${banner.cls} px-4 py-3 text-white`}>
-                  <BannerIcon className="h-5 w-5" />
-                  <p className="text-sm font-black">{banner.text}</p>
-                </div>
-                <div className="p-4">
-                  <p className="text-sm leading-8 text-foreground">{sc.options[choice].feedback}</p>
-                  {choice !== best && (
-                    <div className="mt-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-3">
-                      <p className="mb-1 flex items-center gap-1.5 text-xs font-black text-emerald-800">
-                        <Award className="h-4 w-4" /> القرار الأفضل: {LETTERS[best]} — {sc.options[best].text}
-                      </p>
-                      <p className="text-xs leading-7 text-emerald-900/90">{sc.options[best].feedback}</p>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
+        </div>
+        {verdict && choice !== null && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
+            <Callout tone={verdict.tone} icon={verdict.icon} title={verdict.text}>
+              {sc.options[choice].feedback}
+            </Callout>
+            {choice !== best && (
+              <Callout tone="success" icon={Award} title={`القرار الأفضل: ${sc.options[best].text}`}>
+                {sc.options[best].feedback}
+              </Callout>
             )}
-          </AnimatePresence>
-        </motion.div>
-      </div>
-
-      <div className="safe-bottom border-t border-border bg-white px-4 pt-3">
-        <Button
-          disabled={!graded}
-          onClick={next}
-          className="h-13 w-full rounded-2xl bg-primary py-3.5 text-base font-black text-primary-foreground disabled:opacity-40"
-        >
-          {isLast ? "النتيجة النهائية" : "الموقف التالي"} <ChevronLeft className="mr-1 h-5 w-5" />
-        </Button>
-      </div>
-    </div>
+          </motion.div>
+        )}
+      </motion.div>
+    </ScreenShell>
   );
 }
 
@@ -219,31 +158,48 @@ function ResultScreen({ scores, run, onAgain, onExit }: { scores: ScenarioScore[
     pct >= 80 ? "أنت جاهز للصف!" : pct >= 50 ? "أداء معلم واعد — واصل التدريب" : "الصف مدرسة بحد ذاته — راجع التفسيرات وأعد الجولة";
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-background">
-      <div className="safe-top" />
-      <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-      <motion.div initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", damping: 12 }}>
-        <span className="flex h-24 w-24 items-center justify-center rounded-full bg-emerald-100">
-          <School className="h-12 w-12 text-emerald-700" />
-        </span>
-      </motion.div>
-      <h2 className="mt-4 text-2xl font-black">{headline}</h2>
-      <p className="mt-2 text-sm font-semibold text-muted-foreground">
-        أكملت جولة قرارات في مواقف صفّية واقعية — عُد إلى المحاكاة لجولة جديدة أو راجع التفسيرات
-        في الأخطاء
-      </p>
-
-      <div className="mt-8 w-full max-w-sm space-y-2">
-        <Button onClick={onAgain} className="h-13 w-full rounded-2xl bg-primary py-3.5 text-base font-black text-primary-foreground">
-          <RotateCcw className="ml-2 h-5 w-5" /> جولة جديدة
-        </Button>
-        <Button onClick={onExit} variant="outline" className="h-12 w-full rounded-2xl border-2 text-sm font-black">
-          العودة إلى المحاكاة
-        </Button>
+    <ScreenShell
+      title="نتيجة الجولة"
+      onClose={onExit}
+      footer={
+        <>
+          <SecondaryButton onClick={onExit} className="flex-1">
+            كل المواقف
+          </SecondaryButton>
+          <PrimaryButton onClick={onAgain} className="flex-1">
+            <RotateCcw className="h-4 w-4" /> جولة جديدة
+          </PrimaryButton>
+        </>
+      }
+    >
+      <div className="flex flex-col items-center py-6 text-center">
+        <Ring value={pct} size={120} stroke={10}>
+          <span className="font-display text-2xl font-bold text-primary">{ad(pct)}٪</span>
+        </Ring>
+        <h2 className="mt-5 font-display text-xl font-bold">{headline}</h2>
+        <p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
+          اخترت القرار الأفضل في {ad(bestCount)} من {ad(run.length)} مواقف.
+        </p>
       </div>
-      </div>
-      <div className="safe-bottom" />
-    </div>
+      <Divided>
+        {run.map((sc, i) => {
+          const r = scores[i];
+          return (
+            <div key={sc.id} className="flex items-center gap-3 px-4 py-3">
+              {r === "best" ? (
+                <CheckCircle2 className="h-5 w-5 shrink-0 text-success" />
+              ) : r === "ok" ? (
+                <Lightbulb className="h-5 w-5 shrink-0 text-gem" />
+              ) : (
+                <ShieldAlert className="h-5 w-5 shrink-0 text-destructive" />
+              )}
+              <span className="min-w-0 flex-1 text-[15px]">{sc.title}</span>
+              <span className="text-[13px] text-muted-foreground">{r ? scoreLabel(r) : ""}</span>
+            </div>
+          );
+        })}
+      </Divided>
+    </ScreenShell>
   );
 }
 
@@ -290,105 +246,63 @@ export default function ScenariosView() {
   }
   if (run) return <RunScreen run={run} onFinish={showResult} onExit={finishRun} />;
 
+  const done = Object.keys(scenarioChoices).length;
   return (
-    <motion.div
-      initial={{ y: "100%" }}
-      animate={{ y: 0 }}
-      exit={{ y: "100%" }}
-      transition={{ type: "spring", damping: 30, stiffness: 300 }}
-      className="fixed inset-0 z-50 flex flex-col bg-background"
-    >
-      <div className="safe-top bg-gradient-to-l from-[#0A5A62] to-[#0E7C86] px-4 pb-5 pt-3 text-white">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/20">
-              <School className="h-6 w-6" />
-            </span>
-            <div>
-              <h2 className="text-lg font-black">محاكاة الصف الدراسي</h2>
-              <p className="text-[11px] opacity-90">موقف حقيقي أمامك، وقرار بيدك — ثم تفسير تربوي</p>
+    <ScreenShell title="مواقف صفية سريعة" sub="موقف واحد، وقرار، ثم تفسير تربوي" onClose={clearScenarios}>
+      <div className="space-y-6">
+        <Card className="p-5">
+          <div className="flex items-start gap-4">
+            <IconTile icon={Target} size={48} />
+            <div className="min-w-0 flex-1">
+              <h2 className="font-display text-base font-semibold">جولة قرارات</h2>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                مواقف صفية واقعية، لكل منها أربعة قرارات ممكنة. تختار فترى نتيجة قرارك وتفسيره، وكيف يفكر المعلم المحترف.
+              </p>
             </div>
           </div>
-          <button onClick={clearScenarios} className="rounded-full bg-white/20 p-2" aria-label="إغلاق">
-            <X className="h-5 w-5" />
-          </button>
-        </div>
+          <div className="mt-4 flex items-center gap-3">
+            <ProgressBar value={(done / Math.max(1, SCENARIOS.length)) * 100} className="flex-1" />
+            <span className="shrink-0 text-[13px] text-muted-foreground">
+              {ad(done)} من {ad(SCENARIOS.length)}
+            </span>
+          </div>
+          <PrimaryButton onClick={() => startRun(buildScenarioRun(Object.keys(scenarioChoices)))} className="mt-4 w-full sm:w-auto">
+            ابدأ الجولة
+          </PrimaryButton>
+        </Card>
+
+        {grouped.map(({ cat, items }) => (
+          <section key={cat}>
+            <SectionHeader title={cat} />
+            <Divided>
+              {items.map((s) => {
+                const rec = scenarioChoices[s.id];
+                const sc: ScenarioScore | null = rec ? chosenScore(s, rec.opt) : null;
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => startRun([s])}
+                    className="flex min-h-[56px] w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
+                  >
+                    {sc === null ? (
+                      <Circle className="h-5 w-5 shrink-0 text-input" />
+                    ) : (
+                      <CheckCircle2 className={`h-5 w-5 shrink-0 ${sc === "best" ? "text-success" : sc === "ok" ? "text-gem" : "text-destructive"}`} />
+                    )}
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[15px] leading-6">{s.title}</span>
+                      {sc !== null && <span className="text-[13px] text-muted-foreground">آخر قرار: {scoreLabel(sc)}</span>}
+                    </span>
+                    <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground/60" />
+                  </button>
+                );
+              })}
+            </Divided>
+          </section>
+        ))}
       </div>
-
-      <div className="no-scrollbar flex-1 overflow-y-auto px-4 py-4">
-        {/* بطاقة الدعوة */}
-        <div className="card-soft rounded-3xl border border-cyan-200 bg-gradient-to-l from-cyan-50 to-cyan-50 p-5">
-          <p className="text-sm leading-8 text-cyan-950">
-            هنا تتحول المعرفة إلى مهنة: موقف صفّي واقعي، أربعة قرارات ممكنة — تختار قرارك فترى{" "}
-            <b>نتيجته</b> و<b>التفسير التربوي</b> له، وكيف يفكر المعلم المحترف في الموقف نفسه.
-          </p>
-          <Button
-            onClick={() => startRun(buildScenarioRun(Object.keys(scenarioChoices)))}
-            className="mt-4 h-13 w-full rounded-2xl bg-cyan-600 py-3.5 text-base font-black text-white hover:bg-cyan-500"
-          >
-            <Target className="ml-2 h-5 w-5" />
-            ابدأ جولة القرارات
-          </Button>
-        </div>
-
-        {/* القائمة حسب التصنيف */}
-        <div className="mt-4 flex items-center justify-between">
-          <p className="text-sm font-black">كل المواقف</p>
-          <button onClick={() => setShowAll((v) => !v)} className="flex items-center text-xs font-bold text-primary">
-            {showAll ? "إخفاء" : "عرض الكل"} <ChevronLeft className={`h-4 w-4 transition-transform ${showAll ? "-rotate-90" : ""}`} />
-          </button>
-        </div>
-
-        <AnimatePresence initial={false}>
-          {showAll && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden"
-            >
-              <div className="space-y-4 pt-2">
-                {grouped.map(({ cat, items }) => (
-                  <div key={cat}>
-                    <p className="mb-1.5 flex items-center gap-1.5 text-[11px] font-extrabold text-muted-foreground">
-                      <span className="h-1.5 w-1.5 rounded-full bg-cyan-500" /> {cat}
-                    </p>
-                    {items.map((s) => {
-                      const rec = scenarioChoices[s.id];
-                      const sc: ScenarioScore | null = rec ? chosenScore(s, rec.opt) : null;
-                      return (
-                        <button
-                          key={s.id}
-                          onClick={() => startRun([s])}
-                          className="mb-1.5 flex w-full items-center gap-3 rounded-2xl border border-border bg-white px-3 py-3 text-right transition-colors active:bg-accent"
-                        >
-                          {sc === null ? (
-                            <Circle className="h-5 w-5 shrink-0 text-border" />
-                          ) : (
-                            <CheckCircle2
-                              className={`h-5 w-5 shrink-0 ${sc === "best" ? "text-emerald-600" : sc === "ok" ? "text-amber-500" : "text-red-500"}`}
-                            />
-                          )}
-                          <span className="flex-1">
-                            <span className="block text-sm font-bold leading-6">{s.title}</span>
-                            {sc !== null && (
-                              <span className="text-[10px] font-bold text-muted-foreground">
-                                آخر قرار: {scoreLabel(sc)}
-                              </span>
-                            )}
-                          </span>
-                          <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground" />
-                        </button>
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.div>
+    </ScreenShell>
   );
 }
 

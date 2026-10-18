@@ -76,15 +76,15 @@ const statusIcon: Record<PlanCheckStatus, typeof CircleCheck> = {
   missing: CircleAlert,
 };
 const statusCls: Record<PlanCheckStatus, string> = {
-  done: "text-emerald-700",
-  partial: "text-amber-700",
-  missing: "text-red-700",
+  done: "text-success",
+  partial: "text-gem",
+  missing: "text-destructive",
 };
 
 const inputCls =
-  "w-full rounded-xl border-2 border-border bg-background p-3 text-sm leading-6 outline-none focus:border-primary";
-const chipOff = "rounded-full border-2 border-border bg-white px-3 py-1.5 text-xs font-bold text-muted-foreground transition hover:border-primary";
-const chipOn = "rounded-full border-2 border-primary bg-accent px-3 py-1.5 text-xs font-black text-primary";
+  "w-full rounded-xl border border-border bg-background p-3 text-sm leading-6 outline-none focus:border-primary";
+const chipOff = "rounded-full border border-border bg-card px-3 py-1.5 text-xs font-bold text-muted-foreground transition hover:border-primary";
+const chipOn = "rounded-full border border-primary bg-accent px-3 py-1.5 text-xs font-semibold text-primary";
 
 // بطاقة قسم موجه — أيقونة وعنوان وسؤال توجيهي
 function SectionCard({
@@ -99,14 +99,14 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border-2 border-border bg-white p-4">
+    <section className="rounded-2xl border border-border bg-card p-4">
       <div className="flex items-start gap-2.5">
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent">
           <Icon className="h-4.5 w-4.5 text-primary" />
         </span>
         <div className="min-w-0">
-          <h3 className="text-sm font-black leading-6">{title}</h3>
-          {guide && <p className="text-[11px] font-bold leading-4 text-muted-foreground">{guide}</p>}
+          <h3 className="text-sm font-semibold leading-6">{title}</h3>
+          {guide && <p className="text-xs font-bold leading-4 text-muted-foreground">{guide}</p>}
         </div>
       </div>
       <div className="mt-3">{children}</div>
@@ -119,8 +119,8 @@ function PlanLines({ title, body }: { title: string; body: string }) {
   const lines = body.split(/\n+/).map((s) => s.trim()).filter(Boolean);
   if (!lines.length) return null;
   return (
-    <div className="rounded-2xl border-2 border-border bg-white p-4">
-      <h3 className="text-sm font-black">{title}</h3>
+    <div className="rounded-2xl border border-border bg-card p-4">
+      <h3 className="text-sm font-semibold">{title}</h3>
       <div className="mt-2 space-y-1">
         {lines.map((ln, i) => (
           <p key={i} className="text-xs font-bold leading-6">
@@ -248,19 +248,19 @@ export default function StudioView() {
             <ChevronRight className="h-4 w-4" /> عودة إلى خططي
           </button>
 
-          <div className="rounded-2xl border-2 border-primary/20 bg-gradient-to-l from-accent to-white p-4">
-            <h2 className="text-lg font-black leading-7">{selected.topic}</h2>
+          <div className="rounded-2xl border border-primary/20 bg-gradient-to-l from-accent to-white p-4">
+            <h2 className="text-lg font-semibold leading-7">{selected.topic}</h2>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {selected.subject && (
-                <span className="rounded-full border border-primary/20 bg-white px-2.5 py-1 text-[10px] font-black text-primary">{selected.subject}</span>
+                <span className="rounded-full border border-primary/20 bg-card px-2.5 py-1 text-xs font-semibold text-primary">{selected.subject}</span>
               )}
               {selected.grade && (
-                <span className="rounded-full border border-primary/20 bg-white px-2.5 py-1 text-[10px] font-black text-primary">{selected.grade}</span>
+                <span className="rounded-full border border-primary/20 bg-card px-2.5 py-1 text-xs font-semibold text-primary">{selected.grade}</span>
               )}
               {selected.duration && (
-                <span className="rounded-full border border-primary/20 bg-white px-2.5 py-1 text-[10px] font-black text-primary">{selected.duration}</span>
+                <span className="rounded-full border border-primary/20 bg-card px-2.5 py-1 text-xs font-semibold text-primary">{selected.duration}</span>
               )}
-              <span className="rounded-full bg-muted px-2.5 py-1 text-[10px] font-black text-muted-foreground">{planMaturityWord(selected)}</span>
+              <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">{planMaturityWord(selected)}</span>
             </div>
           </div>
 
@@ -269,11 +269,11 @@ export default function StudioView() {
             <PlanLines title="المعرفة السابقة" body={selected.prior} />
             <PlanLines title="الوسائل والأدوات" body={selected.materials} />
             {selected.strategies.length > 0 && (
-              <div className="rounded-2xl border-2 border-border bg-white p-4">
-                <h3 className="text-sm font-black">استراتيجيات التدريس</h3>
+              <div className="rounded-2xl border border-border bg-card p-4">
+                <h3 className="text-sm font-semibold">استراتيجيات التدريس</h3>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {selected.strategies.map((s) => (
-                    <span key={s} className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-black text-primary">
+                    <span key={s} className="rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-primary">
                       {s}
                     </span>
                   ))}
@@ -281,12 +281,12 @@ export default function StudioView() {
               </div>
             )}
             {PHASE_META.some((ph) => selected.phases[ph.key].trim()) && (
-              <div className="rounded-2xl border-2 border-border bg-white p-4">
-                <h3 className="text-sm font-black">خطوات التنفيذ</h3>
+              <div className="rounded-2xl border border-border bg-card p-4">
+                <h3 className="text-sm font-semibold">خطوات التنفيذ</h3>
                 <div className="mt-3 space-y-3">
                   {PHASE_META.filter((ph) => selected.phases[ph.key].trim()).map((ph) => (
                     <div key={ph.key} className="rounded-xl bg-muted/50 p-3">
-                      <p className="text-xs font-black text-primary">{ph.label}</p>
+                      <p className="text-xs font-semibold text-primary">{ph.label}</p>
                       {selected.phases[ph.key]
                         .split(/\n+/)
                         .map((s) => s.trim())
@@ -305,15 +305,15 @@ export default function StudioView() {
             <PlanLines title="الواجب" body={selected.homework} />
             <PlanLines title="الفروق الفردية" body={selected.differentiation} />
 
-            <div className="rounded-2xl border-2 border-border bg-white p-4">
-              <p className="flex items-center gap-1.5 text-sm font-black">
+            <div className="rounded-2xl border border-border bg-card p-4">
+              <p className="flex items-center gap-1.5 text-sm font-semibold">
                 <ClipboardCheck className="h-4 w-4 text-primary" /> تقييم الخطة
               </p>
-              <p className="mt-1 text-xs font-black leading-5">{r.verdict}</p>
+              <p className="mt-1 text-xs font-semibold leading-5">{r.verdict}</p>
               {r.items
                 .filter((it) => it.status !== "done")
                 .map((it) => (
-                  <p key={it.key} className="mt-1 text-[11px] font-bold leading-5 text-muted-foreground">
+                  <p key={it.key} className="mt-1 text-xs font-bold leading-5 text-muted-foreground">
                     {it.label}: {it.note}
                   </p>
                 ))}
@@ -323,29 +323,29 @@ export default function StudioView() {
           <div className="mt-4 flex gap-2">
             <button
               onClick={() => share(selected)}
-              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-black text-primary-foreground"
+              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-semibold text-primary-foreground"
             >
               <Share2 className="h-4.5 w-4.5" /> مشاركة أو نسخ
             </button>
             <button
               onClick={() => startEdit(selected)}
               aria-label="تعديل الخطة"
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-border bg-white text-muted-foreground"
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-border bg-card text-muted-foreground"
             >
               <Pencil className="h-4.5 w-4.5" />
             </button>
             <button
               onClick={() => doDelete(selected.id)}
               aria-label={confirmDel === selected.id ? "تأكيد حذف الخطة" : "حذف الخطة"}
-              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 ${
-                confirmDel === selected.id ? "border-red-300 bg-red-50 text-red-600" : "border-border bg-white text-muted-foreground"
+              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border ${
+                confirmDel === selected.id ? "border-destructive/40 bg-danger-soft text-destructive" : "border-border bg-card text-muted-foreground"
               }`}
             >
               <Trash2 className="h-4.5 w-4.5" />
             </button>
           </div>
           {confirmDel === selected.id && (
-            <p className="mt-2 text-center text-xs font-bold text-red-600">اضغط زر الحذف مجددًا للتأكيد</p>
+            <p className="mt-2 text-center text-xs font-bold text-destructive">اضغط زر الحذف مجددًا للتأكيد</p>
           )}
         </div>
       </motion.div>
@@ -367,7 +367,7 @@ export default function StudioView() {
               <ClipboardList className="h-5.5 w-5.5" />
             </span>
             <div>
-              <h1 className="text-xl font-black text-foreground">استوديو خطط الدروس</h1>
+              <h1 className="text-xl font-semibold text-foreground">استوديو خطط الدروس</h1>
               <p className="text-xs text-muted-foreground">اصنع خطتك بخطوات موجهة وقيّمها قبل الحصة</p>
             </div>
           </div>
@@ -390,8 +390,8 @@ export default function StudioView() {
             <button
               key={id}
               onClick={() => setTab(id)}
-              className={`flex flex-1 items-center justify-center gap-1 rounded-xl border-2 px-1.5 py-2 text-[11px] font-bold ${
-                tab === id ? "border-primary bg-accent text-primary" : "border-border bg-white text-muted-foreground"
+              className={`flex flex-1 items-center justify-center gap-1 rounded-xl border px-1.5 py-2 text-xs font-bold ${
+                tab === id ? "border-primary bg-accent text-primary" : "border-border bg-card text-muted-foreground"
               }`}
             >
               <Icon className="h-4 w-4" /> {lbl}
@@ -403,8 +403,8 @@ export default function StudioView() {
       <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
         {tab === "new" ? (
           <div className="space-y-3">
-            <div className="rounded-2xl border-2 border-primary/20 bg-gradient-to-l from-accent to-white p-4">
-              <p className="flex items-center gap-2 text-sm font-black text-primary">
+            <div className="rounded-2xl border border-primary/20 bg-gradient-to-l from-accent to-white p-4">
+              <p className="flex items-center gap-2 text-sm font-semibold text-primary">
                 <Sparkles className="h-4 w-4" /> كيف يعمل الاستوديو؟
               </p>
               <p className="mt-1 text-xs leading-6 text-muted-foreground">
@@ -513,15 +513,15 @@ export default function StudioView() {
               <div className="space-y-3">
                 {PHASE_META.map((ph) => (
                   <div key={ph.key} className="rounded-xl bg-muted/50 p-3">
-                    <p className="text-xs font-black text-primary">{ph.label}</p>
-                    <p className="text-[11px] font-bold leading-4 text-muted-foreground">{ph.guide}</p>
+                    <p className="text-xs font-semibold text-primary">{ph.label}</p>
+                    <p className="text-xs font-bold leading-4 text-muted-foreground">{ph.guide}</p>
                     <textarea
                       value={form.phases[ph.key]}
                       onChange={(e) => setPhase(ph.key, e.target.value)}
                       rows={2}
                       placeholder={ph.placeholder}
                       aria-label={ph.label}
-                      className={`${inputCls} mt-2 bg-white`}
+                      className={`${inputCls} mt-2 bg-card`}
                     />
                   </div>
                 ))}
@@ -564,18 +564,18 @@ export default function StudioView() {
             <div className="flex gap-2 pt-1">
               <button
                 onClick={runReview}
-                className="flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-primary/30 bg-accent py-3 font-black text-primary"
+                className="flex flex-1 items-center justify-center gap-2 rounded-2xl border border-primary/30 bg-accent py-3 font-semibold text-primary"
               >
                 <ClipboardCheck className="h-5 w-5" /> قيّم خطتك
               </button>
               <button
                 onClick={doSave}
-                className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-black text-primary-foreground"
+                className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-semibold text-primary-foreground"
               >
                 <Save className="h-5 w-5" /> {editingId ? "احفظ التعديل" : "احفظ في خططي"}
               </button>
             </div>
-            {formErr && <p className="text-center text-xs font-black text-red-600">{formErr}</p>}
+            {formErr && <p className="text-center text-xs font-semibold text-destructive">{formErr}</p>}
             {editingId && (
               <button onClick={resetDraft} className="w-full py-1 text-center text-xs font-bold text-muted-foreground underline">
                 إلغاء التعديل والبدء من جديد
@@ -587,12 +587,12 @@ export default function StudioView() {
                 ref={reviewRef}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="rounded-2xl border-2 border-primary/25 bg-white p-4"
+                className="rounded-2xl border border-primary/25 bg-card p-4"
               >
-                <p className="flex items-center gap-1.5 text-sm font-black text-primary">
+                <p className="flex items-center gap-1.5 text-sm font-semibold text-primary">
                   <Sparkles className="h-4 w-4" /> تقييم الخطة
                 </p>
-                <p className="mt-1 text-xs font-black leading-5">{review.verdict}</p>
+                <p className="mt-1 text-xs font-semibold leading-5">{review.verdict}</p>
                 <div className="mt-3 space-y-2">
                   {review.items.map((it) => {
                     const Icon = statusIcon[it.status];
@@ -600,10 +600,10 @@ export default function StudioView() {
                       <div key={it.key} className="flex items-start gap-2.5 rounded-xl bg-muted/40 p-3">
                         <Icon className={`mt-0.5 h-4 w-4 shrink-0 ${statusCls[it.status]}`} />
                         <div className="min-w-0">
-                          <p className="text-xs font-black">
+                          <p className="text-xs font-semibold">
                             {it.label} <span className={statusCls[it.status]}>· {PLAN_STATUS_WORD[it.status]}</span>
                           </p>
-                          <p className="mt-0.5 text-[11px] font-bold leading-5 text-muted-foreground">{it.note}</p>
+                          <p className="mt-0.5 text-xs font-bold leading-5 text-muted-foreground">{it.note}</p>
                         </div>
                       </div>
                     );
@@ -614,8 +614,8 @@ export default function StudioView() {
           </div>
         ) : tab === "templates" ? (
           <div className="space-y-3">
-            <div className="rounded-2xl border-2 border-primary/20 bg-gradient-to-l from-accent to-white p-4">
-              <p className="flex items-center gap-2 text-sm font-black text-primary">
+            <div className="rounded-2xl border border-primary/20 bg-gradient-to-l from-accent to-white p-4">
+              <p className="flex items-center gap-2 text-sm font-semibold text-primary">
                 <LayoutTemplate className="h-4 w-4" /> قوالب جاهزة كاملة الأركان
               </p>
               <p className="mt-1 text-xs leading-6 text-muted-foreground">
@@ -623,22 +623,22 @@ export default function StudioView() {
               </p>
             </div>
             {PLAN_TEMPLATES.map((t) => (
-              <div key={t.id} className="rounded-2xl border-2 border-border bg-white p-4">
+              <div key={t.id} className="rounded-2xl border border-border bg-card p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <h3 className="text-sm font-black leading-6">{t.name}</h3>
-                    <span className="mt-1 inline-block rounded-full bg-accent px-2 py-0.5 text-[10px] font-black text-primary">{t.tag}</span>
+                    <h3 className="text-sm font-semibold leading-6">{t.name}</h3>
+                    <span className="mt-1 inline-block rounded-full bg-accent px-2 py-0.5 text-xs font-semibold text-primary">{t.tag}</span>
                   </div>
                 </div>
                 <p className="mt-2 text-xs font-bold leading-5 text-muted-foreground">{t.desc}</p>
                 <div className="mt-2 flex flex-wrap gap-1">
                   {t.form.strategies.map((s) => (
-                    <span key={s} className="rounded-full bg-muted/70 px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{s}</span>
+                    <span key={s} className="rounded-full bg-muted/70 px-2 py-0.5 text-xs font-bold text-muted-foreground">{s}</span>
                   ))}
                 </div>
                 <button
                   onClick={() => loadTemplate(t)}
-                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-primary/30 bg-accent py-2.5 text-xs font-black text-primary"
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-primary/30 bg-accent py-2.5 text-xs font-semibold text-primary"
                 >
                   <NotebookPen className="h-4 w-4" /> ابدأ بهذا القالب
                 </button>
@@ -646,11 +646,11 @@ export default function StudioView() {
             ))}
           </div>
         ) : lessonPlans.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-border bg-white p-8 text-center">
+          <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center">
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent">
               <NotebookPen className="h-7 w-7 text-primary" />
             </span>
-            <h3 className="mt-3 text-sm font-black">لم تحفظ خططًا بعد</h3>
+            <h3 className="mt-3 text-sm font-semibold">لم تحفظ خططًا بعد</h3>
             <p className="mt-1 text-xs font-bold leading-5 text-muted-foreground">
               ابدأ من تبويب «خطة جديدة» — الخطوات الموجهة تسهّل البناء، والتقييم يذكّرك بما نقص قبل أن تصعد المنصة
             </p>
@@ -672,18 +672,18 @@ export default function StudioView() {
                     setConfirmDel(null);
                   }
                 }}
-                className="block w-full cursor-pointer rounded-2xl border-2 border-border bg-white p-4 text-right transition hover:border-primary"
+                className="block w-full cursor-pointer rounded-2xl border border-border bg-card p-4 text-right transition hover:border-primary"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <p className="text-sm font-black leading-6">{p.topic}</p>
-                  <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
+                  <p className="text-sm font-semibold leading-6">{p.topic}</p>
+                  <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground">
                     {planMaturityWord(p)}
                   </span>
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1.5">
-                  {p.subject && <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-primary">{p.subject}</span>}
-                  {p.grade && <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{p.grade}</span>}
-                  {p.duration && <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{p.duration}</span>}
+                  {p.subject && <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-bold text-primary">{p.subject}</span>}
+                  {p.grade && <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground">{p.grade}</span>}
+                  {p.duration && <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground">{p.duration}</span>}
                 </div>
                 <div className="mt-3 flex items-center gap-2">
                   <button
@@ -691,7 +691,7 @@ export default function StudioView() {
                       e.stopPropagation();
                       startEdit(p);
                     }}
-                    className="flex items-center gap-1 rounded-full border border-primary/30 bg-white px-3 py-1 text-[11px] font-black text-primary"
+                    className="flex items-center gap-1 rounded-full border border-primary/30 bg-card px-3 py-1 text-xs font-semibold text-primary"
                   >
                     <Pencil className="h-3 w-3" /> تعديل
                   </button>
@@ -700,8 +700,8 @@ export default function StudioView() {
                       e.stopPropagation();
                       doDelete(p.id);
                     }}
-                    className={`flex items-center gap-1 rounded-full border px-3 py-1 text-[11px] font-black ${
-                      confirmDel === p.id ? "border-red-300 bg-red-50 text-red-600" : "border-border bg-white text-muted-foreground"
+                    className={`flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold ${
+                      confirmDel === p.id ? "border-destructive/40 bg-danger-soft text-destructive" : "border-border bg-card text-muted-foreground"
                     }`}
                   >
                     <Trash2 className="h-3 w-3" /> {confirmDel === p.id ? "اضغط مجددًا للتأكيد" : "حذف"}

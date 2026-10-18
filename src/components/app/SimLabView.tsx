@@ -23,6 +23,7 @@ import {
   Gauge,
   Eye,
   Play,
+  ChevronLeft,
 } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { useApp } from "@/lib/store";
@@ -44,6 +45,7 @@ import {
   type SimSkillScore,
 } from "@/lib/sim";
 import { LAB_ALL, isExamScenario } from "@/lib/lab";
+import { Callout, Card, Chip, Divided, IconTile, OptionButton, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, SkillBar } from "./ui-kit";
 import { conceptById, OPTION_LETTERS } from "@/lib/qbank";
 
 const ratingIcon: Record<SimRating, typeof CheckCircle2> = {
@@ -51,19 +53,12 @@ const ratingIcon: Record<SimRating, typeof CheckCircle2> = {
   ok: MinusCircle,
   poor: CircleAlert,
 };
-const ratingCls: Record<SimRating, string> = {
-  good: "text-emerald-600 border-emerald-200 bg-emerald-50",
-  ok: "text-amber-600 border-amber-200 bg-amber-50",
-  poor: "text-red-600 border-red-200 bg-red-50",
-};
 const ratingTxt: Record<SimRating, string> = {
-  good: "text-emerald-700",
-  ok: "text-amber-700",
-  poor: "text-red-700",
+  good: "text-success",
+  ok: "text-gem",
+  poor: "text-destructive",
 };
 
-const barColorOf = (p: SimSkillScore) =>
-  p.status === "strong" ? "bg-emerald-500" : p.status === "improving" ? "bg-amber-500" : p.status === "weak" ? "bg-red-400" : "bg-muted";
 
 export default function SimLabView() {
   const clearSim = useUi((s) => s.clearSim);
@@ -211,26 +206,31 @@ export default function SimLabView() {
   );
   const sessionDecisions = sessionAttempts.reduce((n, a) => n + a.steps.length, 0);
 
-  const header = (
-    <div className="sticky top-0 z-10 border-b border-border bg-white/95 px-4 pb-3 pt-4 backdrop-blur">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-cyan-700 text-white shadow-sm">
-            <Compass className="h-5 w-5" />
-          </span>
-          <div>
-            <h1 className="text-xl font-black text-foreground">مختبر محاكاة الصفوف</h1>
-            <p className="text-xs text-muted-foreground">ادخل صفًا افتراضيًا — كل قرار يغيّر الموقف ويُحلَّل</p>
-          </div>
-        </div>
-        <button
-          onClick={clearSim}
-          aria-label="إغلاق"
-          className="rounded-full bg-muted p-2 text-muted-foreground hover:bg-accent"
-        >
-          <X className="h-5 w-5" />
-        </button>
-      </div>
+  const toneOf = (p: SimSkillScore) =>
+    p.status === "strong" ? "success" : p.status === "improving" ? "warning" : p.status === "weak" ? "danger" : "muted";
+  const skillBars = (list: SimSkillScore[]) => (
+    <div className="space-y-4">
+      {list.map((p) => (
+        <SkillBar key={p.skill} label={p.skill} value={Math.max(p.ratio * 100, 3)} status={SIM_STATUS_WORD[p.status]} tone={toneOf(p)} />
+      ))}
+    </div>
+  );
+  const conceptChips = (ids: string[]) => (
+    <div className="flex flex-wrap gap-2">
+      {ids.map((cid) => {
+        const c = conceptById(cid);
+        if (!c) return null;
+        return (
+          <button
+            key={cid}
+            type="button"
+            onClick={() => openConceptDeep(cid)}
+            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-border bg-card px-3 text-sm text-primary hover:bg-accent"
+          >
+            <BookOpen className="h-3.5 w-3.5" /> {c.title}
+          </button>
+        );
+      })}
     </div>
   );
 
@@ -238,385 +238,233 @@ export default function SimLabView() {
   if (!scenario) {
     const doneCount = new Set(simAttempts.map((a) => a.sid)).size;
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 24 }}
-        className="fixed inset-0 z-50 overflow-y-auto bg-background"
-      >
-        {header}
-        <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
-          {/* شريط الفلسفة */}
-          <div className="rounded-3xl border-2 border-primary/20 bg-gradient-to-bl from-emerald-50 to-cyan-50 p-5">
-            <p className="flex items-center gap-2 text-sm font-black text-primary">
-              <FlaskConical className="h-4.5 w-4.5" /> من يعرف المعلومات… إلى معلم يتصرف بذكاء
+      <ScreenShell title="مختبر محاكاة الصفوف" sub="كل قرار يغيّر الموقف، ثم يُحلَّل" onClose={clearSim}>
+        <div className="space-y-6">
+          <div>
+            <p className="text-[15px] leading-7 text-secondary-foreground">
+              تقرأ مشهدًا من حصة حقيقية، وتختار قرارك، فيتطور الموقف بحسبه. في النهاية ترى كفاءاتك في إدارة الصف والتواصل وفهم المتعلم واتخاذ القرار والتقويم، مع تمرين لأضعفها.
             </p>
-            <p className="mt-2 text-xs font-bold leading-6 text-gray-700">
-              في كل موقف ستقرأ مشهدًا صفًا حيًا، وتختار قرارك، ثم يتحول الموقف وفقًا لقرارك — وبعد الختام يُعرض
-              تحليل كفاءاتك: إدارة الصف، والتواصل، وفهم المتعلم، واتخاذ القرار، والتقويم — مع تمرين مستهدف لنقطة
-              ضعفك. هذه الأدلة محسوبة من قراراتك لا من درجات حفظ.
-            </p>
-            <p className="mt-3 text-[11px] font-black text-primary">
-              أكملت {ad(doneCount)} من {ad(SIM_SCENARIOS.length)} مواقف
-            </p>
-          </div>
-
-          {/* الجلسة الموسعة */}
-          <motion.button
-            whileTap={{ scale: 0.985 }}
-            onClick={startSession}
-            className="mt-4 flex w-full items-center gap-3 rounded-3xl border-2 border-primary/40 bg-gradient-to-bl from-cyan-50 to-emerald-50 p-4 text-right shadow-soft transition hover:border-primary"
-          >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-              <Play className="h-5 w-5" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm font-black text-gray-900">جلسة موسعة — {ad(SIM_SESSION_SIZE)} مواقف متتابعة</span>
-              <span className="mt-0.5 block text-[11px] font-bold leading-5 text-gray-600">
-                تنجز {ad(SIM_SESSION_SIZE)} مواقف وراء بعضها وتنهي نحو {ad(30)} قراراً في مرة واحدة، ثم تصلك خلاصة مجمّعة لكفاءات الجلسة كلها — وتنتقي لك المواقف التي لم تجربها بعد.
+            <div className="mt-3 flex items-center gap-3">
+              <ProgressBar value={(doneCount / Math.max(1, SIM_SCENARIOS.length)) * 100} className="flex-1" />
+              <span className="shrink-0 text-[13px] text-muted-foreground">
+                {ad(doneCount)} من {ad(SIM_SCENARIOS.length)} مواقف
               </span>
-            </span>
-          </motion.button>
+            </div>
+          </div>
 
-          {/* بطاقة كفاءتك المجمعة — أين أدلتك الآن؟ */}
-          <div className="mt-4 rounded-3xl border border-border bg-white p-5 shadow-soft">
-            <p className="flex items-center gap-2 text-sm font-black">
-              <Gauge className="h-4.5 w-4.5 text-primary" /> خريطة كفاءتك من أدلة المحاكاة
-            </p>
-            {aggregate.length ? (
-              <div className="mt-3 space-y-2.5">
-                {aggregate.map((p) => (
-                  <div key={p.skill}>
-                    <div className="mb-1 flex items-center justify-between">
-                      <span className="text-xs font-black text-gray-800">{p.skill}</span>
-                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${simStatusColor[p.status]}`}>
-                        {SIM_STATUS_WORD[p.status]}
-                      </span>
-                    </div>
-                    <div className="h-2 overflow-hidden rounded-full bg-muted">
-                      <div
-                        className={`h-full rounded-full transition-all duration-700 ${barColorOf(p)}`}
-                        style={{ width: `${Math.max(p.ratio * 100, 4)}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
+          <Card className="p-5">
+            <div className="flex items-start gap-4">
+              <IconTile icon={Play} size={48} />
+              <div className="min-w-0 flex-1">
+                <h2 className="font-display text-base font-semibold">جلسة متتابعة</h2>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                  {ad(SIM_SESSION_SIZE)} مواقف لم تجربها بعد، وراء بعضها، ثم خلاصة واحدة لكفاءات الجلسة.
+                </p>
               </div>
-            ) : (
-              <p className="mt-2 text-xs font-bold leading-6 text-muted-foreground">
-                لا أدلة بعد — أول موقف تُكمله سيبدأ برسم خريطتك من قراراتك الفعلية، لا من درجات الحفظ.
-              </p>
-            )}
-          </div>
+            </div>
+            <PrimaryButton onClick={startSession} className="mt-4 w-full sm:w-auto">
+              ابدأ الجلسة
+            </PrimaryButton>
+          </Card>
 
-          {/* المواقف */}
-          <p className="mb-2 mt-5 flex items-center gap-1.5 text-sm font-black">
-            <Target className="h-4.5 w-4.5 text-primary" /> مواقف الحصة الحقيقية
-          </p>
-          <div className="space-y-3">
-            {SIM_SCENARIOS.map((s, idx) => {
-              const st = lastStatusOf(s.id);
-              return (
-                <motion.button
-                  key={s.id}
-                  whileTap={{ scale: 0.985 }}
-                  onClick={() => startScenario(s)}
-                  className="flex w-full items-start gap-3 rounded-3xl border border-border bg-white p-4 text-right shadow-soft transition hover:border-primary/40"
-                >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-accent text-lg font-black text-primary">
-                    {ad(idx + 1)}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="flex items-center justify-between gap-2">
-                      <span className="truncate text-sm font-black text-gray-900">{s.title}</span>
-                      {st && <span className="shrink-0 text-[10px] font-black text-primary">{st}</span>}
+          <Card className="p-5">
+            <SectionHeader title="خريطة كفاءاتك" sub="من قراراتك في المواقف، لا من الحفظ" action={<Gauge className="h-5 w-5 text-muted-foreground" />} />
+            {aggregate.length ? (
+              skillBars(aggregate)
+            ) : (
+              <p className="text-sm leading-6 text-muted-foreground">تظهر الخريطة بعد أول موقف تكمله.</p>
+            )}
+          </Card>
+
+          <section>
+            <SectionHeader title="المواقف" sub="اختر موقفًا لتبدأ" />
+            <Divided>
+              {SIM_SCENARIOS.map((s, idx) => {
+                const st = lastStatusOf(s.id);
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => startScenario(s)}
+                    className="flex w-full items-start gap-3 px-4 py-4 text-right transition-colors hover:bg-muted/60"
+                  >
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent text-sm font-semibold text-accent-foreground">
+                      {ad(idx + 1)}
                     </span>
-                    <span className="mt-0.5 block truncate text-[11px] font-bold text-gray-500">{s.stage}</span>
-                    <span className="mt-2 flex flex-wrap gap-1.5">
-                      {s.skills.map((k) => (
-                        <span key={k} className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-black text-gray-700">
-                          {k}
-                        </span>
-                      ))}
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[15px] font-medium leading-6">{s.title}</span>
+                      <span className="mt-0.5 block text-[13px] text-muted-foreground">{s.stage}</span>
+                      <span className="mt-2 flex flex-wrap gap-1.5">
+                        {s.skills.map((k) => (
+                          <Chip key={k}>{k}</Chip>
+                        ))}
+                        {st && <Chip tone="primary">{st}</Chip>}
+                      </span>
                     </span>
-                  </span>
-                </motion.button>
-              );
-            })}
-          </div>
+                    <ChevronLeft className="mt-2 h-4 w-4 shrink-0 text-muted-foreground/60" />
+                  </button>
+                );
+              })}
+            </Divided>
+          </section>
         </div>
-      </motion.div>
+      </ScreenShell>
     );
   }
 
   // ================== التشغيل والتقرير ==================
+  const back = () => (sessionActive ? endSession() : setScenario(null));
+  const decisionNo = steps.length + 1;
+  const footer = pendingOutcome ? (
+    <PrimaryButton onClick={proceed} className="w-full">
+      ماذا حدث بعد ذلك؟ <ArrowLeft className="h-4 w-4" />
+    </PrimaryButton>
+  ) : finished ? (
+    sessionActive && !sessionDone ? (
+      <>
+        <SecondaryButton onClick={endSession}>إنهاء الجلسة</SecondaryButton>
+        <PrimaryButton onClick={advanceSession} className="flex-1">
+          الموقف التالي ({ad(sessionIdx + 2)} من {ad(SIM_SESSION_SIZE)})
+        </PrimaryButton>
+      </>
+    ) : (
+      <>
+        <SecondaryButton onClick={() => (sessionDone ? endSession() : startScenario(scenario))} className="flex-1">
+          <RotateCcw className="h-4 w-4" /> {sessionDone ? "إنهاء الجلسة" : "أعد الموقف"}
+        </SecondaryButton>
+        <PrimaryButton onClick={() => setScenario(null)} className="flex-1">
+          موقف آخر
+        </PrimaryButton>
+      </>
+    )
+  ) : undefined;
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 24 }}
-      className="fixed inset-0 z-50 overflow-y-auto bg-background"
+    <ScreenShell
+      title={scenario.title}
+      sub={sessionActive ? `الجلسة: الموقف ${ad(sessionIdx + 1)} من ${ad(SIM_SESSION_SIZE)}` : scenario.stage}
+      onBack={back}
+      onClose={clearSim}
+      footer={footer}
     >
-      <div className="mx-auto max-w-lg px-4 pb-28 pt-5">
-        <div className="mb-4 flex items-center justify-between">
-          <button
-            onClick={() => (sessionActive ? endSession() : setScenario(null))}
-            className="flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-bold text-muted-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" /> {sessionActive ? "إنهاء الجلسة" : finished ? "عودة إلى المواقف" : "خروج من الموقف"}
-          </button>
-          <span className="rounded-full bg-accent px-3 py-1 text-xs font-black text-primary">{scenario.stage}</span>
-        </div>
-
-        <h2 className="text-lg font-black leading-8">{scenario.title}</h2>
-
-        {sessionActive && !finished && (
-          <p className="mt-1 text-xs font-black text-primary">
-            الجلسة الموسعة — الموقف {ad(sessionIdx + 1)} من {ad(SIM_SESSION_SIZE)}، قرارات الجلسة حتى الآن: {ad(sessionDecisions)}
-          </p>
-        )}
-
-        {!finished && !pendingOutcome && (
-          <motion.div key={nodeKey + runId} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-4 space-y-3">
-            {nodeKey === "start" && (
-              <div className="rounded-2xl border-2 border-primary/20 bg-gradient-to-bl from-emerald-50 to-cyan-50 p-4 text-sm font-bold leading-7 text-gray-800">
-                {scenario.intro}
-              </div>
-            )}
-            {node && (
-              <div className="rounded-2xl border-2 border-primary/20 bg-white p-4 text-sm font-bold leading-7">{node.text}</div>
-            )}
-            <p className="pt-1 text-sm font-black text-primary">ماذا ستفعل؟</p>
-            {shownOptions.map((o, i) => (
-              <button
-                key={i}
-                onClick={() => choose(i)}
-                className="flex w-full items-start gap-3 rounded-2xl border-2 border-border bg-white p-4 text-right transition hover:border-primary hover:bg-accent"
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted text-sm font-black text-primary">
-                  {OPTION_LETTERS[i]}
-                </span>
-                <span className="text-sm font-bold leading-6">{o.text}</span>
-              </button>
-            ))}
-          </motion.div>
-        )}
-
-        {pendingOutcome && (
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-4 space-y-3">
-            <div className={`flex items-center gap-2 rounded-2xl border-2 p-3 text-sm font-black ${ratingCls[pendingOutcome.rating]}`}>
-              {(() => {
-                const Icon = ratingIcon[pendingOutcome.rating];
-                return <Icon className="h-5 w-5" />;
-              })()}
-              {SIM_RATING_WORD[pendingOutcome.rating]}
+      {!finished && !pendingOutcome && (
+        <motion.div key={nodeKey + runId} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+          <div className="flex flex-wrap items-center gap-2">
+            <Chip tone="primary">القرار {ad(decisionNo)}</Chip>
+            <Chip>{scenario.stage}</Chip>
+          </div>
+          {nodeKey === "start" && <p className="text-[15px] leading-8 text-secondary-foreground">{scenario.intro}</p>}
+          {node && (
+            <Card className="p-5">
+              <p className="text-base leading-8">{node.text}</p>
+            </Card>
+          )}
+          <div>
+            <p className="mb-3 font-display text-base font-semibold">ماذا ستفعل؟</p>
+            <div className="space-y-3">
+              {shownOptions.map((o, i) => (
+                <OptionButton key={i} letter={OPTION_LETTERS[i]} onClick={() => choose(i)}>
+                  {o.text}
+                </OptionButton>
+              ))}
             </div>
-            <div className="rounded-2xl border border-border bg-white p-4 text-sm leading-7 font-bold">{pendingOutcome.outcome}</div>
-            <div className="rounded-2xl border-2 border-primary/20 bg-accent p-4">
-              <p className="mb-1.5 flex items-center gap-1.5 text-xs font-black text-primary">
-                <Eye className="h-4 w-4" /> لماذا هذا القرار؟
-              </p>
-              <p className="text-xs leading-6 font-bold text-gray-800">{pendingOpt?.insight}</p>
-              {pendingOpt?.risks && (
-                <p className="mt-2 text-xs leading-6 font-bold text-gray-700">{pendingOpt.risks}</p>
-              )}
-              {pendingOpt?.evidence && (
-                <p className="mt-2 text-xs leading-6 font-bold text-gray-700">{pendingOpt.evidence}</p>
-              )}
-            </div>
-            <button
-              onClick={proceed}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-black text-primary-foreground"
-            >
-              ماذا حدث بعد ذلك؟ <ArrowRight className="h-4 w-4" />
-            </button>
-          </motion.div>
-        )}
+          </div>
+        </motion.div>
+      )}
 
-        {finished && (
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-4 space-y-4">
-            {sessionDone && (
-              <div className="rounded-3xl border-2 border-primary/40 bg-gradient-to-bl from-emerald-50 to-cyan-50 p-5">
-                <p className="flex items-center gap-2 text-sm font-black text-primary">
-                  <Sparkles className="h-4.5 w-4.5" /> خلاصة الجلسة الموسعة
+      {pendingOutcome && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+          {(() => {
+            const Icon = ratingIcon[pendingOutcome.rating];
+            const tone = pendingOutcome.rating === "good" ? "success" : pendingOutcome.rating === "ok" ? "warning" : "danger";
+            return <Callout tone={tone} icon={Icon} title={SIM_RATING_WORD[pendingOutcome.rating]} />;
+          })()}
+          <div>
+            <p className="mb-1 text-[13px] text-muted-foreground">قرارك</p>
+            <p className="text-[15px] font-medium leading-7">{pendingOutcome.choice}</p>
+          </div>
+          <Card className="p-5">
+            <p className="mb-1.5 text-[13px] text-muted-foreground">ما الذي حدث</p>
+            <p className="text-[15px] leading-8">{pendingOutcome.outcome}</p>
+          </Card>
+          <Callout tone="info" icon={Eye} title="لماذا؟">
+            <p>{pendingOpt?.insight}</p>
+            {pendingOpt?.risks && <p className="mt-2">{pendingOpt.risks}</p>}
+            {pendingOpt?.evidence && <p className="mt-2">{pendingOpt.evidence}</p>}
+          </Callout>
+        </motion.div>
+      )}
+
+      {finished && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+          <div>
+            <Chip tone="success">
+              <CheckCircle2 className="h-3.5 w-3.5" /> اكتمل الموقف
+            </Chip>
+            <p className="mt-3 text-[15px] leading-8 text-secondary-foreground">{scenario.end}</p>
+          </div>
+
+          {sessionDone && (
+            <Card className="p-5">
+              <SectionHeader title="خلاصة الجلسة" sub={`${ad(SIM_SESSION_SIZE)} مواقف، و${ad(sessionDecisions)} قرارًا`} />
+              {skillBars(sessionProfile)}
+            </Card>
+          )}
+
+          <Card className="p-5">
+            <SectionHeader title="كفاءاتك في هذا الموقف" />
+            {skillBars(profile)}
+          </Card>
+
+          <Card className="p-5">
+            <SectionHeader title="قراراتك" />
+            <ol className="space-y-3">
+              {steps.map((st, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold">{ad(i + 1)}</span>
+                  <span className="min-w-0 flex-1 text-sm leading-6">
+                    <span className={`font-semibold ${ratingTxt[st.rating]}`}>{SIM_RATING_WORD[st.rating]}: </span>
+                    {st.choice}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </Card>
+
+          <Callout tone="warning" icon={Target} title="تمرينك التالي">
+            {recommendation ? (
+              <div className="space-y-3">
+                <p>
+                  <span className="font-semibold">الكفاءة: </span>
+                  {recommendation.skill}
                 </p>
-                <p className="mt-1 text-xs font-bold leading-6 text-gray-700">
-                  أنجزت {ad(SIM_SESSION_SIZE)} مواقف و{ad(sessionDecisions)} قراراً في هذه الجلسة — وهذه خريطة كفاءاتها مجمعة من قراراتك لا من حفظك.
-                </p>
-                <div className="mt-3 space-y-2.5">
-                  {sessionProfile.map((p) => (
-                    <div key={p.skill}>
-                      <div className="mb-1 flex items-center justify-between">
-                        <span className="text-xs font-black text-gray-800">{p.skill}</span>
-                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${simStatusColor[p.status]}`}>
-                          {SIM_STATUS_WORD[p.status]}
-                        </span>
-                      </div>
-                      <div className="h-2 overflow-hidden rounded-full bg-muted">
-                        <div
-                          className={`h-full rounded-full transition-all duration-700 ${barColorOf(p)}`}
-                          style={{ width: `${Math.max(p.ratio * 100, 4)}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <p>{recommendation.exercise}</p>
+                {recommendation.labTitle && (
+                  <SecondaryButton
+                    onClick={() => {
+                      clearSim();
+                      startLab();
+                    }}
+                    className="w-full"
+                  >
+                    <FlaskConical className="h-4 w-4" /> مختبر المعلّم: «{recommendation.labTitle}»
+                  </SecondaryButton>
+                )}
+                {recommendation.concepts.length > 0 && conceptChips(recommendation.concepts)}
               </div>
+            ) : (
+              <p>أداؤك متوازن في كل كفاءات هذا الموقف. جرّب موقفًا جديدًا لتكتمل خريطتك.</p>
             )}
-            <div className="rounded-2xl border-2 border-primary/30 bg-accent p-4">
-              <p className="mb-3 flex items-center gap-2 text-sm font-black text-primary">
-                <Sparkles className="h-4 w-4" /> قراراتك في هذا الموقف
-              </p>
-              <div className="space-y-2">
-                {steps.map((s, i) => (
-                  <div key={i} className="rounded-xl bg-white p-3 text-xs leading-6">
-                    <span className={`mr-1 font-black ${ratingTxt[s.rating]}`}>{SIM_RATING_WORD[s.rating]}: </span>
-                    <span className="font-bold">{s.choice}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+          </Callout>
 
-            <div className="rounded-2xl border border-border bg-white p-4 text-sm leading-7">
-              <p className="mb-2 flex items-center gap-1.5 text-sm font-black text-primary">
-                <Quote className="h-4 w-4" /> خلاصة الموقف
-              </p>
-              {scenario.end}
-            </div>
-
-            {/* كفاءاتك في هذا الموقف */}
-            <div className="rounded-2xl border-2 border-border bg-white p-4">
-              <p className="mb-3 flex items-center gap-2 text-sm font-black">
-                <Gauge className="h-4.5 w-4.5 text-primary" /> كفاءاتك في هذا الموقف — من قراراتك لا من حفظك
-              </p>
-              <div className="space-y-2.5">
-                {profile.map((p) => (
-                  <div key={p.skill}>
-                    <div className="mb-1 flex items-center justify-between">
-                      <span className="text-xs font-black text-gray-800">{p.skill}</span>
-                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${simStatusColor[p.status]}`}>
-                        {SIM_STATUS_WORD[p.status]}
-                      </span>
-                    </div>
-                    <div className="h-2 overflow-hidden rounded-full bg-muted">
-                      <div
-                        className={`h-full rounded-full transition-all duration-700 ${barColorOf(p)}`}
-                        style={{ width: `${Math.max(p.ratio * 100, 4)}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* التمرين المستهدف */}
-            <div className="rounded-2xl border-2 border-amber-300 bg-amber-50 p-4">
-              <p className="mb-2 flex items-center gap-2 text-sm font-black text-amber-800">
-                <Target className="h-4.5 w-4.5" /> تمرينك التالي — مستهدف من أضعف أدلتك
-              </p>
-              {recommendation ? (
-                <div className="space-y-2.5">
-                  <p className="text-xs font-black text-gray-800">
-                    الكفاءة المستهدفة: {recommendation.skill}
-                  </p>
-                  <p className="text-xs leading-6 font-bold text-gray-700">{recommendation.exercise}</p>
-                  {recommendation.labTitle && (
-                    <button
-                      onClick={() => {
-                        clearSim();
-                        startLab();
-                      }}
-                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-2.5 text-xs font-black text-primary-foreground"
-                    >
-                      <FlaskConical className="h-4 w-4" /> افتح مختبر المعلّم — موقف «{recommendation.labTitle}»
-                    </button>
-                  )}
-                  <div>
-                    <p className="mb-1.5 flex items-center gap-1.5 text-[11px] font-black text-gray-700">
-                      <BookOpen className="h-3.5 w-3.5 text-primary" /> مفاهيم للمراجعة قبل التمرين
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {recommendation.concepts.map((cid) => {
-                        const c = conceptById(cid);
-                        if (!c) return null;
-                        return (
-                          <button
-                            key={cid}
-                            onClick={() => openConceptDeep(cid)}
-                            className="rounded-full border border-primary/30 bg-white px-3 py-1.5 text-xs font-bold text-primary"
-                          >
-                            {c.title}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <p className="text-xs leading-6 font-bold text-gray-700">
-                  أداؤك متوازن في كل كفاءات هذا الموقف — افتح موقفًا جديدًا لوسّع أدلتك، فالخريطة تكتمل بالتنوع.
-                </p>
-              )}
-            </div>
-
-            {/* مفاهيم المكتبة المرتبطة */}
-            <div>
-              <p className="mb-2 flex items-center gap-1.5 text-sm font-black">
-                <BookOpen className="h-4 w-4 text-primary" /> مفاهيم من المكتبة تخدم هذا الموقف
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {scenario.conceptIds.map((cid) => {
-                  const c = conceptById(cid);
-                  if (!c) return null;
-                  return (
-                    <button
-                      key={cid}
-                      onClick={() => openConceptDeep(cid)}
-                      className="rounded-full border border-primary/30 bg-white px-3 py-1.5 text-xs font-bold text-primary"
-                    >
-                      {c.title}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="flex gap-2.5">
-              {sessionActive && !sessionDone ? (
-                <>
-                  <button
-                    onClick={advanceSession}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 text-sm font-black text-primary-foreground"
-                  >
-                    <Play className="h-4.5 w-4.5" /> الموقف التالي في الجلسة ({ad(sessionIdx + 2)} من {ad(SIM_SESSION_SIZE)})
-                  </button>
-                  <button
-                    onClick={endSession}
-                    className="flex items-center justify-center gap-2 rounded-2xl border-2 border-primary/40 bg-white px-4 py-3 text-sm font-black text-primary"
-                  >
-                    إنهاء الجلسة
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={() => (sessionDone ? endSession() : startScenario(scenario))}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-primary/40 bg-white py-3 text-sm font-black text-primary"
-                  >
-                    <RotateCcw className="h-4.5 w-4.5" /> {sessionDone ? "إنهاء الجلسة الموسعة" : "أعد المحاولة"}
-                  </button>
-                  <button
-                    onClick={() => setScenario(null)}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 text-sm font-black text-primary-foreground"
-                  >
-                    <Users className="h-4.5 w-4.5" /> موقف آخر
-                  </button>
-                </>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </div>
-    </motion.div>
+          {scenario.conceptIds.length > 0 && (
+            <section>
+              <SectionHeader title="مفاهيم مرتبطة بالموقف" />
+              {conceptChips(scenario.conceptIds)}
+            </section>
+          )}
+        </motion.div>
+      )}
+    </ScreenShell>
   );
 }

@@ -178,7 +178,7 @@ export default function ExamSimView() {
       >
         <div className="mx-auto max-w-lg px-4 pb-16 pt-5">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="flex items-center gap-2 text-xl font-black text-primary">
+            <h2 className="flex items-center gap-2 text-xl font-semibold text-primary">
               <GraduationCap className="h-6 w-6" /> محاكي الرخصة والمسابقات
             </h2>
             <button
@@ -200,7 +200,7 @@ export default function ExamSimView() {
                 key={b.id}
                 whileTap={{ scale: 0.985 }}
                 onClick={() => startExam(b)}
-                className="card-soft flex w-full items-start gap-3.5 rounded-3xl border border-border bg-white p-4 text-right shadow-soft"
+                className="card-soft flex w-full items-start gap-3.5 rounded-2xl border border-border bg-card p-4 text-right"
               >
                 <span
                   className="flex h-13 w-13 shrink-0 flex-col items-center justify-center rounded-2xl text-white"
@@ -209,8 +209,8 @@ export default function ExamSimView() {
                   <Award className="h-6 w-6" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-base font-black text-foreground">{b.name}</span>
-                  <span className="mt-1 block text-[11px] font-bold leading-5 text-muted-foreground">
+                  <span className="block text-base font-semibold text-foreground">{b.name}</span>
+                  <span className="mt-1 block text-xs font-bold leading-5 text-muted-foreground">
                     {b.desc}
                   </span>
                   <span className="mt-2 flex flex-wrap items-center gap-1.5">
@@ -226,7 +226,7 @@ export default function ExamSimView() {
           {/* سجل المحاولات */}
           <div className="mt-6">
             <div className="mb-2 flex items-center justify-between">
-              <p className="flex items-center gap-1.5 text-sm font-black text-primary">
+              <p className="flex items-center gap-1.5 text-sm font-semibold text-primary">
                 <History className="h-4 w-4" /> سجل محاولاتك
               </p>
               {runs.length > 0 && (
@@ -236,14 +236,14 @@ export default function ExamSimView() {
                     setRuns([]);
                   }}
                   aria-label="تفريغ السجل"
-                  className="flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-bold text-muted-foreground transition-colors hover:bg-muted"
+                  className="flex items-center gap-1 rounded-full px-2 py-1 text-xs font-bold text-muted-foreground transition-colors hover:bg-muted"
                 >
                   <Trash2 className="h-3.5 w-3.5" /> تفريغ
                 </button>
               )}
             </div>
             {runs.length === 0 ? (
-              <p className="rounded-2xl bg-muted/60 px-4 py-3 text-[11px] font-bold leading-5 text-muted-foreground">
+              <p className="rounded-2xl bg-muted/60 px-4 py-3 text-xs font-bold leading-5 text-muted-foreground">
                 لم تخوض محاكاة بعد — أول محاولة ستُحفظ هنا بدرجتها وتحليل أقسامها لترى تقدمك محاكاة بعد
                 محاكاة.
               </p>
@@ -252,24 +252,24 @@ export default function ExamSimView() {
                 {runs.slice(0, 6).map((r) => (
                   <div
                     key={r.id}
-                    className="flex items-center gap-3 rounded-2xl border border-border bg-white p-3"
+                    className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3"
                   >
                     <span
-                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-[11px] font-black text-white ${
-                        r.passed ? "bg-primary" : "bg-red-500"
+                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-semibold text-white ${
+                        r.passed ? "bg-primary" : "bg-destructive"
                       }`}
                     >
                       {ad(r.scorePct)}٪
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-xs font-black">{r.bpName}</span>
-                      <span className="mt-0.5 block text-[10px] font-bold text-muted-foreground">
+                      <span className="block truncate text-xs font-semibold">{r.bpName}</span>
+                      <span className="mt-0.5 block text-xs font-bold text-muted-foreground">
                         {arCount(r.correctCount, QUESTION_OBJ_FORMS)} — {arDate(r.ts)}
                       </span>
                     </span>
                     <span
-                      className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-black ${
-                        r.passed ? "bg-accent text-primary" : "bg-red-50 text-red-600"
+                      className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${
+                        r.passed ? "bg-accent text-primary" : "bg-danger-soft text-destructive"
                       }`}
                     >
                       {r.passed ? "ناجح" : "تحت المحك"}
@@ -302,10 +302,10 @@ export default function ExamSimView() {
           </button>
 
           <div
-            className="mt-4 rounded-3xl p-5 text-white"
+            className="mt-4 rounded-2xl p-5 text-white"
             style={{ background: `linear-gradient(135deg, ${bp.color}, #0A5A62)` }}
           >
-            <h2 className="text-xl font-black">{bp.name}</h2>
+            <h2 className="text-xl font-semibold">{bp.name}</h2>
             <p className="mt-1.5 text-xs leading-6 text-white/90">{bp.desc}</p>
           </div>
 
@@ -315,8 +315,8 @@ export default function ExamSimView() {
             <BriefStat icon={Award} label="حد النجاح" value={`${ad(bp.passPct)}٪`} />
           </div>
 
-          <div className="mt-4 card-soft rounded-3xl border border-border bg-white p-4">
-            <p className="text-sm font-black text-primary">أقسام الاختبار</p>
+          <div className="mt-4 card-soft rounded-2xl border border-border bg-card p-4">
+            <p className="text-sm font-semibold text-primary">أقسام الاختبار</p>
             <div className="mt-2.5 space-y-2">
               {bp.sections.map((s) => (
                 <div key={s.courseId} className="flex items-center gap-2.5">
@@ -325,7 +325,7 @@ export default function ExamSimView() {
                     style={{ background: COURSE_COLOR[s.courseId] ?? "#0E7C86" }}
                   />
                   <span className="flex-1 text-xs font-bold">{COURSE_SHORT[s.courseId] ?? s.courseId}</span>
-                  <span className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-black text-muted-foreground">
+                  <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-muted-foreground">
                     {arCount(s.quota, QUESTION_OBJ_FORMS)}
                   </span>
                 </div>
@@ -333,11 +333,11 @@ export default function ExamSimView() {
             </div>
           </div>
 
-          <div className="mt-4 rounded-3xl border border-amber-200 bg-amber-50 p-4">
-            <p className="flex items-center gap-1.5 text-xs font-black text-amber-900">
+          <div className="mt-4 rounded-2xl border border-gem/30 bg-gem-soft p-4">
+            <p className="flex items-center gap-1.5 text-xs font-semibold text-gem">
               <CircleAlert className="h-4 w-4" /> قواعد المحاكاة
             </p>
-            <ul className="mt-2 space-y-1.5 text-[11px] font-bold leading-5 text-amber-900/85">
+            <ul className="mt-2 space-y-1.5 text-xs font-bold leading-5 text-gem/85">
               <li>• لا يظهر التوجيه ولا الصواب أثناء الحل — كالامتحان الحقيقي تمامًا.</li>
               <li>• يمكنك التنقل بين الأسئلة وتعليم ما شككت فيه بعلامة المراجعة.</li>
               <li>• يُسلَّم الاختبار تلقائيًا عند انتهاء الوقت، فلا تتأخر في العودة للتسليم.</li>
@@ -347,7 +347,7 @@ export default function ExamSimView() {
 
           <Button
             onClick={beginRun}
-            className="mt-5 h-14 w-full rounded-2xl bg-primary text-base font-black"
+            className="mt-5 h-14 w-full rounded-2xl bg-primary text-base font-semibold"
           >
             ابدأ المحاكاة الآن
           </Button>
@@ -369,8 +369,8 @@ export default function ExamSimView() {
         <div className="sticky top-0 z-10 border-b border-border bg-white/95 px-4 pb-2.5 pt-3 backdrop-blur">
           <div className="mx-auto flex max-w-lg items-center gap-2.5">
             <span
-              className={`flex h-11 items-center gap-1.5 rounded-2xl px-3 text-sm font-black tabular-nums ${
-                lowTime ? "bg-red-50 text-red-600" : "bg-muted text-foreground"
+              className={`flex h-11 items-center gap-1.5 rounded-2xl px-3 text-sm font-semibold tabular-nums ${
+                lowTime ? "bg-danger-soft text-destructive" : "bg-muted text-foreground"
               }`}
             >
               <Timer className="h-4 w-4" /> {fmtTime(remaining)}
@@ -382,7 +382,7 @@ export default function ExamSimView() {
                   style={{ width: `${((idx + 1) / items.length) * 100}%` }}
                 />
               </div>
-              <p className="mt-1 text-[10px] font-bold text-muted-foreground">
+              <p className="mt-1 text-xs font-bold text-muted-foreground">
                 السؤال {ad(idx + 1)} من {ad(items.length)} — أجبت عن {ad(answeredCount)}
               </p>
             </div>
@@ -401,20 +401,20 @@ export default function ExamSimView() {
             <motion.div key={current.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
               <div className="mb-2 flex items-center gap-2">
                 <span
-                  className="rounded-full px-2.5 py-1 text-[10px] font-black text-white"
+                  className="rounded-full px-2.5 py-1 text-xs font-semibold text-white"
                   style={{ background: COURSE_COLOR[items[idx].courseId] ?? "#0E7C86" }}
                 >
                   {COURSE_SHORT[items[idx].courseId] ?? ""}
                 </span>
-                <span className="rounded-full bg-muted px-2.5 py-1 text-[10px] font-bold text-muted-foreground">
+                <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-bold text-muted-foreground">
                   {current.difficulty}
                 </span>
                 <button
                   onClick={() => setFlagged((f) => ({ ...f, [current.id]: !f[current.id] }))}
-                  className={`ml-auto flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-black transition-colors ${
+                  className={`ml-auto flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
                     flagged[current.id]
-                      ? "bg-amber-400 text-amber-950"
-                      : "border border-border bg-white text-muted-foreground"
+                      ? "bg-amber-400 text-gem"
+                      : "border border-border bg-card text-muted-foreground"
                   }`}
                 >
                   <Flag className="h-3.5 w-3.5" fill={flagged[current.id] ? "currentColor" : "none"} />
@@ -422,8 +422,8 @@ export default function ExamSimView() {
                 </button>
               </div>
 
-              <div className="rounded-3xl border border-border bg-white p-4 shadow-soft">
-                <p className="text-[15px] font-black leading-8">{current.question}</p>
+              <div className="rounded-2xl border border-border bg-card p-4">
+                <p className="text-[15px] font-semibold leading-8">{current.question}</p>
                 <div className="mt-4 space-y-2.5">
                   {current.options.map((o, i) => {
                     const selected = answers[current.id] === o.text;
@@ -435,12 +435,12 @@ export default function ExamSimView() {
                         className={`flex w-full items-center gap-3 rounded-2xl border p-3.5 text-right transition-all ${
                           selected
                             ? "border-primary bg-accent ring-1 ring-primary"
-                            : "border-border bg-white hover:bg-muted/40"
+                            : "border-border bg-card hover:bg-muted/40"
                         }`}
                       >
                         {showLetter && (
                           <span
-                            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-black ${
+                            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-semibold ${
                               selected ? "bg-primary text-white" : "bg-muted text-muted-foreground"
                             }`}
                           >
@@ -464,21 +464,21 @@ export default function ExamSimView() {
             <button
               onClick={() => setIdx((i) => Math.max(0, i - 1))}
               disabled={idx === 0}
-              className="flex h-12 flex-1 items-center justify-center gap-1 rounded-2xl border border-border bg-white text-sm font-black disabled:opacity-40"
+              className="flex h-12 flex-1 items-center justify-center gap-1 rounded-2xl border border-border bg-card text-sm font-semibold disabled:opacity-40"
             >
               <ChevronRight className="h-5 w-5" /> السابق
             </button>
             {idx === items.length - 1 ? (
               <Button
                 onClick={() => setSubmitOpen(true)}
-                className="h-12 flex-1 rounded-2xl bg-amber-400 text-sm font-black text-amber-950 hover:bg-amber-300"
+                className="h-12 flex-1 rounded-2xl bg-amber-400 text-sm font-semibold text-gem hover:bg-amber-300"
               >
                 سلّم الاختبار
               </Button>
             ) : (
               <Button
                 onClick={() => setIdx((i) => Math.min(items.length - 1, i + 1))}
-                className="h-12 flex-1 rounded-2xl bg-primary text-sm font-black"
+                className="h-12 flex-1 rounded-2xl bg-primary text-sm font-semibold"
               >
                 التالي <ChevronLeft className="mr-1 h-5 w-5" />
               </Button>
@@ -502,10 +502,10 @@ export default function ExamSimView() {
                 exit={{ y: 120 }}
                 transition={{ type: "spring", damping: 26, stiffness: 300 }}
                 onClick={(e) => e.stopPropagation()}
-                className="mx-auto w-full max-w-lg rounded-t-3xl bg-white p-5 pb-8"
+                className="mx-auto w-full max-w-lg rounded-t-3xl bg-card p-5 pb-8"
               >
                 <div className="mb-3 flex items-center justify-between">
-                  <p className="text-sm font-black">خريطة الأسئلة</p>
+                  <p className="text-sm font-semibold">خريطة الأسئلة</p>
                   <button
                     onClick={() => setPaletteOpen(false)}
                     aria-label="إغلاق الخريطة"
@@ -526,7 +526,7 @@ export default function ExamSimView() {
                           setIdx(i);
                           setPaletteOpen(false);
                         }}
-                        className={`relative flex h-10 items-center justify-center rounded-xl text-xs font-black transition-colors ${
+                        className={`relative flex h-10 items-center justify-center rounded-xl text-xs font-semibold transition-colors ${
                           isAns ? "bg-primary text-white" : "bg-muted text-muted-foreground"
                         } ${i === idx ? "ring-2 ring-amber-500" : ""}`}
                       >
@@ -538,7 +538,7 @@ export default function ExamSimView() {
                     );
                   })}
                 </div>
-                <div className="mt-4 flex flex-wrap items-center gap-3 text-[10px] font-bold text-muted-foreground">
+                <div className="mt-4 flex flex-wrap items-center gap-3 text-xs font-bold text-muted-foreground">
                   <span className="flex items-center gap-1.5">
                     <span className="h-3 w-3 rounded bg-primary" /> مُجاب
                   </span>
@@ -566,10 +566,10 @@ export default function ExamSimView() {
               <motion.div
                 initial={{ scale: 0.9, y: 16 }}
                 animate={{ scale: 1, y: 0 }}
-                className="w-full max-w-sm rounded-3xl bg-white p-5 text-center"
+                className="w-full max-w-sm rounded-2xl bg-card p-5 text-center"
               >
                 <CircleAlert className="mx-auto h-10 w-10 text-amber-500" />
-                <p className="mt-2 text-base font-black">تسليم الاختبار؟</p>
+                <p className="mt-2 text-base font-semibold">تسليم الاختبار؟</p>
                 <p className="mt-1 text-xs font-bold leading-6 text-muted-foreground">
                   أجبت عن {ad(answeredCount)} من {ad(items.length)}
                   {items.length - answeredCount > 0
@@ -579,13 +579,13 @@ export default function ExamSimView() {
                 <div className="mt-4 flex gap-2">
                   <button
                     onClick={() => setSubmitOpen(false)}
-                    className="h-12 flex-1 rounded-2xl border border-border text-sm font-black"
+                    className="h-12 flex-1 rounded-2xl border border-border text-sm font-semibold"
                   >
                     متابعة الحل
                   </button>
                   <Button
                     onClick={submit}
-                    className="h-12 flex-1 rounded-2xl bg-amber-400 text-sm font-black text-amber-950 hover:bg-amber-300"
+                    className="h-12 flex-1 rounded-2xl bg-amber-400 text-sm font-semibold text-gem hover:bg-amber-300"
                   >
                     سلّم الآن
                   </Button>
@@ -609,7 +609,7 @@ export default function ExamSimView() {
       >
         <div className="mx-auto max-w-lg px-4 pb-16 pt-5">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-black text-primary">نتيجة المحاكاة</p>
+            <p className="text-sm font-semibold text-primary">نتيجة المحاكاة</p>
             <button
               onClick={close}
               aria-label="إنهاء"
@@ -621,24 +621,24 @@ export default function ExamSimView() {
 
           {/* الدرجة والمحك */}
           <div
-            className={`mt-4 rounded-3xl p-6 text-center text-white ${
+            className={`mt-4 rounded-2xl p-6 text-center text-white ${
               result.passed ? "bg-gradient-to-bl from-[#0B6870] to-[#0E7C86]" : "bg-gradient-to-bl from-[#7F1D1D] to-[#B91C1C]"
             }`}
           >
             <p className="text-xs font-bold text-white/85">{result.bpName}</p>
-            <p className="mt-2 text-6xl font-black tabular-nums">{ad(result.scorePct)}٪</p>
-            <p className="mt-2 text-sm font-black">
+            <p className="mt-2 text-6xl font-semibold tabular-nums">{ad(result.scorePct)}٪</p>
+            <p className="mt-2 text-sm font-semibold">
               {result.passed ? "ناجح — جاوزت المحك المطلوب" : "تحت المحك — المراجعة سترفعك في المرة القادمة"}
             </p>
-            <p className="mt-1 text-[11px] font-bold text-white/80">
+            <p className="mt-1 text-xs font-bold text-white/80">
               {arCount(result.correctCount, QUESTION_OBJ_FORMS)} من {ad(result.total)} — حد النجاح{" "}
               {ad(bp.passPct)} بالمئة
             </p>
           </div>
 
           {/* تحليل الأقسام */}
-          <div className="mt-4 card-soft rounded-3xl border border-border bg-white p-4">
-            <p className="text-sm font-black text-primary">تحليل الأقسام</p>
+          <div className="mt-4 card-soft rounded-2xl border border-border bg-card p-4">
+            <p className="text-sm font-semibold text-primary">تحليل الأقسام</p>
             <div className="mt-3 space-y-3">
               {result.sections.map((s) => {
                 const pct = s.total ? Math.round((s.correct / s.total) * 100) : 0;
@@ -668,7 +668,7 @@ export default function ExamSimView() {
           {/* الأخطاء مع الأسباب */}
           {result.wrongQids.length > 0 && (
             <div className="mt-4">
-              <p className="mb-2 text-sm font-black text-primary">
+              <p className="mb-2 text-sm font-semibold text-primary">
                 أخطاؤك ({arCount(result.wrongQids.length, QUESTION_OBJ_FORMS)})
               </p>
               <div className="space-y-2.5">
@@ -677,18 +677,18 @@ export default function ExamSimView() {
                   if (!q) return null;
                   const chosen = answers[qid];
                   return (
-                    <div key={qid} className="card-soft rounded-3xl border border-border bg-white p-4">
-                      <p className="text-[13px] font-black leading-7">{q.question}</p>
+                    <div key={qid} className="card-soft rounded-2xl border border-border bg-card p-4">
+                      <p className="text-[13px] font-semibold leading-7">{q.question}</p>
                       {chosen && (
-                        <p className="mt-2 rounded-xl bg-red-50 px-3 py-2 text-[11px] font-bold text-red-700">
+                        <p className="mt-2 rounded-xl bg-danger-soft px-3 py-2 text-xs font-bold text-destructive">
                           إجابتك: {chosen}
                         </p>
                       )}
-                      <p className="mt-1.5 rounded-xl bg-accent px-3 py-2 text-[11px] font-black text-primary">
+                      <p className="mt-1.5 rounded-xl bg-accent px-3 py-2 text-xs font-semibold text-primary">
                         الصواب: {q.correct}
                       </p>
-                      <p className="mt-2 text-[11px] font-bold leading-6 text-muted-foreground">
-                        <span className="font-black text-primary/80">التعليل: </span>
+                      <p className="mt-2 text-xs font-bold leading-6 text-muted-foreground">
+                        <span className="font-semibold text-primary/80">التعليل: </span>
                         {q.reason}
                       </p>
                     </div>
@@ -709,25 +709,25 @@ export default function ExamSimView() {
                     qids: result.wrongQids,
                   });
                 }}
-                className="h-13 w-full rounded-2xl bg-primary text-sm font-black"
+                className="h-13 w-full rounded-2xl bg-primary text-sm font-semibold"
               >
                 <Dumbbell className="ml-1.5 h-4.5 w-4.5" /> تدرّب الآن على أخطائك
               </Button>
             )}
             <button
               onClick={beginRun}
-              className="flex h-13 w-full items-center justify-center gap-2 rounded-2xl border border-border bg-white text-sm font-black"
+              className="flex h-13 w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card text-sm font-semibold"
             >
               <RotateCcw className="h-4.5 w-4.5" /> محاكاة جديدة على البلاتنة نفسها
             </button>
             <button
               onClick={() => setPhase("home")}
-              className="h-13 w-full rounded-2xl bg-muted text-sm font-black text-foreground"
+              className="h-13 w-full rounded-2xl bg-muted text-sm font-semibold text-foreground"
             >
               عودة إلى البلاتنات
             </button>
           </div>
-          <p className="mt-3 text-center text-[10px] font-bold text-muted-foreground">
+          <p className="mt-3 text-center text-xs font-bold text-muted-foreground">
             حُفظت هذه المحاولة في سجل محاولاتك — قارن درجاتك بين المحاولات لترى أثر المراجعة
           </p>
         </div>
@@ -740,7 +740,7 @@ export default function ExamSimView() {
 
 function Chip({ children }: { children: React.ReactNode }) {
   return (
-    <span className="rounded-full bg-muted px-2.5 py-1 text-[10px] font-black text-muted-foreground">
+    <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold text-muted-foreground">
       {children}
     </span>
   );
@@ -756,10 +756,10 @@ function BriefStat({
   value: string;
 }) {
   return (
-    <div className="card-soft flex flex-col items-center gap-1 rounded-2xl border border-border bg-white py-3.5">
+    <div className="card-soft flex flex-col items-center gap-1 rounded-2xl border border-border bg-card py-3.5">
       <Icon className="h-5 w-5 text-primary" />
-      <span className="text-sm font-black">{value}</span>
-      <span className="text-[10px] font-bold text-muted-foreground">{label}</span>
+      <span className="text-sm font-semibold">{value}</span>
+      <span className="text-xs font-bold text-muted-foreground">{label}</span>
     </div>
   );
 }
