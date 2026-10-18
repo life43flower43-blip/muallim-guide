@@ -325,34 +325,7 @@ export default function AppShell() {
       <AnimatePresence>{ui.examsimOpen && <ExamSimView key="examsim" />}</AnimatePresence>
       <AnimatePresence>{ui.placementOpen && <PlacementView key="placement" />}</AnimatePresence>
       <AnimatePresence>{ui.matchOpen && <MatchGameView key="match" />}</AnimatePresence>
-      <AnimatePresence>
-        {ui.flashOpen && (
-          <motion.div
-            key="flash"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 24 }}
-            className="fixed inset-0 z-50 overflow-y-auto bg-background"
-          >
-            <div className="mx-auto max-w-lg pb-10 pt-5">
-              <div className="flex items-center justify-between px-4">
-                <p className="flex items-center gap-2 font-display text-base font-semibold text-primary">
-                  <Layers className="h-5 w-5" /> بطاقات المفاهيم
-                </p>
-                <button
-                  type="button"
-                  onClick={ui.clearFlash}
-                  aria-label="إغلاق البطاقات"
-                  className="flex h-11 w-11 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-accent"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-              <FlashcardsView />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {ui.flashOpen && <FlashcardsView />}
       <AnimatePresence>{ui.aiOpen && <AiAssistantView key="ai" />}</AnimatePresence>
     </div>
   );

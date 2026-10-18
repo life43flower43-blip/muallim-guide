@@ -6,8 +6,7 @@
 // قواعد صارمة: صفر أرقام لاتينية ولا إيموجي، والتنصيص بعلامات «».
 
 import { useMemo } from "react";
-import { motion } from "framer-motion";
-import { Sunrise, Share2, ClipboardCheck, MessageSquareQuote } from "lucide-react";
+import { Share2, MessageSquareQuote, Check } from "lucide-react";
 import {
   FIRST_DAY_SECTIONS,
   firstDayReadinessWord,
@@ -16,6 +15,7 @@ import {
 import { useApp } from "@/lib/store";
 import { shareText } from "@/lib/share";
 import { toast } from "@/hooks/use-toast";
+import { Callout, Card, Chip, ProgressBar, SecondaryButton } from "./ui-kit";
 
 export default function FirstDayList() {
   const firstdayChecked = useApp((s) => s.firstdayChecked);
@@ -33,110 +33,66 @@ export default function FirstDayList() {
   };
 
   return (
-    <div className="space-y-3">
-      <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-l from-amber-500/10 to-transparent p-4">
-        <p className="flex items-center gap-2 text-sm font-semibold text-gem">
-          <Sunrise className="h-4 w-4" /> يومك الأول في المدرسة
+    <div className="space-y-5">
+      <div>
+        <p className="text-[15px] leading-7 text-secondary-foreground">
+          أول دخول للمدرسة يقلق كل معلم متدرب. هذه القائمة تحوّل القلق إلى خطوات: علّم كل بند تنجزه.
         </p>
-        <p className="mt-1 text-xs font-bold leading-6 text-muted-foreground">
-          أول دخول للمدرسة يقلق كل معلم متدرب — وهذه القائمة تحوّل التوتر إلى خطوات: شطّط كل بند
-          تنجزه وستدخل البوابة وأنت مطمئن.
-        </p>
-        <div className="mt-2.5 flex items-center gap-2">
-          <div className="progress-track h-2.5 flex-1">
-            <div
-              className="progress-fill h-full"
-              style={{ width: `${total > 0 ? (progress / total) * 100 : 0}%` }}
-            />
-          </div>
-          <span className="rounded-full bg-gem-soft px-3 py-1 text-xs font-semibold text-gem">
-            {firstDayReadinessWord(firstdayChecked)}
-          </span>
+        <div className="mt-3 flex items-center gap-3">
+          <ProgressBar value={total > 0 ? (progress / total) * 100 : 0} className="flex-1" />
+          <span className="shrink-0 text-[13px] text-muted-foreground">{firstDayReadinessWord(firstdayChecked)}</span>
         </div>
       </div>
 
-      {FIRST_DAY_SECTIONS.map((section, si) => {
+      {FIRST_DAY_SECTIONS.map((section) => {
         const doneInSection = section.items.filter((i) => firstdayChecked.includes(i.id)).length;
         const allDone = doneInSection === section.items.length;
         return (
-          <motion.section
-            key={section.id}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: si * 0.04 }}
-            className="rounded-2xl border border-border bg-card p-4"
-          >
-            <div className="flex items-start justify-between gap-2">
+          <Card key={section.id} className="p-5">
+            <div className="mb-3 flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <h3 className="flex items-center gap-1.5 text-sm font-semibold">
-                  <ClipboardCheck
-                    className={`h-4 w-4 shrink-0 ${allDone ? "text-success" : "text-primary"}`}
-                  />
-                  {section.title}
-                </h3>
-                <p className="mt-0.5 text-xs font-bold leading-5 text-muted-foreground">
-                  {section.guide}
-                </p>
+                <h3 className="font-display text-base font-semibold">{section.title}</h3>
+                <p className="mt-0.5 text-[13px] leading-6 text-muted-foreground">{section.guide}</p>
               </div>
-              {allDone && (
-                <span className="shrink-0 rounded-full bg-success-soft px-2.5 py-1 text-xs font-semibold text-success">
-                  اكتمل القسم
-                </span>
-              )}
+              {allDone && <Chip tone="success">اكتمل</Chip>}
             </div>
-
-            <div className="mt-3 space-y-1.5">
+            <ul className="space-y-1">
               {section.items.map((item) => {
                 const on = firstdayChecked.includes(item.id);
                 return (
-                  <button
-                    key={item.id}
-                    onClick={() => toggleFirstday(item.id)}
-                    aria-pressed={on}
-                    className={`flex w-full items-start gap-2.5 rounded-xl border p-2.5 text-right transition ${
-                      on ? "border-success/40 bg-success-soft" : "border-border bg-card"
-                    }`}
-                  >
-                    <span
-                      className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${
-                        on ? "border-success/40 bg-success text-white" : "border-border bg-card"
-                      }`}
+                  <li key={item.id}>
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={on}
+                      onClick={() => toggleFirstday(item.id)}
+                      className="flex min-h-[44px] w-full items-start gap-3 rounded-lg px-1 py-2 text-right hover:bg-muted/60"
                     >
-                      {on && <span className="text-xs font-semibold">✓</span>}
-                    </span>
-                    <span className={`text-xs font-bold leading-6 ${on ? "text-success" : "text-foreground"}`}>
-                      {item.text}
-                    </span>
-                  </button>
+                      <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 ${on ? "border-primary bg-primary text-primary-foreground" : "border-input"}`}>
+                        {on && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
+                      </span>
+                      <span className={`text-[15px] leading-6 ${on ? "text-muted-foreground line-through" : ""}`}>{item.text}</span>
+                    </button>
+                  </li>
                 );
               })}
-            </div>
-
+            </ul>
             {section.scripts && (
-              <div className="mt-3 rounded-xl border border-sky-200 bg-sky-50 p-3">
-                <p className="flex items-center gap-1.5 text-xs font-semibold text-sky-900">
-                  <MessageSquareQuote className="h-3.5 w-3.5" /> جمل جاهزة احفظها كما هي
-                </p>
-                <div className="mt-2 space-y-1.5">
-                  {section.scripts.map((s, i) => (
-                    <p key={i} className="rounded-lg border border-sky-100 bg-card p-2.5 text-xs font-bold leading-6 text-sky-950">
-                      «{s}»
-                    </p>
+              <Callout tone="info" icon={MessageSquareQuote} title="جمل جاهزة تقولها كما هي" className="mt-4">
+                <ul className="space-y-2">
+                  {section.scripts.map((x, i) => (
+                    <li key={i}>«{x}»</li>
                   ))}
-                </div>
-              </div>
+                </ul>
+              </Callout>
             )}
-          </motion.section>
+          </Card>
         );
       })}
 
-      <button
-        onClick={shareList}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl border border-primary/30 bg-accent py-3.5 text-sm font-semibold text-primary"
-      >
-        <Share2 className="h-4.5 w-4.5" />
-        انسخ قائمتي أو شاركها
-      </button>
+      <SecondaryButton onClick={shareList} className="w-full">
+        <Share2 className="h-4 w-4" /> انسخ قائمتي أو شاركها
+      </SecondaryButton>
     </div>
   );
 }

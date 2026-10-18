@@ -28,7 +28,7 @@ import { orderUnseenFirst } from "@/lib/srs";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { ad, arCount, QUESTION_OBJ_FORMS } from "@/lib/arabic";
-import { Button } from "@/components/ui/button";
+import { Card, Chip, Divided, ListRow, OptionButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, SkillBar } from "./ui-kit";
 import { NewBadge } from "./shared";
 
 export default function PlacementView() {
@@ -115,225 +115,107 @@ export default function PlacementView() {
     };
 
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 24 }}
-        className="fixed inset-0 z-50 overflow-y-auto bg-background"
-      >
-        <div className="mx-auto max-w-lg px-4 pb-16 pt-5">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-primary">نتيجة تحديد المستوى</p>
-            <button
-              onClick={close}
-              aria-label="إنهاء"
-              className="rounded-full bg-muted p-2.5 text-muted-foreground"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-
-          {/* بطاقة المستوى */}
-          <div
-            className="mt-4 rounded-2xl p-6 text-center text-white"
-            style={{ background: `linear-gradient(135deg, ${level.color}, #0A5A62)` }}
-          >
-            <Compass className="mx-auto h-9 w-9 opacity-90" />
-            <p className="mt-2 text-2xl font-semibold">{level.title}</p>
-            <p className="mt-2 text-xs font-bold leading-6 text-white/90">{level.desc}</p>
-            <p className="mt-3 text-xs font-semibold text-white/80">
+      <ScreenShell title="نتيجة تحديد المستوى" onClose={close}>
+        <div className="space-y-5">
+          <Card className="p-6 text-center">
+            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-foreground">
+              <Compass className="h-7 w-7" />
+            </span>
+            <p className="mt-3 font-display text-2xl font-bold">{level.title}</p>
+            <p className="mx-auto mt-2 max-w-md text-[15px] leading-7 text-secondary-foreground">{level.desc}</p>
+            <p className="mt-3 text-sm text-muted-foreground">
               أجبت صوابًا عن {arCount(result.correctCount, QUESTION_OBJ_FORMS)} من {ad(result.total)}
             </p>
-          </div>
+          </Card>
 
-          {/* القوة والفجوة */}
-          <div className="mt-4 grid grid-cols-2 gap-2.5">
-            <div className="card-soft rounded-2xl border border-border bg-card p-4">
-              <p className="flex items-center gap-1.5 text-xs font-semibold text-primary">
-                <TrendingUp className="h-4 w-4" /> نقاط قوتك
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Card className="p-5">
+              <p className="mb-3 flex items-center gap-2 text-sm font-semibold">
+                <TrendingUp className="h-4 w-4 text-success" /> نقاط قوتك
               </p>
-              <div className="mt-2 space-y-1.5">
-                {result.strong.map((s) => (
-                  <span
-                    key={s.courseId}
-                    className="block rounded-xl bg-accent px-3 py-2 text-xs font-semibold text-primary"
-                  >
-                    {COURSE_SHORT[s.courseId] ?? s.courseId}
-                  </span>
+              <div className="flex flex-wrap gap-2">
+                {result.strong.map((x) => (
+                  <Chip key={x.courseId} tone="success">
+                    {COURSE_SHORT[x.courseId] ?? x.courseId}
+                  </Chip>
                 ))}
               </div>
-            </div>
-            <div className="card-soft rounded-2xl border border-border bg-card p-4">
-              <p className="flex items-center gap-1.5 text-xs font-semibold text-gem">
-                <Target className="h-4 w-4" /> فجواتك
+            </Card>
+            <Card className="p-5">
+              <p className="mb-3 flex items-center gap-2 text-sm font-semibold">
+                <Target className="h-4 w-4 text-gem" /> فجواتك
               </p>
-              <div className="mt-2 space-y-1.5">
-                {result.weak.map((s) => (
-                  <span
-                    key={s.courseId}
-                    className="block rounded-xl bg-gem-soft px-3 py-2 text-xs font-semibold text-gem"
-                  >
-                    {COURSE_SHORT[s.courseId] ?? s.courseId}
-                  </span>
+              <div className="flex flex-wrap gap-2">
+                {result.weak.map((x) => (
+                  <Chip key={x.courseId} tone="warning">
+                    {COURSE_SHORT[x.courseId] ?? x.courseId}
+                  </Chip>
                 ))}
               </div>
-            </div>
+            </Card>
           </div>
 
-          {/* التوزيع على المحاور */}
-          <div className="mt-4 card-soft rounded-2xl border border-border bg-card p-4">
-            <p className="text-sm font-semibold text-primary">أداؤك على المحاور</p>
-            <div className="mt-3 space-y-2.5">
-              {result.perCourse.map((r) => {
-                const pct = r.total ? (r.correct / r.total) * 100 : 0;
-                return (
-                  <div key={r.courseId}>
-                    <div className="flex items-center justify-between text-xs font-bold">
-                      <span>{COURSE_SHORT[r.courseId] ?? r.courseId}</span>
-                      <span className="text-muted-foreground">
-                        {ad(r.correct)} / {ad(r.total)}
-                      </span>
-                    </div>
-                    <div className="progress-track mt-1 h-2">
-                      <div
-                        className="progress-fill h-full"
-                        style={{ width: `${pct}%`, background: COURSE_COLOR[r.courseId] ?? "#0E7C86" }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
+          <Card className="p-5">
+            <SectionHeader title="أداؤك في كل محور" />
+            <div className="space-y-4">
+              {result.perCourse.map((r) => (
+                <SkillBar
+                  key={r.courseId}
+                  label={COURSE_SHORT[r.courseId] ?? r.courseId}
+                  value={r.total ? (r.correct / r.total) * 100 : 0}
+                  status={`${ad(r.correct)} من ${ad(r.total)}`}
+                />
+              ))}
             </div>
-          </div>
+          </Card>
 
-          {/* الخطة المقترحة */}
-          <div className="mt-4 card-soft rounded-2xl border border-border bg-card p-4">
-            <p className="text-sm font-semibold text-primary">خطتك المقترحة الآن</p>
-            <div className="mt-3 space-y-2">
-              <button
+          <section>
+            <SectionHeader title="خطتك المقترحة" sub="أعد الاختبار بعد أسبوع من التدريب لترى تقدمك" />
+            <Divided>
+              <ListRow
+                icon={Dumbbell}
+                title="تدرّب على أضعف محاورك"
+                sub={`جلسة على ${weakest ? COURSE_SHORT[weakest.courseId] : "المحور الأضعف"}، الجديد أولًا`}
                 onClick={trainWeak}
-                className="flex w-full items-center gap-3 rounded-2xl border border-border p-3 text-right transition-colors hover:bg-muted/40"
-              >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white">
-                  <Dumbbell className="h-5 w-5" />
-                </span>
-                <span className="flex-1">
-                  <span className="block text-xs font-semibold">درّب نفسك على أضعف محاورك</span>
-                  <span className="block text-xs font-bold text-muted-foreground">
-                    جلسة تدريب كاملة على {weakest ? COURSE_SHORT[weakest.courseId] : "المحور الأضعف"} — الجديد يأتي أولاً
-                  </span>
-                </span>
-                <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground" />
-              </button>
-              <button
-                onClick={() => startExamsim()}
-                className="flex w-full items-center gap-3 rounded-2xl border border-border p-3 text-right transition-colors hover:bg-muted/40"
-              >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-400 text-gem">
-                  <GraduationCap className="h-5 w-5" />
-                </span>
-                <span className="flex-1">
-                  <span className="block text-xs font-semibold">اختبر جاهزيتك في المحاكي</span>
-                  <span className="block text-xs font-bold text-muted-foreground">
-                    محاكاة موقوتة بأقسام ومحك نجاح — كالاختبار الرسمي
-                  </span>
-                </span>
-                <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground" />
-              </button>
-            </div>
-          </div>
-
-          <p className="mt-3 text-center text-xs font-bold leading-5 text-muted-foreground">
-            تحديد المستوى تشخيص أولي — كرره بعد أسبوع من التدريب لترى إزاحة مستواك ومحاورك
-          </p>
+              />
+              <ListRow icon={GraduationCap} title="اختبر جاهزيتك في المحاكي" sub="اختبار بالوقت والأقسام، كالاختبار الرسمي" onClick={() => startExamsim()} />
+            </Divided>
+          </section>
         </div>
-      </motion.div>
+      </ScreenShell>
     );
   }
 
   // ============ شاشة الأسئلة ============
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 24 }}
-      className="fixed inset-0 z-50 overflow-y-auto bg-background"
+    <ScreenShell
+      title="اختبار تحديد المستوى"
+      sub={`السؤال ${ad(idx + 1)} من ${ad(items.length)}، بلا تصحيح حتى النهاية`}
+      onClose={close}
+      footer={
+        <SecondaryButton onClick={() => finish(answers)} className="w-full">
+          أنهِ واعرض مستواي
+        </SecondaryButton>
+      }
     >
-      <div className="mx-auto max-w-lg px-4 pb-10 pt-5">
-        <div className="flex items-center justify-between">
-          <p className="flex items-center gap-2 text-sm font-semibold text-primary">
-            <Compass className="h-5 w-5" /> اختبار تحديد المستوى
-          </p>
-          <button
-            onClick={close}
-            aria-label="إلغاء الاختبار"
-            className="rounded-full bg-muted p-2.5 text-muted-foreground"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
-        <div className="mt-3">
-          <div className="progress-track h-2">
-            <div className="progress-fill h-full" style={{ width: `${((idx + 1) / items.length) * 100}%` }} />
+      <ProgressBar value={((idx + 1) / items.length) * 100} className="mb-5" />
+      {current && (
+        <motion.div key={current.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+          <h2 className="font-display text-lg font-semibold leading-9">{current.question}</h2>
+          <div className="space-y-3">
+            {current.options.map((o, i) => (
+              <OptionButton
+                key={i}
+                letter={current.options.length > 2 ? OPTION_LETTERS[i] : undefined}
+                state={answers[current.id] === o.text ? "selected" : "idle"}
+                onClick={() => choose(o.text)}
+              >
+                {o.text}
+              </OptionButton>
+            ))}
           </div>
-          <p className="mt-1.5 text-center text-xs font-bold text-muted-foreground">
-            السؤال {ad(idx + 1)} من {ad(items.length)} — سؤالان من كل محور، بلا توجيه حتى النهاية
-          </p>
-        </div>
-
-        {current && (
-          <motion.div key={current.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="mt-4 rounded-2xl border border-border bg-card p-4">
-              <p className="text-[15px] font-semibold leading-8">{current.question}</p>
-              <div className="mt-4 space-y-2.5">
-                {current.options.map((o, i) => {
-                  const selected = answers[current.id] === o.text;
-                  const showLetter = current.options.length > 2;
-                  return (
-                    <button
-                      key={i}
-                      onClick={() => choose(o.text)}
-                      className={`flex w-full items-center gap-3 rounded-2xl border p-3.5 text-right transition-all ${
-                        selected
-                          ? "border-primary bg-accent ring-1 ring-primary"
-                          : "border-border bg-card hover:bg-muted/40"
-                      }`}
-                    >
-                      {showLetter && (
-                        <span
-                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-semibold ${
-                            selected ? "bg-primary text-white" : "bg-muted text-muted-foreground"
-                          }`}
-                        >
-                          {OPTION_LETTERS[i]}
-                        </span>
-                      )}
-                      <span className="flex-1 text-[13px] font-bold leading-6">{o.text}</span>
-                      {selected &&
-                        (current.options.length > 2 ? (
-                          <CircleCheck className="h-5 w-5 shrink-0 text-primary" />
-                        ) : (
-                          <CircleX className="h-5 w-5 shrink-0 text-primary" />
-                        ))}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        <div className="mt-4 flex justify-center">
-          <Button
-            onClick={() => finish(answers)}
-            variant="outline"
-            className="h-11 rounded-2xl px-6 text-xs font-semibold"
-          >
-            إنهاء وأعرض مستواي الآن
-          </Button>
-        </div>
-      </div>
-    </motion.div>
+        </motion.div>
+      )}
+    </ScreenShell>
   );
 }
