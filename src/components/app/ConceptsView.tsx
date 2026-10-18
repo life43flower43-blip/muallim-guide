@@ -40,6 +40,8 @@ import {
   ClipboardCheck,
   Play,
   HelpCircle,
+  HandHeart,
+  Landmark,
 } from "lucide-react";
 import {
   COURSES,
@@ -106,6 +108,8 @@ const COURSE_ICONS: Record<string, React.ElementType> = {
   M4: ClipboardList,
   M5: School,
   G1: Library,
+  SE1: HandHeart,
+  F1: Landmark,
   AI1: Bot,
 };
 function CourseIcon({ id, className }: { id: string; className?: string }) {
@@ -135,6 +139,8 @@ const COURSE_SUBTITLE: Record<string, string> = {
   M4: "القياس وأدوات التقويم والاختبارات",
   M5: "طرق تدريس المواد الدراسية",
   G1: "مفاهيم عامة في التربية والتعليم",
+  SE1: "صعوبات التعلم والإعاقات والموهبة والدمج في الصف العادي",
+  F1: "فلسفة التربية وتاريخها والبحث الإجرائي وأخلاقيات المهنة",
   AI1: "تطوره ودوره في العملية التعليمية وأخلاقياته",
 };
 

@@ -82,6 +82,8 @@ export const COURSE_COLOR: Record<string, string> = {
   G1: "#9F1AB1",
   C1: "#C11574",
   AI1: "#344054",
+  SE1: "#0E7490",
+  F1: "#4E5BA6",
 };
 
 // أسماء مختصرة للمحاور — للشرائح والشارات الصغيرة (بلا أرقام — قرار المستخدم)
@@ -94,6 +96,8 @@ export const COURSE_SHORT: Record<string, string> = {
   G1: "ثقافة تربوية",
   C1: "المهارات",
   AI1: "الذكاء الاصطناعي",
+  SE1: "التربية الخاصة",
+  F1: "أسس التربية",
 };
 
 export const courseById = (id: string) => COURSES.find((c) => c.id === id);
