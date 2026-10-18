@@ -61,6 +61,7 @@ interface AppState {
   goal: LearnerGoal | null; // هدف المتعلم من شاشة البداية
   examDate: string | null; // موعد اختبار التوظيف YYYY-MM-DD
   lastStudy: { courseId: string; chapter: string; ts: number } | null; // آخر فصل درسه — لـ«تابع من حيث توقفت»
+  lastConcept: string | null; // آخر مفهوم فتحه للقراءة — لـ«تابع التعلّم»
   // وضع العرض — فاتح / يتبع النظام / ليلي (ترقية عن dark المنطقي القديم عبر migrate)
   darkMode: "light" | "auto" | "dark";
   fontScale: "normal" | "large" | "bigger"; // حجم خط القراءة — تفضيل عرض كالوضع الليلي
@@ -71,6 +72,7 @@ interface AppState {
   setGoal: (g: LearnerGoal) => void;
   setExamDate: (d: string | null) => void;
   setLastStudy: (courseId: string, chapter: string) => void;
+  setLastConcept: (id: string) => void;
   recordBest: (topicKey: string, percent: number) => void;
   addLocalGems: (n: number) => void;
   spendLocalGems: (n: number) => boolean;
@@ -178,6 +180,7 @@ export const useApp = create<AppState>()(
       goal: null,
       examDate: null,
       lastStudy: null,
+      lastConcept: null,
       darkMode: "light",
       fontScale: "normal",
       haptics: true,
@@ -187,6 +190,7 @@ export const useApp = create<AppState>()(
       setGoal: (g) => set({ goal: g }),
       setExamDate: (d) => set({ examDate: d }),
       setLastStudy: (courseId, chapter) => set({ lastStudy: { courseId, chapter, ts: Date.now() } }),
+      setLastConcept: (id) => set({ lastConcept: id }),
       recordBest: (topicKey, percent) =>
         set((st) =>
           (st.best[topicKey] ?? -1) >= percent ? {} : { best: { ...st.best, [topicKey]: Math.round(percent) } }
@@ -374,6 +378,7 @@ export const useApp = create<AppState>()(
           goal: null,
           examDate: null,
           lastStudy: null,
+          lastConcept: null,
         }),
     }),
     {

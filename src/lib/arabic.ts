@@ -133,6 +133,13 @@ export const CHAPTER_GEN_FORMS: CountForms = {
   many: "فصلًا",
 };
 
+export const MINUTE_FORMS: CountForms = {
+  one: "دقيقة واحدة",
+  two: "دقيقتان",
+  few: "دقائق",
+  many: "دقيقة",
+};
+
 export const EXAMPLE_FORMS: CountForms = {
   one: "مثال واحد",
   two: "مثالان",

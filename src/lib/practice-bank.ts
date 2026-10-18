@@ -133,6 +133,21 @@ export function courseMastery(courseId: string, attempts: Record<string, Attempt
   return out
 }
 
+/** مستوى إتقان مفهوم واحد من محاولات أسئلته */
+export function conceptMastery(conceptId: string, attempts: Record<string, Attempt>): MasteryLevel {
+  return masteryOf(tally(questionsByConcept().get(conceptId) ?? [], attempts))
+}
+
+/** توزيع مفاهيم فصل على مستويات الإتقان */
+export function chapterMastery(courseId: string, chapter: string, attempts: Record<string, Attempt>): Record<MasteryLevel, number> {
+  const out: Record<MasteryLevel, number> = { 0: 0, 1: 0, 2: 0, 3: 0 }
+  for (const c of conceptsOfCourse(courseId)) if (c.chapter === chapter) out[conceptMastery(c.id, attempts)] += 1
+  return out
+}
+
+/** دقائق القراءة التقديرية لنص عربي (قرابة ١٦٠ كلمة في الدقيقة) */
+export const readingMinutes = (text: string) => Math.max(1, Math.round(text.split(/\s+/).length / 160))
+
 /** حالة كل فصل: أسئلته، ما أُجيب منها، والدقة */
 export function chapterStats(courseId: string, chapter: string, attempts: Record<string, Attempt>) {
   const qs = questionsOfChapter(courseId, chapter)

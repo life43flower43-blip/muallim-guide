@@ -272,7 +272,7 @@ export default function AppShell() {
       />
     );
   if (!onboarded) return <Onboarding />;
-  if (ui.quizConfig) return <QuizSession config={ui.quizConfig} />;
+  if (ui.quizConfig) return <QuizSession key={`${ui.quizConfig.label}:${ui.quizConfig.qids.join(",")}`} config={ui.quizConfig} />;
   if (ui.challengesOpen) return <ChallengeSession />;
   if (ui.measureOpen) return <MeasureKit />;
   if (ui.peerOpen) return <PeerChallenge />;

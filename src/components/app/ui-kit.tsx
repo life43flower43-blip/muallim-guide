@@ -7,7 +7,7 @@
 // وأهداف لمس لا تقل عن ٤٤ بكسل. كل الصفحات تُبنى منها كي تبقى متسقة.
 // ============================================================================
 
-import { ArrowRight, ChevronLeft, Flame, Gem, X } from "lucide-react";
+import { ArrowRight, ChevronLeft, EyeOff, Flame, Gem, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ad } from "@/lib/arabic";
 
@@ -340,19 +340,26 @@ export function SkillBar({ label, value, status, tone = "primary" }: { label: st
   );
 }
 
-/** زر خيار في سؤال أو موقف: حرف، نص، وحالة بعد التقييم */
+/** زر خيار في سؤال أو موقف: حرف، نص، وحالة بعد التقييم.
+ *  onToggleStrike يضيف زر «استبعاد» يشطب الخيار (نمط UWorld) */
 export function OptionButton({
   letter,
   children,
   state = "idle",
   onClick,
   disabled,
+  struck = false,
+  onToggleStrike,
+  shortcut,
 }: {
   letter?: string;
   children: React.ReactNode;
   state?: "idle" | "selected" | "correct" | "wrong" | "dim";
   onClick?: () => void;
   disabled?: boolean;
+  struck?: boolean;
+  onToggleStrike?: () => void;
+  shortcut?: string;
 }) {
   const cls = {
     idle: "border-border bg-card hover:border-primary/50 hover:bg-accent/40",
@@ -368,15 +375,77 @@ export function OptionButton({
     wrong: "bg-destructive text-white",
     dim: "bg-muted text-muted-foreground",
   }[state];
+  const isStruck = struck && (state === "idle" || state === "dim");
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className={cn("flex w-full items-start gap-3 rounded-xl border p-4 text-right transition-colors disabled:cursor-default", cls)}
-    >
-      {letter && <span className={cn("flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm font-semibold", letterCls)}>{letter}</span>}
-      <span className="flex-1 text-[15px] leading-7">{children}</span>
-    </button>
+    <div className={cn("group relative flex w-full items-stretch rounded-xl border transition-colors", cls, isStruck && "opacity-50")}>
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={disabled}
+        aria-keyshortcuts={shortcut}
+        className="flex min-w-0 flex-1 items-start gap-3 rounded-xl p-4 text-right disabled:cursor-default"
+      >
+        {letter && <span className={cn("flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm font-semibold", letterCls)}>{letter}</span>}
+        <span className={cn("flex-1 text-[15px] leading-7", isStruck && "line-through decoration-2")}>{children}</span>
+      </button>
+      {onToggleStrike && !disabled && (
+        <button
+          type="button"
+          onClick={onToggleStrike}
+          aria-pressed={struck}
+          aria-label={struck ? "أعد الخيار" : "استبعد الخيار"}
+          title={struck ? "أعد الخيار" : "استبعد الخيار"}
+          className="flex w-11 shrink-0 items-center justify-center rounded-l-xl text-muted-foreground opacity-70 transition-opacity hover:bg-muted hover:text-foreground hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
+        >
+          <EyeOff className="h-4 w-4" />
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ---------- الإتقان: أربعة مستويات بتدرج لون الهوية (نمط Khan Academy) ----------
+export const MASTERY_COLORS = [
+  "var(--muted)",
+  "color-mix(in srgb, var(--primary) 30%, var(--card))",
+  "color-mix(in srgb, var(--primary) 65%, var(--card))",
+  "var(--primary)",
+] as const;
+
+/** شريط مقسّم يبيّن توزيع المفاهيم على مستويات الإتقان */
+export function MasteryBar({ counts, height = 8, className }: { counts: Record<0 | 1 | 2 | 3, number>; height?: number; className?: string }) {
+  const total = counts[0] + counts[1] + counts[2] + counts[3] || 1;
+  return (
+    <div className={cn("flex w-full gap-0.5 overflow-hidden rounded-full", className)} style={{ height }} role="img" aria-label="توزيع الإتقان">
+      {([3, 2, 1, 0] as const).map((lv) =>
+        counts[lv] > 0 ? <span key={lv} className="h-full first:rounded-r-full last:rounded-l-full" style={{ width: `${(counts[lv] / total) * 100}%`, background: MASTERY_COLORS[lv] }} /> : null
+      )}
+    </div>
+  );
+}
+
+/** مفتاح ألوان الإتقان */
+export function MasteryLegend({ labels, counts }: { labels: Record<0 | 1 | 2 | 3, string>; counts?: Record<0 | 1 | 2 | 3, number> }) {
+  return (
+    <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
+      {([3, 2, 1, 0] as const).map((lv) => (
+        <span key={lv} className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-sm" style={{ background: MASTERY_COLORS[lv], outline: lv === 0 ? "1px solid var(--border)" : undefined }} />
+          {labels[lv]}
+          {counts && <span className="font-medium text-foreground">{ad(counts[lv])}</span>}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+/** مربع مستوى الإتقان لعنصر واحد */
+export function MasteryDot({ level, size = 14 }: { level: 0 | 1 | 2 | 3; size?: number }) {
+  return (
+    <span
+      className="inline-block shrink-0 rounded-[4px]"
+      style={{ width: size, height: size, background: MASTERY_COLORS[level], outline: level === 0 ? "1px solid var(--border)" : undefined }}
+      aria-hidden="true"
+    />
   );
 }
