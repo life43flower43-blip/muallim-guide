@@ -11,7 +11,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
-import { BookOpen, CalendarDays, CircleUser, PencilLine, Target, WifiOff, X, Layers, GraduationCap } from "lucide-react";
+import { BookOpen, House, CircleUser, PencilLine, Target, WifiOff, X, Layers, GraduationCap } from "lucide-react";
 import { useApp, useAppHydrated } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { loadQbank } from "@/lib/qbank";
@@ -49,7 +49,7 @@ import { GemBadge, StreakBadge } from "./ui-kit";
 export type Tab = "today" | "learn" | "practice" | "mistakes" | "profile";
 
 const NAV: { id: Tab; label: string; icon: React.ElementType }[] = [
-  { id: "today", label: "اليوم", icon: CalendarDays },
+  { id: "today", label: "الرئيسية", icon: House },
   { id: "learn", label: "التعلّم", icon: BookOpen },
   { id: "practice", label: "التدريب", icon: PencilLine },
   { id: "mistakes", label: "أخطائي", icon: Target },

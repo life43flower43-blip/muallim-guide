@@ -320,7 +320,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-[13px] text-muted-foreground">{dateFmt.format(new Date())}</p>
-          <h1 className="mt-1 font-display text-2xl font-bold lg:text-[28px]">اليوم</h1>
+          <h1 className="mt-1 font-display text-2xl font-bold lg:text-[28px]">الرئيسية</h1>
         </div>
         <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
           <Clock className="h-4 w-4" />
