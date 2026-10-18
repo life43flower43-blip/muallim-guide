@@ -35,7 +35,7 @@ export default function FlashcardsView() {
   const safeIndex = Math.min(index, deck.length - 1);
   const card = deck[safeIndex];
   const course = COURSES.find((c) => c.id === card?.courseId);
-  const color = COURSE_COLOR[card?.courseId] ?? "#0B5563";
+  const color = COURSE_COLOR[card?.courseId] ?? "#0E7C86";
   const isRead = card ? !!conceptReads[card.id] : false;
 
   const go = (dir: 1 | -1) => {
@@ -84,7 +84,7 @@ export default function FlashcardsView() {
               className={`shrink-0 rounded-full px-4 py-2 text-xs font-black transition-colors ${
                 active ? "text-white" : "bg-white text-foreground/70 border border-border"
               }`}
-              style={active ? { background: COURSE_COLOR[c.id] ?? "#0B5563" } : undefined}
+              style={active ? { background: COURSE_COLOR[c.id] ?? "#0E7C86" } : undefined}
             >
               {COURSE_SHORT[c.id] ?? c.name}
             </button>

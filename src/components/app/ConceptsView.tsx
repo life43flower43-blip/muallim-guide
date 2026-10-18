@@ -77,10 +77,10 @@ const COURSE_SUBTITLE: Record<string, string> = {
 // ---------- مجتمع الطلاب: أمثلة يضيفها الطلاب من واقع تخصصاتهم ----------
 const SPECIALTIES = ["هندسة", "طب", "إنسانيات", "تربية", "أخرى"];
 const SPECIALTY_COLORS: Record<string, string> = {
-  "هندسة": "#0E6B7C",
+  "هندسة": "#14919B",
   "طب": "#BE185D",
-  "إنسانيات": "#0E6B7C",
-  "تربية": "#0B5563",
+  "إنسانيات": "#14919B",
+  "تربية": "#0E7C86",
   "أخرى": "#B45309",
 };
 
@@ -274,7 +274,7 @@ function ConceptDetail({
     >
       <div
         className="safe-top relative overflow-hidden px-4 pb-5 pt-3 text-white"
-        style={{ background: `linear-gradient(135deg, ${COURSE_COLOR[course.id] ?? "#0B5563"}, #06343C)` }}
+        style={{ background: `linear-gradient(135deg, ${COURSE_COLOR[course.id] ?? "#0E7C86"}, #0A5A62)` }}
       >
         {/* أشكال زخرفية */}
         <span aria-hidden className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-white/10" />
@@ -544,7 +544,7 @@ export default function ConceptsView() {
             >
               <span
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white"
-                style={{ background: COURSE_COLOR[c.courseId] ?? "#0B5563" }}
+                style={{ background: COURSE_COLOR[c.courseId] ?? "#0E7C86" }}
               >
                 <CourseIcon id={c.courseId} className="h-4.5 w-4.5" />
               </span>
@@ -568,7 +568,7 @@ export default function ConceptsView() {
         >
           <div className="grid gap-3 sm:grid-cols-2">
           {COURSES.map((course) => {
-            const color = COURSE_COLOR[course.id] ?? "#0B5563";
+            const color = COURSE_COLOR[course.id] ?? "#0E7C86";
             const courseConcepts = conceptsOfCourse(course.id);
             const readCount = courseConcepts.filter((cc) => conceptReads[cc.id]).length;
             const pct = courseConcepts.length ? Math.round((readCount / courseConcepts.length) * 100) : 0;
@@ -619,7 +619,7 @@ export default function ConceptsView() {
           <SubHeader
             title={COURSE_SHORT[openCourse.id]}
             hint={COURSE_SUBTITLE[openCourse.id]}
-            accent={COURSE_COLOR[openCourse.id] ?? "#0B5563"}
+            accent={COURSE_COLOR[openCourse.id] ?? "#0E7C86"}
             onBack={() => {
               setOpenCourseId(null);
               setOpenChapter(null);
@@ -630,7 +630,7 @@ export default function ConceptsView() {
               const chConcepts = conceptsOfCourse(openCourse.id).filter((c) => c.chapter === ch);
               const chRead = chConcepts.filter((c) => conceptReads[c.id]).length;
               const chPct = chConcepts.length ? Math.round((chRead / chConcepts.length) * 100) : 0;
-              const color = COURSE_COLOR[openCourse.id] ?? "#0B5563";
+              const color = COURSE_COLOR[openCourse.id] ?? "#0E7C86";
               return (
               <button
                 key={ch}
@@ -690,13 +690,13 @@ export default function ConceptsView() {
           <SubHeader
             title={chapterLabel(openChapter)}
             hint={COURSE_SHORT[openCourse.id]}
-            accent={COURSE_COLOR[openCourse.id] ?? "#0B5563"}
+            accent={COURSE_COLOR[openCourse.id] ?? "#0E7C86"}
             onBack={() => setOpenChapter(null)}
           />
           <div className="grid grid-cols-2 gap-2.5">
             {chapterConcepts.map((c, cIdx) => {
               const isRead = !!conceptReads[c.id];
-              const color = COURSE_COLOR[c.courseId] ?? "#0B5563";
+              const color = COURSE_COLOR[c.courseId] ?? "#0E7C86";
               const cQs = questionsOfConcept(c.id).length;
               return (
                 <button

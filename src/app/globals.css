@@ -43,29 +43,29 @@
 }
 
 :root {
-  /* هوية «تربوي»: أزرق مخضرّ داكن هادئ، رماديات باردة، وبرتقالي للجواهر وحدها */
+  /* هوية «تربوي»: تركوازي هادئ مريح، رماديات مائلة إلى التركواز، وبرتقالي للجواهر وحدها */
   --radius: 0.75rem;
-  --background: #F7F8FA;
-  --foreground: #101828;
+  --background: #F5FAFA;
+  --foreground: #12292D;
   --card: #ffffff;
-  --card-foreground: #101828;
+  --card-foreground: #12292D;
   --popover: #ffffff;
-  --popover-foreground: #101828;
-  --primary: #0B5563;
+  --popover-foreground: #12292D;
+  --primary: #0E7C86;
   --primary-foreground: #ffffff;
-  --secondary: #F2F4F7;
-  --secondary-foreground: #344054;
-  --muted: #F2F4F7;
-  --muted-foreground: #475467;
-  --accent: #E7F2F4;
-  --accent-foreground: #0B5563;
+  --secondary: #EDF5F5;
+  --secondary-foreground: #33494D;
+  --muted: #EAF3F3;
+  --muted-foreground: #4A6165;
+  --accent: #DDF3F3;
+  --accent-foreground: #0B6870;
   --destructive: #B42318;
-  --border: #E4E7EC;
-  --input: #D0D5DD;
-  --ring: #0B5563;
+  --border: #DCEAEA;
+  --input: #C9DDDD;
+  --ring: #0E7C86;
   --success: #067647;
   --warning: #B54708;
-  --teal: #0B5563;
+  --teal: #0E7C86;
   --amber: #B54708;
   --rose: #B42318;
   --violet: #5925DC;
@@ -99,7 +99,7 @@ body {
   height: 4px;
 }
 .nice-scroll::-webkit-scrollbar-thumb {
-  background: rgba(11, 85, 99, 0.25);
+  background: rgba(14, 124, 134, 0.25);
   border-radius: 999px;
 }
 .nice-scroll::-webkit-scrollbar-track {
@@ -127,7 +127,7 @@ body {
 
 /* dotted ambient background for desktop sides */
 .ambient-bg {
-  background-color: #EEF1F4;
+  background-color: #EDF5F5;
   background-image: none;
   background-size: 22px 22px;
 }
@@ -265,23 +265,23 @@ body {
 /* تفعيله بصف .dark على الجذر من مفتاح «حسابي»، وتغير متغيرات الثيم كلها */
 
 .dark {
-  --background: #0C1416;
+  --background: #0B1719;
   --foreground: #E6EDEF;
   --card: #121D20;
   --card-foreground: #E6EDEF;
   --popover: #121D20;
   --popover-foreground: #E6EDEF;
-  --primary: #5FB3C1;
-  --primary-foreground: #06262B;
+  --primary: #4FCFC8;
+  --primary-foreground: #04282A;
   --secondary: #18262A;
   --secondary-foreground: #C9D6DA;
   --muted: #18262A;
   --muted-foreground: #9AABB0;
-  --accent: #12323A;
-  --accent-foreground: #A9DCE4;
+  --accent: #0F3436;
+  --accent-foreground: #A6EBE6;
   --border: #22343A;
   --input: #2C4148;
-  --ring: #5FB3C1;
+  --ring: #4FCFC8;
   --success: #47CD89;
   --warning: #FDB022;
   --destructive: #F97066;

@@ -91,8 +91,8 @@ export default function PlacementView() {
     const it = items[idx];
     if (!it || !answers[it.qid]) return;
     if (Object.keys(answers).length >= items.length) {
-      finish(answers);
-      return;
+      const f = setTimeout(() => finish(answers), 0);
+      return () => clearTimeout(f);
     }
     const t = setTimeout(() => setIdx((i) => Math.min(items.length - 1, i + 1)), 300);
     return () => clearTimeout(t);
@@ -136,7 +136,7 @@ export default function PlacementView() {
           {/* بطاقة المستوى */}
           <div
             className="mt-4 rounded-3xl p-6 text-center text-white"
-            style={{ background: `linear-gradient(135deg, ${level.color}, #06343C)` }}
+            style={{ background: `linear-gradient(135deg, ${level.color}, #0A5A62)` }}
           >
             <Compass className="mx-auto h-9 w-9 opacity-90" />
             <p className="mt-2 text-2xl font-black">{level.title}</p>
@@ -197,7 +197,7 @@ export default function PlacementView() {
                     <div className="progress-track mt-1 h-2">
                       <div
                         className="progress-fill h-full"
-                        style={{ width: `${pct}%`, background: COURSE_COLOR[r.courseId] ?? "#0B5563" }}
+                        style={{ width: `${pct}%`, background: COURSE_COLOR[r.courseId] ?? "#0E7C86" }}
                       />
                     </div>
                   </div>

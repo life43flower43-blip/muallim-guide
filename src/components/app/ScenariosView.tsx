@@ -96,7 +96,7 @@ function RunScreen({
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
-      <div className="safe-top bg-gradient-to-l from-[#7C2D12] to-[#9A3412] px-4 pb-3 pt-3 text-white">
+      <div className="safe-top bg-gradient-to-l from-[#0A5A62] to-[#0E7C86] px-4 pb-3 pt-3 text-white">
         <div className="flex items-center gap-3">
           <button onClick={onExit} className="rounded-full bg-white/20 p-2" aria-label="إغلاق الجولة">
             <X className="h-5 w-5" />
@@ -117,7 +117,7 @@ function RunScreen({
       <div className="no-scrollbar flex-1 overflow-y-auto px-4 py-4">
         <motion.div key={sc.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.25 }}>
           <div className="card-soft rounded-3xl border border-border bg-white p-5">
-            <span className="rounded-full bg-orange-100 px-3 py-1 text-[10px] font-black text-orange-700">
+            <span className="rounded-full bg-cyan-100 px-3 py-1 text-[10px] font-black text-cyan-700">
               {sc.category}
             </span>
             <h2 className="mt-2 text-base font-black leading-7">{sc.title}</h2>
@@ -298,7 +298,7 @@ export default function ScenariosView() {
       transition={{ type: "spring", damping: 30, stiffness: 300 }}
       className="fixed inset-0 z-50 flex flex-col bg-background"
     >
-      <div className="safe-top bg-gradient-to-l from-[#7C2D12] to-[#9A3412] px-4 pb-5 pt-3 text-white">
+      <div className="safe-top bg-gradient-to-l from-[#0A5A62] to-[#0E7C86] px-4 pb-5 pt-3 text-white">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/20">
@@ -317,14 +317,14 @@ export default function ScenariosView() {
 
       <div className="no-scrollbar flex-1 overflow-y-auto px-4 py-4">
         {/* بطاقة الدعوة */}
-        <div className="card-soft rounded-3xl border border-orange-200 bg-gradient-to-l from-orange-50 to-amber-50 p-5">
-          <p className="text-sm leading-8 text-orange-950">
+        <div className="card-soft rounded-3xl border border-cyan-200 bg-gradient-to-l from-cyan-50 to-cyan-50 p-5">
+          <p className="text-sm leading-8 text-cyan-950">
             هنا تتحول المعرفة إلى مهنة: موقف صفّي واقعي، أربعة قرارات ممكنة — تختار قرارك فترى{" "}
             <b>نتيجته</b> و<b>التفسير التربوي</b> له، وكيف يفكر المعلم المحترف في الموقف نفسه.
           </p>
           <Button
             onClick={() => startRun(buildScenarioRun(Object.keys(scenarioChoices)))}
-            className="mt-4 h-13 w-full rounded-2xl bg-orange-600 py-3.5 text-base font-black text-white hover:bg-orange-500"
+            className="mt-4 h-13 w-full rounded-2xl bg-cyan-600 py-3.5 text-base font-black text-white hover:bg-cyan-500"
           >
             <Target className="ml-2 h-5 w-5" />
             ابدأ جولة القرارات
@@ -351,7 +351,7 @@ export default function ScenariosView() {
                 {grouped.map(({ cat, items }) => (
                   <div key={cat}>
                     <p className="mb-1.5 flex items-center gap-1.5 text-[11px] font-extrabold text-muted-foreground">
-                      <span className="h-1.5 w-1.5 rounded-full bg-orange-500" /> {cat}
+                      <span className="h-1.5 w-1.5 rounded-full bg-cyan-500" /> {cat}
                     </p>
                     {items.map((s) => {
                       const rec = scenarioChoices[s.id];

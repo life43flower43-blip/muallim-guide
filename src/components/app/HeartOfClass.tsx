@@ -57,7 +57,7 @@ export default function HeartOfClass() {
       className="fixed inset-0 z-50 flex flex-col bg-background"
     >
       {/* رأس الطبقة */}
-      <div className="safe-top bg-gradient-to-bl from-[#06343C] via-[#0A4652] to-[#0B5563] px-4 pb-4 pt-3 text-white">
+      <div className="safe-top bg-gradient-to-bl from-[#0A5A62] via-[#0B6870] to-[#0E7C86] px-4 pb-4 pt-3 text-white">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
             <p className="flex items-center gap-1.5 text-[11px] font-bold text-white/85">
@@ -257,7 +257,7 @@ export default function HeartOfClass() {
                     transition={{ duration: 0.25 }}
                     className="w-full rounded-3xl border border-amber-200 bg-gradient-to-b from-amber-50 to-white p-6 text-center shadow-soft"
                   >
-                    <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-md shadow-amber-500/30">
+                    <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-[#14919B] to-[#0E7C86] text-white shadow-md shadow-amber-500/30">
                       <Lightbulb className="h-7 w-7" />
                     </span>
                     <h3 className="mt-4 text-lg font-black text-gray-900">{spark.title}</h3>

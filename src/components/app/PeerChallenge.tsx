@@ -205,7 +205,7 @@ export default function PeerChallenge() {
         <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#B45309] text-white">
+              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0E7C86] text-white">
                 <Users className="h-5 w-5" />
               </span>
               <h2 className="text-xl font-black">تحدّي الأقران</h2>
@@ -215,7 +215,7 @@ export default function PeerChallenge() {
             </button>
           </div>
 
-          <p className="mb-4 rounded-2xl border-2 border-[#B45309]/20 bg-gradient-to-l from-[#B45309]/10 to-transparent p-4 text-sm font-bold leading-7">
+          <p className="mb-4 rounded-2xl border-2 border-[#0E7C86]/20 bg-gradient-to-l from-[#0E7C86]/10 to-transparent p-4 text-sm font-bold leading-7">
             الدرس يثبت أكثر حين تنافس فيه زميلك: أنشئ تحديًا من أسئلة البنك، وشارك رابطه مع زميل —
             سيجيب عن الأسئلة نفسها في تطبيقه ويقارن نتيجتكم. كل شيء ينتقل في الرابط نفسه بلا حسابات
             ولا سيرفرات.
@@ -224,9 +224,9 @@ export default function PeerChallenge() {
           <div className="space-y-3">
             <button
               onClick={() => setScreen("create")}
-              className="card-soft flex w-full items-center gap-3 rounded-2xl border-2 border-[#B45309]/30 bg-[#B45309]/5 p-4 text-right transition hover:border-[#B45309]"
+              className="card-soft flex w-full items-center gap-3 rounded-2xl border-2 border-[#0E7C86]/30 bg-[#0E7C86]/5 p-4 text-right transition hover:border-[#0E7C86]"
             >
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#B45309] text-white">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0E7C86] text-white">
                 <Swords className="h-6 w-6" />
               </span>
               <span className="min-w-0 flex-1">
@@ -284,7 +284,7 @@ export default function PeerChallenge() {
             <button
               onClick={() => setScope("all")}
               className={`w-full rounded-xl border-2 p-3 text-right text-sm font-black transition ${
-                scope === "all" ? "border-[#B45309] bg-[#B45309]/5" : "border-border bg-white"
+                scope === "all" ? "border-[#0E7C86] bg-[#0E7C86]/5" : "border-border bg-white"
               }`}
             >
               كل المحاور — تحدٍّ عام
@@ -294,7 +294,7 @@ export default function PeerChallenge() {
                 key={c.id}
                 onClick={() => setScope(c.id)}
                 className={`w-full rounded-xl border-2 p-3 text-right text-sm font-black transition ${
-                  scope === c.id ? "border-[#B45309] bg-[#B45309]/5" : "border-border bg-white"
+                  scope === c.id ? "border-[#0E7C86] bg-[#0E7C86]/5" : "border-border bg-white"
                 }`}
               >
                 {COURSE_SHORT[c.id]}
@@ -309,7 +309,7 @@ export default function PeerChallenge() {
                 key={n}
                 onClick={() => setSize(n)}
                 className={`rounded-xl border-2 p-3 text-center text-sm font-black transition ${
-                  size === n ? "border-[#B45309] bg-[#B45309]/5" : "border-border bg-white"
+                  size === n ? "border-[#0E7C86] bg-[#0E7C86]/5" : "border-border bg-white"
                 }`}
               >
                 {ad(n)} أسئلة
@@ -319,7 +319,7 @@ export default function PeerChallenge() {
 
           <Button
             onClick={startOwnChallenge}
-            className="mt-5 h-14 w-full rounded-2xl bg-[#B45309] text-base font-black text-white hover:bg-[#92400E]"
+            className="mt-5 h-14 w-full rounded-2xl bg-[#0E7C86] text-base font-black text-white hover:bg-[#92400E]"
           >
             <Swords className="ml-2 h-5 w-5" />
             حلّ التحدي الآن وأرسل الرابط
@@ -364,7 +364,7 @@ export default function PeerChallenge() {
           <Button
             onClick={tryPaste}
             disabled={!pasteInput.trim()}
-            className="mt-3 h-14 w-full rounded-2xl bg-[#B45309] text-base font-black text-white hover:bg-[#92400E] disabled:opacity-40"
+            className="mt-3 h-14 w-full rounded-2xl bg-[#0E7C86] text-base font-black text-white hover:bg-[#92400E] disabled:opacity-40"
           >
             <Link2 className="ml-2 h-5 w-5" />
             ابدأ حل التحدي
@@ -512,7 +512,7 @@ export default function PeerChallenge() {
             <Button
               onClick={shareMyResult}
               variant="outline"
-              className="mt-4 h-13 w-full rounded-2xl border-2 border-[#B45309]/40 text-sm font-black text-[#B45309]"
+              className="mt-4 h-13 w-full rounded-2xl border-2 border-[#0E7C86]/40 text-sm font-black text-[#0E7C86]"
             >
               <Share2 className="ml-2 h-5 w-5" />
               شارك نتيجتك مع زميلك
@@ -521,7 +521,7 @@ export default function PeerChallenge() {
             <>
               <div className="mt-4 rounded-2xl border-2 border-border bg-white p-4">
                 <p className="flex items-center gap-1.5 text-sm font-black">
-                  <Link2 className="h-4 w-4 text-[#B45309]" /> رابط التحدي — الأسئلة ونتيجتك فيه معًا
+                  <Link2 className="h-4 w-4 text-[#0E7C86]" /> رابط التحدي — الأسئلة ونتيجتك فيه معًا
                 </p>
                 <p className="mt-2 break-all rounded-xl bg-muted/70 p-3 text-[11px] leading-5 text-muted-foreground" dir="ltr">
                   {linkText}
@@ -529,7 +529,7 @@ export default function PeerChallenge() {
                 <div className="mt-3 flex gap-2">
                   <Button
                     onClick={copyLink}
-                    className="h-12 flex-1 rounded-xl bg-[#B45309] text-sm font-black text-white hover:bg-[#92400E]"
+                    className="h-12 flex-1 rounded-xl bg-[#0E7C86] text-sm font-black text-white hover:bg-[#92400E]"
                   >
                     <Copy className="ml-1.5 h-4 w-4" /> انسخ الرابط
                   </Button>
@@ -607,7 +607,7 @@ function ScoreTile({
   return (
     <div
       className={`rounded-2xl border-2 p-4 text-center ${
-        highlight ? "border-[#B45309] bg-[#B45309]/5" : "border-border bg-white"
+        highlight ? "border-[#0E7C86] bg-[#0E7C86]/5" : "border-border bg-white"
       }`}
     >
       <p className="truncate text-xs font-black text-muted-foreground">{name}</p>

@@ -71,13 +71,9 @@ export default function ExamSimView() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [submitOpen, setSubmitOpen] = useState(false);
   const [result, setResult] = useState<ExamRun | null>(null);
-  const [runs, setRuns] = useState<ExamRun[]>([]);
+  const [runs, setRuns] = useState<ExamRun[]>(() => loadExamRuns());
   const [startedAt, setStartedAt] = useState(0);
   const submittedRef = useRef(false);
-
-  useEffect(() => {
-    setRuns(loadExamRuns());
-  }, []);
 
   const startExam = (blueprint: ExamBlueprint) => {
     setBp(blueprint);
@@ -160,7 +156,10 @@ export default function ExamSimView() {
   }, [phase]);
 
   useEffect(() => {
-    if (phase === "run" && remaining <= 0) submit();
+    if (phase !== "run" || remaining > 0) return;
+    // التسليم بعد انتهاء الرسم الحالي، لا داخله
+    const t = setTimeout(submit, 0);
+    return () => clearTimeout(t);
   }, [phase, remaining, submit]);
 
   const current = items[idx] ? questionById(items[idx].qid) : undefined;
@@ -304,7 +303,7 @@ export default function ExamSimView() {
 
           <div
             className="mt-4 rounded-3xl p-5 text-white"
-            style={{ background: `linear-gradient(135deg, ${bp.color}, #06343C)` }}
+            style={{ background: `linear-gradient(135deg, ${bp.color}, #0A5A62)` }}
           >
             <h2 className="text-xl font-black">{bp.name}</h2>
             <p className="mt-1.5 text-xs leading-6 text-white/90">{bp.desc}</p>
@@ -323,7 +322,7 @@ export default function ExamSimView() {
                 <div key={s.courseId} className="flex items-center gap-2.5">
                   <span
                     className="h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ background: COURSE_COLOR[s.courseId] ?? "#0B5563" }}
+                    style={{ background: COURSE_COLOR[s.courseId] ?? "#0E7C86" }}
                   />
                   <span className="flex-1 text-xs font-bold">{COURSE_SHORT[s.courseId] ?? s.courseId}</span>
                   <span className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-black text-muted-foreground">
@@ -403,7 +402,7 @@ export default function ExamSimView() {
               <div className="mb-2 flex items-center gap-2">
                 <span
                   className="rounded-full px-2.5 py-1 text-[10px] font-black text-white"
-                  style={{ background: COURSE_COLOR[items[idx].courseId] ?? "#0B5563" }}
+                  style={{ background: COURSE_COLOR[items[idx].courseId] ?? "#0E7C86" }}
                 >
                   {COURSE_SHORT[items[idx].courseId] ?? ""}
                 </span>
@@ -623,7 +622,7 @@ export default function ExamSimView() {
           {/* الدرجة والمحك */}
           <div
             className={`mt-4 rounded-3xl p-6 text-center text-white ${
-              result.passed ? "bg-gradient-to-bl from-[#0A4652] to-[#0B5563]" : "bg-gradient-to-bl from-[#7F1D1D] to-[#B91C1C]"
+              result.passed ? "bg-gradient-to-bl from-[#0B6870] to-[#0E7C86]" : "bg-gradient-to-bl from-[#7F1D1D] to-[#B91C1C]"
             }`}
           >
             <p className="text-xs font-bold text-white/85">{result.bpName}</p>
@@ -656,7 +655,7 @@ export default function ExamSimView() {
                         className="progress-fill h-full"
                         style={{
                           width: `${pct}%`,
-                          background: COURSE_COLOR[s.courseId] ?? "#0B5563",
+                          background: COURSE_COLOR[s.courseId] ?? "#0E7C86",
                         }}
                       />
                     </div>

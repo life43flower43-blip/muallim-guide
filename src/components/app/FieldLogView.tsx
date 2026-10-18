@@ -310,7 +310,7 @@ export default function FieldLogView() {
       <div className="sticky top-0 z-10 border-b border-border bg-white/95 px-4 pb-3 pt-4 backdrop-blur">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-md shadow-amber-500/25">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#14919B] to-[#0E7C86] text-white shadow-md shadow-amber-500/25">
               <Backpack className="h-5.5 w-5.5" />
             </span>
             <div>

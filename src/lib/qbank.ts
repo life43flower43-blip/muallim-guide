@@ -74,7 +74,7 @@ export async function loadQbank(
 
 // لون مميز لكل مقرر بإضاءة متقاربة، يُستعمل للأيقونة والشريط فقط
 export const COURSE_COLOR: Record<string, string> = {
-  M1: "#0B5563",
+  M1: "#0E7C86",
   M2: "#5925DC",
   M3: "#175CD3",
   M4: "#B54708",
