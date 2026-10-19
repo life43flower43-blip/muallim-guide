@@ -185,9 +185,12 @@ export default function AppShell() {
   const { user } = useAccount();
   const { data: mistakes } = useMistakes();
   // العائد من تسجيل الدخول بـ Google يفتح على «حسابي»
-  const [tab, setTab] = useState<Tab>(() =>
-    typeof window !== "undefined" && new URLSearchParams(window.location.search).has("login") ? "profile" : "today"
-  );
+  // ورابط مفهوم من صفحات الموقع العامة (?concept=) يفتح على «التعلّم»
+  const [tab, setTab] = useState<Tab>(() => {
+    if (typeof window === "undefined") return "today";
+    const q = new URLSearchParams(window.location.search);
+    return q.has("login") ? "profile" : q.has("concept") ? "learn" : "today";
+  });
 
   const [bankLoaded, setBankLoaded] = useState(false);
   const [bankProgress, setBankProgress] = useState(0);
@@ -235,6 +238,14 @@ export default function AppShell() {
     try {
       window.history.replaceState(null, "", window.location.pathname + window.location.search);
     } catch {}
+  }, []);
+
+  // رابط مفهوم من الموقع العام: يُفتح المفهوم بعد تحميل البنك
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get("concept");
+    if (!id) return;
+    ui.openConcept(id);
+    window.history.replaceState(null, "", window.location.pathname);
   }, []);
 
   // العودة من Google: رسالة، ثم نقل بيانات الجهاز إلى الحساب

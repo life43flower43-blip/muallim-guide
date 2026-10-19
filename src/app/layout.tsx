@@ -4,7 +4,9 @@ import { Toaster } from "@/components/ui/toaster";
 import Providers from "./providers";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://turbawy.app"),
   title: "تربوي | الإعداد المهني للمعلم",
+  openGraph: { siteName: "تربوي", locale: "ar_AR", type: "website" },
   other: {
     // حظر نهائي على ترجمة الصفحة آليًا — المترجم التلقائي يشوّه النص العربي تمامًا
     google: "notranslate",
