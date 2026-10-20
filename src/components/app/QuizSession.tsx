@@ -10,7 +10,6 @@ import { useUi, type QuizConfig } from "@/lib/ui-store";
 import { saveSnapshot, loadSnapshot, clearSnapshot, RESUME_FLAG, type Confidence } from "@/lib/session-snapshot";
 import { buildSocraticSteps, type SocraticStep } from "@/lib/socratic";
 import { ad, arCount, QUESTION_OBJ_FORMS, splitReason } from "@/lib/arabic";
-import SpeakButton from "./SpeakButton";
 import { ConceptReader } from "./ConceptsView";
 import { toast } from "@/hooks/use-toast";
 import { Callout, Card, Chip, Divided, EmptyState, OptionButton, PrimaryButton, ProgressBar, Ring, ScreenShell, SecondaryButton, SectionHeader, SkillBar, pct } from "./ui-kit";
@@ -636,7 +635,6 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
 
               <div className="flex items-start gap-2">
                 <h2 className="min-w-0 flex-1 font-display text-lg font-semibold leading-9 sm:text-xl">{q.question}</h2>
-                <SpeakButton text={q.question} label="استمع إلى السؤال" />
               </div>
 
               <div className={q.type === "tf" ? "grid grid-cols-2 gap-3" : "space-y-3"}>

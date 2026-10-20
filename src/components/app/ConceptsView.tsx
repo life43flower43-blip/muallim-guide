@@ -78,7 +78,6 @@ import {
 } from "@/lib/practice-bank";
 import { ad, arCount, CONCEPT_FORMS, CHAPTER_FORMS, QUESTION_FORMS, splitArParagraphs, splitReason, exampleContext } from "@/lib/arabic";
 import { toast } from "@/hooks/use-toast";
-import SpeakButton from "./SpeakButton";
 import {
   Card,
   Chip,
@@ -431,7 +430,6 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
       onClose={onClose}
       actions={
         <>
-          <SpeakButton text={`${c.title}. ${c.explanation}`} label="استمع للشرح" />
           <button type="button" onClick={share} aria-label="شارك المفهوم" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted">
             <Share2 className="h-5 w-5" />
           </button>
@@ -515,7 +513,6 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
                           ))}
                         </div>
                       </div>
-                      <SpeakButton text={ex} label="استمع للمثال" />
                     </div>
                   </Card>
                 ))}
