@@ -76,6 +76,7 @@ import {
   type MasteryLevel,
 } from "@/lib/practice-bank";
 import { ConceptDiagram } from "./Diagrams";
+import { referencesFor } from "@/lib/references";
 import { ad, arCount, CONCEPT_FORMS, CHAPTER_FORMS, QUESTION_FORMS, splitArParagraphs, splitReason, exampleContext } from "@/lib/arabic";
 import { toast } from "@/hooks/use-toast";
 import {
@@ -550,6 +551,19 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
               <MyExamples conceptId={c.id} />
             </Disclosure>
           </Divided>}
+
+          {referencesFor(c).length > 0 && (
+            <section className="border-t-2 border-border pt-5">
+              <h2 className="font-display text-base font-bold">المرجع الأصلي</h2>
+              <ul className="mt-2 space-y-1.5">
+                {referencesFor(c).map((r) => (
+                  <li key={r} className="text-base leading-8 text-secondary-foreground">
+                    {r}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </article>
       </div>
     </ScreenShell>
