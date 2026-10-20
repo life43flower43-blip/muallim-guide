@@ -11,8 +11,8 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
-import { BookOpen, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff, X, Layers, GraduationCap } from "lucide-react";
-import { useApp, useAppHydrated } from "@/lib/store";
+import { Flame, Gem, BookOpen, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff, X, Layers, GraduationCap } from "lucide-react";
+import { useApp, useAppHydrated, xpToday, DAILY_GOAL_XP } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { loadQbank } from "@/lib/qbank";
 import { readPeerHash } from "@/lib/peer";
@@ -153,20 +153,47 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
   );
 }
 
-// شريط علوي بلون شريط حالة الهاتف نفسه، فيبدوان شريطًا واحدًا
+// شريط علوي مدمج على نمط أوريندو، بلون شريط حالة الهاتف فيبدوان شريطًا واحدًا
+function TopStat({ label, value, children }: { label: string; value: number; children: React.ReactNode }) {
+  return (
+    <span className="flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-0.5 text-slate-800 shadow-sm" aria-label={`${label}: ${ad(value)}`}>
+      {children}
+      <span className="text-sm font-extrabold tabular-nums">{ad(value)}</span>
+    </span>
+  );
+}
+
 function MobileTopBar() {
   const { gems, streak } = useWallet();
+  const sessions = useApp((s) => s.sessions);
+  const xp = Math.min(xpToday(sessions), DAILY_GOAL_XP);
   return (
-    <header className="safe-top flex items-center justify-between bg-[#0E7C86] px-4 pb-3 pt-3 lg:hidden">
-      <span className="flex items-center gap-2.5">
-        <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-white text-[#0E7C86]">
-          <GraduationCap className="h-5 w-5" strokeWidth={2} />
+    <header className="safe-top sticky top-0 z-30 bg-[#0E7C86] text-white lg:hidden">
+      <div className="flex items-center justify-between gap-3 px-4 pb-2 pt-1.5">
+        <span className="flex min-w-0 items-center gap-2">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px] bg-white text-[#0E7C86] shadow-md ring-2 ring-white/50">
+            <GraduationCap className="h-5 w-5" strokeWidth={2.2} />
+          </span>
+          <span className="truncate text-base font-extrabold">تربوي</span>
         </span>
-        <span className="font-display text-xl font-bold text-white">تربوي</span>
-      </span>
-      <div className="flex items-center gap-2">
-        <StreakBadge value={streak} className="bg-white/15 text-white" />
-        <GemBadge value={gems} className="bg-white/15 text-white" />
+        <div className="flex w-[150px] shrink-0 flex-col items-stretch gap-1.5">
+          <div className="flex items-center justify-end gap-1.5">
+            <TopStat label="سلسلة الأيام" value={streak}>
+              <Flame className="h-4 w-4" fill="#fb923c" stroke="#ea580c" strokeWidth={1.25} />
+            </TopStat>
+            <TopStat label="الجواهر" value={gems}>
+              <Gem className="h-4 w-4" fill="#22d3ee" stroke="#0891b2" strokeWidth={1.25} />
+            </TopStat>
+          </div>
+          <div className="flex items-center gap-1.5" aria-label={`هدف اليوم: ${ad(xp)} من ${ad(DAILY_GOAL_XP)}`}>
+            <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/50 ring-1 ring-white/60">
+              <div className="h-full rounded-full bg-gradient-to-l from-[#4ade80] to-[#22c55e] transition-[width] duration-700" style={{ width: `${(xp / DAILY_GOAL_XP) * 100}%` }} />
+            </div>
+            <span className="text-[10px] font-bold tabular-nums">
+              {ad(xp)}/{ad(DAILY_GOAL_XP)}
+            </span>
+          </div>
+        </div>
       </div>
     </header>
   );
