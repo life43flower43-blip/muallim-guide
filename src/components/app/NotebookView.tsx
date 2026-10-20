@@ -11,7 +11,6 @@ import { COURSES, COURSE_COLOR, COURSE_SHORT, conceptById, conceptsOfCourse, que
 import { ad, arCount, CONCEPT_FORMS } from "@/lib/arabic";
 import { cn } from "@/lib/utils";
 import type { Concept } from "@/lib/types";
-import { ConceptReader } from "./ConceptsView";
 import { EmptyState, PageTitle, PrimaryButton, SecondaryButton } from "./ui-kit";
 
 type Part = "maps" | "rules" | "notes";
@@ -233,12 +232,12 @@ function MapsPart() {
   );
 }
 
-function Rules({ concepts, color, onOpen }: { concepts: Concept[]; color: string; onOpen: (id: string) => void }) {
+function Rules({ concepts, color }: { concepts: Concept[]; color: string }) {
   return (
     <ol className="space-y-3">
       {concepts.map((c, i) => (
         <li key={c.id}>
-          <button type="button" onClick={() => onOpen(c.id)} className="flex w-full gap-3 rounded-2xl border-2 border-border bg-card p-4 text-right hover:bg-muted/50">
+          <div className="flex w-full gap-3 rounded-2xl border-2 border-border bg-card p-4">
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white" style={{ background: color }}>
               {ad(i + 1)}
             </span>
@@ -246,7 +245,7 @@ function Rules({ concepts, color, onOpen }: { concepts: Concept[]; color: string
               <span className="block text-base font-bold leading-7">{c.title}</span>
               <span className="mt-1 block text-base leading-8 text-secondary-foreground">{c.example}</span>
             </span>
-          </button>
+          </div>
         </li>
       ))}
     </ol>
@@ -259,7 +258,6 @@ export default function NotebookView() {
   const [courseId, setCourseId] = useState(lastStudy?.courseId ?? COURSES[0]?.id ?? "M1");
   const [part, setPart] = useState<Part>("maps");
   const [openCh, setOpenCh] = useState<string | null>(null);
-  const [readerId, setReaderId] = useState<string | null>(null);
 
   const chapters = useMemo(() => {
     const out: { chapter: string; concepts: Concept[] }[] = [];
@@ -331,10 +329,10 @@ export default function NotebookView() {
           <ul className="space-y-3">
             {myNotes.map((n) => (
               <li key={n.id}>
-                <button type="button" onClick={() => setReaderId(n.concept!.id)} className="w-full rounded-2xl border-2 border-[#FFC800] bg-[#FFF8D6] p-4 text-right dark:bg-[#FFC800]/10">
+                <div className="w-full rounded-2xl border-2 border-[#FFC800] bg-[#FFF8D6] p-4 dark:bg-[#FFC800]/10">
                   <span className="block text-sm font-bold text-[#946200] dark:text-[#FFD84D]">{n.concept!.title}</span>
                   <span className="mt-1 block whitespace-pre-line text-base leading-8">{n.text}</span>
-                </button>
+                </div>
               </li>
             ))}
           </ul>
@@ -355,7 +353,7 @@ export default function NotebookView() {
                 </button>
                 {open && (
                   <div className="border-t-2 border-border p-3">
-                    <Rules concepts={concepts} color={color} onOpen={setReaderId} />
+                    <Rules concepts={concepts} color={color} />
                   </div>
                 )}
               </section>
@@ -364,7 +362,6 @@ export default function NotebookView() {
         </div>
       )}
 
-      {readerId && <ConceptReader conceptId={readerId} onClose={() => setReaderId(null)} />}
     </div>
   );
 }
