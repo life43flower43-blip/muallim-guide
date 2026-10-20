@@ -32,7 +32,8 @@ export function SectionHeader({ title, action }: { title: string; sub?: string; 
 
 export function PageTitle({ title, action }: { title: string; sub?: string; action?: React.ReactNode }) {
   return (
-    <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+    // على الجوال يظهر العنوان في الشريط العلوي
+    <div className="mb-5 hidden flex-wrap items-end justify-between gap-3 lg:flex">
       <div className="min-w-0">
         <h1 className="font-display text-2xl font-bold text-foreground lg:text-[28px]">{title}</h1>
       </div>

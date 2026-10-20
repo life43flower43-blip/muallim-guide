@@ -143,3 +143,6 @@ export const useUi = create<UiState>((set) => ({
       aiOpen: false,
     }),
 }));
+
+/** فتح إعدادات «حسابي» من الشريط العلوي */
+export const OPEN_SETTINGS_EVENT = "turbawy:open-settings";
