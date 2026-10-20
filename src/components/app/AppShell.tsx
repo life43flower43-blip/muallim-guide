@@ -153,14 +153,20 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
   );
 }
 
+// شريط علوي بلون شريط حالة الهاتف نفسه، فيبدوان شريطًا واحدًا
 function MobileTopBar() {
   const { gems, streak } = useWallet();
   return (
-    <header className="safe-top flex items-center justify-between border-b border-border bg-card px-4 pb-3 pt-3 lg:hidden">
-      <Logo />
+    <header className="safe-top flex items-center justify-between bg-[#0E7C86] px-4 pb-3 pt-3 lg:hidden">
+      <span className="flex items-center gap-2.5">
+        <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-white text-[#0E7C86]">
+          <GraduationCap className="h-5 w-5" strokeWidth={2} />
+        </span>
+        <span className="font-display text-xl font-bold text-white">تربوي</span>
+      </span>
       <div className="flex items-center gap-2">
-        <StreakBadge value={streak} />
-        <GemBadge value={gems} />
+        <StreakBadge value={streak} className="bg-white/15 text-white" />
+        <GemBadge value={gems} className="bg-white/15 text-white" />
       </div>
     </header>
   );
@@ -213,7 +219,7 @@ export default function AppShell() {
     document.documentElement.classList.toggle("dark", dark);
   }, [dark]);
   useEffect(() => {
-    document.documentElement.style.fontSize = fontScale === "large" ? "19px" : fontScale === "bigger" ? "21px" : "";
+    document.documentElement.style.fontSize = fontScale === "large" ? "20px" : fontScale === "bigger" ? "22px" : "";
   }, [fontScale]);
 
   // عامل الخدمة للعمل دون اتصال، وإعادة تحميل واحدة عند وصول نسخة أحدث

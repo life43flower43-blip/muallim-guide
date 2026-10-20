@@ -225,6 +225,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     if (!q || selected === null || graded !== null) return;
     const ok = selected === q.correct;
     setGraded(ok);
+    if (!ok) setShowWhy(true); // الخطأ يبقى أمام الطالب مع شرحه
     try {
       if ("vibrate" in navigator && useApp.getState().haptics) navigator.vibrate(ok ? 35 : [60, 40, 60]);
     } catch {}
@@ -262,6 +263,14 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
       setIdx((i) => i + 1);
     }
   };
+
+  // الإجابة الصحيحة تنتقل وحدها إلى السؤال التالي، وكذلك كل إجابة في الاختبار المحاكي
+  useEffect(() => {
+    if (graded === null || finished) return;
+    if (instantFeedback && !graded) return;
+    const t = setTimeout(next, instantFeedback ? 900 : 150);
+    return () => clearTimeout(t);
+  }, [graded]);
 
   const exit = () => {
     if (finished || review.length === 0) {
