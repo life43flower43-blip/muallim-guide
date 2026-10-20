@@ -9,7 +9,7 @@ export function RingProgress({
   value,
   size = 64,
   stroke = 7,
-  color = "#0E7C86",
+  color = "#4F46E5",
   track = "#e0e7ff",
   children,
 }: {
@@ -59,7 +59,7 @@ export function StatCard({
   icon,
   value,
   label,
-  color = "#0E7C86",
+  color = "#4F46E5",
 }: {
   icon: string;
   value: string | number;
@@ -67,12 +67,12 @@ export function StatCard({
   color?: string;
 }) {
   return (
-    <div className="flex-1 bg-card rounded-2xl p-3 flex flex-col items-center gap-1">
+    <div className="flex-1 bg-white rounded-2xl shadow-soft p-3 flex flex-col items-center gap-1">
       <span className="text-lg leading-none">{icon}</span>
-      <span className="text-lg font-semibold leading-none" style={{ color }}>
+      <span className="text-lg font-extrabold leading-none" style={{ color }}>
         {value}
       </span>
-      <span className="text-xs text-stone-500 font-medium">{label}</span>
+      <span className="text-[10px] text-stone-500 font-medium">{label}</span>
     </div>
   );
 }
@@ -90,13 +90,13 @@ export function AppCard({
   whileTap?: boolean;
 }) {
   if (!onClick)
-    return <div className={cn("bg-card rounded-2xl", className)}>{children}</div>;
+    return <div className={cn("bg-white rounded-3xl shadow-soft", className)}>{children}</div>;
   return (
     <motion.div
       onClick={onClick}
       whileTap={whileTap ? { scale: 0.975 } : undefined}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className={cn("bg-card rounded-2xl cursor-pointer", className)}
+      className={cn("bg-white rounded-3xl shadow-soft cursor-pointer", className)}
     >
       {children}
     </motion.div>
@@ -106,7 +106,7 @@ export function AppCard({
 export function EmptyState({ icon, title, desc }: { icon: string; title: string; desc: string }) {
   return (
     <div className="flex flex-col items-center justify-center text-center py-12 px-8">
-      <div className="w-16 h-16 rounded-2xl bg-stone-100 flex items-center justify-center text-3xl mb-4">
+      <div className="w-16 h-16 rounded-3xl bg-stone-100 flex items-center justify-center text-3xl mb-4">
         {icon}
       </div>
       <p className="font-bold text-stone-700 mb-1">{title}</p>
@@ -136,10 +136,10 @@ export function NewBadge({ tone = "amber" }: { tone?: "amber" | "violet" }) {
   if (!show) return null;
   return (
     <span
-      className={`flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${
+      className={`flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-black ${
         tone === "amber"
-          ? "bg-amber-400 text-gem"
-          : "bg-primary text-white"
+          ? "bg-amber-400 text-amber-950"
+          : "bg-violet-600 text-white"
       }`}
     >
       <Sparkles className="h-3 w-3" /> جديد
@@ -167,23 +167,23 @@ export function ToolRow({
     <motion.button
       whileTap={{ scale: 0.985 }}
       onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-4 text-right"
+      className="flex w-full items-center gap-3 rounded-3xl border border-border bg-white p-4 text-right shadow-soft"
     >
       <span
-        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-white ${
+        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-white shadow-sm ${
           tone === "amber"
             ? "bg-gradient-to-br from-amber-500 to-orange-500"
-            : "bg-gradient-to-br from-cyan-600 to-cyan-800"
+            : "bg-gradient-to-br from-violet-600 to-violet-800"
         }`}
       >
         <Icon className="h-5 w-5" />
       </span>
       <span className="min-w-0 flex-1">
         <span className="flex items-center gap-2">
-          <span className="truncate text-sm font-semibold text-foreground">{title}</span>
+          <span className="truncate text-sm font-black text-gray-900">{title}</span>
           {badge}
         </span>
-        <span className="mt-0.5 block truncate text-xs font-bold text-muted-foreground">
+        <span className="mt-0.5 block truncate text-[11px] font-bold text-gray-500">
           {desc}
         </span>
       </span>

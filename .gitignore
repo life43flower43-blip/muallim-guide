@@ -51,11 +51,4 @@ prompt
 
 server.log
 # Skills directory
-/skills/
-
-# bank backups
-/public/data/qbank.backup.*.json
-
-# local sqlite
-/db/*.db-journal
-/prisma/*.db
+/skills/public/data/qbank.backup.*.json

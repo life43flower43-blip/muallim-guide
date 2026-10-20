@@ -1,7 +1,8 @@
-// قاعدة بيانات «تربوي» — الحسابات والجواهر والأخطاء والتقدم
-// نُقلت بنيتها من تطبيق أوريندو (حسابات Google/البريد، دفتر الجواهر، عناصر المراجعة)
-// بلا ما يخص تعليم اللغة. بنك الأسئلة نفسه ملف ثابت (public/data/qbank.json)،
-// فالجداول تحفظ معرّف السؤال فقط.
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -13,101 +14,19 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  name         String
-  password     String? // مجزّأة بـ bcrypt — فارغة لحسابات Google
-  avatar       String?
-  xp           Int      @default(0)
-  streak       Int      @default(0)
-  streakFreeze Int      @default(0)
-  gems         Int      @default(0)
-  lastActive   DateTime @default(now())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  oauthAccounts     OAuthAccount[]
-  gemTransactions   GemTransaction[]
-  gemMigrationFlags GemMigrationFlag[]
-  reviewItems       ReviewItem[]
-  progress          UserProgress?
-}
-
-// يربط المستخدم بحساب Google (مستخدم واحد يمكن أن يربط أكثر من مزوّد)
-model OAuthAccount {
-  id                String   @id @default(cuid())
-  userId            String
-  provider          String // "google"
-  providerAccountId String
-  email             String
-  name              String?
-  picture           String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@index([email, provider])
-}
-
-// دفتر الجواهر: كل منح أو صرف سطر واحد، والمفتاح الفريد يمنع احتسابه مرتين
-model GemTransaction {
-  id             String   @id @default(cuid())
-  userId         String
-  amount         Int
-  type           String // "award" | "spend"
-  reason         String
-  idempotencyKey String   @unique
-  balanceAfter   Int
-  createdAt      DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, createdAt])
-}
-
-// فرق كبير بين جواهر الجهاز وجواهر الحساب عند تسجيل الدخول — يُسجَّل ولا يُدمج
-model GemMigrationFlag {
-  id               String   @id @default(cuid())
-  userId           String
-  dbGems           Int
-  localStorageGems Int
-  diff             Int
-  flaggedAt        DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, flaggedAt])
-}
-
-// خطأ في سؤال من البنك، يُراجع بالتكرار المتباعد (SM-2)
-model ReviewItem {
-  id           String    @id @default(cuid())
-  userId       String
-  questionId   String
-  easeFactor   Float     @default(2.5)
-  interval     Int       @default(1)
-  repetitions  Int       @default(0)
-  nextReview   DateTime  @default(now())
-  lastReview   DateTime?
-  mistakeCount Int       @default(0)
-  isCorrect    Boolean   @default(false)
-  userAnswer   String?
-  source       String    @default("practice")
-  createdAt    DateTime  @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, questionId])
-  @@index([userId, nextReview])
-}
-
-// نسخة من تقدم الجهاز (المحاولات والجلسات وأفضل النتائج) تُزامن بين الأجهزة
-model UserProgress {
-  userId    String   @id
-  data      String // JSON
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

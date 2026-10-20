@@ -1,308 +1,424 @@
 "use client";
 
-// ============================================================================
-// «أخطائي» — مراجعة متباعدة على نمط Anki وUWorld
-// ============================================================================
-// ١) إجراء واحد في الأعلى: مراجعة المستحق الآن، مع تقدم الإصلاح.
-// ٢) جدول المراجعة للأيام السبعة القادمة (كم خطأً يعود كل يوم).
-// ٣) المفاهيم الأضعف: أين تتجمع أخطاؤك، مع قراءة المفهوم أو التدرب عليه.
-// ٤) قائمة الأخطاء بأسلوب «تذكّر أولًا»، وتصفية حسب الحالة والمقرر.
-// ============================================================================
+// تبويب «أخطائي» — الصفحة الواحدة المنظمة: سريع + مراجعة ذكية + كل خطأ مع مفهومه وأمثلته.
+// القاعدة الصارمة (قرار المستخدم): ممنوع تأليف أي شرح أو مثال هنا — كل النصوص من qbank.json.
 
 import { useMemo, useState } from "react";
-import { AlertCircle, BookOpen, CalendarClock, CheckCircle2, Dumbbell, Eye, PartyPopper, RotateCcw } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  Target,
+  BookOpen,
+  Lightbulb,
+  CheckCircle2,
+  XCircle,
+  Dumbbell,
+  ChevronDown,
+  RotateCcw,
+  PartyPopper,
+  Zap,
+  Share2,
+} from "lucide-react";
+import {
+  conceptById,
+  questionById,
+  examplesOf,
+  questionsOfConcept,
+  QUESTIONS,
+  COURSES,
+  COURSE_COLOR,
+  COURSE_SHORT,
+  shuffle,
+} from "@/lib/qbank";
+import type { Concept } from "@/lib/types";
+import { buildReviewSet } from "@/lib/srs";
+import { shareText } from "@/lib/share";
+import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { COURSE_COLOR, COURSE_SHORT, questionsOfConcept, shuffle } from "@/lib/qbank";
-import { useMistakes, buildReviewQids, REVIEW_SESSION_SIZE, type MistakeItem } from "@/lib/mistakes-client";
-import { ad, arCount, ERROR_OBJ_FORMS, splitReason } from "@/lib/arabic";
-import { cn } from "@/lib/utils";
-import type { Tab } from "./AppShell";
-import { ConceptReader } from "./ConceptsView";
-import AuthPanel from "./AuthPanel";
-import { Card, Chip, EmptyState, PageTitle, PrimaryButton, ProgressBar, SecondaryButton, SectionHeader } from "./ui-kit";
+import { toast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import SpeakButton from "./SpeakButton";
 
-const TIMES = { one: "مرة واحدة", two: "مرتين", few: "مرات", many: "مرة" };
-const dayFmt = new Intl.DateTimeFormat("ar-u-nu-arab", { weekday: "short" });
-const dateFmt = new Intl.DateTimeFormat("ar-u-nu-arab", { day: "numeric", month: "short" });
-const DAY_MS = 86400000;
-const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+interface WrongEntry {
+  qid: string;
+  answer?: string;
+  ts: number;
+}
 
-function MistakeCard({ item, onConcept }: { item: MistakeItem; onConcept: () => void }) {
-  const [revealed, setRevealed] = useState(false);
-  const q = item.question;
-  const { base } = splitReason(q.reason);
-  const next = item.nextReview ? new Date(item.nextReview) : null;
+// بطاقة نمط جلسة — نفس هوية مركز الاختبارات (نُقلت من الرئيسية لتقليل التشتيت)
+function ModeCard({
+  icon: Icon,
+  title,
+  desc,
+  badge,
+  disabled,
+  color,
+  onClick,
+}: {
+  icon: React.ElementType;
+  title: string;
+  desc: string;
+  badge?: string;
+  disabled?: boolean;
+  color: string;
+  onClick?: () => void;
+}) {
   return (
-    <Card className="flex flex-col p-4">
-      <div className="mb-2 flex flex-wrap items-center gap-2">
-        <Chip>
-          <span className="h-2 w-2 rounded-full" style={{ background: COURSE_COLOR[item.courseId] ?? "var(--primary)" }} />
-          {COURSE_SHORT[item.courseId] ?? "عام"}
-        </Chip>
-        <Chip tone="danger">أخطأت {arCount(item.mistakeCount, TIMES)}</Chip>
-        {item.due ? <Chip tone="warning">مستحق الآن</Chip> : next && <Chip>يعود {dateFmt.format(next)}</Chip>}
-      </div>
-      <p className="text-[15px] font-medium leading-7">{q.question}</p>
-
-      {!revealed ? (
-        <button
-          type="button"
-          onClick={() => setRevealed(true)}
-          className="mt-3 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-dashed border-input text-sm font-medium text-primary transition-colors hover:bg-accent"
-        >
-          <Eye className="h-4 w-4" /> تذكّر الإجابة ثم اكشفها
-        </button>
-      ) : (
-        <div className="mt-3 space-y-2">
-          {item.userAnswer && item.userAnswer !== q.correct && <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-destructive">إجابتك: {item.userAnswer}</p>}
-          <p className="flex items-start gap-2 rounded-lg bg-success-soft px-3 py-2 text-sm font-medium text-success">
-            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" /> {q.correct}
-          </p>
-          <p className="text-sm leading-7 text-secondary-foreground">{base}</p>
-          {item.concept && (
-            <button type="button" onClick={onConcept} className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg px-1 text-sm font-medium text-primary hover:bg-accent">
-              <BookOpen className="h-4 w-4" /> اقرأ مفهوم «{item.concept.title}»
-            </button>
+    <motion.button
+      whileTap={{ scale: disabled ? 1 : 0.98 }}
+      disabled={disabled}
+      onClick={onClick}
+      className={`card-soft flex w-full items-center gap-4 rounded-3xl border border-border bg-white p-4 text-right ${
+        disabled ? "opacity-50" : ""
+      }`}
+    >
+      <span
+        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-white"
+        style={{ background: color }}
+      >
+        <Icon className="h-6 w-6" />
+      </span>
+      <span className="flex-1">
+        <span className="flex items-center gap-2">
+          <span className="text-base font-black">{title}</span>
+          {badge && (
+            <span className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-black text-primary">
+              {badge}
+            </span>
           )}
-        </div>
-      )}
-    </Card>
+        </span>
+        <span className="mt-1 block text-xs leading-5 text-muted-foreground">{desc}</span>
+      </span>
+    </motion.button>
   );
 }
 
-export default function MistakesView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
-  const ui = useUi();
-  const { data, isLoading, isError, refetch } = useMistakes();
-  const [course, setCourse] = useState<string | null>(null);
-  const [status, setStatus] = useState<"due" | "all">("all");
-  const [readerId, setReaderId] = useState<string | null>(null);
+export default function MistakesView() {
+  const startQuiz = useUi((s) => s.startQuiz);
+  const attempts = useApp((s) => s.attempts);
 
-  const items = useMemo(() => (data?.items ?? []).filter((i) => (!course || i.courseId === course) && (status === "all" || i.due)), [data, course, status]);
-  const sorted = useMemo(() => [...items].sort((a, b) => Number(b.due) - Number(a.due) || b.mistakeCount - a.mistakeCount).slice(0, 30), [items]);
+  const [openExamples, setOpenExamples] = useState<Record<string, boolean>>({});
+  // تصفية حسب المحور — بلا أرقام، أسماء المحاور فقط
+  const [courseFilter, setCourseFilter] = useState<string | null>(null);
 
-  // جدول المراجعة: ما يعود في كل يوم من الأيام السبعة القادمة (المتأخر يُحسب اليوم)
-  const forecast = useMemo(() => {
-    const today = startOfDay(new Date());
-    const days = Array.from({ length: 7 }, (_, i) => ({ ts: today + i * DAY_MS, count: 0 }));
-    let later = 0;
-    for (const it of data?.items ?? []) {
-      const t = it.due || !it.nextReview ? today : startOfDay(new Date(it.nextReview));
-      const i = Math.max(0, Math.round((t - today) / DAY_MS));
-      if (i < 7) days[i].count++;
-      else later++;
+  const reviewSet = useMemo(() => buildReviewSet(attempts), [attempts]);
+
+  // الأخطاء الحالية مرتبة من الأحدث إلى الأقدم
+  const wrongs = useMemo(
+    () =>
+      Object.values(attempts)
+        .filter((a) => !a.correct && questionById(a.qid))
+        .sort((a, b) => b.ts - a.ts) as WrongEntry[],
+    [attempts]
+  );
+
+  // تجميع الأخطاء حسب المفهوم — حتى يظهر الشرح والأمثلة مرة واحدة لكل مفهوم (ترتيب لا تكرار)
+  const groups = useMemo(() => {
+    const map = new Map<string, WrongEntry[]>();
+    for (const w of wrongs) {
+      const q = questionById(w.qid)!;
+      const arr = map.get(q.conceptId) ?? [];
+      arr.push(w);
+      map.set(q.conceptId, arr);
     }
-    return { days, later, max: Math.max(1, ...days.map((d) => d.count)) };
-  }, [data]);
+    return Array.from(map.entries());
+  }, [wrongs]);
 
-  // المفاهيم الأضعف: أين تتجمع الأخطاء المفتوحة
-  const weakConcepts = useMemo(() => {
-    const m = new Map<string, { concept: NonNullable<MistakeItem["concept"]>; count: number; total: number }>();
-    for (const it of data?.items ?? []) {
-      if (!it.concept) continue;
-      const row = m.get(it.concept.id) ?? { concept: it.concept, count: 0, total: 0 };
-      row.count++;
-      row.total += it.mistakeCount;
-      m.set(it.concept.id, row);
+  // المحاور الموجودة فعلاً بين الأخطاء — بترتيب المحاور الأصلي
+  const presentCourses = useMemo(() => {
+    const ids = new Set<string>();
+    for (const [cid] of groups) {
+      const c = conceptById(cid);
+      if (c) ids.add(c.courseId);
     }
-    return [...m.values()].sort((a, b) => b.count - a.count || b.total - a.total).slice(0, 5);
-  }, [data]);
+    return COURSES.map((co) => co.id).filter((id) => ids.has(id));
+  }, [groups]);
 
-  if (isLoading) {
-    return (
-      <div className="space-y-3">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="h-28 animate-pulse rounded-2xl bg-muted" />
-        ))}
-      </div>
-    );
-  }
-  if (isError || !data) {
-    return <EmptyState icon={AlertCircle} title="تعذّر تحميل أخطائك" sub="تأكد من الاتصال ثم أعد المحاولة." action={<PrimaryButton onClick={() => refetch()}>إعادة المحاولة</PrimaryButton>} />;
-  }
+  // المجموعات بعد التصفية
+  const visibleGroups = useMemo(
+    () =>
+      courseFilter
+        ? groups.filter(([cid]) => conceptById(cid)?.courseId === courseFilter)
+        : groups,
+    [groups, courseFilter]
+  );
 
-  const { due, open, mastered } = data.stats;
-  const review = (courseId: string | null) => ui.startQuiz({ mode: "review", label: "مراجعة الأخطاء", qids: buildReviewQids(data, courseId) });
-  const reader = readerId && <ConceptReader conceptId={readerId} onClose={() => setReaderId(null)} />;
+  // مشاركة مفهوم كاملًا: الشرح + الأمثلة — عبر تطبيقات الجهاز أو نسخ للحافظة
+  const shareConcept = async (c: Concept) => {
+    const exs = examplesOf(c);
+    const text = `${c.explanation}${
+      exs.length ? "\n\n" + exs.map((e) => `• ${e}`).join("\n\n") : ""
+    }\n\n— من تطبيق مساعد إعداد المعلم`;
+    const r = await shareText(c.title, text);
+    if (r === "copied") toast({ title: "نُسخ المفهوم — الصقه حيث تريد" });
+  };
 
-  if (open === 0 && data.refresh.length === 0) {
-    return (
-      <div className="space-y-6">
-        <PageTitle title="أخطائي" sub="كل خطأ يعود إليك في موعده حتى تجيبه صحيحًا مرتين متباعدتين" />
-        <EmptyState
-          icon={PartyPopper}
-          title="لا أخطاء مفتوحة"
-          sub={mastered ? `أصلحت ${arCount(mastered, ERROR_OBJ_FORMS)} حتى الآن. استمر في التدريب.` : "كل إجابة خاطئة في التدريب تظهر هنا مع شرحها، وتعود إليك في موعدها."}
-          action={<PrimaryButton onClick={() => onGoTab("practice")}>اذهب إلى التدريب</PrimaryButton>}
-        />
-      </div>
-    );
-  }
+  const redoAll = () => {
+    startQuiz({
+      mode: "redo",
+      label: "إعادة الأسئلة الخاطئة",
+      qids: wrongs.map((w) => w.qid),
+    });
+  };
 
   return (
-    <div className="space-y-8">
-      <PageTitle title="أخطائي" sub="كل خطأ يعود إليك في موعده حتى تجيبه صحيحًا مرتين متباعدتين" />
-
-      <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
-        {/* الإجراء الرئيسي */}
-        <Card className="p-5">
-          <div className="grid grid-cols-3 gap-3 text-center">
-            {[
-              { label: "مستحقة الآن", value: due, cls: due > 0 ? "text-destructive" : "" },
-              { label: "مفتوحة", value: open, cls: "" },
-              { label: "أصلحتها", value: mastered, cls: "text-success" },
-            ].map((s) => (
-              <div key={s.label}>
-                <p className={cn("font-display text-2xl font-bold", s.cls)}>{s.value === null ? "—" : ad(s.value)}</p>
-                <p className="mt-0.5 text-xs text-muted-foreground">{s.label}</p>
-              </div>
-            ))}
+    <div className="space-y-4 px-4 pb-6">
+      {/* شريط الملخص + إعادة كل الأخطاء */}
+      <div className="rounded-3xl bg-gradient-to-l from-[#7F1D1D] to-[#B91C1C] p-5 text-white">
+        <div className="flex items-center gap-3">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15">
+            <Target className="h-6 w-6" />
+          </span>
+          <div className="min-w-0">
+            <h3 className="text-lg font-black">كل شيء عن أخطائك هنا</h3>
+            <p className="mt-0.5 text-xs font-bold leading-5 text-red-100">
+              {wrongs.length > 0
+                ? "أخطاؤك مرتبة حسب المفهوم — كل خطأ مع شرحه وأمثلته الواقعية"
+                : "كل شيء مرتب — لا أخطاء تنتظر إصلاحك"}
+            </p>
           </div>
-          {mastered !== null && mastered + open > 0 && (
-            <div className="mt-5">
-              <div className="mb-1.5 flex justify-between text-[13px] text-muted-foreground">
-                <span>تقدم الإصلاح</span>
-                <span>
-                  {ad(mastered)} من {ad(mastered + open)}
-                </span>
-              </div>
-              <ProgressBar value={(mastered / (mastered + open)) * 100} color="var(--success)" />
-            </div>
-          )}
-          <PrimaryButton onClick={() => review(null)} className="mt-5 w-full">
-            <RotateCcw className="h-4 w-4" />
-            {due > 0 ? `راجع ${arCount(Math.min(due, REVIEW_SESSION_SIZE), ERROR_OBJ_FORMS)}` : "تدرّب عليها قبل موعدها"}
-          </PrimaryButton>
-          <p className="mt-3 text-center text-[13px] text-muted-foreground">
-            {due > 0 ? "قرابة سبع دقائق، وتكسب بها جواهر" : "لا مراجعة مستحقة الآن"}
-            {data.refresh.length > 0 && `، ومعها ${arCount(data.refresh.length, ERROR_OBJ_FORMS)} للتثبيت`}
-          </p>
-        </Card>
-
-        {/* جدول المراجعة */}
-        <Card className="p-5">
-          <p className="flex items-center gap-2 text-sm font-semibold">
-            <CalendarClock className="h-4 w-4 text-primary" /> جدول المراجعة
-          </p>
-          <p className="mt-0.5 text-[13px] text-muted-foreground">ما يعود إليك في الأيام السبعة القادمة</p>
-          <div className="mt-4 flex h-[112px] items-end gap-2" role="img" aria-label="عدد الأخطاء المستحقة في كل يوم">
-            {forecast.days.map((d, i) => (
-              <div key={d.ts} className="flex flex-1 flex-col items-center gap-1.5">
-                <span className="text-xs font-medium">{d.count > 0 ? ad(d.count) : ""}</span>
-                <span
-                  className={cn("w-full rounded-md", i === 0 ? "bg-primary" : "bg-primary/35", d.count === 0 && "bg-muted")}
-                  style={{ height: `${d.count === 0 ? 4 : Math.max(8, (d.count / forecast.max) * 64)}px` }}
-                />
-                <span className={cn("text-[11px]", i === 0 ? "font-medium text-foreground" : "text-muted-foreground")}>{i === 0 ? "اليوم" : dayFmt.format(new Date(d.ts))}</span>
-              </div>
-            ))}
-          </div>
-          {forecast.later > 0 && <p className="mt-3 text-[13px] text-muted-foreground">وبعد ذلك {arCount(forecast.later, ERROR_OBJ_FORMS)}</p>}
-        </Card>
+        </div>
+        {wrongs.length > 0 && (
+          <Button
+            onClick={redoAll}
+            className="mt-3 h-11 w-full rounded-2xl bg-white text-sm font-black text-red-700 hover:bg-red-50"
+          >
+            <RotateCcw className="ml-1.5 h-4 w-4" /> إعادة تدريب كل أخطائي الآن
+          </Button>
+        )}
       </div>
 
-      {data.isGuest && (
-        <Card className="flex flex-wrap items-center gap-3 p-4">
-          <p className="min-w-0 flex-1 text-sm leading-6 text-muted-foreground">أخطاؤك محفوظة على هذا الجهاز فقط. ادخل بحساب Google لتحفظها وتراها على أي جهاز.</p>
-          <div className="w-full sm:w-auto">
-            <AuthPanel label="الدخول بحساب Google" />
-          </div>
-        </Card>
-      )}
-
-      {/* المفاهيم الأضعف */}
-      {weakConcepts.length > 0 && (
-        <section>
-          <SectionHeader title="أين تتجمع أخطاؤك" sub="المفاهيم التي تكررت فيها الأخطاء، وابدأ بقراءتها" />
-          <Card className="divide-y divide-border overflow-hidden">
-            {weakConcepts.map((w) => (
-              <div key={w.concept.id} className="flex min-h-[64px] items-center gap-3 px-4 py-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-danger-soft font-display text-sm font-bold text-destructive">{ad(w.count)}</span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-[15px] font-medium">{w.concept.title}</p>
-                  <p className="truncate text-[13px] text-muted-foreground">{COURSE_SHORT[w.concept.courseId]}</p>
-                </div>
-                <button type="button" onClick={() => setReaderId(w.concept.id)} aria-label={`اقرأ ${w.concept.title}`} className="flex h-10 w-10 items-center justify-center rounded-full text-primary hover:bg-accent">
-                  <BookOpen className="h-5 w-5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => ui.startQuiz({ mode: "training", label: `تدريب: ${w.concept.title}`, qids: shuffle(questionsOfConcept(w.concept.id)).map((q) => q.id), conceptId: w.concept.id })}
-                  aria-label={`تدرّب على ${w.concept.title}`}
-                  className="flex h-10 w-10 items-center justify-center rounded-full text-primary hover:bg-accent"
-                >
-                  <Dumbbell className="h-5 w-5" />
-                </button>
-              </div>
-            ))}
-          </Card>
-        </section>
-      )}
-
-      {/* القائمة */}
-      <section>
-        <SectionHeader
-          title="أخطاؤك"
-          sub="تذكّر الإجابة قبل كشفها: الاسترجاع أقوى من إعادة القراءة"
-          action={
-            course && (
-              <button type="button" onClick={() => review(course)} className="min-h-[36px] text-sm font-medium text-primary">
-                راجع هذا المقرر
-              </button>
-            )
+      {/* جلسات سريعة — نُقلت من الرئيسية (طلب المستخدم: تقليل التشتيت) */}
+      <div className="grid grid-cols-2 gap-2">
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={() =>
+            startQuiz({
+              mode: "quick",
+              label: "اختبار سريع",
+              qids: shuffle(QUESTIONS).slice(0, 10).map((q) => q.id),
+            })
           }
-        />
-        <div className="mb-4 flex flex-wrap items-center gap-3">
-          <div role="radiogroup" aria-label="الحالة" className="flex rounded-lg bg-muted p-0.5">
-            {(
-              [
-                ["all", `كلها ${ad(open)}`],
-                ["due", `المستحقة ${ad(due)}`],
-              ] as const
-            ).map(([id, label]) => (
+          className="card-soft flex min-h-[92px] flex-col items-center justify-center gap-1.5 rounded-2xl border border-border bg-white p-3 text-center"
+        >
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500 text-white">
+            <Zap className="h-5 w-5" />
+          </span>
+          <span className="text-xs font-black text-gray-900">سريع</span>
+          <span className="text-[9px] font-bold text-gray-600">أسئلة عشوائية سريعة</span>
+        </motion.button>
+
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={() => {
+            if (reviewSet.length > 0) {
+              startQuiz({ mode: "review", label: "مراجعة ذكية متباعدة", qids: reviewSet });
+            }
+          }}
+          className={`card-soft flex min-h-[92px] flex-col items-center justify-center gap-1.5 rounded-2xl border border-border bg-white p-3 text-center ${
+            reviewSet.length === 0 ? "opacity-60" : ""
+          }`}
+        >
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#7C3AED] text-white">
+            <RotateCcw className="h-5 w-5" />
+          </span>
+          <span className="text-xs font-black text-gray-900">مراجعة ذكية</span>
+          <span className="text-[9px] font-bold text-gray-600">
+            {reviewSet.length > 0
+              ? "مراجعات مستحقة الآن"
+              : "لا مراجعات مستحقة"}
+          </span>
+        </motion.button>
+      </div>
+
+      {/* المحتوى: الأخطاء مجمعة حسب المفهوم */}
+      {wrongs.length === 0 ? (
+        <div className="flex flex-col items-center gap-3 py-12 text-center">
+          <span className="flex h-20 w-20 items-center justify-center rounded-full bg-indigo-100">
+            <PartyPopper className="h-10 w-10 text-indigo-600" />
+          </span>
+          <p className="text-lg font-black text-gray-900">لا أخطاء حتى الآن</p>
+          <p className="max-w-xs text-sm leading-7 text-muted-foreground">
+            أكمل الاختبار المكثف من الرئيسية، وسيظهر هنا كل سؤال أخطأت فيه مع شرح مفهومه
+            وأمثلة متنوعة عليه — حتى تصحح فهمك خطوة بخطوة.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {/* تصفية حسب المحور — تظهر فقط حين يمتد الخطأ لأكثر من محور */}
+          {presentCourses.length > 1 && (
+            <div
+              className="no-scrollbar flex gap-2 overflow-x-auto pb-1"
+              role="group"
+              aria-label="تصفية حسب المحور"
+            >
               <button
-                key={id}
-                type="button"
-                role="radio"
-                aria-checked={status === id}
-                onClick={() => setStatus(id)}
-                className={cn("min-h-[36px] rounded-md px-3 text-sm transition-colors", status === id ? "bg-card font-medium shadow-sm" : "text-muted-foreground")}
+                onClick={() => setCourseFilter(null)}
+                aria-pressed={courseFilter === null}
+                className={`shrink-0 rounded-full px-4 py-2 text-xs font-black transition-colors ${
+                  courseFilter === null
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-white text-muted-foreground"
+                }`}
               >
-                {label}
+                الكل
               </button>
-            ))}
-          </div>
-          {data.byCourse.length > 1 && (
-            <div className="no-scrollbar -mx-4 flex flex-1 gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0" role="tablist" aria-label="تصفية حسب المقرر">
-              {[{ courseId: null as string | null, name: "كل المقررات", count: open }, ...data.byCourse].map((g) => (
-                <button
-                  key={g.courseId ?? "all"}
-                  type="button"
-                  role="tab"
-                  aria-selected={course === g.courseId}
-                  onClick={() => setCourse(g.courseId)}
-                  className={cn(
-                    "min-h-[36px] shrink-0 rounded-full border px-3 text-sm transition-colors",
-                    course === g.courseId ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-secondary-foreground hover:bg-muted"
-                  )}
-                >
-                  {g.courseId ? COURSE_SHORT[g.courseId] ?? g.name : g.name} {ad(g.count)}
-                </button>
-              ))}
+              {presentCourses.map((id) => {
+                const active = courseFilter === id;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => setCourseFilter(active ? null : id)}
+                    aria-pressed={active}
+                    className={`shrink-0 rounded-full px-4 py-2 text-xs font-black transition-colors ${
+                      active
+                        ? "text-white"
+                        : "border border-border bg-white text-muted-foreground"
+                    }`}
+                    style={active ? { background: COURSE_COLOR[id] ?? "#5B21B6" } : undefined}
+                  >
+                    {COURSE_SHORT[id]}
+                  </button>
+                );
+              })}
             </div>
           )}
-        </div>
-        {sorted.length === 0 ? (
-          <p className="rounded-xl bg-muted p-4 text-center text-sm text-muted-foreground">لا أخطاء بهذه التصفية</p>
-        ) : (
-          <div className="grid gap-3 lg:grid-cols-2">
-            {sorted.map((it) => (
-              <MistakeCard key={it.id} item={it} onConcept={() => it.concept && setReaderId(it.concept.id)} />
-            ))}
-          </div>
-        )}
-      </section>
 
-      {reader}
+          {visibleGroups.map(([conceptId, entries]) => {
+            const concept = conceptById(conceptId);
+            if (!concept) return null;
+            const color = COURSE_COLOR[concept.courseId] ?? "#5B21B6";
+            const examples = examplesOf(concept);
+            const shown = openExamples[conceptId] ? examples : examples.slice(0, 3);
+            return (
+              <section
+                key={conceptId}
+                className="card-soft overflow-hidden rounded-3xl border border-border bg-white"
+              >
+                {/* بطاقة المفهوم: الشرح + الأمثلة المتنوعة (من البنك حصراً) */}
+                <div className="p-4">
+                  <div className="flex items-start gap-3">
+                    <span
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-white"
+                      style={{ background: color }}
+                    >
+                      <BookOpen className="h-5 w-5" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[10px] font-black" style={{ color }}>
+                        {COURSE_SHORT[concept.courseId]} — المفهوم
+                      </p>
+                      <h3 className="mt-0.5 text-base font-black leading-6 text-gray-900">
+                        {concept.title}
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-start gap-2">
+                    <p className="flex-1 text-sm leading-7 text-gray-700">{concept.explanation}</p>
+                    <div className="flex shrink-0 flex-col items-center gap-1.5">
+                      <SpeakButton
+                        text={`${concept.title}. ${concept.explanation}`}
+                        label="استمع للشرح"
+                      />
+                      <button
+                        onClick={() => shareConcept(concept)}
+                        aria-label="شارك المفهوم"
+                        title="شارك المفهوم"
+                        className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-100 text-sky-700 transition-colors hover:bg-sky-200 dark:bg-sky-500/20 dark:text-sky-200"
+                      >
+                        <Share2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {examples.length > 0 && (
+                    <div className="mt-3 space-y-2">
+                      <p className="flex items-center gap-1.5 text-xs font-black text-indigo-800">
+                        <Lightbulb className="h-3.5 w-3.5" /> أمثلة متنوعة من الميدان
+                      </p>
+                      {shown.map((ex, i) => (
+                        <div
+                          key={i}
+                          className="flex items-start gap-2 rounded-2xl border border-indigo-100 bg-indigo-50 p-3"
+                        >
+                          <p className="flex-1 text-xs leading-6 text-indigo-950">{ex}</p>
+                          <SpeakButton text={ex} label="استمع للمثال" />
+                        </div>
+                      ))}
+                      {examples.length > 3 && (
+                        <button
+                          onClick={() =>
+                            setOpenExamples((o) => ({ ...o, [conceptId]: !o[conceptId] }))
+                          }
+                          className="flex items-center gap-1 text-[11px] font-black text-indigo-700 underline decoration-indigo-300 underline-offset-4"
+                        >
+                          {openExamples[conceptId] ? (
+                            <>إظهار أقل <ChevronDown className="h-3 w-3 rotate-180" /></>
+                          ) : (
+                            <>عرض كل الأمثلة <ChevronDown className="h-3 w-3" /></>
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  <Button
+                    onClick={() =>
+                      startQuiz({
+                        mode: "training",
+                        label: `تدريب: ${concept.title}`,
+                        qids: shuffle(questionsOfConcept(conceptId)).map((q) => q.id),
+                        conceptId,
+                      })
+                    }
+                    className="mt-3 h-11 w-full rounded-2xl text-sm font-black"
+                    style={{ background: color }}
+                  >
+                    <Dumbbell className="ml-1.5 h-4 w-4" /> تدريب على هذا المفهوم
+                  </Button>
+                </div>
+
+                {/* أسئلة هذا المفهوم التي أخطأت فيها */}
+                <div className="space-y-2 border-t border-border bg-muted/40 p-4">
+                  <p className="text-[11px] font-black text-muted-foreground">
+                    الأسئلة التي أخطأت فيها
+                  </p>
+                  {entries.map((w) => {
+                    const q = questionById(w.qid)!;
+                    return (
+                      <div
+                        key={w.qid}
+                        className="rounded-2xl border border-border bg-white p-3.5"
+                      >
+                        <p className="text-sm font-bold leading-7 text-gray-900">{q.question}</p>
+                        <div className="mt-2 space-y-1.5">
+                          {w.answer && (
+                            <p className="flex items-start gap-1.5 rounded-xl bg-red-50 px-3 py-2 text-xs font-bold leading-6 text-red-700">
+                              <XCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                              إجابتك: {w.answer}
+                            </p>
+                          )}
+                          <p className="flex items-start gap-1.5 rounded-xl bg-indigo-50 px-3 py-2 text-xs font-bold leading-6 text-indigo-800">
+                            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+                            الإجابة الصحيحة: {q.correct}
+                          </p>
+                        </div>
+                        <p className="mt-2 rounded-xl bg-secondary px-3 py-2 text-xs leading-6 text-gray-700">
+                          {q.reason}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            );
+          })}
+
+          <p className="pb-2 text-center text-[10px] leading-5 text-muted-foreground">
+            كل الشروح والأمثلة هنا من بنك المفاهيم نفسه — لا إضافات خارجية. صحّح خطأً وسيغادر
+            هذه الصفحة تلقائياً.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

@@ -72,18 +72,15 @@ export async function loadQbank(
   }
 }
 
-// لون مميز لكل مقرر بإضاءة متقاربة، يُستعمل للأيقونة والشريط فقط
 export const COURSE_COLOR: Record<string, string> = {
-  M1: "#0E7C86",
-  M2: "#5925DC",
-  M3: "#175CD3",
-  M4: "#B54708",
-  M5: "#067647",
-  G1: "#9F1AB1",
-  C1: "#C11574",
-  AI1: "#344054",
-  SE1: "#0E7490",
-  F1: "#4E5BA6",
+  M1: "#5B21B6",
+  M2: "#B45309",
+  M3: "#7C3AED",
+  M4: "#D97706",
+  M5: "#6D28D9",
+  G1: "#8B5CF6",
+  C1: "#9333EA",
+  AI1: "#0F766E",
 };
 
 // أسماء مختصرة للمحاور — للشرائح والشارات الصغيرة (بلا أرقام — قرار المستخدم)
@@ -96,8 +93,6 @@ export const COURSE_SHORT: Record<string, string> = {
   G1: "ثقافة تربوية",
   C1: "المهارات",
   AI1: "الذكاء الاصطناعي",
-  SE1: "التربية الخاصة",
-  F1: "أسس التربية",
 };
 
 export const courseById = (id: string) => COURSES.find((c) => c.id === id);

@@ -32,14 +32,11 @@ import {
   Users,
   Sparkles,
   LayoutTemplate,
-  ChevronLeft,
 } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { useApp } from "@/lib/store";
 import { shareText } from "@/lib/share";
 import { toast } from "@/hooks/use-toast";
-import { ad } from "@/lib/arabic";
-import { Callout, Card, Chip, Divided, EmptyState, IconTile, PrimaryButton, ScreenShell, SecondaryButton, SectionHeader } from "./ui-kit";
 import {
   DURATION_OPTIONS,
   STRATEGY_OPTIONS,
@@ -79,17 +76,17 @@ const statusIcon: Record<PlanCheckStatus, typeof CircleCheck> = {
   missing: CircleAlert,
 };
 const statusCls: Record<PlanCheckStatus, string> = {
-  done: "text-success",
-  partial: "text-gem",
-  missing: "text-destructive",
+  done: "text-indigo-700",
+  partial: "text-amber-700",
+  missing: "text-red-700",
 };
 
 const inputCls =
-  "w-full rounded-xl border border-input bg-card px-3 py-2.5 text-[15px] leading-7 outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20";
-const chipOff = "min-h-[36px] rounded-full border border-border bg-card px-3 text-sm text-secondary-foreground transition-colors hover:bg-muted";
-const chipOn = "min-h-[36px] rounded-full border border-primary bg-accent px-3 text-sm font-medium text-accent-foreground";
+  "w-full rounded-xl border-2 border-border bg-background p-3 text-sm leading-6 outline-none focus:border-primary";
+const chipOff = "rounded-full border-2 border-border bg-white px-3 py-1.5 text-xs font-bold text-muted-foreground transition hover:border-primary";
+const chipOn = "rounded-full border-2 border-primary bg-accent px-3 py-1.5 text-xs font-black text-primary";
 
-// قسم من النموذج: عنوان ودليل قصير ثم الحقول
+// بطاقة قسم موجه — أيقونة وعنوان وسؤال توجيهي
 function SectionCard({
   icon: Icon,
   title,
@@ -102,35 +99,36 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <Card className="p-5">
-      <div className="mb-4 flex items-start gap-3">
-        <IconTile icon={Icon} />
+    <section className="rounded-2xl border-2 border-border bg-white p-4">
+      <div className="flex items-start gap-2.5">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent">
+          <Icon className="h-4.5 w-4.5 text-primary" />
+        </span>
         <div className="min-w-0">
-          <h3 className="font-display text-base font-semibold leading-7">{title}</h3>
-          {guide && <p className="text-[13px] leading-6 text-muted-foreground">{guide}</p>}
+          <h3 className="text-sm font-black leading-6">{title}</h3>
+          {guide && <p className="text-[11px] font-bold leading-4 text-muted-foreground">{guide}</p>}
         </div>
       </div>
-      {children}
-    </Card>
+      <div className="mt-3">{children}</div>
+    </section>
   );
 }
 
-// قسم نصي في عرض الخطة: كل سطر بند، ويختفي القسم الفارغ
+// قسم نصي بعرض الخطة — أسطر مفصولة تُعرض شرطات، ويختفي القسم إن كان فارغًا
 function PlanLines({ title, body }: { title: string; body: string }) {
   const lines = body.split(/\n+/).map((s) => s.trim()).filter(Boolean);
   if (!lines.length) return null;
   return (
-    <section>
-      <h3 className="mb-2 font-display text-base font-semibold">{title}</h3>
-      <ul className="space-y-1.5 text-[15px] leading-7 text-secondary-foreground">
+    <div className="rounded-2xl border-2 border-border bg-white p-4">
+      <h3 className="text-sm font-black">{title}</h3>
+      <div className="mt-2 space-y-1">
         {lines.map((ln, i) => (
-          <li key={i} className="flex gap-2">
-            <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-            {ln}
-          </li>
+          <p key={i} className="text-xs font-bold leading-6">
+            – {ln}
+          </p>
         ))}
-      </ul>
-    </section>
+      </div>
+    </div>
   );
 }
 
@@ -232,317 +230,488 @@ export default function StudioView() {
     toast({ title: "حُذفت الخطة من «خططي»" });
   };
 
-  // ---------- عرض خطة محفوظة ----------
+  // ---------- شاشة عرض خطة محفوظة ----------
   if (selected) {
     const r = planReview(selected);
     return (
-      <ScreenShell
-        title={selected.topic}
-        sub="خطة درس"
-        onBack={() => setSelected(null)}
-        onClose={clearStudio}
-        footer={
-          <>
-            <PrimaryButton onClick={() => share(selected)} className="flex-1">
-              <Share2 className="h-4 w-4" /> مشاركة أو نسخ
-            </PrimaryButton>
-            <SecondaryButton onClick={() => startEdit(selected)} aria-label="تعديل الخطة" className="px-3">
-              <Pencil className="h-4 w-4" />
-            </SecondaryButton>
-            <SecondaryButton
-              onClick={() => doDelete(selected.id)}
-              aria-label={confirmDel === selected.id ? "تأكيد حذف الخطة" : "حذف الخطة"}
-              className={confirmDel === selected.id ? "border-destructive px-3 text-destructive" : "px-3"}
-            >
-              <Trash2 className="h-4 w-4" />
-            </SecondaryButton>
-          </>
-        }
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 24 }}
+        className="fixed inset-0 z-50 overflow-y-auto bg-background"
       >
-        <div className="space-y-6">
-          <div className="flex flex-wrap gap-2">
-            {selected.subject && <Chip tone="primary">{selected.subject}</Chip>}
-            {selected.grade && <Chip>{selected.grade}</Chip>}
-            {selected.duration && <Chip>{selected.duration}</Chip>}
-            <Chip>{planMaturityWord(selected)}</Chip>
+        <div className="mx-auto max-w-lg px-4 pb-28 pt-5">
+          <button
+            onClick={() => setSelected(null)}
+            className="mb-4 flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-bold text-muted-foreground"
+          >
+            <ChevronRight className="h-4 w-4" /> عودة إلى خططي
+          </button>
+
+          <div className="rounded-2xl border-2 border-primary/20 bg-gradient-to-l from-accent to-white p-4">
+            <h2 className="text-lg font-black leading-7">{selected.topic}</h2>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {selected.subject && (
+                <span className="rounded-full border border-primary/20 bg-white px-2.5 py-1 text-[10px] font-black text-primary">{selected.subject}</span>
+              )}
+              {selected.grade && (
+                <span className="rounded-full border border-primary/20 bg-white px-2.5 py-1 text-[10px] font-black text-primary">{selected.grade}</span>
+              )}
+              {selected.duration && (
+                <span className="rounded-full border border-primary/20 bg-white px-2.5 py-1 text-[10px] font-black text-primary">{selected.duration}</span>
+              )}
+              <span className="rounded-full bg-muted px-2.5 py-1 text-[10px] font-black text-muted-foreground">{planMaturityWord(selected)}</span>
+            </div>
           </div>
-          {confirmDel === selected.id && <Callout tone="danger">اضغط زر الحذف مرة أخرى للتأكيد.</Callout>}
-          <Card className="space-y-6 p-5">
+
+          <div className="mt-4 space-y-3">
             <PlanLines title="الأهداف التعليمية" body={selected.objectives} />
             <PlanLines title="المعرفة السابقة" body={selected.prior} />
             <PlanLines title="الوسائل والأدوات" body={selected.materials} />
             {selected.strategies.length > 0 && (
-              <section>
-                <h3 className="mb-2 font-display text-base font-semibold">استراتيجيات التدريس</h3>
-                <div className="flex flex-wrap gap-2">
-                  {selected.strategies.map((x) => (
-                    <Chip key={x} tone="primary">
-                      {x}
-                    </Chip>
+              <div className="rounded-2xl border-2 border-border bg-white p-4">
+                <h3 className="text-sm font-black">استراتيجيات التدريس</h3>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {selected.strategies.map((s) => (
+                    <span key={s} className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-black text-primary">
+                      {s}
+                    </span>
                   ))}
                 </div>
-              </section>
+              </div>
             )}
             {PHASE_META.some((ph) => selected.phases[ph.key].trim()) && (
-              <section>
-                <h3 className="mb-3 font-display text-base font-semibold">خطوات التنفيذ</h3>
-                <ol className="space-y-4">
-                  {PHASE_META.filter((ph) => selected.phases[ph.key].trim()).map((ph, i) => (
-                    <li key={ph.key} className="flex gap-3">
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">{ad(i + 1)}</span>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold">{ph.label}</p>
-                        {selected.phases[ph.key]
-                          .split(/\n+/)
-                          .map((x) => x.trim())
-                          .filter(Boolean)
-                          .map((ln, k) => (
-                            <p key={k} className="mt-1 text-[15px] leading-7 text-secondary-foreground">
-                              {ln}
-                            </p>
-                          ))}
-                      </div>
-                    </li>
+              <div className="rounded-2xl border-2 border-border bg-white p-4">
+                <h3 className="text-sm font-black">خطوات التنفيذ</h3>
+                <div className="mt-3 space-y-3">
+                  {PHASE_META.filter((ph) => selected.phases[ph.key].trim()).map((ph) => (
+                    <div key={ph.key} className="rounded-xl bg-muted/50 p-3">
+                      <p className="text-xs font-black text-primary">{ph.label}</p>
+                      {selected.phases[ph.key]
+                        .split(/\n+/)
+                        .map((s) => s.trim())
+                        .filter(Boolean)
+                        .map((ln, i) => (
+                          <p key={i} className="mt-1 text-xs font-bold leading-6">
+                            – {ln}
+                          </p>
+                        ))}
+                    </div>
                   ))}
-                </ol>
-              </section>
+                </div>
+              </div>
             )}
             <PlanLines title="الأسئلة المفتاحية" body={selected.keyQuestions} />
             <PlanLines title="الواجب" body={selected.homework} />
             <PlanLines title="الفروق الفردية" body={selected.differentiation} />
-          </Card>
-          <ReviewCard review={r} />
+
+            <div className="rounded-2xl border-2 border-border bg-white p-4">
+              <p className="flex items-center gap-1.5 text-sm font-black">
+                <ClipboardCheck className="h-4 w-4 text-primary" /> تقييم الخطة
+              </p>
+              <p className="mt-1 text-xs font-black leading-5">{r.verdict}</p>
+              {r.items
+                .filter((it) => it.status !== "done")
+                .map((it) => (
+                  <p key={it.key} className="mt-1 text-[11px] font-bold leading-5 text-muted-foreground">
+                    {it.label}: {it.note}
+                  </p>
+                ))}
+            </div>
+          </div>
+
+          <div className="mt-4 flex gap-2">
+            <button
+              onClick={() => share(selected)}
+              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-black text-primary-foreground"
+            >
+              <Share2 className="h-4.5 w-4.5" /> مشاركة أو نسخ
+            </button>
+            <button
+              onClick={() => startEdit(selected)}
+              aria-label="تعديل الخطة"
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-border bg-white text-muted-foreground"
+            >
+              <Pencil className="h-4.5 w-4.5" />
+            </button>
+            <button
+              onClick={() => doDelete(selected.id)}
+              aria-label={confirmDel === selected.id ? "تأكيد حذف الخطة" : "حذف الخطة"}
+              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 ${
+                confirmDel === selected.id ? "border-red-300 bg-red-50 text-red-600" : "border-border bg-white text-muted-foreground"
+              }`}
+            >
+              <Trash2 className="h-4.5 w-4.5" />
+            </button>
+          </div>
+          {confirmDel === selected.id && (
+            <p className="mt-2 text-center text-xs font-bold text-red-600">اضغط زر الحذف مجددًا للتأكيد</p>
+          )}
         </div>
-      </ScreenShell>
+      </motion.div>
     );
   }
 
-  const tabs = (
-    <div role="tablist" aria-label="أقسام الاستوديو" className="mb-6 grid grid-cols-3 rounded-xl bg-muted p-1">
-      {(
-        [
-          ["new", editingId ? "تعديل الخطة" : "خطة جديدة", NotebookPen],
-          ["templates", "قوالب", LayoutTemplate],
-          ["mine", `خططي${lessonPlans.length ? ` (${ad(lessonPlans.length)})` : ""}`, FolderOpen],
-        ] as const
-      ).map(([id, lbl, Icon]) => (
-        <button
-          key={id}
-          type="button"
-          role="tab"
-          aria-selected={tab === id}
-          onClick={() => setTab(id)}
-          className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg text-[13px] transition-colors ${
-            tab === id ? "bg-card font-medium text-foreground shadow-sm" : "text-muted-foreground"
-          }`}
-        >
-          <Icon className="h-4 w-4" /> {lbl}
-        </button>
-      ))}
-    </div>
-  );
-
+  // ---------- الشاشة الرئيسية: هيدر + تبويبان ----------
   return (
-    <ScreenShell
-      title="استوديو خطط الدروس"
-      sub="خطة كاملة الأركان بخطوات موجهة، وتقييم قبل الحصة"
-      onClose={clearStudio}
-      footer={
-        tab === "new" ? (
-          <>
-            <SecondaryButton onClick={runReview} className="flex-1">
-              <ClipboardCheck className="h-4 w-4" /> قيّم الخطة
-            </SecondaryButton>
-            <PrimaryButton onClick={doSave} className="flex-1">
-              <Save className="h-4 w-4" /> {editingId ? "احفظ التعديل" : "احفظ"}
-            </PrimaryButton>
-          </>
-        ) : undefined
-      }
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 24 }}
+      className="fixed inset-0 z-50 overflow-y-auto bg-background"
     >
-      {tabs}
-      {tab === "new" ? (
-        <div className="space-y-4">
-          {formErr && <Callout tone="danger">{formErr}</Callout>}
-          {editingId && (
-            <Callout tone="info" title="تعدّل خطة محفوظة">
-              <button type="button" onClick={resetDraft} className="font-medium text-primary underline">
-                ابدأ خطة جديدة بدلًا من ذلك
-              </button>
-            </Callout>
-          )}
-
-          <SectionCard icon={FileText} title="بطاقة الدرس" guide="عنوان خطتك وما تدور حوله">
-            <div className="space-y-3">
-              <label className="block space-y-1.5">
-                <span className="text-sm font-medium text-secondary-foreground">موضوع الدرس</span>
-                <input value={form.topic} onChange={(e) => setField("topic", e.target.value)} placeholder="مثال: جمع الكسور المتشابهة" className={inputCls} />
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <label className="block space-y-1.5">
-                  <span className="text-sm font-medium text-secondary-foreground">المادة</span>
-                  <input value={form.subject} onChange={(e) => setField("subject", e.target.value)} className={inputCls} />
-                </label>
-                <label className="block space-y-1.5">
-                  <span className="text-sm font-medium text-secondary-foreground">الصف</span>
-                  <input value={form.grade} onChange={(e) => setField("grade", e.target.value)} className={inputCls} />
-                </label>
-              </div>
-              <div>
-                <p className="mb-2 text-sm font-medium text-secondary-foreground">زمن التنفيذ</p>
-                <div className="flex flex-wrap gap-2">
-                  {DURATION_OPTIONS.map((d) => (
-                    <button key={d} type="button" onClick={() => setField("duration", form.duration === d ? "" : d)} className={form.duration === d ? chipOn : chipOff}>
-                      {d}
-                    </button>
-                  ))}
-                </div>
-              </div>
+      <div className="sticky top-0 z-10 border-b border-border bg-white/95 px-4 pb-3 pt-4 backdrop-blur">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+              <ClipboardList className="h-5.5 w-5.5" />
+            </span>
+            <div>
+              <h1 className="text-xl font-black text-foreground">استوديو خطط الدروس</h1>
+              <p className="text-xs text-muted-foreground">اصنع خطتك بخطوات موجهة وقيّمها قبل الحصة</p>
             </div>
-          </SectionCard>
-
-          <SectionCard icon={Target} title="الأهداف التعليمية" guide="هدف في كل سطر، يبدأ بفعل قابل للملاحظة: يذكر، يقارن، يصمم">
-            <textarea value={form.objectives} onChange={(e) => setField("objectives", e.target.value)} rows={3} placeholder={"يذكر الطالب...\nيقارن الطالب..."} aria-label="الأهداف التعليمية" className={inputCls} />
-          </SectionCard>
-
-          <SectionCard icon={Layers} title="المعرفة السابقة" guide="ما الذي يُفترض أن يعرفه الطلاب قبل الدرس؟">
-            <textarea value={form.prior} onChange={(e) => setField("prior", e.target.value)} rows={2} placeholder="مثال: يعرف الطالب مفهوم الكسر جزءًا من كل" aria-label="المعرفة السابقة" className={inputCls} />
-          </SectionCard>
-
-          <SectionCard icon={Boxes} title="الوسائل والأدوات" guide="أداة في كل سطر، مما ستجهزه قبل الحصة">
-            <textarea value={form.materials} onChange={(e) => setField("materials", e.target.value)} rows={2} placeholder={"نماذج كسور ورقية\nسبورة وأقلام ملونة"} aria-label="الوسائل والأدوات" className={inputCls} />
-          </SectionCard>
-
-          <SectionCard icon={Compass} title="استراتيجيات التدريس" guide="اختر ما يناسب الموضوع ومرحلة طلابك، ويمكن الجمع">
-            <div className="flex flex-wrap gap-2">
-              {STRATEGY_OPTIONS.map((x) => {
-                const on = form.strategies.includes(x);
-                return (
-                  <button
-                    key={x}
-                    type="button"
-                    aria-pressed={on}
-                    onClick={() => setField("strategies", on ? form.strategies.filter((y) => y !== x) : [...form.strategies, x])}
-                    className={on ? chipOn : chipOff}
-                  >
-                    {x}
-                  </button>
-                );
-              })}
-            </div>
-          </SectionCard>
-
-          <SectionCard icon={Route} title="خطوات التنفيذ" guide="خمس مراحل تمر بها الحصة، لكل مرحلة سطر أو سطران">
-            <ol className="space-y-4">
-              {PHASE_META.map((ph, i) => (
-                <li key={ph.key} className="flex gap-3">
-                  <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground">{ad(i + 1)}</span>
-                  <label className="block min-w-0 flex-1 space-y-1">
-                    <span className="block text-sm font-semibold">{ph.label}</span>
-                    <span className="block text-[13px] leading-6 text-muted-foreground">{ph.guide}</span>
-                    <textarea value={form.phases[ph.key]} onChange={(e) => setPhase(ph.key, e.target.value)} rows={2} placeholder={ph.placeholder} className={`${inputCls} mt-1.5`} />
-                  </label>
-                </li>
-              ))}
-            </ol>
-          </SectionCard>
-
-          <SectionCard icon={HelpCircle} title="الأسئلة المفتاحية" guide="سؤال في كل سطر، تقود بها الحوار الصفي">
-            <textarea value={form.keyQuestions} onChange={(e) => setField("keyQuestions", e.target.value)} rows={2} placeholder={"متى لا يصح أن نجمع كسرين مباشرة؟\nكيف نعرف أن الجواب منطقي؟"} aria-label="الأسئلة المفتاحية" className={inputCls} />
-          </SectionCard>
-
-          <SectionCard icon={BookMarked} title="الواجب" guide="ماذا ينجز الطالب بعد الحصة ليثبت تعلمه؟">
-            <textarea value={form.homework} onChange={(e) => setField("homework", e.target.value)} rows={2} placeholder="تمرين قصير متدرج مع مسألة حياتية واحدة" aria-label="الواجب" className={inputCls} />
-          </SectionCard>
-
-          <SectionCard icon={Users} title="الفروق الفردية" guide="كيف تيسّر على المتعثر؟ وكيف تثري المتفوق؟">
-            <textarea value={form.differentiation} onChange={(e) => setField("differentiation", e.target.value)} rows={2} placeholder="للمتعثر: نماذج محسوسة. للمتفوق: مسألة تحدٍ مفتوحة" aria-label="الفروق الفردية" className={inputCls} />
-          </SectionCard>
-
-          {review && (
-            <div ref={reviewRef}>
-              <ReviewCard review={review} />
-            </div>
-          )}
+          </div>
+          <button
+            onClick={clearStudio}
+            aria-label="إغلاق"
+            className="rounded-full bg-muted p-2 text-muted-foreground hover:bg-accent"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
-      ) : tab === "templates" ? (
-        <div className="space-y-4">
-          <p className="text-[15px] leading-7 text-secondary-foreground">قوالب مكتملة الأركان. حمّل ما يناسب نوع درسك، ثم كيّفه بصفك وموضوعك.</p>
-          {PLAN_TEMPLATES.map((t) => (
-            <Card key={t.id} className="p-5">
-              <div className="flex items-start justify-between gap-3">
-                <h3 className="font-display text-base font-semibold leading-7">{t.name}</h3>
-                <Chip tone="primary">{t.tag}</Chip>
-              </div>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">{t.desc}</p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {t.form.strategies.map((x) => (
-                  <Chip key={x}>{x}</Chip>
-                ))}
-              </div>
-              <SecondaryButton onClick={() => loadTemplate(t)} className="mt-4 w-full sm:w-auto">
-                <NotebookPen className="h-4 w-4" /> ابدأ بهذا القالب
-              </SecondaryButton>
-            </Card>
-          ))}
-        </div>
-      ) : lessonPlans.length === 0 ? (
-        <EmptyState
-          icon={NotebookPen}
-          title="لم تحفظ خططًا بعد"
-          sub="ابدأ خطة جديدة أو من قالب جاهز، ثم قيّمها واحفظها هنا."
-          action={<PrimaryButton onClick={() => setTab("new")}>خطة جديدة</PrimaryButton>}
-        />
-      ) : (
-        <Divided>
-          {lessonPlans.map((p) => (
+        <div className="mt-3 flex gap-1.5">
+          {(
+            [
+              ["new", "خطة جديدة", NotebookPen],
+              ["templates", "قوالب", LayoutTemplate],
+              ["mine", "خططي", FolderOpen],
+            ] as const
+          ).map(([id, lbl, Icon]) => (
             <button
-              key={p.id}
-              type="button"
-              onClick={() => {
-                setSelected(p);
-                setConfirmDel(null);
-              }}
-              className="flex w-full items-start gap-3 px-4 py-4 text-right transition-colors hover:bg-muted/60"
+              key={id}
+              onClick={() => setTab(id)}
+              className={`flex flex-1 items-center justify-center gap-1 rounded-xl border-2 px-1.5 py-2 text-[11px] font-bold ${
+                tab === id ? "border-primary bg-accent text-primary" : "border-border bg-white text-muted-foreground"
+              }`}
             >
-              <IconTile icon={FileText} />
-              <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-medium leading-6">{p.topic}</span>
-                <span className="mt-2 flex flex-wrap gap-1.5">
-                  {p.subject && <Chip tone="primary">{p.subject}</Chip>}
-                  {p.grade && <Chip>{p.grade}</Chip>}
-                  <Chip>{planMaturityWord(p)}</Chip>
-                </span>
-              </span>
-              <ChevronLeft className="mt-2 h-4 w-4 shrink-0 text-muted-foreground/60" />
+              <Icon className="h-4 w-4" /> {lbl}
             </button>
           ))}
-        </Divided>
-      )}
-    </ScreenShell>
-  );
-}
+        </div>
+      </div>
 
-function ReviewCard({ review }: { review: PlanReview }) {
-  return (
-    <Card className="p-5">
-      <SectionHeader title="تقييم الخطة" sub={review.verdict} />
-      <ul className="divide-y divide-border">
-        {review.items.map((it) => {
-          const Icon = statusIcon[it.status];
-          return (
-            <li key={it.key} className="flex gap-3 py-3">
-              <Icon className={`mt-1 h-5 w-5 shrink-0 ${statusCls[it.status]}`} />
-              <div className="min-w-0">
-                <p className="text-sm font-medium">
-                  {it.label}، <span className={statusCls[it.status]}>{PLAN_STATUS_WORD[it.status]}</span>
-                </p>
-                <p className="mt-0.5 text-[13px] leading-6 text-muted-foreground">{it.note}</p>
+      <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
+        {tab === "new" ? (
+          <div className="space-y-3">
+            <div className="rounded-2xl border-2 border-primary/20 bg-gradient-to-l from-accent to-white p-4">
+              <p className="flex items-center gap-2 text-sm font-black text-primary">
+                <Sparkles className="h-4 w-4" /> كيف يعمل الاستوديو؟
+              </p>
+              <p className="mt-1 text-xs leading-6 text-muted-foreground">
+                ابدأ من قالب جاهز أو املأ الأركان بنفسك — كل حقل موجه بسؤال يذكّرك بالأفضل المهني — ثم اطلب التقييم ليريك ما اكتمل وما يحتاج
+                لمسة، واحفظ خطتك لتعود إليها وتشاركها وقتما شئت.
+              </p>
+            </div>
+
+            <SectionCard icon={FileText} title="بطاقة الدرس" guide="عنوان خطتك وما تدور حوله">
+              <div className="space-y-2.5">
+                <input
+                  value={form.topic}
+                  onChange={(e) => setField("topic", e.target.value)}
+                  placeholder="موضوع الدرس — مثال: جمع الكسور المتشابهة"
+                  aria-label="موضوع الدرس"
+                  className={inputCls}
+                />
+                <div className="flex gap-2.5">
+                  <input
+                    value={form.subject}
+                    onChange={(e) => setField("subject", e.target.value)}
+                    placeholder="المادة"
+                    aria-label="المادة"
+                    className={inputCls}
+                  />
+                  <input
+                    value={form.grade}
+                    onChange={(e) => setField("grade", e.target.value)}
+                    placeholder="الصف"
+                    aria-label="الصف"
+                    className={inputCls}
+                  />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-xs font-bold text-muted-foreground">زمن التنفيذ</label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {DURATION_OPTIONS.map((d) => (
+                      <button
+                        key={d}
+                        onClick={() => setField("duration", form.duration === d ? "" : d)}
+                        className={form.duration === d ? chipOn : chipOff}
+                      >
+                        {d}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </li>
-          );
-        })}
-      </ul>
-    </Card>
+            </SectionCard>
+
+            <SectionCard
+              icon={Target}
+              title="الأهداف التعليمية"
+              guide="هدف في كل سطر — ابدأ بفعل قابل للملاحظة مثل يذكر أو يقارن أو يصمم"
+            >
+              <textarea
+                value={form.objectives}
+                onChange={(e) => setField("objectives", e.target.value)}
+                rows={3}
+                placeholder={"يذكر الطالب...\nيقارن الطالب..."}
+                aria-label="الأهداف التعليمية"
+                className={inputCls}
+              />
+            </SectionCard>
+
+            <SectionCard icon={Layers} title="المعرفة السابقة" guide="ما الذي يُفترض أن يعرفه الطلاب قبل الدرس؟">
+              <textarea
+                value={form.prior}
+                onChange={(e) => setField("prior", e.target.value)}
+                rows={2}
+                placeholder="مثال: يعرف الطالب مفهوم الكسر كجزء من كل"
+                aria-label="المعرفة السابقة"
+                className={inputCls}
+              />
+            </SectionCard>
+
+            <SectionCard icon={Boxes} title="الوسائل والأدوات" guide="أداة في كل سطر — ما ستجهزه قبل الحصة">
+              <textarea
+                value={form.materials}
+                onChange={(e) => setField("materials", e.target.value)}
+                rows={2}
+                placeholder={"نماذج كسور ورقية\nسبورة وأقلام ملونة"}
+                aria-label="الوسائل والأدوات"
+                className={inputCls}
+              />
+            </SectionCard>
+
+            <SectionCard icon={Compass} title="استراتيجيات التدريس" guide="اختر ما يخدم طبيعة الموضوع ومرحلة طلابك — ويمكن الجمع">
+              <div className="flex flex-wrap gap-1.5">
+                {STRATEGY_OPTIONS.map((s) => {
+                  const on = form.strategies.includes(s);
+                  return (
+                    <button
+                      key={s}
+                      onClick={() => setField("strategies", on ? form.strategies.filter((x) => x !== s) : [...form.strategies, s])}
+                      className={on ? chipOn : chipOff}
+                    >
+                      {s}
+                    </button>
+                  );
+                })}
+              </div>
+            </SectionCard>
+
+            <SectionCard icon={Route} title="خطوات التنفيذ" guide="خمس مراحل تمر بها الحصة — صِف كل مرحلة بسطر أو سطرين">
+              <div className="space-y-3">
+                {PHASE_META.map((ph) => (
+                  <div key={ph.key} className="rounded-xl bg-muted/50 p-3">
+                    <p className="text-xs font-black text-primary">{ph.label}</p>
+                    <p className="text-[11px] font-bold leading-4 text-muted-foreground">{ph.guide}</p>
+                    <textarea
+                      value={form.phases[ph.key]}
+                      onChange={(e) => setPhase(ph.key, e.target.value)}
+                      rows={2}
+                      placeholder={ph.placeholder}
+                      aria-label={ph.label}
+                      className={`${inputCls} mt-2 bg-white`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </SectionCard>
+
+            <SectionCard icon={HelpCircle} title="الأسئلة المفتاحية" guide="سؤال في كل سطر — أسئلتك الجاهزة تقود الحوار الصفي">
+              <textarea
+                value={form.keyQuestions}
+                onChange={(e) => setField("keyQuestions", e.target.value)}
+                rows={2}
+                placeholder={"متى لا يصح أن نجمع كسورين مباشرة؟\nكيف نعرف أن الجواب منطقي؟"}
+                aria-label="الأسئلة المفتاحية"
+                className={inputCls}
+              />
+            </SectionCard>
+
+            <SectionCard icon={BookMarked} title="الواجب" guide="ماذا ينجز الطالب بعد الحصة ليثبت تعلمه؟">
+              <textarea
+                value={form.homework}
+                onChange={(e) => setField("homework", e.target.value)}
+                rows={2}
+                placeholder="تمرين قصير متدرج من كتاب النشاط مع مسألة حياتية واحدة"
+                aria-label="الواجب"
+                className={inputCls}
+              />
+            </SectionCard>
+
+            <SectionCard icon={Users} title="الفروق الفردية" guide="كيف تخدم المتعثر بتيسير؟ والمتفوق بإثراء؟">
+              <textarea
+                value={form.differentiation}
+                onChange={(e) => setField("differentiation", e.target.value)}
+                rows={2}
+                placeholder="للمتعثر: نماذج محسوسة بجواري — للمتفوق: مسألة تحدٍ مفتوحة"
+                aria-label="الفروق الفردية"
+                className={inputCls}
+              />
+            </SectionCard>
+
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={runReview}
+                className="flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-primary/30 bg-accent py-3 font-black text-primary"
+              >
+                <ClipboardCheck className="h-5 w-5" /> قيّم خطتك
+              </button>
+              <button
+                onClick={doSave}
+                className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-black text-primary-foreground"
+              >
+                <Save className="h-5 w-5" /> {editingId ? "احفظ التعديل" : "احفظ في خططي"}
+              </button>
+            </div>
+            {formErr && <p className="text-center text-xs font-black text-red-600">{formErr}</p>}
+            {editingId && (
+              <button onClick={resetDraft} className="w-full py-1 text-center text-xs font-bold text-muted-foreground underline">
+                إلغاء التعديل والبدء من جديد
+              </button>
+            )}
+
+            {review && (
+              <motion.div
+                ref={reviewRef}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-2xl border-2 border-primary/25 bg-white p-4"
+              >
+                <p className="flex items-center gap-1.5 text-sm font-black text-primary">
+                  <Sparkles className="h-4 w-4" /> تقييم الخطة
+                </p>
+                <p className="mt-1 text-xs font-black leading-5">{review.verdict}</p>
+                <div className="mt-3 space-y-2">
+                  {review.items.map((it) => {
+                    const Icon = statusIcon[it.status];
+                    return (
+                      <div key={it.key} className="flex items-start gap-2.5 rounded-xl bg-muted/40 p-3">
+                        <Icon className={`mt-0.5 h-4 w-4 shrink-0 ${statusCls[it.status]}`} />
+                        <div className="min-w-0">
+                          <p className="text-xs font-black">
+                            {it.label} <span className={statusCls[it.status]}>· {PLAN_STATUS_WORD[it.status]}</span>
+                          </p>
+                          <p className="mt-0.5 text-[11px] font-bold leading-5 text-muted-foreground">{it.note}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </div>
+        ) : tab === "templates" ? (
+          <div className="space-y-3">
+            <div className="rounded-2xl border-2 border-primary/20 bg-gradient-to-l from-accent to-white p-4">
+              <p className="flex items-center gap-2 text-sm font-black text-primary">
+                <LayoutTemplate className="h-4 w-4" /> قوالب جاهزة كاملة الأركان
+              </p>
+              <p className="mt-1 text-xs leading-6 text-muted-foreground">
+                كل قالب خطة محترفة مكتملة من معلمين سابقين — حمّل ما يناسب نوع درسك ثم كيّفه بصفّك وموضوعك، فالبداية من منتصف الطريق أنجح من البداية من الصفر.
+              </p>
+            </div>
+            {PLAN_TEMPLATES.map((t) => (
+              <div key={t.id} className="rounded-2xl border-2 border-border bg-white p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-black leading-6">{t.name}</h3>
+                    <span className="mt-1 inline-block rounded-full bg-accent px-2 py-0.5 text-[10px] font-black text-primary">{t.tag}</span>
+                  </div>
+                </div>
+                <p className="mt-2 text-xs font-bold leading-5 text-muted-foreground">{t.desc}</p>
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {t.form.strategies.map((s) => (
+                    <span key={s} className="rounded-full bg-muted/70 px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{s}</span>
+                  ))}
+                </div>
+                <button
+                  onClick={() => loadTemplate(t)}
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-primary/30 bg-accent py-2.5 text-xs font-black text-primary"
+                >
+                  <NotebookPen className="h-4 w-4" /> ابدأ بهذا القالب
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : lessonPlans.length === 0 ? (
+          <div className="rounded-2xl border-2 border-dashed border-border bg-white p-8 text-center">
+            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent">
+              <NotebookPen className="h-7 w-7 text-primary" />
+            </span>
+            <h3 className="mt-3 text-sm font-black">لم تحفظ خططًا بعد</h3>
+            <p className="mt-1 text-xs font-bold leading-5 text-muted-foreground">
+              ابدأ من تبويب «خطة جديدة» — الخطوات الموجهة تسهّل البناء، والتقييم يذكّرك بما نقص قبل أن تصعد المنصة
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {lessonPlans.map((p) => (
+              <div
+                key={p.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  setSelected(p);
+                  setConfirmDel(null);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    setSelected(p);
+                    setConfirmDel(null);
+                  }
+                }}
+                className="block w-full cursor-pointer rounded-2xl border-2 border-border bg-white p-4 text-right transition hover:border-primary"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-sm font-black leading-6">{p.topic}</p>
+                  <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
+                    {planMaturityWord(p)}
+                  </span>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {p.subject && <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-primary">{p.subject}</span>}
+                  {p.grade && <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{p.grade}</span>}
+                  {p.duration && <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{p.duration}</span>}
+                </div>
+                <div className="mt-3 flex items-center gap-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      startEdit(p);
+                    }}
+                    className="flex items-center gap-1 rounded-full border border-primary/30 bg-white px-3 py-1 text-[11px] font-black text-primary"
+                  >
+                    <Pencil className="h-3 w-3" /> تعديل
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      doDelete(p.id);
+                    }}
+                    className={`flex items-center gap-1 rounded-full border px-3 py-1 text-[11px] font-black ${
+                      confirmDel === p.id ? "border-red-300 bg-red-50 text-red-600" : "border-border bg-white text-muted-foreground"
+                    }`}
+                  >
+                    <Trash2 className="h-3 w-3" /> {confirmDel === p.id ? "اضغط مجددًا للتأكيد" : "حذف"}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 }

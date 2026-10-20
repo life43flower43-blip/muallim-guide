@@ -11,10 +11,11 @@ const emptySubscribe = () => () => {};
 export default function SpeakButton({
   text,
   label = "قراءة صوتية",
+  tone = "indigo",
 }: {
   text: string;
   label?: string;
-  tone?: string;
+  tone?: "indigo" | "sky";
 }) {
   // الكشف عن الترطيب بلا setState — نمط useSyncExternalStore القياسي
   const mounted = useSyncExternalStore(
@@ -38,18 +39,26 @@ export default function SpeakButton({
     setOn(ok);
   };
 
+  const idle =
+    tone === "sky"
+      ? "bg-sky-100 text-sky-700"
+      : "bg-indigo-100 text-indigo-700";
+
   return (
     <button
-      type="button"
       onClick={toggle}
       aria-label={label}
       aria-pressed={on}
       title={label}
-      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors ${
-        on ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"
-      }`}
+      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-colors ${
+        on ? "bg-primary text-primary-foreground" : idle
+      } ${tone === "sky" ? "dark:bg-sky-500/20 dark:text-sky-200" : "dark:bg-indigo-500/20 dark:text-indigo-200"}`}
     >
-      {on ? <Square className="h-3.5 w-3.5" fill="currentColor" /> : <Volume2 className="h-5 w-5" />}
+      {on ? (
+        <Square className="h-3 w-3" fill="currentColor" />
+      ) : (
+        <Volume2 className="h-4 w-4" />
+      )}
     </button>
   );
 }

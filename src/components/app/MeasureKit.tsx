@@ -19,7 +19,6 @@ import {
 import { parseScores, parseSingle, statsOf, difficultyOf, discriminationOf, weightOf } from "@/lib/measure";
 import { useUi } from "@/lib/ui-store";
 import { ad } from "@/lib/arabic";
-import { Callout, Card, IconTile, ScreenShell } from "./ui-kit";
 
 type ToolId = "stats" | "difficulty" | "discrim" | "weight";
 
@@ -34,15 +33,17 @@ const TOOLS: { id: ToolId; label: string; icon: typeof Gauge; desc: string }[] =
 const pct = (v: number) => `${ad(Math.round(v * 100))}٪`;
 
 const inputCls =
-  "h-12 w-full rounded-xl border border-input bg-card px-3 text-center text-[15px] tabular-nums outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20";
+  "w-full rounded-xl border-2 border-border bg-background p-3 text-center text-sm font-black tabular-nums outline-none focus:border-primary";
 
 function ToolHeader({ icon: Icon, label, desc }: { icon: typeof Gauge; label: string; desc: string }) {
   return (
-    <div className="flex items-start gap-3">
-      <IconTile icon={Icon} />
-      <div className="min-w-0">
-        <h3 className="font-display text-base font-semibold">{label}</h3>
-        <p className="text-[13px] leading-6 text-muted-foreground">{desc}</p>
+    <div className="flex items-center gap-2.5">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent">
+        <Icon className="h-5 w-5 text-primary" />
+      </span>
+      <div>
+        <h3 className="text-sm font-black">{label}</h3>
+        <p className="text-[11px] font-bold text-muted-foreground">{desc}</p>
       </div>
     </div>
   );
@@ -50,12 +51,10 @@ function ToolHeader({ icon: Icon, label, desc }: { icon: typeof Gauge; label: st
 
 function Note({ children }: { children: React.ReactNode }) {
   return (
-    <Callout tone="neutral" className="mt-3">
-      <p className="flex gap-2">
-        <Info className="mt-1.5 h-4 w-4 shrink-0 text-primary" />
-        <span>{children}</span>
-      </p>
-    </Callout>
+    <div className="mt-3 flex items-start gap-2 rounded-xl bg-muted/70 p-3 text-xs font-bold leading-6 text-foreground">
+      <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+      <p>{children}</p>
+    </div>
   );
 }
 
@@ -64,35 +63,60 @@ export default function MeasureKit() {
   const [tool, setTool] = useState<ToolId>("stats");
 
   return (
-    <ScreenShell title="أدوات القياس والتقويم" sub="حاسبات لورقة التقويم، والحساب كله على جهازك" onClose={clearMeasure}>
-      <div role="tablist" aria-label="الأدوات" className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {TOOLS.map((t) => {
-          const Icon = t.icon;
-          const on = tool === t.id;
-          return (
-            <button
-              key={t.id}
-              type="button"
-              role="tab"
-              aria-selected={on}
-              onClick={() => setTool(t.id)}
-              className={`flex min-h-[52px] items-center justify-center gap-2 rounded-xl border px-3 text-[13px] transition-colors ${
-                on ? "border-primary bg-accent font-medium text-accent-foreground ring-1 ring-primary" : "border-border bg-card text-secondary-foreground hover:bg-muted"
-              }`}
-            >
-              <Icon className="h-5 w-5" />
-              {t.label}
-            </button>
-          );
-        })}
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 24 }}
+      className="fixed inset-0 z-50 overflow-y-auto bg-background"
+    >
+      <div className="safe-top" />
+      <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#7C3AED] text-white">
+              <Calculator className="h-5 w-5" />
+            </span>
+            <h2 className="text-xl font-black">معدة القياس والتقويم</h2>
+          </div>
+          <button onClick={clearMeasure} className="rounded-full bg-muted p-2" aria-label="إغلاق المعدة">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <p className="mb-3 rounded-2xl border-2 border-[#7C3AED]/20 bg-gradient-to-l from-[#7C3AED]/10 to-transparent p-3.5 text-xs font-bold leading-6 text-foreground">
+          حاسباتك الأربع لورقة التقويم: أدخل درجات طلابك أو إجاباتهم وستقرأ النتيجة مع تربويها — كل
+          الحساب يجري على جهازك ولا يغادره.
+        </p>
+
+        {/* تبويبات الأدوات الأربع */}
+        <div className="grid grid-cols-4 gap-1.5">
+          {TOOLS.map((t) => {
+            const Icon = t.icon;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setTool(t.id)}
+                className={`flex flex-col items-center gap-1 rounded-xl border-2 px-1 py-2 text-[10px] font-black leading-4 ${
+                  tool === t.id
+                    ? "border-[#7C3AED] bg-[#7C3AED]/10 text-[#7C3AED]"
+                    : "border-border bg-white text-muted-foreground"
+                }`}
+              >
+                <Icon className="h-4.5 w-4.5" />
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-4 rounded-2xl border-2 border-border bg-white p-4">
+          {tool === "stats" && <StatsTool />}
+          {tool === "difficulty" && <DifficultyTool />}
+          {tool === "discrim" && <DiscrimTool />}
+          {tool === "weight" && <WeightTool />}
+        </div>
       </div>
-      <Card className="p-5">
-        {tool === "stats" && <StatsTool />}
-        {tool === "difficulty" && <DifficultyTool />}
-        {tool === "discrim" && <DiscrimTool />}
-        {tool === "weight" && <WeightTool />}
-      </Card>
-    </ScreenShell>
+    </motion.div>
   );
 }
 
@@ -117,7 +141,7 @@ function StatsTool() {
         className={`${inputCls} mt-3 text-right`}
       />
       {scores.length > 0 && (
-        <p className="mt-1.5 text-xs font-medium text-muted-foreground">
+        <p className="mt-1.5 text-[11px] font-bold text-muted-foreground">
           فسّرنا {ad(scores.length)} {scores.length === 1 ? "درجة" : "درجات"} من إدخالك
         </p>
       )}
@@ -154,7 +178,7 @@ function DifficultyTool() {
       />
       <div className="mt-3 grid grid-cols-2 gap-2">
         <div>
-          <label className="mb-1.5 block text-center text-[13px] font-medium text-secondary-foreground">
+          <label className="mb-1 block text-center text-[11px] font-black text-muted-foreground">
             عدد المجيبين كلهم
           </label>
           <input
@@ -166,7 +190,7 @@ function DifficultyTool() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-center text-[13px] font-medium text-secondary-foreground">
+          <label className="mb-1 block text-center text-[11px] font-black text-muted-foreground">
             منهم أجاب صحيحًا
           </label>
           <input
@@ -181,21 +205,21 @@ function DifficultyTool() {
 
       {res ? (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-3 space-y-2">
-          <div className="flex items-center justify-between rounded-xl bg-muted p-3">
-            <span className="text-sm font-semibold">مؤشر الصعوبة</span>
+          <div className="flex items-center justify-between rounded-xl bg-muted/70 p-3">
+            <span className="text-sm font-black">مؤشر الصعوبة</span>
             <span
-              className={`rounded-full px-3 py-1 text-sm font-semibold ${
+              className={`rounded-full px-3 py-1 text-sm font-black ${
                 res.tone === "easy"
-                  ? "bg-success-soft text-success"
+                  ? "bg-indigo-100 text-indigo-700"
                   : res.tone === "mid"
-                    ? "bg-accent text-accent-foreground"
-                    : "bg-danger-soft text-destructive"
+                    ? "bg-sky-100 text-sky-700"
+                    : "bg-red-100 text-red-700"
               }`}
             >
-              {res.word}، {pct(res.p)}
+              {res.word} · {pct(res.p)}
             </span>
           </div>
-          <div className="progress-track h-2">
+          <div className="progress-track h-3">
             <div
               className="progress-fill h-full"
               style={{ width: `${res.p * 100}%` }}
@@ -205,7 +229,7 @@ function DifficultyTool() {
         </motion.div>
       ) : (
         (totalRaw !== "" || correctRaw !== "") && (
-          <p className="mt-3 text-xs font-medium text-destructive">
+          <p className="mt-3 text-xs font-bold text-red-600">
             أدخل عددًا صحيحًا في كل خانة، والمجيبون الصحيحون لا يفوقون المجموع
           </p>
         )
@@ -235,8 +259,8 @@ function DiscrimTool() {
         desc="قارن المجموعة العليا بالدنيا في نتيجة الاختبار"
       />
       <div className="mt-3 space-y-2">
-        <div className="rounded-xl bg-success-soft p-3">
-          <p className="mb-2 text-center text-xs font-semibold text-success">
+        <div className="rounded-xl bg-indigo-50 p-3">
+          <p className="mb-2 text-center text-[11px] font-black text-indigo-800">
             المجموعة العليا — أعلى الدرجات
           </p>
           <div className="grid grid-cols-2 gap-2">
@@ -256,8 +280,8 @@ function DiscrimTool() {
             />
           </div>
         </div>
-        <div className="rounded-xl bg-gem-soft p-3">
-          <p className="mb-2 text-center text-xs font-semibold text-gem">
+        <div className="rounded-xl bg-amber-50 p-3">
+          <p className="mb-2 text-center text-[11px] font-black text-amber-800">
             المجموعة الدنيا — أدنى الدرجات
           </p>
           <div className="grid grid-cols-2 gap-2">
@@ -281,18 +305,18 @@ function DiscrimTool() {
 
       {res && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-3 space-y-2">
-          <div className="flex items-center justify-between rounded-xl bg-muted p-3">
-            <span className="text-sm font-semibold">مؤشر التمييز</span>
+          <div className="flex items-center justify-between rounded-xl bg-muted/70 p-3">
+            <span className="text-sm font-black">مؤشر التمييز</span>
             <span
-              className={`rounded-full px-3 py-1 text-sm font-semibold ${
+              className={`rounded-full px-3 py-1 text-sm font-black ${
                 res.tone === "great" || res.tone === "good"
-                  ? "bg-success-soft text-success"
+                  ? "bg-indigo-100 text-indigo-700"
                   : res.tone === "neg"
-                    ? "bg-danger-soft text-destructive"
-                    : "bg-gem-soft text-gem"
+                    ? "bg-red-100 text-red-700"
+                    : "bg-amber-100 text-amber-700"
               }`}
             >
-              {res.word}، {ad(res.d.toFixed(2))}
+              {res.word} · {ad(res.d.toFixed(2))}
             </span>
           </div>
           <Note>{res.note}</Note>
@@ -319,7 +343,7 @@ function WeightTool() {
       <ToolHeader icon={Scale} label="وزن الدرجة" desc="كم يمثل هذا السؤال من الدرجة الكلية؟" />
       <div className="mt-3 grid grid-cols-2 gap-2">
         <div>
-          <label className="mb-1.5 block text-center text-[13px] font-medium text-secondary-foreground">
+          <label className="mb-1 block text-center text-[11px] font-black text-muted-foreground">
             درجة السؤال
           </label>
           <input
@@ -331,7 +355,7 @@ function WeightTool() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-center text-[13px] font-medium text-secondary-foreground">
+          <label className="mb-1 block text-center text-[11px] font-black text-muted-foreground">
             الدرجة الكلية للاختبار
           </label>
           <input
@@ -346,9 +370,9 @@ function WeightTool() {
 
       {res ? (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-3 space-y-2">
-          <div className="flex items-center justify-between rounded-xl bg-muted p-3">
-            <span className="text-sm font-semibold">وزن السؤال</span>
-            <span className="rounded-full bg-accent px-3 py-1 text-sm font-semibold text-accent-foreground">
+          <div className="flex items-center justify-between rounded-xl bg-muted/70 p-3">
+            <span className="text-sm font-black">وزن السؤال</span>
+            <span className="rounded-full bg-sky-100 px-3 py-1 text-sm font-black text-sky-700">
               {pct(res.pct / 100)}
             </span>
           </div>
@@ -356,7 +380,7 @@ function WeightTool() {
         </motion.div>
       ) : (
         (scoreRaw !== "" || totalRaw !== "") && (
-          <p className="mt-3 text-xs font-medium text-destructive">
+          <p className="mt-3 text-xs font-bold text-red-600">
             أدخل عددًا موجبًا في كل خانة، ودرجة السؤال لا تفوق الكلية
           </p>
         )
@@ -368,12 +392,12 @@ function WeightTool() {
 // بلاطة نتيجة — القيمة بأرقام مشرقية والشرح تحتها
 function ResultTile({ label, value, hint }: { label: string; value: string; hint: string }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-3 text-center">
-      <p className="text-xs font-semibold text-muted-foreground">{label}</p>
-      <p className="mt-1 font-display text-2xl font-medium tabular-nums text-primary" dir="ltr">
+    <div className="rounded-xl border-2 border-border bg-white p-3 text-center">
+      <p className="text-[11px] font-black text-muted-foreground">{label}</p>
+      <p className="mt-0.5 text-2xl font-black tabular-nums text-primary" dir="ltr">
         {value}
       </p>
-      <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
+      <p className="mt-0.5 text-[10px] font-bold text-muted-foreground">{hint}</p>
     </div>
   );
 }

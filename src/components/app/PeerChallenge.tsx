@@ -7,7 +7,20 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Link2, Copy, Share2, CheckCircle2, XCircle, Trophy, ClipboardPaste, Swords, ArrowLeft, Check } from "lucide-react";
+import {
+  X,
+  Users,
+  Link2,
+  Copy,
+  Share2,
+  CheckCircle2,
+  XCircle,
+  Trophy,
+  ChevronRight,
+  ClipboardPaste,
+  Swords,
+  ArrowLeft,
+} from "lucide-react";
 import { COURSES, COURSE_SHORT, questionById, conceptById, shuffle, questionsOfCourse, QUESTIONS } from "@/lib/qbank";
 import { buildPeerLink, decodePeer, type PeerPayload } from "@/lib/peer";
 import { useApp } from "@/lib/store";
@@ -15,9 +28,7 @@ import { useUi } from "@/lib/ui-store";
 import { ad } from "@/lib/arabic";
 import { shareText } from "@/lib/share";
 import { toast } from "@/hooks/use-toast";
-import { Callout, Card, Chip, Divided, ListRow, OptionButton, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader } from "./ui-kit";
-
-const LETTERS = ["أ", "ب", "ج", "د", "هـ"];
+import { Button } from "@/components/ui/button";
 
 type Screen = "menu" | "create" | "paste" | "solve" | "done";
 type Review = { qid: string; ok: boolean };
@@ -33,27 +44,33 @@ export default function PeerChallenge() {
   const finishSession = useApp((s) => s.finishSession);
   const haptics = useApp((s) => s.haptics);
 
-  // تحدٍّ واصل عبر الرابط يبدأ الحل مباشرة عند فتح الطبقة
-  const [screen, setScreen] = useState<Screen>(() => (peerIncoming ? "solve" : "menu"));
+  const [screen, setScreen] = useState<Screen>("menu");
   const [scope, setScope] = useState<string>("all");
   const [size, setSize] = useState<number>(5);
 
   // جلسة الحل
-  const [payload, setPayload] = useState<PeerPayload | null>(() => peerIncoming);
-  const [questions, setQuestions] = useState<string[]>(() => (peerIncoming ? peerIncoming.qids.filter((id) => questionById(id)) : []));
+  const [payload, setPayload] = useState<PeerPayload | null>(null);
+  const [questions, setQuestions] = useState<string[]>([]);
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [graded, setGraded] = useState<null | boolean>(null);
   const [review, setReview] = useState<Review[]>([]);
   const [linkText, setLinkText] = useState("");
   const [pasteInput, setPasteInput] = useState("");
-  // هل التحدي واصل من زميل (رابط مفتوح أو ملصق) أم تحدٍّ أنشأه المستخدم؟
-  const [fromPeer, setFromPeer] = useState(() => Boolean(peerIncoming));
   const startedAt = useRef(Date.now());
+
+  // تحدٍّ واصل عبر الرابط — يبدأ الحل مباشرة عند فتح الطبقة
+  useEffect(() => {
+    if (peerIncoming) {
+      beginSolve(peerIncoming);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // تنظيف peerIncoming عند مغادرة الطبقة كي لا يعود التحدي بعد إغلاقه
   useEffect(() => {
     return () => setPeerIncoming(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const pool = useMemo(() => {
@@ -68,8 +85,7 @@ export default function PeerChallenge() {
     total: size,
   });
 
-  const beginSolve = (p: PeerPayload, incoming: boolean) => {
-    setFromPeer(incoming);
+  const beginSolve = (p: PeerPayload) => {
     setPayload(p);
     setQuestions(p.qids.filter((id) => questionById(id)));
     setIdx(0);
@@ -82,7 +98,7 @@ export default function PeerChallenge() {
 
   const startOwnChallenge = () => {
     const p = createPayload();
-    beginSolve(p, false);
+    beginSolve(p);
   };
 
   const tryPaste = () => {
@@ -98,7 +114,7 @@ export default function PeerChallenge() {
       toast({ title: "تعذر قراءة التحدي من هذا الرابط" });
       return;
     }
-    beginSolve(p, true);
+    beginSolve(p);
   };
 
   const grade = () => {
@@ -127,7 +143,7 @@ export default function PeerChallenge() {
     const correctCount = review.filter((r) => r.ok).length;
     const durationSec = Math.round((Date.now() - startedAt.current) / 1000);
     // إن كان المرسل يحل تحديه الخاص — نضع نتيجته في الرابط
-    if (payload && !fromPeer) {
+    if (payload && !peerIncoming) {
       const finalPayload: PeerPayload = {
         ...payload,
         sender: userName || "زميلك",
@@ -137,7 +153,7 @@ export default function PeerChallenge() {
     }
     finishSession({
       mode: "peer",
-      label: fromPeer ? "تحدّي أقران — من رابط زميل" : "تحدّي أقران — تحديك الخاص",
+      label: peerIncoming ? "تحدّي أقران — من رابط زميل" : "تحدّي أقران — تحديك الخاص",
       total: questions.length,
       correctCount,
       xp: correctCount * PEER_XP_PER_CORRECT,
@@ -175,247 +191,429 @@ export default function PeerChallenge() {
 
   const q = questions[idx] ? questionById(questions[idx]) : undefined;
   const concept = q ? conceptById(q.conceptId) : undefined;
-  const back = () => setScreen("menu");
 
   // ---------- قائمة البداية ----------
   if (screen === "menu") {
     return (
-      <ScreenShell title="تحدّي الأقران" sub="نافس زميلك على الأسئلة نفسها" onClose={clearPeer}>
-        <div className="space-y-6">
-          <p className="text-[15px] leading-7 text-secondary-foreground">
-            الدرس يثبت أكثر حين تنافس فيه زميلك. أنشئ تحديًا من أسئلة البنك وشارك رابطه، فيجيب زميلك عن الأسئلة نفسها وتقارنان النتيجة. كل شيء ينتقل في الرابط نفسه.
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 24 }}
+        className="fixed inset-0 z-50 overflow-y-auto bg-background"
+      >
+        <div className="safe-top" />
+        <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#B45309] text-white">
+                <Users className="h-5 w-5" />
+              </span>
+              <h2 className="text-xl font-black">تحدّي الأقران</h2>
+            </div>
+            <button onClick={clearPeer} className="rounded-full bg-muted p-2" aria-label="إغلاق التحدي">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          <p className="mb-4 rounded-2xl border-2 border-[#B45309]/20 bg-gradient-to-l from-[#B45309]/10 to-transparent p-4 text-sm font-bold leading-7">
+            الدرس يثبت أكثر حين تنافس فيه زميلك: أنشئ تحديًا من أسئلة البنك، وشارك رابطه مع زميل —
+            سيجيب عن الأسئلة نفسها في تطبيقه ويقارن نتيجتكم. كل شيء ينتقل في الرابط نفسه بلا حسابات
+            ولا سيرفرات.
           </p>
-          <Divided>
-            <ListRow icon={Swords} title="أنشئ تحديًا وشاركه" sub="اختر المحور وعدد الأسئلة، حلّها، ثم أرسل الرابط" onClick={() => setScreen("create")} />
-            <ListRow icon={ClipboardPaste} title="وصلني رابط تحدٍّ" sub="ألصق الرابط الذي أرسله زميلك وابدأ" onClick={() => setScreen("paste")} />
-          </Divided>
+
+          <div className="space-y-3">
+            <button
+              onClick={() => setScreen("create")}
+              className="card-soft flex w-full items-center gap-3 rounded-2xl border-2 border-[#B45309]/30 bg-[#B45309]/5 p-4 text-right transition hover:border-[#B45309]"
+            >
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#B45309] text-white">
+                <Swords className="h-6 w-6" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-base font-black">أنشئ تحديًا وشاركه</span>
+                <span className="mt-0.5 block text-xs font-bold leading-6 text-muted-foreground">
+                  اختر المحور وعدد الأسئلة، حلّها، ثم أرسل الرابط لزميلك
+                </span>
+              </span>
+              <ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground" />
+            </button>
+
+            <button
+              onClick={() => setScreen("paste")}
+              className="card-soft flex w-full items-center gap-3 rounded-2xl border-2 border-border bg-white p-4 text-right transition hover:border-primary"
+            >
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-muted text-primary">
+                <ClipboardPaste className="h-6 w-6" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-base font-black">وصلني رابط تحدٍّ</span>
+                <span className="mt-0.5 block text-xs font-bold leading-6 text-muted-foreground">
+                  ألصق الرابط الذي أرسله زميلك وابدأ الحل والمقارنة
+                </span>
+              </span>
+              <ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground" />
+            </button>
+          </div>
         </div>
-      </ScreenShell>
+      </motion.div>
     );
   }
 
   // ---------- شاشة إعداد التحدي ----------
   if (screen === "create") {
-    const scopes = [{ id: "all", label: "كل المحاور" }, ...COURSES.map((c) => ({ id: c.id, label: COURSE_SHORT[c.id] ?? c.name }))];
     return (
-      <ScreenShell
-        title="جهّز تحديك"
-        sub="ستحل أولًا، ثم يُبنى الرابط بالأسئلة ونتيجتك"
-        onBack={back}
-        onClose={clearPeer}
-        footer={
-          <PrimaryButton onClick={startOwnChallenge} className="w-full">
-            <Swords className="h-4 w-4" /> ابدأ الحل
-          </PrimaryButton>
-        }
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 24 }}
+        className="fixed inset-0 z-50 overflow-y-auto bg-background"
       >
-        <div className="space-y-6">
-          <section>
-            <SectionHeader title="المحور" />
-            <Divided>
-              {scopes.map((o) => (
-                <button
-                  key={o.id}
-                  type="button"
-                  aria-pressed={scope === o.id}
-                  onClick={() => setScope(o.id)}
-                  className="flex min-h-[52px] w-full items-center gap-3 px-4 py-3 text-right text-[15px] transition-colors hover:bg-muted/60"
-                >
-                  <span className="flex-1">{o.label}</span>
-                  {scope === o.id && <Check className="h-5 w-5 text-primary" />}
-                </button>
-              ))}
-            </Divided>
-          </section>
-          <section>
-            <SectionHeader title="عدد الأسئلة" />
-            <div role="radiogroup" className="grid grid-cols-2 rounded-xl bg-muted p-1">
-              {[5, 10].map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  role="radio"
-                  aria-checked={size === n}
-                  onClick={() => setSize(n)}
-                  className={`min-h-[40px] rounded-lg text-sm transition-colors ${size === n ? "bg-card font-medium text-foreground shadow-sm" : "text-muted-foreground"}`}
-                >
-                  {ad(n)} أسئلة
-                </button>
-              ))}
-            </div>
-          </section>
+        <div className="safe-top" />
+        <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
+          <button
+            onClick={() => setScreen("menu")}
+            className="mb-4 flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-bold text-muted-foreground"
+          >
+            <ChevronRight className="h-4 w-4" /> عودة
+          </button>
+
+          <h2 className="text-lg font-black">جهّز تحديك</h2>
+
+          <p className="mt-4 mb-2 text-sm font-black text-muted-foreground">من أي محور تكون الأسئلة؟</p>
+          <div className="space-y-1.5">
+            <button
+              onClick={() => setScope("all")}
+              className={`w-full rounded-xl border-2 p-3 text-right text-sm font-black transition ${
+                scope === "all" ? "border-[#B45309] bg-[#B45309]/5" : "border-border bg-white"
+              }`}
+            >
+              كل المحاور — تحدٍّ عام
+            </button>
+            {COURSES.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setScope(c.id)}
+                className={`w-full rounded-xl border-2 p-3 text-right text-sm font-black transition ${
+                  scope === c.id ? "border-[#B45309] bg-[#B45309]/5" : "border-border bg-white"
+                }`}
+              >
+                {COURSE_SHORT[c.id]}
+              </button>
+            ))}
+          </div>
+
+          <p className="mt-4 mb-2 text-sm font-black text-muted-foreground">كم سؤالًا في التحدي؟</p>
+          <div className="grid grid-cols-2 gap-2">
+            {[5, 10].map((n) => (
+              <button
+                key={n}
+                onClick={() => setSize(n)}
+                className={`rounded-xl border-2 p-3 text-center text-sm font-black transition ${
+                  size === n ? "border-[#B45309] bg-[#B45309]/5" : "border-border bg-white"
+                }`}
+              >
+                {ad(n)} أسئلة
+              </button>
+            ))}
+          </div>
+
+          <Button
+            onClick={startOwnChallenge}
+            className="mt-5 h-14 w-full rounded-2xl bg-[#B45309] text-base font-black text-white hover:bg-[#92400E]"
+          >
+            <Swords className="ml-2 h-5 w-5" />
+            حلّ التحدي الآن وأرسل الرابط
+          </Button>
+          <p className="mt-2 text-center text-[11px] font-bold text-muted-foreground">
+            ستحل أولًا لتُعرف نتيجتك، ثم يُبنى الرابط حاملًا الأسئلة ونتيجتك معًا
+          </p>
         </div>
-      </ScreenShell>
+      </motion.div>
     );
   }
 
   // ---------- شاشة لصق الرابط ----------
   if (screen === "paste") {
     return (
-      <ScreenShell
-        title="رابط تحدٍّ من زميل"
-        onBack={back}
-        onClose={clearPeer}
-        footer={
-          <PrimaryButton onClick={tryPaste} disabled={!pasteInput.trim()} className="w-full">
-            <Link2 className="h-4 w-4" /> ابدأ الحل
-          </PrimaryButton>
-        }
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 24 }}
+        className="fixed inset-0 z-50 overflow-y-auto bg-background"
       >
-        <label htmlFor="peer-link" className="mb-2 block text-sm font-medium">
-          ألصق الرابط كاملًا كما وصلك
-        </label>
-        <textarea
-          id="peer-link"
-          value={pasteInput}
-          onChange={(e) => setPasteInput(e.target.value)}
-          rows={4}
-          dir="ltr"
-          className="w-full rounded-xl border border-input bg-card p-3 text-sm leading-6 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-        />
-        <p className="mt-2 text-[13px] leading-6 text-muted-foreground">نقرأ من الرابط الأسئلة ونتيجة زميلك، ثم نقارن نتيجتكما بعد الحل.</p>
-      </ScreenShell>
+        <div className="safe-top" />
+        <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
+          <button
+            onClick={() => setScreen("menu")}
+            className="mb-4 flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-bold text-muted-foreground"
+          >
+            <ChevronRight className="h-4 w-4" /> عودة
+          </button>
+          <h2 className="text-lg font-black">ألصق رابط التحدي</h2>
+          <p className="mt-1 text-xs font-bold leading-6 text-muted-foreground">
+            الصق الرابط كاملًا كما أرسله زميلك — نقرأ منه الأسئلة ونتيجته ونبدأ مقارنتكم
+          </p>
+          <textarea
+            value={pasteInput}
+            onChange={(e) => setPasteInput(e.target.value)}
+            rows={3}
+            placeholder="ألصق الرابط هنا…"
+            className="mt-3 w-full rounded-xl border-2 border-border bg-background p-3 text-xs font-bold leading-6 outline-none focus:border-primary"
+            dir="ltr"
+          />
+          <Button
+            onClick={tryPaste}
+            disabled={!pasteInput.trim()}
+            className="mt-3 h-14 w-full rounded-2xl bg-[#B45309] text-base font-black text-white hover:bg-[#92400E] disabled:opacity-40"
+          >
+            <Link2 className="ml-2 h-5 w-5" />
+            ابدأ حل التحدي
+          </Button>
+        </div>
+      </motion.div>
     );
   }
 
   // ---------- شاشة الحل ----------
   if (screen === "solve" && q) {
+    const opts = q.options;
+    const progress = (idx / questions.length) * 100;
     return (
-      <ScreenShell
-        title={fromPeer ? `تحدّي ${payload?.sender || "زميلك"}` : "تحدّيك"}
-        sub={`السؤال ${ad(idx + 1)} من ${ad(questions.length)}`}
-        onClose={clearPeer}
-        footer={
-          graded === null ? (
-            <PrimaryButton disabled={selected === null} onClick={grade} className="w-full">
-              تحقّق
-            </PrimaryButton>
-          ) : (
-            <PrimaryButton onClick={next} className="w-full">
-              {idx + 1 >= questions.length ? "عرض المقارنة" : "السؤال التالي"} <ArrowLeft className="h-4 w-4" />
-            </PrimaryButton>
-          )
-        }
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 24 }}
+        className="fixed inset-0 z-50 flex flex-col bg-background"
       >
-        <ProgressBar value={((idx + (graded !== null ? 1 : 0)) / questions.length) * 100} className="mb-5" />
-        <motion.div key={q.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
-          {concept && <Chip>{COURSE_SHORT[concept.courseId]}، {concept.chapter}</Chip>}
-          <h2 className="font-display text-lg font-semibold leading-8">{q.question}</h2>
-          <div className="space-y-3">
-            {q.options.map((o, i) => {
-              const isSel = selected === o.text;
-              let state: "idle" | "selected" | "correct" | "wrong" | "dim" = isSel ? "selected" : "idle";
-              if (graded !== null) state = o.isCorrect ? "correct" : isSel ? "wrong" : "dim";
-              return (
-                <OptionButton key={i} letter={LETTERS[i]} state={state} disabled={graded !== null} onClick={() => setSelected(o.text)}>
-                  {o.text}
-                </OptionButton>
-              );
-            })}
+        <div className="safe-top px-4 pb-2 pt-2">
+          <div className="flex items-center gap-3">
+            <button onClick={clearPeer} className="rounded-full p-1.5 text-muted-foreground" aria-label="خروج">
+              <X className="h-6 w-6" />
+            </button>
+            <div className="progress-track h-3.5 flex-1">
+              <div className="progress-fill h-full" style={{ width: `${progress}%` }} />
+            </div>
+            <span className="rounded-full bg-muted px-3 py-1 text-xs font-black text-muted-foreground">
+              {ad(idx + 1)} من {ad(questions.length)}
+            </span>
           </div>
-          {graded !== null && (
-            <Callout tone={graded ? "success" : "danger"} icon={graded ? CheckCircle2 : XCircle} title={graded ? "إجابة صحيحة" : `الصحيح: ${q.correct}`}>
-              {!graded && q.reason}
-            </Callout>
+          <p className="mt-2 text-center text-xs font-bold text-muted-foreground">
+            {peerIncoming ? `تحدّي زميلك: ${payload?.sender || "مرسل"}` : "تحدّيك — حلّه ثم شارك رابطه"}
+          </p>
+        </div>
+
+        <div className="no-scrollbar flex-1 overflow-y-auto px-4 pb-4">
+          <motion.div key={q.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="space-y-3">
+            {concept && (
+              <span className="rounded-full bg-muted px-3 py-1 text-[11px] font-bold text-muted-foreground">
+                {COURSE_SHORT[concept.courseId]} · {concept.chapter}
+              </span>
+            )}
+            <h2 className="text-lg font-extrabold leading-8">{q.question}</h2>
+            <div className="space-y-2.5">
+              {opts.map((o, i) => {
+                const isSel = selected === o.text;
+                const isCorrect = o.isCorrect;
+                let cls = "border-border bg-white";
+                if (graded !== null && isCorrect) cls = "border-indigo-500 bg-indigo-50";
+                else if (graded === false && isSel) cls = "border-red-400 bg-red-50";
+                else if (isSel) cls = "border-primary bg-accent";
+                return (
+                  <button
+                    key={i}
+                    disabled={graded !== null}
+                    onClick={() => setSelected(o.text)}
+                    className={`flex w-full items-center gap-3 rounded-2xl border-2 p-3.5 text-right ${cls}`}
+                  >
+                    <span className="min-w-0 flex-1 text-sm font-bold leading-6">{o.text}</span>
+                    {graded !== null && isCorrect && <CheckCircle2 className="h-5 w-5 shrink-0 text-indigo-600" />}
+                    {graded === false && isSel && <XCircle className="h-5 w-5 shrink-0 text-red-500" />}
+                  </button>
+                );
+              })}
+            </div>
+            {graded !== null && (
+              <motion.p
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`rounded-xl p-3 text-xs font-bold leading-6 ${
+                  graded ? "bg-indigo-50 text-indigo-900" : "bg-red-50 text-red-900"
+                }`}
+              >
+                {graded ? "إجابة صحيحة — أحسنت" : `الصحيح: ${q.correct} — ${q.reason}`}
+              </motion.p>
+            )}
+          </motion.div>
+        </div>
+
+        <div className="safe-bottom border-t border-border bg-white px-4 pt-3">
+          {graded === null ? (
+            <Button
+              disabled={selected === null}
+              onClick={grade}
+              className="h-14 w-full rounded-2xl bg-primary text-lg font-black text-primary-foreground disabled:opacity-40"
+            >
+              تحقق
+            </Button>
+          ) : (
+            <Button onClick={next} className="h-14 w-full rounded-2xl bg-primary text-lg font-black text-primary-foreground">
+              {idx + 1 >= questions.length ? "عرض المقارنة" : "السؤال التالي"}
+              <ArrowLeft className="mr-2 h-5 w-5" />
+            </Button>
           )}
-        </motion.div>
-      </ScreenShell>
+        </div>
+      </motion.div>
     );
   }
 
   // ---------- شاشة النتيجة والمقارنة ----------
   if (screen === "done") {
     const myCorrect = review.filter((r) => r.ok).length;
-    const isReceiver = fromPeer;
+    const isReceiver = Boolean(peerIncoming);
     const senderCorrect = payload?.senderCorrect ?? 0;
     const iWon = myCorrect > senderCorrect;
     const tie = myCorrect === senderCorrect;
 
     return (
-      <ScreenShell
-        title={isReceiver ? "نتيجة المقارنة" : "تحديك جاهز"}
-        onClose={clearPeer}
-        footer={
-          <>
-            <SecondaryButton onClick={back} className="flex-1">
-              تحدٍّ جديد
-            </SecondaryButton>
-            <PrimaryButton onClick={clearPeer} className="flex-1">
-              إنهاء
-            </PrimaryButton>
-          </>
-        }
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 24 }}
+        className="fixed inset-0 z-50 overflow-y-auto bg-background"
       >
-        <div className="space-y-6">
-          <div className="flex flex-col items-center pt-2 text-center">
-            <span className={`flex h-16 w-16 items-center justify-center rounded-2xl ${isReceiver && !iWon && !tie ? "bg-muted text-muted-foreground" : "bg-gem-soft text-gem"}`}>
-              <Trophy className="h-8 w-8" />
-            </span>
-            <h2 className="mt-4 font-display text-xl font-bold">
-              {isReceiver ? (tie ? "تعادلتما" : iWon ? "تفوقت على زميلك" : "زميلك تفوق هذه المرة") : "أرسل الرابط لزميلك"}
+        <div className="safe-top" />
+        <div className="mx-auto max-w-lg px-4 pb-28 pt-5">
+          <div className="flex flex-col items-center text-center">
+            <Trophy className={`h-16 w-16 ${tie ? "text-amber-500" : iWon ? "text-amber-500" : "text-muted-foreground"}`} />
+            <h2 className="mt-3 text-2xl font-black">
+              {isReceiver ? (tie ? "تعادلتما!" : iWon ? "تفوقت على زميلك!" : "زميلك تفوق هذه المرة") : "تحديك جاهز للإرسال"}
             </h2>
           </div>
 
-          <div className={`grid gap-3 ${isReceiver ? "grid-cols-2" : "grid-cols-1"}`}>
-            <ScoreTile name={userName || "أنت"} correct={myCorrect} total={questions.length} highlight={!isReceiver || iWon || tie} />
-            {isReceiver && <ScoreTile name={payload?.sender || "زميلك"} correct={senderCorrect} total={payload?.total ?? questions.length} highlight={!iWon} />}
+          {/* لوحة المقارنة */}
+          <div className="mt-5 grid grid-cols-2 gap-2">
+            <ScoreTile
+              name={userName || "أنت"}
+              correct={myCorrect}
+              total={questions.length}
+              highlight={!isReceiver || iWon || tie}
+            />
+            {isReceiver && (
+              <ScoreTile
+                name={payload?.sender || "زميلك"}
+                correct={senderCorrect}
+                total={payload?.total ?? questions.length}
+                highlight={!iWon}
+              />
+            )}
           </div>
 
           {isReceiver ? (
-            <SecondaryButton onClick={shareMyResult} className="w-full">
-              <Share2 className="h-4 w-4" /> شارك نتيجتك مع زميلك
-            </SecondaryButton>
+            <Button
+              onClick={shareMyResult}
+              variant="outline"
+              className="mt-4 h-13 w-full rounded-2xl border-2 border-[#B45309]/40 text-sm font-black text-[#B45309]"
+            >
+              <Share2 className="ml-2 h-5 w-5" />
+              شارك نتيجتك مع زميلك
+            </Button>
           ) : (
-            <Card className="p-4">
-              <p className="flex items-center gap-2 text-sm font-semibold">
-                <Link2 className="h-4 w-4 text-primary" /> رابط التحدي
-              </p>
-              <p className="mt-2 break-all rounded-lg bg-muted p-3 text-xs leading-5 text-muted-foreground" dir="ltr">
-                {linkText}
-              </p>
-              <div className="mt-3 flex gap-3">
-                <PrimaryButton onClick={copyLink} className="flex-1">
-                  <Copy className="h-4 w-4" /> انسخ
-                </PrimaryButton>
-                <SecondaryButton onClick={shareLink} className="flex-1">
-                  <Share2 className="h-4 w-4" /> شارك
-                </SecondaryButton>
+            <>
+              <div className="mt-4 rounded-2xl border-2 border-border bg-white p-4">
+                <p className="flex items-center gap-1.5 text-sm font-black">
+                  <Link2 className="h-4 w-4 text-[#B45309]" /> رابط التحدي — الأسئلة ونتيجتك فيه معًا
+                </p>
+                <p className="mt-2 break-all rounded-xl bg-muted/70 p-3 text-[11px] leading-5 text-muted-foreground" dir="ltr">
+                  {linkText}
+                </p>
+                <div className="mt-3 flex gap-2">
+                  <Button
+                    onClick={copyLink}
+                    className="h-12 flex-1 rounded-xl bg-[#B45309] text-sm font-black text-white hover:bg-[#92400E]"
+                  >
+                    <Copy className="ml-1.5 h-4 w-4" /> انسخ الرابط
+                  </Button>
+                  <Button
+                    onClick={shareLink}
+                    variant="outline"
+                    className="h-12 flex-1 rounded-xl border-2 border-border text-sm font-black"
+                  >
+                    <Share2 className="ml-1.5 h-4 w-4" /> شارك
+                  </Button>
+                </div>
               </div>
-            </Card>
+              <p className="mt-2 text-center text-[11px] font-bold leading-6 text-muted-foreground">
+                من يفتح الرابط في التطبيق سيجيب عن الأسئلة نفسها وستقارن نتيجتاكم تلقائيًا — بلا حسابات ولا سيرفرات
+              </p>
+            </>
           )}
 
-          <section>
-            <SectionHeader title="مراجعة الأسئلة" />
-            <Divided>
-              {review.map((r) => {
-                const rq = questionById(r.qid)!;
-                return (
-                  <div key={r.qid} className="flex items-start gap-3 px-4 py-3">
-                    {r.ok ? <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-success" /> : <XCircle className="mt-1 h-5 w-5 shrink-0 text-destructive" />}
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[15px] leading-7">{rq.question}</p>
-                      {!r.ok && <p className="mt-1 text-[13px] text-success">الصحيح: {rq.correct}</p>}
-                    </div>
-                  </div>
-                );
-              })}
-            </Divided>
-          </section>
+          {/* مراجعة الأسئلة */}
+          <p className="mb-2 mt-5 text-sm font-extrabold text-muted-foreground">مراجعة أسئلة التحدي</p>
+          <div className="space-y-2">
+            {review.map((r) => {
+              const rq = questionById(r.qid)!;
+              return (
+                <details key={r.qid} className="rounded-2xl border border-border bg-white p-3.5">
+                  <summary className="flex cursor-pointer list-none items-start gap-2.5">
+                    {r.ok ? (
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-600" />
+                    ) : (
+                      <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
+                    )}
+                    <span className="text-xs font-bold leading-6">{rq.question}</span>
+                  </summary>
+                  {!r.ok && (
+                    <p className="mt-2 rounded-lg bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-800">
+                      الإجابة الصحيحة: {rq.correct}
+                    </p>
+                  )}
+                </details>
+              );
+            })}
+          </div>
+
+          <div className="mt-5 flex gap-2">
+            <Button
+              onClick={() => setScreen("menu")}
+              variant="outline"
+              className="h-13 flex-1 rounded-2xl border-2 border-border text-sm font-black"
+            >
+              تحدٍّ جديد
+            </Button>
+            <Button onClick={clearPeer} className="h-13 flex-1 rounded-2xl bg-primary text-sm font-black text-primary-foreground">
+              إغلاق
+            </Button>
+          </div>
         </div>
-      </ScreenShell>
+      </motion.div>
     );
   }
 
   return null;
 }
 
-function ScoreTile({ name, correct, total, highlight }: { name: string; correct: number; total: number; highlight: boolean }) {
+function ScoreTile({
+  name,
+  correct,
+  total,
+  highlight,
+}: {
+  name: string;
+  correct: number;
+  total: number;
+  highlight: boolean;
+}) {
   return (
-    <Card className={`p-4 text-center ${highlight ? "border-primary bg-accent/40" : ""}`}>
-      <p className="truncate text-[13px] text-muted-foreground">{name}</p>
-      <p className="mt-1 font-display text-2xl font-bold tabular-nums">
-        {ad(correct)} من {ad(total)}
+    <div
+      className={`rounded-2xl border-2 p-4 text-center ${
+        highlight ? "border-[#B45309] bg-[#B45309]/5" : "border-border bg-white"
+      }`}
+    >
+      <p className="truncate text-xs font-black text-muted-foreground">{name}</p>
+      <p className="mt-1 text-3xl font-black tabular-nums" dir="ltr">
+        {ad(correct)}/{ad(total)}
       </p>
-    </Card>
+    </div>
   );
 }

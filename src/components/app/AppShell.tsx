@@ -1,61 +1,47 @@
 "use client";
 
-// ============================================================================
-// هيكل التطبيق — خمس وجهات على نمط أنظمة التصميم العالمية
-// ============================================================================
-// الجوال: شريط تنقل سفلي بخمس وجهات (Material 3 / Apple HIG).
-// الجهاز اللوحي والحاسوب: قائمة جانبية ثابتة ومحتوى أعرض، كما في Coursera.
-// الوجهات: اليوم، التعلّم، التدريب، أخطائي، حسابي.
-// ============================================================================
-
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useQueryClient } from "@tanstack/react-query";
-import { BookOpen, House, CircleUser, PencilLine, Target, WifiOff, X, Layers, GraduationCap } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Home, BookOpen, User, School, ClipboardList, Target, WifiOff, X, Layers } from "lucide-react";
 import { useApp, useAppHydrated } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { loadQbank } from "@/lib/qbank";
-import { readPeerHash } from "@/lib/peer";
-import { useAccount, useWallet, afterSignIn } from "@/lib/account-client";
-import { startProgressSync } from "@/lib/progress-sync";
-import { useMistakes } from "@/lib/mistakes-client";
-import { toast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
-import { ad } from "@/lib/arabic";
 import QuizSession from "./QuizSession";
-import TodayView from "./TodayView";
+import HomeView from "./HomeView";
 import ConceptsView from "./ConceptsView";
-import PracticeView from "./PracticeView";
-import MistakesView from "./MistakesView";
-import ProfileView from "./ProfileView";
-import Onboarding from "./Onboarding";
+import QuizHome from "./QuizHome";
+import AccountView from "./AccountView";
 import ScenariosView from "./ScenariosView";
 import LabView from "./LabView";
 import SimLabView from "./SimLabView";
 import StudioView from "./StudioView";
 import FieldLogView from "./FieldLogView";
+import MistakesView from "./MistakesView";
 import ChallengeSession from "./ChallengeSession";
+import SpeechStage from "./SpeechStage";
+import StudySchool from "./StudySchool";
 import MeasureKit from "./MeasureKit";
 import PeerChallenge from "./PeerChallenge";
 import HeartOfClass from "./HeartOfClass";
 import ExamSimView from "./ExamSimView";
 import PlacementView from "./PlacementView";
 import MatchGameView from "./MatchGameView";
+import SpeedRunView from "./SpeedRunView";
 import FlashcardsView from "./FlashcardsView";
 import AiAssistantView from "./AiAssistantView";
 import BootBank from "./BootBank";
-import { GemBadge, StreakBadge } from "./ui-kit";
+import { loadQbank } from "@/lib/qbank";
+import { readPeerHash } from "@/lib/peer";
+import { Button } from "@/components/ui/button";
 
-export type Tab = "today" | "learn" | "practice" | "mistakes" | "profile";
+const TAB_TITLES: Record<string, string> = {
+  home: "تربوي",
+  concepts: "دليل المعلم",
+  mistakes: "أخطائي",
+  quiz: "الاختبارات",
+  account: "حسابي",
+};
 
-const NAV: { id: Tab; label: string; icon: React.ElementType }[] = [
-  { id: "today", label: "الرئيسية", icon: House },
-  { id: "learn", label: "التعلّم", icon: BookOpen },
-  { id: "practice", label: "التدريب", icon: PencilLine },
-  { id: "mistakes", label: "أخطائي", icon: Target },
-  { id: "profile", label: "حسابي", icon: CircleUser },
-];
-
+// اشتراك أحداث الاتصال — لاستخدام useSyncExternalStore
 function subscribeOnline(cb: () => void) {
   window.addEventListener("online", cb);
   window.addEventListener("offline", cb);
@@ -65,84 +51,69 @@ function subscribeOnline(cb: () => void) {
   };
 }
 
+// اشتراك تفضيل النظام للوضع الليلي — لوضع «تلقائي»
 function subscribeScheme(cb: () => void) {
   const mq = window.matchMedia("(prefers-color-scheme: dark)");
   mq.addEventListener("change", cb);
   return () => mq.removeEventListener("change", cb);
 }
 
-function Logo() {
+// ---------- شريط التنقل السفلي الثابت ----------
+// الرئيسية / دليل المعلم / أخطائي / الاختبارات / حسابي — أهداف لمس ≥٤٤px مع safe-area
+function BottomNav({
+  tab,
+  onHome,
+  onConcepts,
+  onMistakes,
+  onTrain,
+  onAccount,
+}: {
+  tab: string;
+  onHome: () => void;
+  onConcepts: () => void;
+  onMistakes: () => void;
+  onTrain: () => void;
+  onAccount: () => void;
+}) {
+  const items = [
+    { id: "home", label: "الرئيسية", icon: Home, active: tab === "home", onClick: onHome },
+    { id: "library", label: "دليل المعلم", icon: BookOpen, active: tab === "concepts", onClick: onConcepts },
+    { id: "mistakes", label: "أخطائي", icon: Target, active: tab === "mistakes", onClick: onMistakes },
+    { id: "train", label: "الاختبارات", icon: ClipboardList, active: tab === "quiz", onClick: onTrain },
+    { id: "account", label: "حسابي", icon: User, active: tab === "account", onClick: onAccount },
+  ];
   return (
-    <span className="flex items-center gap-2.5">
-      <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-primary text-primary-foreground">
-        <GraduationCap className="h-5 w-5" strokeWidth={2} />
-      </span>
-      <span className="font-display text-xl font-bold text-primary">تربوي</span>
-    </span>
-  );
-}
-
-function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
-  const { gems, streak } = useWallet();
-  return (
-    <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col gap-8 border-l border-border bg-card px-4 py-6 lg:flex">
-      <div className="px-2">
-        <Logo />
-      </div>
-      <nav aria-label="التنقل الرئيسي" className="flex flex-col gap-1">
-        {NAV.map((n) => {
-          const active = tab === n.id;
+    <nav className="safe-bottom border-t border-border bg-white px-2 pt-1.5" aria-label="التنقل الرئيسي">
+      <div className="flex items-stretch justify-around">
+        {items.map((t) => {
+          const Icon = t.icon;
           return (
             <button
-              key={n.id}
-              type="button"
-              onClick={() => onTab(n.id)}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "flex min-h-[44px] items-center gap-3 rounded-lg px-3 text-[15px] transition-colors",
-                active ? "bg-accent font-semibold text-accent-foreground" : "text-secondary-foreground hover:bg-muted"
-              )}
+              key={t.id}
+              onClick={t.onClick}
+              aria-label={t.label}
+              aria-current={t.active ? "page" : undefined}
+              className="relative flex min-h-[48px] min-w-[64px] flex-col items-center justify-center gap-0.5 rounded-2xl px-3 pb-1.5 pt-1.5"
             >
-              <n.icon className="h-5 w-5" strokeWidth={1.9} />
-              <span className="flex-1 text-right">{n.label}</span>
-              {n.id === "mistakes" && due > 0 && (
-                <span className="rounded-full bg-danger-soft px-2 py-0.5 text-xs font-semibold text-destructive">{ad(due)}</span>
+              {t.active && (
+                <motion.span
+                  layoutId="tab-pill"
+                  className="absolute inset-x-2 -top-0.5 h-1 rounded-full bg-primary"
+                />
               )}
-            </button>
-          );
-        })}
-      </nav>
-      <div className="mt-auto flex items-center gap-2 px-2">
-        <GemBadge value={gems} />
-        <StreakBadge value={streak} />
-      </div>
-    </aside>
-  );
-}
-
-function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
-  return (
-    <nav aria-label="التنقل الرئيسي" className="safe-bottom border-t border-border bg-card lg:hidden">
-      <div className="grid grid-cols-5">
-        {NAV.map((n) => {
-          const active = tab === n.id;
-          return (
-            <button
-              key={n.id}
-              type="button"
-              onClick={() => onTab(n.id)}
-              aria-current={active ? "page" : undefined}
-              className="relative flex min-h-[56px] flex-col items-center justify-center gap-1 pt-1.5"
-            >
-              <span className={cn("flex h-8 w-14 items-center justify-center rounded-full transition-colors", active && "bg-accent")}>
-                <n.icon className={cn("h-[22px] w-[22px]", active ? "text-primary" : "text-muted-foreground")} strokeWidth={active ? 2.2 : 1.8} />
+              <Icon
+                className={`h-6 w-6 transition-colors ${
+                  t.active ? "text-primary" : "text-muted-foreground"
+                }`}
+                strokeWidth={t.active ? 2.6 : 2}
+              />
+              <span
+                className={`text-[11px] font-bold transition-colors ${
+                  t.active ? "text-primary" : "text-muted-foreground"
+                }`}
+              >
+                {t.label}
               </span>
-              <span className={cn("text-[11px]", active ? "font-semibold text-primary" : "text-muted-foreground")}>{n.label}</span>
-              {n.id === "mistakes" && due > 0 && (
-                <span className="absolute right-1/2 top-1 translate-x-5 rounded-full bg-destructive px-1.5 text-[10px] font-semibold leading-4 text-white">
-                  {ad(Math.min(due, 99))}
-                </span>
-              )}
             </button>
           );
         })}
@@ -151,47 +122,136 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
   );
 }
 
-function MobileTopBar() {
-  const { gems, streak } = useWallet();
-  return (
-    <header className="safe-top flex items-center justify-between border-b border-border bg-card px-4 pb-3 pt-3 lg:hidden">
-      <Logo />
-      <div className="flex items-center gap-2">
-        <StreakBadge value={streak} />
-        <GemBadge value={gems} />
-      </div>
-    </header>
-  );
-}
+// ---------- شاشة الترحيب الأولى ----------
+function Onboarding() {
+  const { setName, setOnboarded } = useApp();
+  const [draft, setDraft] = useState("");
 
-function ShellSkeleton() {
   return (
-    <div className="flex h-dvh flex-col bg-background" aria-busy="true" aria-label="جارٍ التحميل">
-      <div className="h-16 border-b border-border bg-card" />
-      <div className="mx-auto w-full max-w-5xl flex-1 space-y-4 p-4">
-        <div className="h-36 animate-pulse rounded-2xl bg-muted" />
-        <div className="h-24 animate-pulse rounded-2xl bg-muted" />
-        <div className="h-48 animate-pulse rounded-2xl bg-muted" />
+    <div className="flex h-dvh flex-col bg-gradient-to-b from-[#2A1058] to-[#6D28D9] p-6 text-white">
+      <div className="safe-top" />
+      <div className="flex flex-1 flex-col items-center justify-center text-center">
+        <motion.div
+          initial={{ scale: 0.6, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", damping: 12 }}
+          className="mb-6 flex h-28 w-28 items-center justify-center rounded-[2rem] bg-white/15"
+        >
+          <School className="h-16 w-16" />
+        </motion.div>
+        <h1 className="text-4xl font-black">تربوي</h1>
+        <p className="mt-3 max-w-xs text-sm leading-7 text-white/90">
+          مساعد إعداد المعلم يرافقك من طالب تربية إلى معلم جاهز: مفاهيم مشروحة بأمثلة واقعية من
+          الميدان، تدريب بتوجيه فوري، مواقف صفّية تحاكي الصف الحقيقي، ومراجعة ذكية تثبّت المعرفة في
+          ذاكرتك.
+        </p>
+
+        <div className="mt-10 w-full max-w-sm">
+          <label className="mb-2 block text-right text-xs font-bold text-white/90">
+            ما اسمك يا معلم المستقبل؟
+          </label>
+          <input
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder="اكتب اسمك هنا"
+            className="w-full rounded-2xl border border-white/30 bg-white/15 px-4 py-3.5 text-center font-bold text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/40"
+          />
+          <Button
+            onClick={() => {
+              setName(draft.trim());
+              setOnboarded();
+            }}
+            className="mt-4 h-14 w-full rounded-2xl bg-amber-400 text-lg font-black text-amber-950 hover:bg-amber-300"
+          >
+            لنبدأ الرحلة
+          </Button>
+        </div>
       </div>
+      <div className="safe-bottom" />
     </div>
   );
 }
 
+// ---------- هيكل الترحيب (skeleton) حتى جهوزية المخزن — بدل البطاقة الباهتة ----------
+function ShellSkeleton() {
+  return (
+    <div
+      className="mx-auto flex h-dvh max-w-[480px] flex-col bg-background shadow-xl"
+      aria-busy="true"
+      aria-label="جارٍ تحميل بياناتك"
+    >
+      <div className="safe-top px-4 pb-3 pt-4">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="h-4 w-24 animate-pulse rounded-full bg-muted" />
+            <div className="h-6 w-40 animate-pulse rounded-xl bg-muted" />
+          </div>
+          <div className="h-13 w-13 animate-pulse rounded-full bg-muted" />
+        </div>
+        <div className="mt-3 flex gap-2">
+          <div className="h-8 w-32 animate-pulse rounded-full bg-muted" />
+          <div className="h-8 w-24 animate-pulse rounded-full bg-muted" />
+          <div className="h-8 w-28 animate-pulse rounded-full bg-muted" />
+        </div>
+      </div>
+      <div className="no-scrollbar flex-1 space-y-4 overflow-hidden px-4 pt-2">
+        <div className="h-40 animate-pulse rounded-3xl bg-muted" />
+        <div className="grid grid-cols-3 gap-2">
+          <div className="h-24 animate-pulse rounded-2xl bg-muted" />
+          <div className="h-24 animate-pulse rounded-2xl bg-muted" />
+          <div className="h-24 animate-pulse rounded-2xl bg-muted" />
+        </div>
+        <div className="h-20 animate-pulse rounded-3xl bg-muted" />
+        <div className="h-28 animate-pulse rounded-3xl bg-muted" />
+      </div>
+      <BottomNav tab="home" onHome={() => {}} onConcepts={() => {}} onMistakes={() => {}} onTrain={() => {}} onAccount={() => {}} />
+    </div>
+  );
+}
+
+// ---------- الهيكل الرئيسي ----------
 export default function AppShell() {
   const hydrated = useAppHydrated();
   const { onboarded, darkMode, fontScale } = useApp();
-  const ui = useUi();
-  const queryClient = useQueryClient();
-  const { user } = useAccount();
-  const { data: mistakes } = useMistakes();
-  // العائد من تسجيل الدخول بـ Google يفتح على «حسابي»
-  // ورابط مفهوم من صفحات الموقع العامة (?concept=) يفتح على «التعلّم»
-  const [tab, setTab] = useState<Tab>(() => {
-    if (typeof window === "undefined") return "today";
-    const q = new URLSearchParams(window.location.search);
-    return q.has("login") ? "profile" : q.has("concept") ? "learn" : "today";
-  });
+  const quizConfig = useUi((s) => s.quizConfig);
+  const scenariosOpen = useUi((s) => s.scenariosOpen);
+  const labOpen = useUi((s) => s.labOpen);
+  const simOpen = useUi((s) => s.simOpen);
+  const clearLab = useUi((s) => s.clearLab);
+  const clearScenarios = useUi((s) => s.clearScenarios);
+  const studioOpen = useUi((s) => s.studioOpen);
+  const clearStudio = useUi((s) => s.clearStudio);
+  const fieldOpen = useUi((s) => s.fieldOpen);
+  const clearField = useUi((s) => s.clearField);
+  const challengesOpen = useUi((s) => s.challengesOpen);
+  const clearChallenges = useUi((s) => s.clearChallenges);
+  const stageOpen = useUi((s) => s.stageOpen);
+  const clearStage = useUi((s) => s.clearStage);
+  const studyOpen = useUi((s) => s.studyOpen);
+  const clearStudy = useUi((s) => s.clearStudy);
+  const measureOpen = useUi((s) => s.measureOpen);
+  const clearMeasure = useUi((s) => s.clearMeasure);
+  const heartOpen = useUi((s) => s.heartOpen);
+  const clearHeart = useUi((s) => s.clearHeart);
+  const peerOpen = useUi((s) => s.peerOpen);
+  const clearPeer = useUi((s) => s.clearPeer);
+  const startPeer = useUi((s) => s.startPeer);
+  const setPeerIncoming = useUi((s) => s.setPeerIncoming);
+  const examsimOpen = useUi((s) => s.examsimOpen);
+  const clearExamsim = useUi((s) => s.clearExamsim);
+  const placementOpen = useUi((s) => s.placementOpen);
+  const clearPlacement = useUi((s) => s.clearPlacement);
+  const matchOpen = useUi((s) => s.matchOpen);
+  const clearMatch = useUi((s) => s.clearMatch);
+  const speedOpen = useUi((s) => s.speedOpen);
+  const clearSpeed = useUi((s) => s.clearSpeed);
+  const flashOpen = useUi((s) => s.flashOpen);
+  const clearFlash = useUi((s) => s.clearFlash);
+  const aiOpen = useUi((s) => s.aiOpen);
+  const clearAi = useUi((s) => s.clearAi);
+  const [tab, setTab] = useState("home");
 
+  // حالة تجهيز البنك التربوي — تُحمَّل البيانات مرة واحدة عند الفتح
   const [bankLoaded, setBankLoaded] = useState(false);
   const [bankProgress, setBankProgress] = useState(0);
   const [bankFailed, setBankFailed] = useState(false);
@@ -202,22 +262,43 @@ export default function AppShell() {
   };
   useEffect(() => {
     startBankLoad();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isOnline = useSyncExternalStore(subscribeOnline, () => navigator.onLine, () => true);
-  const sysDark = useSyncExternalStore(subscribeScheme, () => window.matchMedia("(prefers-color-scheme: dark)").matches, () => false);
+  // حالة الاتصال — قراءة مباشرة من المتصفح بلا setState داخل الأثر
+  const isOnline = useSyncExternalStore(
+    subscribeOnline,
+    () => navigator.onLine,
+    () => true
+  );
+  const offline = !isOnline;
+
+  // تفضيل النظام للوضع الليلي — يُتّبع في وضع «تلقائي»
+  const sysDark = useSyncExternalStore(
+    subscribeScheme,
+    () => window.matchMedia("(prefers-color-scheme: dark)").matches,
+    () => false
+  );
   const dark = darkMode === "dark" || (darkMode === "auto" && sysDark);
+
+  // الوضع الليلي — يُطبق على الجذر كي تغطي متغيرات الثيم كل الواجهة
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
   }, [dark]);
+
+  // حجم الخط — يضبط خط الجذر فتكبر كل النصوص المتناسبة معه (وحدة rem) بانسجام
   useEffect(() => {
-    document.documentElement.style.fontSize = fontScale === "large" ? "17.5px" : fontScale === "bigger" ? "19px" : "";
+    document.documentElement.style.fontSize =
+      fontScale === "large" ? "17.5px" : fontScale === "bigger" ? "19px" : "";
   }, [fontScale]);
 
-  // عامل الخدمة للعمل دون اتصال، وإعادة تحميل واحدة عند وصول نسخة أحدث
+  // مؤشر عدم الاتصال — اشتراك أحداث الشبكة (الاستماع فقط، لا حالة تُضبط يدويًا)
+  // تسجيل عامل الخدمة للعمل دون اتصال + تحديث تلقائي عند وصول نسخة أحدث
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
     navigator.serviceWorker.register("/sw.js").catch(() => {});
+    // عند سيطرة عامل خدمة جديد (نسخة أحدث) يعاد التحميل مرة واحدة —
+    // حتى لا يبقى المستخدم على حزمة قديمة. أول زيارة بلا متحكم فلا تُعاد.
     let reloading = false;
     const hadController = !!navigator.serviceWorker.controller;
     const onChange = () => {
@@ -226,50 +307,25 @@ export default function AppShell() {
       window.location.reload();
     };
     navigator.serviceWorker.addEventListener("controllerchange", onChange);
-    return () => navigator.serviceWorker.removeEventListener("controllerchange", onChange);
+    return () =>
+      navigator.serviceWorker.removeEventListener("controllerchange", onChange);
   }, []);
 
-  // تحدٍّ وصل عبر رابط
+  // التقاط تحدٍّ واصل عبر معرف الرابط — يفتح تحدّي الأقران مباشرة ثم ينظف العنوان
   useEffect(() => {
     const p = readPeerHash();
     if (!p) return;
-    ui.setPeerIncoming(p);
-    ui.startPeer();
+    setPeerIncoming(p);
+    startPeer();
     try {
       window.history.replaceState(null, "", window.location.pathname + window.location.search);
     } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // رابط مفهوم من الموقع العام: يُفتح المفهوم بعد تحميل البنك
-  useEffect(() => {
-    const id = new URLSearchParams(window.location.search).get("concept");
-    if (!id) return;
-    ui.openConcept(id);
-    window.history.replaceState(null, "", window.location.pathname);
-  }, []);
-
-  // العودة من Google: رسالة، ثم نقل بيانات الجهاز إلى الحساب
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const login = params.get("login");
-    if (!login) return;
-    window.history.replaceState(null, "", window.location.pathname);
-    if (login === "success") {
-      toast({ title: "تم تسجيل الدخول" });
-      afterSignIn(queryClient);
-    } else if (login === "error") {
-      toast({
-        title: params.get("reason") === "no_config" ? "الدخول بحساب Google غير مفعّل بعد" : "تعذّر تسجيل الدخول بحساب Google",
-      });
-    }
-  }, []);
-
-  // المسجَّل: مزامنة التقدم بين أجهزته
-  useEffect(() => {
-    if (user) startProgressSync();
-  }, [user?.id]);
 
   if (!hydrated) return <ShellSkeleton />;
+
+  // بوابة البنك التربوي — لا تُعرض أي شاشة قبل وصول البيانات من «/data/qbank.json»
   if (!bankLoaded)
     return (
       <BootBank
@@ -282,62 +338,153 @@ export default function AppShell() {
         }}
       />
     );
-  if (!onboarded) return <Onboarding />;
-  if (ui.quizConfig) return <QuizSession key={`${ui.quizConfig.label}:${ui.quizConfig.qids.join(",")}`} config={ui.quizConfig} />;
-  if (ui.challengesOpen) return <ChallengeSession />;
-  if (ui.measureOpen) return <MeasureKit />;
-  if (ui.peerOpen) return <PeerChallenge />;
-  if (ui.heartOpen) return <HeartOfClass key="heart" />;
 
-  const due = mistakes?.stats.due ?? 0;
-  const go = (t: Tab) => {
-    ui.closeOverlays();
-    setTab(t);
-    document.getElementById("main-scroll")?.scrollTo({ top: 0 });
-  };
+  if (!onboarded) return <Onboarding />;
+
+  if (quizConfig) return <QuizSession config={quizConfig} />;
+
+  if (challengesOpen) return <ChallengeSession />;
+
+  if (stageOpen) return <SpeechStage />;
+
+  if (studyOpen) return <StudySchool />;
+
+  if (measureOpen) return <MeasureKit />;
+
+  if (peerOpen) return <PeerChallenge />;
+
+  if (heartOpen) return <HeartOfClass key="heart" />;
 
   return (
-    <div className="flex h-dvh bg-background">
-      <SideNav tab={tab} onTab={go} due={due} />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <MobileTopBar />
-        {!isOnline && (
-          <div role="status" className="flex items-center justify-center gap-2 border-b border-border bg-gem-soft px-4 py-1.5 text-xs font-medium text-gem">
-            <WifiOff className="h-3.5 w-3.5 shrink-0" />
-            أنت دون اتصال — التطبيق يعمل، وتُحفظ بياناتك على جهازك
+    <div className="mx-auto flex h-dvh max-w-[480px] flex-col bg-background shadow-xl">
+      {/* شريط علوي — الرئيسية ترويستها مدمجة داخل الصفحة (نقد البند 7) */}
+      {tab !== "home" && (
+        <header className="safe-top flex items-center justify-between border-b border-border bg-white/90 px-4 pb-2 pt-3 backdrop-blur">
+          <div className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+              <School className="h-5 w-5" />
+            </span>
+            <h1 className="text-lg font-black text-primary">{TAB_TITLES[tab]}</h1>
           </div>
-        )}
-        <main id="main-scroll" className="no-scrollbar flex-1 overflow-y-auto">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={tab}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="mx-auto w-full max-w-5xl px-4 pb-10 pt-5 lg:px-8 lg:pt-8"
-            >
-              {tab === "today" && <TodayView onGoTab={go} />}
-              {tab === "learn" && <ConceptsView />}
-              {tab === "practice" && <PracticeView onGoTab={go} />}
-              {tab === "mistakes" && <MistakesView onGoTab={go} />}
-              {tab === "profile" && <ProfileView onGoTab={go} />}
-            </motion.div>
-          </AnimatePresence>
-        </main>
-        <BottomNav tab={tab} onTab={go} due={due} />
-      </div>
+        </header>
+      )}
 
-      <AnimatePresence>{ui.simOpen && <SimLabView key="sim" />}</AnimatePresence>
-      <AnimatePresence>{ui.labOpen && <LabView key="lab" />}</AnimatePresence>
-      <AnimatePresence>{ui.studioOpen && <StudioView key="studio" />}</AnimatePresence>
-      <AnimatePresence>{ui.fieldOpen && <FieldLogView key="field" />}</AnimatePresence>
-      <AnimatePresence>{ui.scenariosOpen && <ScenariosView key="scenarios" />}</AnimatePresence>
-      <AnimatePresence>{ui.examsimOpen && <ExamSimView key="examsim" />}</AnimatePresence>
-      <AnimatePresence>{ui.placementOpen && <PlacementView key="placement" />}</AnimatePresence>
-      <AnimatePresence>{ui.matchOpen && <MatchGameView key="match" />}</AnimatePresence>
-      {ui.flashOpen && <FlashcardsView />}
-      <AnimatePresence>{ui.aiOpen && <AiAssistantView key="ai" />}</AnimatePresence>
+      {/* مؤشر عدم الاتصال — بلا إزعاج، يختفي تلقائيًا عند عودة الشبكة */}
+      {offline && (
+        <div
+          role="status"
+          className="flex items-center justify-center gap-2 border-b border-amber-200 bg-amber-50 px-4 py-1.5 text-center text-xs font-bold text-amber-800"
+        >
+          <WifiOff className="h-3.5 w-3.5 shrink-0" />
+          أنت الآن دون اتصال — التطبيق يواصل العمل كالمعتاد
+        </div>
+      )}
+
+      {/* المحتوى */}
+      <main className="no-scrollbar flex-1 overflow-y-auto pt-3">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={tab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.18 }}
+          >
+            {tab === "home" && <HomeView onGoTab={setTab} />}
+            {tab === "concepts" && <ConceptsView />}
+            {tab === "mistakes" && <MistakesView />}
+            {tab === "quiz" && <QuizHome onGoTab={setTab} />}
+            {tab === "account" && <AccountView />}
+          </motion.div>
+        </AnimatePresence>
+      </main>
+
+      {/* شريط التنقل السفلي الثابت */}
+      <BottomNav
+        tab={tab}
+        onHome={() => {
+          clearScenarios(); // يغلق الطبقات المفتوحة ويعود للرئيسية
+          clearLab(); // المختبر أيضاً طبقة ملء شاشة — يجب أن يغلقها زر الرئيسية
+          clearStudio(); // والاستوديو كذلك
+          clearField(); // وسجل التدريب الميداني
+          clearChallenges(); // والتحديات الذكية
+          clearStage(); // ومِسرح الإلقاء
+          clearStudy(); // ومدرسة المذاكرة
+          clearMeasure(); // ومعدة القياس
+          clearHeart(); // وقلب الصف
+          clearPeer(); // وتحدّي الأقران
+          clearExamsim(); // ومحاكي الرخصة والمسابقات
+          clearPlacement(); // واختبار تحديد المستوى
+          clearMatch(); // ولعبة المطابقة
+          clearSpeed(); // وسباق السرعة
+          clearFlash(); // وبطاقات المفاهيم
+          clearAi(); // والمساعد الذكي
+          setTab("home");
+        }}
+        onConcepts={() => setTab("concepts")}
+        onMistakes={() => setTab("mistakes")}
+        onTrain={() => setTab("quiz")}
+        onAccount={() => setTab("account")}
+      />
+
+      {/* مختبر محاكاة الصفوف — الجيل الجديد */}
+      <AnimatePresence>{simOpen && <SimLabView key="sim" />}</AnimatePresence>
+
+      {/* مختبر المعلّم */}
+      <AnimatePresence>{labOpen && <LabView key="lab" />}</AnimatePresence>
+
+      {/* استوديو خطط الدروس */}
+      <AnimatePresence>{studioOpen && <StudioView key="studio" />}</AnimatePresence>
+
+      {/* سجل التدريب الميداني */}
+      <AnimatePresence>{fieldOpen && <FieldLogView key="field" />}</AnimatePresence>
+
+      {/* شاشة محاكاة الصف الدراسي */}
+      <AnimatePresence>{scenariosOpen && <ScenariosView key="scenarios" />}</AnimatePresence>
+
+      {/* محاكي الرخصة والمسابقات */}
+      <AnimatePresence>{examsimOpen && <ExamSimView key="examsim" />}</AnimatePresence>
+
+      {/* اختبار تحديد المستوى */}
+      <AnimatePresence>{placementOpen && <PlacementView key="placement" />}</AnimatePresence>
+
+      {/* لعبة المطابقة */}
+      <AnimatePresence>{matchOpen && <MatchGameView key="match" />}</AnimatePresence>
+
+      {/* سباق السرعة */}
+      <AnimatePresence>{speedOpen && <SpeedRunView key="speed" />}</AnimatePresence>
+
+      {/* بطاقات المفاهيم — طبقة برأس إغلاق فوق وضع البطاقات */}
+      <AnimatePresence>
+        {flashOpen && (
+          <motion.div
+            key="flash"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 24 }}
+            className="fixed inset-0 z-50 overflow-y-auto bg-background"
+          >
+            <div className="mx-auto max-w-lg pb-10 pt-5">
+              <div className="flex items-center justify-between px-4">
+                <p className="flex items-center gap-2 text-sm font-black text-primary">
+                  <Layers className="h-5 w-5" /> بطاقات المفاهيم
+                </p>
+                <button
+                  onClick={clearFlash}
+                  aria-label="إغلاق البطاقات"
+                  className="rounded-full bg-muted p-2.5 text-muted-foreground transition-colors hover:bg-accent"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              <FlashcardsView />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* المساعد الذكي — إجابات فورية من المحرك المحلي */}
+      <AnimatePresence>{aiOpen && <AiAssistantView key="ai" />}</AnimatePresence>
     </div>
   );
 }
