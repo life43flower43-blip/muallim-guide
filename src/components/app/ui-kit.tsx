@@ -245,25 +245,25 @@ export function ScreenShell({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
-      <header className="safe-top shrink-0 border-b border-border bg-card">
+      <header className="safe-top shrink-0 border-b-2 border-black/15 bg-[#0E7C86] text-white">
         <div className={cn("mx-auto flex min-h-[60px] items-center gap-2 px-2", wide ? "max-w-5xl" : "max-w-3xl")}>
           {onBack ? (
-            <button type="button" onClick={onBack} aria-label="رجوع" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground hover:bg-muted">
-              <ArrowRight className="h-5 w-5" />
+            <button type="button" onClick={onBack} aria-label="رجوع" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[4px] text-white hover:bg-white/15">
+              <ArrowRight className="h-6 w-6" strokeWidth={2.5} />
             </button>
           ) : onClose ? (
-            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground hover:bg-muted">
-              <X className="h-5 w-5" />
+            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[4px] text-white hover:bg-white/15">
+              <X className="h-6 w-6" strokeWidth={2.5} />
             </button>
           ) : null}
           <div className="min-w-0 flex-1 px-1">
-            <h1 className="truncate font-display text-lg font-semibold leading-7">{title}</h1>
-            {sub && <p className="truncate text-xs text-muted-foreground">{sub}</p>}
+            <h1 className="truncate font-display text-lg font-bold leading-7">{title}</h1>
+            {sub && <p className="truncate text-sm text-white/80">{sub}</p>}
           </div>
           {actions}
           {onBack && onClose && (
-            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted">
-              <X className="h-5 w-5" />
+            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[4px] text-white/80 hover:bg-white/15">
+              <X className="h-6 w-6" strokeWidth={2.5} />
             </button>
           )}
         </div>
@@ -428,9 +428,9 @@ export function MasteryBar({ counts, height = 8, className }: { counts: Record<0
 export function MasteryLegend({ labels, counts }: { labels: Record<0 | 1 | 2 | 3, string>; counts?: Record<0 | 1 | 2 | 3, number> }) {
   return (
     <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
-      {([3, 2, 1, 0] as const).map((lv) => (
+      {([3, 2, 1] as const).map((lv) => (
         <span key={lv} className="inline-flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-sm" style={{ background: MASTERY_COLORS[lv], outline: lv === 0 ? "1px solid var(--border)" : undefined }} />
+          <span className="h-2.5 w-2.5 rounded-sm" style={{ background: MASTERY_COLORS[lv] }} />
           {labels[lv]}
           {counts && <span className="font-medium text-foreground">{ad(counts[lv])}</span>}
         </span>
