@@ -34,9 +34,9 @@ export const BLUEPRINTS: ExamBlueprint[] = [
       { courseId: "M1", quota: 13 },
       { courseId: "M2", quota: 12 },
       { courseId: "M3", quota: 13 },
-      {courseId: "M4", quota: 12 },
+      { courseId: "M4", quota: 12 },
     ],
-    color: "#5B21B6",
+    color: "#0E7C86",
   },
   {
     id: "specialty",
@@ -56,15 +56,17 @@ export const BLUEPRINTS: ExamBlueprint[] = [
     minutes: 90,
     passPct: 60,
     sections: [
-      { courseId: "M1", quota: 15 },
-      { courseId: "M2", quota: 13 },
-      { courseId: "M3", quota: 15 },
-      { courseId: "M4", quota: 12 },
+      { courseId: "M1", quota: 12 },
+      { courseId: "M2", quota: 11 },
+      { courseId: "M3", quota: 13 },
+      { courseId: "M4", quota: 11 },
       { courseId: "M5", quota: 15 },
-      { courseId: "G1", quota: 18 },
-      { courseId: "C1", quota: 12 },
+      { courseId: "G1", quota: 12 },
+      { courseId: "C1", quota: 8 },
+      { courseId: "F1", quota: 10 },
+      { courseId: "SE1", quota: 8 },
     ],
-    color: "#4C1D95",
+    color: "#0B6870",
   },
 ];
 
@@ -199,11 +201,11 @@ export const PLACEMENT_LEVELS: Record<
   growing: {
     title: "نامٍ ومتقدم",
     desc: "أساسك موجود وتتوزع فجواتك في محاور بعينها — التركيز عليها سيرفعك سريعًا",
-    color: "#6D28D9",
+    color: "#0E7C86",
   },
   ready: {
     title: "جاهز للاحتراف",
     desc: "مستواك القاعدي ممتاز — انقل جهدك إلى المحاكاة الموقوتة ودفتر الأخطاء لصقل الأداء تحت الضغط",
-    color: "#4C1D95",
+    color: "#0B6870",
   },
 };

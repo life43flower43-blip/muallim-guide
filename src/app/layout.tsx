@@ -1,15 +1,18 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
-  title: "تربوي | رفيق طالب التربية",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://turbawy.app"),
+  title: "تربوي | الإعداد المهني للمعلم",
+  openGraph: { siteName: "تربوي", locale: "ar_AR", type: "website" },
   other: {
     // حظر نهائي على ترجمة الصفحة آليًا — المترجم التلقائي يشوّه النص العربي تمامًا
     google: "notranslate",
   },
   description:
-    "تطبيق تعليمي لطلاب كليات التربية: مفاهيم، اختبارات تفاعلية، توجيه بعد الخطأ، ومراجعة متباعدة.",
+    "منصة إعداد مهني لطلبة كليات التربية والمتقدمين لاختبار التوظيف والمعلمين: مقررات، تدريب ذكي، مراجعة متباعدة للأخطاء، واختبارات محاكية.",
   applicationName: "تربوي",
   manifest: "/manifest.json",
   appleWebApp: {
@@ -29,7 +32,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#5B21B6",
+  themeColor: "#0E7C86",
 };
 
 export default function RootLayout({
@@ -48,12 +51,12 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>
       <body className="antialiased bg-background text-foreground font-sans">
-        {children}
+        <Providers>{children}</Providers>
         <Toaster />
       </body>
     </html>
