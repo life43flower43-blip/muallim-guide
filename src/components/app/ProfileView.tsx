@@ -54,6 +54,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import type { Tab } from "./AppShell";
+import { OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
 import AuthPanel from "./AuthPanel";
 import { Card, IconTile, PageTitle, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, pct } from "./ui-kit";
 
@@ -183,6 +184,11 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
   const fileRef = useRef<HTMLInputElement>(null);
   const [installEvt, setInstallEvt] = useState<InstallPromptEvent | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  useEffect(() => {
+    const open = () => setSettingsOpen(true);
+    window.addEventListener(OPEN_SETTINGS_EVENT, open);
+    return () => window.removeEventListener(OPEN_SETTINGS_EVENT, open);
+  }, []);
 
   useEffect(() => {
     const onPrompt = (e: Event) => {

@@ -11,9 +11,9 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
-import { Flame, Gem, Zap, BookOpen, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff, X, Layers, GraduationCap } from "lucide-react";
+import { Flame, Gem, Settings, Zap, BookOpen, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff, X, Layers, GraduationCap } from "lucide-react";
 import { useApp, useAppHydrated, xpToday, DAILY_GOAL_XP } from "@/lib/store";
-import { useUi } from "@/lib/ui-store";
+import { useUi, OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
 import { loadQbank } from "@/lib/qbank";
 import { readPeerHash } from "@/lib/peer";
 import { useAccount, useWallet, afterSignIn } from "@/lib/account-client";
@@ -163,10 +163,26 @@ function TopStat({ label, value, children }: { label: string; value: string; chi
   );
 }
 
-function MobileTopBar() {
+
+
+function MobileTopBar({ tab }: { tab: Tab }) {
   const { gems, streak } = useWallet();
   const sessions = useApp((s) => s.sessions);
   const xp = Math.min(xpToday(sessions), DAILY_GOAL_XP);
+  // كل وجهة تعرض اسمها، والرئيسية تعرض الإحصاءات
+  if (tab !== "today")
+    return (
+      <header className="safe-top sticky top-0 z-30 border-b-2 border-black/15 bg-[#0E7C86] text-white lg:hidden">
+        <div className="flex h-14 items-center justify-between px-4">
+          <h1 className="font-display text-xl font-bold">{NAV.find((n) => n.id === tab)?.label}</h1>
+          {tab === "profile" && (
+            <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="flex h-11 w-11 items-center justify-center rounded-[4px] hover:bg-white/15">
+              <Settings className="h-6 w-6" strokeWidth={2.2} />
+            </button>
+          )}
+        </div>
+      </header>
+    );
   return (
     <header className="safe-top sticky top-0 z-30 border-b-2 border-black/15 bg-[#0E7C86] text-white lg:hidden">
       <div className="flex h-14 items-center justify-between px-4">
@@ -323,7 +339,7 @@ export default function AppShell() {
     <div className="flex h-dvh bg-background">
       <SideNav tab={tab} onTab={go} due={due} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <MobileTopBar />
+        <MobileTopBar tab={tab} />
         {!isOnline && (
           <div role="status" className="flex items-center justify-center gap-2 border-b border-border bg-gem-soft px-4 py-1.5 text-xs font-medium text-gem">
             <WifiOff className="h-3.5 w-3.5 shrink-0" />
