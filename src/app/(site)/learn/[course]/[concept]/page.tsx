@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { ConceptDiagram } from "@/components/app/Diagrams";
+import { referencesFor } from "@/lib/references";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import AdSlot from "@/components/site/AdSlot";
@@ -65,6 +67,8 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
         ))}
       </section>
 
+      <ConceptDiagram conceptId={c.id} />
+
       <AdSlot />
 
       <section>
@@ -96,6 +100,17 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
               </div>
             ))}
           </div>
+        </section>
+      )}
+
+      {referencesFor(c).length > 0 && (
+        <section>
+          <h2 className="mb-2 font-display text-xl font-semibold">المرجع الأصلي</h2>
+          <ul className="space-y-1.5 leading-8 text-secondary-foreground">
+            {referencesFor(c).map((r) => (
+              <li key={r}>{r}</li>
+            ))}
+          </ul>
         </section>
       )}
 
