@@ -75,6 +75,7 @@ import {
   EXAM_SECONDS,
   type MasteryLevel,
 } from "@/lib/practice-bank";
+import { ConceptDiagram } from "./Diagrams";
 import { ad, arCount, CONCEPT_FORMS, CHAPTER_FORMS, QUESTION_FORMS, splitArParagraphs, splitReason, exampleContext } from "@/lib/arabic";
 import { toast } from "@/hooks/use-toast";
 import {
@@ -485,6 +486,8 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
             </div>
             <h1 className="mt-4 font-display text-2xl font-bold leading-[1.6] sm:text-[28px]">{c.title}</h1>
           </header>
+
+          <ConceptDiagram conceptId={c.id} />
 
           <section className="space-y-5">
             {splitArParagraphs(c.explanation).map((p, i) => (
