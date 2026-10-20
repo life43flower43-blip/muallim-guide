@@ -306,10 +306,10 @@ export default function ExamSimView() {
           onClose={() => setSubmitOpen(true)}
           actions={
             <>
-              <span className={`flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-sm font-semibold tabular-nums ${lowTime ? "bg-danger-soft text-destructive" : "bg-muted"}`}>
+              <span className={`flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-sm font-semibold tabular-nums ${lowTime ? "bg-danger-soft text-destructive" : "bg-white/15"}`}>
                 <Timer className="h-4 w-4" /> {fmtTime(remaining)}
               </span>
-              <button type="button" onClick={() => setPaletteOpen(true)} aria-label="خريطة الأسئلة" className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-muted">
+              <button type="button" onClick={() => setPaletteOpen(true)} aria-label="خريطة الأسئلة" className="flex h-11 w-11 items-center justify-center rounded-[4px] hover:bg-white/15">
                 <LayoutGrid className="h-5 w-5" />
               </button>
             </>

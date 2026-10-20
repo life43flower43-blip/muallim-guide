@@ -69,7 +69,6 @@ import {
   conceptMastery,
   courseExam,
   courseMastery,
-  courseReadiness,
   examKey,
   starsFor,
   topicKey,
@@ -430,7 +429,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
       onClose={onClose}
       actions={
         <>
-          <button type="button" onClick={share} aria-label="شارك المفهوم" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted">
+          <button type="button" onClick={share} aria-label="شارك المفهوم" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[4px] text-white hover:bg-white/15">
             <Share2 className="h-5 w-5" />
           </button>
         </>
@@ -666,7 +665,6 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
   const all = conceptsOfCourse(courseId);
   const read = all.filter((c) => conceptReads[c.id]).length;
   const mastery = courseMastery(courseId, attempts);
-  const readiness = courseReadiness(courseId, attempts) * 100;
   const nextUp = all.find((c) => !conceptReads[c.id]);
   const bestExam = best[examKey(courseId)];
 
@@ -695,16 +693,11 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
               <MasteryBar counts={mastery} />
               <MasteryLegend labels={MASTERY_LABELS} counts={mastery} />
             </div>
-            <div className="mt-5 grid grid-cols-2 gap-3 border-t border-border pt-4 text-center">
-              <div>
-                <p className="font-display text-xl font-bold">{pct(readiness)}</p>
-                <p className="text-xs text-muted-foreground">الجاهزية</p>
-              </div>
-              <div>
-                <p className="font-display text-xl font-bold">{bestExam !== undefined ? pct(bestExam) : "—"}</p>
-                <p className="text-xs text-muted-foreground">أفضل اختبار</p>
-              </div>
-            </div>
+            {bestExam !== undefined && (
+              <p className="mt-4 border-t border-border pt-4 text-sm text-muted-foreground">
+                أفضل اختبار: <span className="font-bold text-foreground">{pct(bestExam)}</span>
+              </p>
+            )}
             <div className="mt-5 flex flex-col gap-2.5">
               {nextUp && (
                 <PrimaryButton onClick={() => onOpen(nextUp.id)} className="w-full">

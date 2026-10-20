@@ -602,9 +602,6 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                       q.type === "tf" ? "justify-center text-center font-bold" : ""
                     }`}
                   >
-                    {q.type === "mcq" && (
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border-2 border-current/30 text-sm font-bold opacity-70">{ad(i + 1)}</span>
-                    )}
                     <span className={q.type === "mcq" ? "min-w-0 flex-1" : ""}>{o.text}</span>
                   </button>
                 ))}
