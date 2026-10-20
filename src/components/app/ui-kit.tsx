@@ -19,24 +19,22 @@ export function Card({ className, children, ...rest }: React.HTMLAttributes<HTML
   );
 }
 
-export function SectionHeader({ title, sub, action }: { title: string; sub?: string; action?: React.ReactNode }) {
+export function SectionHeader({ title, action }: { title: string; sub?: string; action?: React.ReactNode }) {
   return (
     <div className="mb-3 flex items-end justify-between gap-3">
       <div className="min-w-0">
         <h2 className="font-display text-base font-semibold text-foreground">{title}</h2>
-        {sub && <p className="mt-0.5 text-sm text-muted-foreground">{sub}</p>}
       </div>
       {action}
     </div>
   );
 }
 
-export function PageTitle({ title, sub, action }: { title: string; sub?: string; action?: React.ReactNode }) {
+export function PageTitle({ title, action }: { title: string; sub?: string; action?: React.ReactNode }) {
   return (
     <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
       <div className="min-w-0">
         <h1 className="font-display text-2xl font-bold text-foreground lg:text-[28px]">{title}</h1>
-        {sub && <p className="mt-1 text-sm leading-6 text-muted-foreground">{sub}</p>}
       </div>
       {action}
     </div>
@@ -226,7 +224,6 @@ export const pct = (v: number) => `${ad(Math.round(v))}٪`;
 
 export function ScreenShell({
   title,
-  sub,
   onClose,
   onBack,
   actions,
@@ -258,7 +255,6 @@ export function ScreenShell({
           ) : null}
           <div className="min-w-0 flex-1 px-1">
             <h1 className="truncate font-display text-lg font-bold leading-7">{title}</h1>
-            {sub && <p className="truncate text-sm text-white/80">{sub}</p>}
           </div>
           {actions}
           {onBack && onClose && (
