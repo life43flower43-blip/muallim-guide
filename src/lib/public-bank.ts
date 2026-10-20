@@ -11,7 +11,7 @@ export function publicBank(): Bank {
   return bank;
 }
 
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://turbawy.app").replace(/\/$/, "");
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "https://turbawy.app")).replace(/\/$/, "");
 export const SITE_NAME = "تربوي";
 
 export const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
