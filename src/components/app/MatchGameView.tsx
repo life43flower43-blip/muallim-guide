@@ -185,7 +185,7 @@ export default function MatchGameView() {
                   transition={{ duration: 0.4 }}
                   onClick={() => tap(t)}
                   className={`flex min-h-[96px] items-center justify-center rounded-xl border p-3 text-center leading-6 transition-colors ${
-                    t.kind === "term" ? "text-[15px] font-semibold" : "text-[13px]"
+                    t.kind === "term" ? "text-base font-semibold" : "text-sm"
                   } ${
                     st === "matched"
                       ? "border-transparent bg-muted text-muted-foreground/40"
@@ -201,7 +201,7 @@ export default function MatchGameView() {
               );
             })}
           </div>
-          {!started && <p className="mt-4 text-center text-[13px] text-muted-foreground">يبدأ المؤقت مع أول ضغطة.</p>}
+          {!started && <p className="mt-4 text-center text-sm text-muted-foreground">يبدأ المؤقت مع أول ضغطة.</p>}
         </>
       )}
     </ScreenShell>

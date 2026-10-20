@@ -24,7 +24,7 @@ export function SectionHeader({ title, sub, action }: { title: string; sub?: str
     <div className="mb-3 flex items-end justify-between gap-3">
       <div className="min-w-0">
         <h2 className="font-display text-base font-semibold text-foreground">{title}</h2>
-        {sub && <p className="mt-0.5 text-[13px] text-muted-foreground">{sub}</p>}
+        {sub && <p className="mt-0.5 text-sm text-muted-foreground">{sub}</p>}
       </div>
       {action}
     </div>
@@ -152,14 +152,14 @@ export function ListRow({
     >
       {icon && <IconTile icon={icon} color={color} />}
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-[15px] font-medium text-foreground">{title}</span>
-        {sub && <span className="mt-0.5 block truncate text-[13px] text-muted-foreground">{sub}</span>}
+        <span className="block truncate text-base font-medium text-foreground">{title}</span>
+        {sub && <span className="mt-0.5 block truncate text-sm text-muted-foreground">{sub}</span>}
         {children}
       </span>
       {badge !== undefined && badge > 0 && (
         <span className="rounded-full bg-danger-soft px-2 py-0.5 text-xs font-semibold text-destructive">{ad(badge)}</span>
       )}
-      {meta && <span className="shrink-0 text-[13px] text-muted-foreground">{meta}</span>}
+      {meta && <span className="shrink-0 text-sm text-muted-foreground">{meta}</span>}
       {!disabled && <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground/60" aria-hidden="true" />}
     </button>
   );
@@ -174,7 +174,7 @@ export function PrimaryButton({ className, ...rest }: React.ButtonHTMLAttributes
     <button
       type="button"
       className={cn(
-        "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-primary px-5 text-[15px] font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50",
+        "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-primary px-5 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50",
         className
       )}
       {...rest}
@@ -187,7 +187,7 @@ export function SecondaryButton({ className, ...rest }: React.ButtonHTMLAttribut
     <button
       type="button"
       className={cn(
-        "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-input bg-card px-5 text-[15px] font-semibold text-secondary-foreground transition-colors hover:bg-muted disabled:opacity-50",
+        "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-input bg-card px-5 text-base font-semibold text-secondary-foreground transition-colors hover:bg-muted disabled:opacity-50",
         className
       )}
       {...rest}
@@ -257,7 +257,7 @@ export function ScreenShell({
             </button>
           ) : null}
           <div className="min-w-0 flex-1 px-1">
-            <h1 className="truncate font-display text-[17px] font-semibold leading-7">{title}</h1>
+            <h1 className="truncate font-display text-lg font-semibold leading-7">{title}</h1>
             {sub && <p className="truncate text-xs text-muted-foreground">{sub}</p>}
           </div>
           {actions}
@@ -386,7 +386,7 @@ export function OptionButton({
         className="flex min-w-0 flex-1 items-start gap-3 rounded-xl p-4 text-right disabled:cursor-default"
       >
         {letter && <span className={cn("flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm font-semibold", letterCls)}>{letter}</span>}
-        <span className={cn("flex-1 text-[15px] leading-7", isStruck && "line-through decoration-2")}>{children}</span>
+        <span className={cn("flex-1 text-base leading-7", isStruck && "line-through decoration-2")}>{children}</span>
       </button>
       {onToggleStrike && !disabled && (
         <button

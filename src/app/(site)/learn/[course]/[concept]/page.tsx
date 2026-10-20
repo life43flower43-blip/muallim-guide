@@ -61,7 +61,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
 
       <section className="space-y-5">
         {c.explanation.split(/\n+/).map((p, i) => (
-          <p key={i} className="text-[17px] leading-[2.1]">{p}</p>
+          <p key={i} className="text-lg leading-[2.1]">{p}</p>
         ))}
       </section>
 
@@ -83,7 +83,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
             {sample.map((q) => (
               <div key={q.id} className="rounded-2xl border border-border bg-card p-4">
                 <p className="font-medium leading-8">{q.question}</p>
-                <ul className="mt-3 space-y-1.5 text-[15px] text-secondary-foreground">
+                <ul className="mt-3 space-y-1.5 text-base text-secondary-foreground">
                   {q.options.map((o) => (
                     <li key={o.text}>• {o.text}</li>
                   ))}

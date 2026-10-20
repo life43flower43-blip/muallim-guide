@@ -193,8 +193,8 @@ function ResultScreen({ scores, run, onAgain, onExit }: { scores: ScenarioScore[
               ) : (
                 <ShieldAlert className="h-5 w-5 shrink-0 text-destructive" />
               )}
-              <span className="min-w-0 flex-1 text-[15px]">{sc.title}</span>
-              <span className="text-[13px] text-muted-foreground">{r ? scoreLabel(r) : ""}</span>
+              <span className="min-w-0 flex-1 text-base">{sc.title}</span>
+              <span className="text-sm text-muted-foreground">{r ? scoreLabel(r) : ""}</span>
             </div>
           );
         })}
@@ -262,7 +262,7 @@ export default function ScenariosView() {
           </div>
           <div className="mt-4 flex items-center gap-3">
             <ProgressBar value={(done / Math.max(1, SCENARIOS.length)) * 100} className="flex-1" />
-            <span className="shrink-0 text-[13px] text-muted-foreground">
+            <span className="shrink-0 text-sm text-muted-foreground">
               {ad(done)} من {ad(SCENARIOS.length)}
             </span>
           </div>
@@ -291,8 +291,8 @@ export default function ScenariosView() {
                       <CheckCircle2 className={`h-5 w-5 shrink-0 ${sc === "best" ? "text-success" : sc === "ok" ? "text-gem" : "text-destructive"}`} />
                     )}
                     <span className="min-w-0 flex-1">
-                      <span className="block text-[15px] leading-6">{s.title}</span>
-                      {sc !== null && <span className="text-[13px] text-muted-foreground">آخر قرار: {scoreLabel(sc)}</span>}
+                      <span className="block text-base leading-6">{s.title}</span>
+                      {sc !== null && <span className="text-sm text-muted-foreground">آخر قرار: {scoreLabel(sc)}</span>}
                     </span>
                     <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground/60" />
                   </button>

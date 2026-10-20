@@ -42,7 +42,7 @@ function MistakeCard({ item, onConcept }: { item: MistakeItem; onConcept: () => 
         <Chip tone="danger">أخطأت {arCount(item.mistakeCount, TIMES)}</Chip>
         {item.due ? <Chip tone="warning">مستحق الآن</Chip> : next && <Chip>يعود {dateFmt.format(next)}</Chip>}
       </div>
-      <p className="text-[15px] font-medium leading-7">{q.question}</p>
+      <p className="text-base font-medium leading-7">{q.question}</p>
 
       {!revealed ? (
         <button
@@ -159,7 +159,7 @@ export default function MistakesView({ onGoTab }: { onGoTab: (t: Tab) => void })
           </div>
           {mastered !== null && mastered + open > 0 && (
             <div className="mt-5">
-              <div className="mb-1.5 flex justify-between text-[13px] text-muted-foreground">
+              <div className="mb-1.5 flex justify-between text-sm text-muted-foreground">
                 <span>تقدم الإصلاح</span>
                 <span>
                   {ad(mastered)} من {ad(mastered + open)}
@@ -172,7 +172,7 @@ export default function MistakesView({ onGoTab }: { onGoTab: (t: Tab) => void })
             <RotateCcw className="h-4 w-4" />
             {due > 0 ? `راجع ${arCount(Math.min(due, REVIEW_SESSION_SIZE), ERROR_OBJ_FORMS)}` : "تدرّب عليها قبل موعدها"}
           </PrimaryButton>
-          <p className="mt-3 text-center text-[13px] text-muted-foreground">
+          <p className="mt-3 text-center text-sm text-muted-foreground">
             {due > 0 ? "قرابة سبع دقائق، وتكسب بها جواهر" : "لا مراجعة مستحقة الآن"}
             {data.refresh.length > 0 && `، ومعها ${arCount(data.refresh.length, ERROR_OBJ_FORMS)} للتثبيت`}
           </p>
@@ -183,7 +183,7 @@ export default function MistakesView({ onGoTab }: { onGoTab: (t: Tab) => void })
           <p className="flex items-center gap-2 text-sm font-semibold">
             <CalendarClock className="h-4 w-4 text-primary" /> جدول المراجعة
           </p>
-          <p className="mt-0.5 text-[13px] text-muted-foreground">ما يعود إليك في الأيام السبعة القادمة</p>
+          <p className="mt-0.5 text-sm text-muted-foreground">ما يعود إليك في الأيام السبعة القادمة</p>
           <div className="mt-4 flex h-[112px] items-end gap-2" role="img" aria-label="عدد الأخطاء المستحقة في كل يوم">
             {forecast.days.map((d, i) => (
               <div key={d.ts} className="flex flex-1 flex-col items-center gap-1.5">
@@ -192,11 +192,11 @@ export default function MistakesView({ onGoTab }: { onGoTab: (t: Tab) => void })
                   className={cn("w-full rounded-md", i === 0 ? "bg-primary" : "bg-primary/35", d.count === 0 && "bg-muted")}
                   style={{ height: `${d.count === 0 ? 4 : Math.max(8, (d.count / forecast.max) * 64)}px` }}
                 />
-                <span className={cn("text-[11px]", i === 0 ? "font-medium text-foreground" : "text-muted-foreground")}>{i === 0 ? "اليوم" : dayFmt.format(new Date(d.ts))}</span>
+                <span className={cn("text-xs", i === 0 ? "font-medium text-foreground" : "text-muted-foreground")}>{i === 0 ? "اليوم" : dayFmt.format(new Date(d.ts))}</span>
               </div>
             ))}
           </div>
-          {forecast.later > 0 && <p className="mt-3 text-[13px] text-muted-foreground">وبعد ذلك {arCount(forecast.later, ERROR_OBJ_FORMS)}</p>}
+          {forecast.later > 0 && <p className="mt-3 text-sm text-muted-foreground">وبعد ذلك {arCount(forecast.later, ERROR_OBJ_FORMS)}</p>}
         </Card>
       </div>
 
@@ -218,8 +218,8 @@ export default function MistakesView({ onGoTab }: { onGoTab: (t: Tab) => void })
               <div key={w.concept.id} className="flex min-h-[64px] items-center gap-3 px-4 py-3">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-danger-soft font-display text-sm font-bold text-destructive">{ad(w.count)}</span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-[15px] font-medium">{w.concept.title}</p>
-                  <p className="truncate text-[13px] text-muted-foreground">{COURSE_SHORT[w.concept.courseId]}</p>
+                  <p className="truncate text-base font-medium">{w.concept.title}</p>
+                  <p className="truncate text-sm text-muted-foreground">{COURSE_SHORT[w.concept.courseId]}</p>
                 </div>
                 <button type="button" onClick={() => setReaderId(w.concept.id)} aria-label={`اقرأ ${w.concept.title}`} className="flex h-10 w-10 items-center justify-center rounded-full text-primary hover:bg-accent">
                   <BookOpen className="h-5 w-5" />

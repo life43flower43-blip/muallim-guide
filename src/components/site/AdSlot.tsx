@@ -16,7 +16,7 @@ export default function AdSlot({ slot }: { slot?: string }) {
   if (!CLIENT) return null;
   return (
     <div className="my-8">
-      <p className="mb-1 text-center text-[11px] text-muted-foreground">إعلان</p>
+      <p className="mb-1 text-center text-xs text-muted-foreground">إعلان</p>
       <ins className="adsbygoogle block" style={{ display: "block" }} data-ad-client={CLIENT} data-ad-slot={slot ?? process.env.NEXT_PUBLIC_ADSENSE_SLOT} data-ad-format="auto" data-full-width-responsive="true" />
     </div>
   );

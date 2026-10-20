@@ -74,7 +74,7 @@ export default function HeartOfClass() {
 
       {tab === "ladder" ? (
         <div className="space-y-6">
-          <p className="text-[15px] leading-7 text-secondary-foreground">
+          <p className="text-base leading-7 text-secondary-foreground">
             ست عائلات من المشاعر تشرح كثيرًا من تصرفات الطلاب. اختر شخصية لترى علاماتها، وما تحتاجه منك، وخطوات عملية للتعامل معها.
           </p>
           {HEART_FAMILIES.map((f) => (
@@ -92,13 +92,13 @@ export default function HeartOfClass() {
                         className="flex min-h-[56px] w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
                       >
                         <span className="min-w-0 flex-1">
-                          <span className="block text-[15px] font-medium">{p.name}</span>
-                          <span className="mt-0.5 block text-[13px] text-muted-foreground">{p.tag}</span>
+                          <span className="block text-base font-medium">{p.name}</span>
+                          <span className="mt-0.5 block text-sm text-muted-foreground">{p.tag}</span>
                         </span>
                         <ChevronDown className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} />
                       </button>
                       {isOpen && (
-                        <div className="space-y-5 border-t border-border bg-muted/30 px-4 py-5 text-[15px] leading-7">
+                        <div className="space-y-5 border-t border-border bg-muted/30 px-4 py-5 text-base leading-7">
                           <div>
                             <p className="mb-1.5 flex items-center gap-2 text-sm font-semibold">
                               <Eye className="h-4 w-4 text-primary" /> {SIGNALS_LABEL}
@@ -163,7 +163,7 @@ export default function HeartOfClass() {
         </div>
       ) : (
         <div className="space-y-5">
-          <p className="text-[15px] leading-7 text-secondary-foreground">فكرة واحدة تكفي لتغيّر حصة كاملة. اطلب شرارة جديدة كلما احتجت فكرة لدرسك.</p>
+          <p className="text-base leading-7 text-secondary-foreground">فكرة واحدة تكفي لتغيّر حصة كاملة. اطلب شرارة جديدة كلما احتجت فكرة لدرسك.</p>
           <AnimatePresence mode="wait">
             <motion.div key={sparkIdx} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
               <Card className="p-6 text-center">
@@ -171,7 +171,7 @@ export default function HeartOfClass() {
                   <Lightbulb className="h-7 w-7" />
                 </span>
                 <h3 className="mt-4 font-display text-lg font-semibold">{spark.title}</h3>
-                <p className="mx-auto mt-2 max-w-md text-[15px] leading-8 text-secondary-foreground">{spark.body}</p>
+                <p className="mx-auto mt-2 max-w-md text-base leading-8 text-secondary-foreground">{spark.body}</p>
               </Card>
             </motion.div>
           </AnimatePresence>

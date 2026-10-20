@@ -413,7 +413,7 @@ export default function ChallengeSession() {
               <div key={r.id} className="flex items-start gap-3 px-4 py-4">
                 {r.ok ? <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-success" /> : <XCircle className="mt-1 h-5 w-5 shrink-0 text-destructive" />}
                 <div className="min-w-0 flex-1">
-                  <p className="text-[15px] leading-7">{rc.kind === "order" ? rc.title : rc.kind === "fill" ? `${rc.before} ـــــ ${rc.after}` : rc.prompt}</p>
+                  <p className="text-base leading-7">{rc.kind === "order" ? rc.title : rc.kind === "fill" ? `${rc.before} ـــــ ${rc.after}` : rc.prompt}</p>
                   {!r.ok && rc.kind === "order" && <p className="mt-1 text-sm leading-6 text-success">الترتيب الصحيح: {rc.items.join("، ثم ")}</p>}
                   {!r.ok && rc.kind === "fill" && <p className="mt-1 text-sm text-success">الإجابة: {rc.right}</p>}
                 </div>

@@ -202,7 +202,7 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
                 </button>
               ))}
             </div>
-            {total > 0 && total < size && <p className="mt-2 text-[13px] text-muted-foreground">المتاح {arCount(total, QUESTION_FORMS)} فقط بهذه الاختيارات.</p>}
+            {total > 0 && total < size && <p className="mt-2 text-sm text-muted-foreground">المتاح {arCount(total, QUESTION_FORMS)} فقط بهذه الاختيارات.</p>}
           </section>
 
           <Card className="flex items-start gap-3 p-4 text-sm leading-6 text-secondary-foreground">
@@ -222,8 +222,8 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
               className="flex min-h-[52px] w-full items-center gap-3 border-b border-border bg-muted/40 px-4 text-right"
             >
               <CheckBox state={allState} />
-              <span className="flex-1 text-[15px] font-medium">كل المقررات</span>
-              <span className="text-[13px] text-muted-foreground">{ad(countOf(allKeys))}</span>
+              <span className="flex-1 text-base font-medium">كل المقررات</span>
+              <span className="text-sm text-muted-foreground">{ad(countOf(allKeys))}</span>
             </button>
             <div className="divide-y divide-border">
               {COURSES.map((c) => {
@@ -243,12 +243,12 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
                       >
                         <CheckBox state={state} />
                         <span className="min-w-0 flex-1">
-                          <span className="block truncate text-[15px]">{COURSE_SHORT[c.id] ?? c.name}</span>
+                          <span className="block truncate text-base">{COURSE_SHORT[c.id] ?? c.name}</span>
                           <span className="text-xs text-muted-foreground">
                             {ad(on)} من {ad(keys.length)} فصلًا
                           </span>
                         </span>
-                        <span className="text-[13px] text-muted-foreground">{ad(countOf(keys))}</span>
+                        <span className="text-sm text-muted-foreground">{ad(countOf(keys))}</span>
                       </button>
                       <button
                         type="button"

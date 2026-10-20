@@ -190,8 +190,8 @@ export default function ExamSimView() {
               <button key={b.id} type="button" onClick={() => startExam(b)} className="flex w-full items-start gap-3 px-4 py-4 text-right transition-colors hover:bg-muted/60">
                 <IconTile icon={Award} />
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[15px] font-semibold">{b.name}</span>
-                  <span className="mt-1 block text-[13px] leading-6 text-muted-foreground">{b.desc}</span>
+                  <span className="block text-base font-semibold">{b.name}</span>
+                  <span className="mt-1 block text-sm leading-6 text-muted-foreground">{b.desc}</span>
                   <span className="mt-2 flex flex-wrap gap-1.5">
                     <Chip>{arCount(b.total, QUESTION_FORMS)}</Chip>
                     <Chip>{ad(b.minutes)} دقيقة</Chip>
@@ -235,8 +235,8 @@ export default function ExamSimView() {
                       {ad(r.scorePct)}٪
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[15px]">{r.bpName}</span>
-                      <span className="block text-[13px] text-muted-foreground">{arDate(r.ts)}</span>
+                      <span className="block truncate text-base">{r.bpName}</span>
+                      <span className="block text-sm text-muted-foreground">{arDate(r.ts)}</span>
                     </span>
                     <Chip tone={r.passed ? "success" : "danger"}>{r.passed ? "ناجح" : "دون المحك"}</Chip>
                   </div>
@@ -264,7 +264,7 @@ export default function ExamSimView() {
         }
       >
         <div className="space-y-5">
-          <p className="text-[15px] leading-7 text-secondary-foreground">{bp.desc}</p>
+          <p className="text-base leading-7 text-secondary-foreground">{bp.desc}</p>
           <div className="grid grid-cols-3 gap-3">
             <BriefStat icon={LayoutGrid} label="سؤالًا" value={ad(bp.total)} />
             <BriefStat icon={Timer} label="دقيقة" value={ad(bp.minutes)} />
@@ -276,8 +276,8 @@ export default function ExamSimView() {
               {bp.sections.map((x) => (
                 <li key={x.courseId} className="flex items-center gap-3 py-2.5">
                   <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: COURSE_COLOR[x.courseId] ?? "var(--primary)" }} />
-                  <span className="flex-1 text-[15px]">{COURSE_SHORT[x.courseId] ?? x.courseId}</span>
-                  <span className="text-[13px] text-muted-foreground">{arCount(x.quota, QUESTION_FORMS)}</span>
+                  <span className="flex-1 text-base">{COURSE_SHORT[x.courseId] ?? x.courseId}</span>
+                  <span className="text-sm text-muted-foreground">{arCount(x.quota, QUESTION_FORMS)}</span>
                 </li>
               ))}
             </ul>
@@ -344,7 +344,7 @@ export default function ExamSimView() {
                   type="button"
                   aria-pressed={!!flagged[current.id]}
                   onClick={() => setFlagged((f) => ({ ...f, [current.id]: !f[current.id] }))}
-                  className={`mr-auto inline-flex min-h-[36px] items-center gap-1.5 rounded-full border px-3 text-[13px] transition-colors ${
+                  className={`mr-auto inline-flex min-h-[36px] items-center gap-1.5 rounded-full border px-3 text-sm transition-colors ${
                     flagged[current.id] ? "border-gem bg-gem-soft text-gem" : "border-border text-muted-foreground hover:bg-muted"
                   }`}
                 >
@@ -475,7 +475,7 @@ export default function ExamSimView() {
             <Chip tone={result.passed ? "success" : "danger"} className="mt-4">
               {result.passed ? "ناجح" : "دون المحك"}
             </Chip>
-            <p className="mt-3 text-[15px] text-secondary-foreground">
+            <p className="mt-3 text-base text-secondary-foreground">
               {ad(result.correctCount)} من {ad(result.total)} صحيحة، وحد النجاح {ad(bp.passPct)}٪
             </p>
           </Card>
@@ -500,10 +500,10 @@ export default function ExamSimView() {
                   const chosen = answers[qid];
                   return (
                     <Card key={qid} className="space-y-2 p-4">
-                      <p className="text-[15px] font-medium leading-7">{q.question}</p>
+                      <p className="text-base font-medium leading-7">{q.question}</p>
                       {chosen && <p className="rounded-lg bg-danger-soft px-3 py-2 text-sm text-destructive">إجابتك: {chosen}</p>}
                       <p className="rounded-lg bg-success-soft px-3 py-2 text-sm text-success">الصحيح: {q.correct}</p>
-                      <p className="text-[13px] leading-6 text-muted-foreground">{q.reason}</p>
+                      <p className="text-sm leading-6 text-muted-foreground">{q.reason}</p>
                     </Card>
                   );
                 })}

@@ -25,7 +25,7 @@ export default function AuthPanel({ label = "المتابعة بحساب Google"
     <a
       href="/api/auth/google"
       onClick={() => onDone?.()}
-      className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-xl border border-input bg-card px-4 text-[15px] font-semibold text-foreground transition-colors hover:bg-muted"
+      className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-xl border border-input bg-card px-4 text-base font-semibold text-foreground transition-colors hover:bg-muted"
     >
       <GoogleIcon />
       {label}

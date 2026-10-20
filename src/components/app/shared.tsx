@@ -49,7 +49,7 @@ export function RingProgress({
 export function SectionTitle({ title, action }: { title: string; action?: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between mb-3">
-      <h2 className="text-[15px] font-bold text-stone-800">{title}</h2>
+      <h2 className="text-base font-bold text-stone-800">{title}</h2>
       {action}
     </div>
   );

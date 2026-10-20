@@ -85,7 +85,7 @@ const statusCls: Record<PlanCheckStatus, string> = {
 };
 
 const inputCls =
-  "w-full rounded-xl border border-input bg-card px-3 py-2.5 text-[15px] leading-7 outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20";
+  "w-full rounded-xl border border-input bg-card px-3 py-2.5 text-base leading-7 outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20";
 const chipOff = "min-h-[36px] rounded-full border border-border bg-card px-3 text-sm text-secondary-foreground transition-colors hover:bg-muted";
 const chipOn = "min-h-[36px] rounded-full border border-primary bg-accent px-3 text-sm font-medium text-accent-foreground";
 
@@ -107,7 +107,7 @@ function SectionCard({
         <IconTile icon={Icon} />
         <div className="min-w-0">
           <h3 className="font-display text-base font-semibold leading-7">{title}</h3>
-          {guide && <p className="text-[13px] leading-6 text-muted-foreground">{guide}</p>}
+          {guide && <p className="text-sm leading-6 text-muted-foreground">{guide}</p>}
         </div>
       </div>
       {children}
@@ -122,7 +122,7 @@ function PlanLines({ title, body }: { title: string; body: string }) {
   return (
     <section>
       <h3 className="mb-2 font-display text-base font-semibold">{title}</h3>
-      <ul className="space-y-1.5 text-[15px] leading-7 text-secondary-foreground">
+      <ul className="space-y-1.5 text-base leading-7 text-secondary-foreground">
         {lines.map((ln, i) => (
           <li key={i} className="flex gap-2">
             <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
@@ -297,7 +297,7 @@ export default function StudioView() {
                           .map((x) => x.trim())
                           .filter(Boolean)
                           .map((ln, k) => (
-                            <p key={k} className="mt-1 text-[15px] leading-7 text-secondary-foreground">
+                            <p key={k} className="mt-1 text-base leading-7 text-secondary-foreground">
                               {ln}
                             </p>
                           ))}
@@ -332,7 +332,7 @@ export default function StudioView() {
           role="tab"
           aria-selected={tab === id}
           onClick={() => setTab(id)}
-          className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg text-[13px] transition-colors ${
+          className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg text-sm transition-colors ${
             tab === id ? "bg-card font-medium text-foreground shadow-sm" : "text-muted-foreground"
           }`}
         >
@@ -439,7 +439,7 @@ export default function StudioView() {
                   <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground">{ad(i + 1)}</span>
                   <label className="block min-w-0 flex-1 space-y-1">
                     <span className="block text-sm font-semibold">{ph.label}</span>
-                    <span className="block text-[13px] leading-6 text-muted-foreground">{ph.guide}</span>
+                    <span className="block text-sm leading-6 text-muted-foreground">{ph.guide}</span>
                     <textarea value={form.phases[ph.key]} onChange={(e) => setPhase(ph.key, e.target.value)} rows={2} placeholder={ph.placeholder} className={`${inputCls} mt-1.5`} />
                   </label>
                 </li>
@@ -467,7 +467,7 @@ export default function StudioView() {
         </div>
       ) : tab === "templates" ? (
         <div className="space-y-4">
-          <p className="text-[15px] leading-7 text-secondary-foreground">قوالب مكتملة الأركان. حمّل ما يناسب نوع درسك، ثم كيّفه بصفك وموضوعك.</p>
+          <p className="text-base leading-7 text-secondary-foreground">قوالب مكتملة الأركان. حمّل ما يناسب نوع درسك، ثم كيّفه بصفك وموضوعك.</p>
           {PLAN_TEMPLATES.map((t) => (
             <Card key={t.id} className="p-5">
               <div className="flex items-start justify-between gap-3">
@@ -507,7 +507,7 @@ export default function StudioView() {
             >
               <IconTile icon={FileText} />
               <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-medium leading-6">{p.topic}</span>
+                <span className="block text-base font-medium leading-6">{p.topic}</span>
                 <span className="mt-2 flex flex-wrap gap-1.5">
                   {p.subject && <Chip tone="primary">{p.subject}</Chip>}
                   {p.grade && <Chip>{p.grade}</Chip>}
@@ -537,7 +537,7 @@ function ReviewCard({ review }: { review: PlanReview }) {
                 <p className="text-sm font-medium">
                   {it.label}، <span className={statusCls[it.status]}>{PLAN_STATUS_WORD[it.status]}</span>
                 </p>
-                <p className="mt-0.5 text-[13px] leading-6 text-muted-foreground">{it.note}</p>
+                <p className="mt-0.5 text-sm leading-6 text-muted-foreground">{it.note}</p>
               </div>
             </li>
           );
