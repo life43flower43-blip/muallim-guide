@@ -100,7 +100,51 @@ export const ERROR_FORMS: CountForms = {
   one: "خطأ واحد",
   two: "خطآن",
   few: "أخطاء",
-  many: "خطأ",
+  many: "خطأً",
+};
+
+/** بعد فعل أو حرف جر: «راجع خطأين»، «من خطأين» */
+export const ERROR_OBJ_FORMS: CountForms = {
+  one: "خطأ واحد",
+  two: "خطأين",
+  few: "أخطاء",
+  many: "خطأً",
+};
+
+export const ERROR_DUE_FORMS: CountForms = {
+  one: "خطأ واحد مستحق",
+  two: "خطآن مستحقان",
+  few: "أخطاء مستحقة",
+  many: "خطأً مستحقًا",
+};
+
+export const CHAPTER_FORMS: CountForms = {
+  one: "فصل واحد",
+  two: "فصلان",
+  few: "فصول",
+  many: "فصلًا",
+};
+
+/** بعد «من»: «أتقنت ٣ من ٥ فصول» */
+export const CHAPTER_GEN_FORMS: CountForms = {
+  one: "فصل واحد",
+  two: "فصلين",
+  few: "فصول",
+  many: "فصلًا",
+};
+
+export const MINUTE_FORMS: CountForms = {
+  one: "دقيقة واحدة",
+  two: "دقيقتان",
+  few: "دقائق",
+  many: "دقيقة",
+};
+
+export const EXAMPLE_FORMS: CountForms = {
+  one: "مثال واحد",
+  two: "مثالان",
+  few: "أمثلة",
+  many: "مثالًا",
 };
 
 export const CARD_FORMS: CountForms = {

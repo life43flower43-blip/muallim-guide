@@ -19,6 +19,7 @@ import {
   Sparkles,
   ShieldCheck,
   Quote,
+  ChevronLeft,
 } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { useApp } from "@/lib/store";
@@ -38,6 +39,8 @@ import {
   type QuizHint,
 } from "@/lib/lab";
 import { conceptById, questionById, OPTION_LETTERS } from "@/lib/qbank";
+import { ad } from "@/lib/arabic";
+import { Callout, Card, Chip, Divided, EmptyState, IconTile, OptionButton, PrimaryButton, ScreenShell, SectionHeader } from "./ui-kit";
 
 type LabTab = "list" | "exam" | "map" | "mirror";
 
@@ -45,11 +48,6 @@ const ratingIcon: Record<LabRating, typeof CheckCircle2> = {
   good: CheckCircle2,
   ok: MinusCircle,
   poor: CircleAlert,
-};
-const ratingCls: Record<LabRating, string> = {
-  good: "text-indigo-600 border-indigo-200 bg-indigo-50",
-  ok: "text-amber-600 border-amber-200 bg-amber-50",
-  poor: "text-red-600 border-red-200 bg-red-50",
 };
 
 export default function LabView() {
@@ -145,442 +143,347 @@ export default function LabView() {
     openConcept(cid);
   };
 
-  const header = (t: LabTab) => (
-    <div className="sticky top-0 z-10 border-b border-border bg-white/95 px-4 pb-3 pt-4 backdrop-blur">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-black text-foreground">مختبر المعلّم</h1>
-          <p className="text-xs text-muted-foreground">تدرّب على قرار المعلم في مواقف الحصة الحقيقية</p>
-        </div>
-        <button
-          onClick={clearLab}
-          aria-label="إغلاق"
-          className="rounded-full bg-muted p-2 text-muted-foreground hover:bg-accent"
-        >
-          <X className="h-5 w-5" />
-        </button>
-      </div>
-      <div className="mt-3 flex gap-1.5">
-        {(
-          [
-            ["list", "المواقف", Dumbbell],
-            ["exam", "الاستقلال", ShieldCheck],
-            ["map", "الخريطة", MapIcon],
-            ["mirror", "مرآتي", Eye],
-          ] as const
-        ).map(([id, lbl, Icon]) => (
+  const conceptChips = (ids: string[]) => (
+    <div className="flex flex-wrap gap-2">
+      {ids.map((cid) => {
+        const c = conceptById(cid);
+        if (!c) return null;
+        return (
           <button
-            key={id}
-            onClick={() => setTab(id)}
-            className={`flex flex-1 items-center justify-center gap-1 rounded-xl border-2 px-1.5 py-2 text-[11px] font-bold ${
-              t === id ? "border-primary bg-accent text-primary" : "border-border bg-white text-muted-foreground"
-            }`}
+            key={cid}
+            type="button"
+            onClick={() => openConceptDeep(cid)}
+            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-border bg-card px-3 text-sm text-primary hover:bg-accent"
           >
-            <Icon className="h-4 w-4" />
-            {lbl}
+            <BookOpen className="h-3.5 w-3.5" /> {c.title}
           </button>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 
-  // ---------- شاشة تشغيل الموقف (تدريب أو اختبار استقلال) ----------
+  // ---------- تشغيل الموقف (تدريب أو اختبار استقلال) ----------
   if (scenario) {
     const finished = nodeKey === "end";
+    const footer = pendingOutcome ? (
+      <PrimaryButton onClick={proceed} className="w-full">
+        ماذا حدث بعد ذلك؟ <ArrowLeft className="h-4 w-4" />
+      </PrimaryButton>
+    ) : finished ? (
+      <PrimaryButton onClick={saveAttempt} className="w-full">
+        <CheckCircle2 className="h-4 w-4" /> {examMode ? "احفظ نتيجة الاختبار والتأمل" : "احفظ التجربة والتأمل"}
+      </PrimaryButton>
+    ) : undefined;
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 24 }}
-        className="fixed inset-0 z-50 overflow-y-auto bg-background"
+      <ScreenShell
+        title={scenario.title}
+        sub={examMode ? "اختبار استقلال: بلا تلميح حتى النهاية" : `${scenario.skill}، ${scenario.stage}`}
+        onBack={() => setScenario(null)}
+        onClose={clearLab}
+        footer={footer}
       >
-        <div className="mx-auto max-w-lg px-4 pb-28 pt-5">
-          <div className="mb-4 flex items-center justify-between">
-            <button
-              onClick={() => setScenario(null)}
-              className="flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-bold text-muted-foreground"
-            >
-              <ArrowLeft className="h-4 w-4" /> {examMode ? "إنهاء الاختبار" : "خروج من الموقف"}
-            </button>
-            {examMode ? (
-              <span className="flex items-center gap-1 rounded-full border border-primary/30 bg-white px-3 py-1 text-xs font-bold text-primary">
-                <ShieldCheck className="h-3.5 w-3.5" /> اختبار استقلال
-              </span>
-            ) : (
-              <span className="rounded-full bg-accent px-3 py-1 text-xs font-bold text-primary">{scenario.skill}</span>
-            )}
-          </div>
-
-          <h2 className="text-lg font-black leading-8">{scenario.title}</h2>
-          <p className="text-xs font-bold text-muted-foreground">{examMode ? "موقف جديد لم تتدرّب عليه — قرارك هنا بلا تلميح" : scenario.stage}</p>
-
-          {!finished && !pendingOutcome && node && (
-            <motion.div key={nodeKey + runId} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-4 space-y-3">
-              <div className="rounded-2xl border-2 border-primary/20 bg-white p-4 text-sm font-bold leading-7">{node.text}</div>
-              <p className="pt-1 text-sm font-black text-primary">{examMode ? "خذ قرارك — التقييم يظهر بعد الختام" : "ماذا ستفعل؟"}</p>
-              {shownOptions.map((o, i) => (
-                <button
-                  key={i}
-                  onClick={() => choose(i)}
-                  className="flex w-full items-start gap-3 rounded-2xl border-2 border-border bg-white p-4 text-right transition hover:border-primary hover:bg-accent"
-                >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted text-sm font-black text-primary">
-                    {OPTION_LETTERS[i]}
-                  </span>
-                  <span className="text-sm font-bold leading-6">{o.text}</span>
-                </button>
-              ))}
-            </motion.div>
-          )}
-
-          {pendingOutcome && (
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-4 space-y-3">
-              <div className={`flex items-center gap-2 rounded-2xl border-2 p-3 text-sm font-black ${ratingCls[pendingOutcome.rating]}`}>
-                {(() => {
-                  const Icon = ratingIcon[pendingOutcome.rating];
-                  return <Icon className="h-5 w-5" />;
-                })()}
-                {RATING_WORD[pendingOutcome.rating]}
-              </div>
-              <div className="rounded-2xl border border-border bg-white p-4 text-sm leading-7">{pendingOutcome.outcome}</div>
-              <button
-                onClick={proceed}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-black text-primary-foreground"
-              >
-                ماذا حدث بعد ذلك؟ <ArrowRight className="h-4 w-4" />
-              </button>
-            </motion.div>
-          )}
-
-          {finished && (
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mt-4 space-y-4">
+        {!finished && !pendingOutcome && node && (
+          <motion.div key={nodeKey + runId} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+            <div className="flex flex-wrap gap-2">
+              <Chip tone="primary">القرار {ad(steps.length + 1)}</Chip>
               {examMode && (
-                <div className="flex items-center gap-2 rounded-2xl border-2 border-primary/30 bg-accent p-3 text-sm font-black text-primary">
-                  <ShieldCheck className="h-5 w-5" /> نتيجة اختبار الاستقلال — قراراتك بلا تلميح الآن بلا تقييم
-                </div>
+                <Chip>
+                  <ShieldCheck className="h-3.5 w-3.5" /> اختبار استقلال
+                </Chip>
               )}
-              <div className="rounded-2xl border-2 border-primary/30 bg-accent p-4">
-                <p className="mb-3 flex items-center gap-2 text-sm font-black text-primary">
-                  <Sparkles className="h-4 w-4" /> قراراتك في هذا الموقف
-                </p>
-                <div className="space-y-2">
-                  {steps.map((s, i) => (
-                    <div key={i} className="rounded-xl bg-white p-3 text-xs leading-6">
-                      <span className={`mr-1 font-black ${s.rating === "good" ? "text-indigo-700" : s.rating === "ok" ? "text-amber-700" : "text-red-700"}`}>
-                        {RATING_WORD[s.rating]}:
+            </div>
+            <Card className="p-5">
+              <p className="text-base leading-8">{node.text}</p>
+            </Card>
+            <div>
+              <p className="mb-3 font-display text-base font-semibold">{examMode ? "خذ قرارك، والتقييم يظهر بعد الختام" : "ماذا ستفعل؟"}</p>
+              <div className="space-y-3">
+                {shownOptions.map((o, i) => (
+                  <OptionButton key={i} letter={OPTION_LETTERS[i]} onClick={() => choose(i)}>
+                    {o.text}
+                  </OptionButton>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {pendingOutcome && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            {(() => {
+              const Icon = ratingIcon[pendingOutcome.rating];
+              const tone = pendingOutcome.rating === "good" ? "success" : pendingOutcome.rating === "ok" ? "warning" : "danger";
+              return <Callout tone={tone} icon={Icon} title={RATING_WORD[pendingOutcome.rating]} />;
+            })()}
+            <div>
+              <p className="mb-1 text-[13px] text-muted-foreground">قرارك</p>
+              <p className="text-[15px] font-medium leading-7">{pendingOutcome.choice}</p>
+            </div>
+            <Card className="p-5">
+              <p className="mb-1.5 text-[13px] text-muted-foreground">ما الذي حدث</p>
+              <p className="text-[15px] leading-8">{pendingOutcome.outcome}</p>
+            </Card>
+          </motion.div>
+        )}
+
+        {finished && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+            <div>
+              <Chip tone="success">
+                <CheckCircle2 className="h-3.5 w-3.5" /> {examMode ? "انتهى اختبار الاستقلال" : "اكتمل الموقف"}
+              </Chip>
+              <p className="mt-3 text-[15px] leading-8 text-secondary-foreground">{scenario.end}</p>
+            </div>
+
+            <Card className="p-5">
+              <SectionHeader title="قراراتك" />
+              <ol className="space-y-3">
+                {steps.map((st, i) => (
+                  <li key={i} className="flex gap-3">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold">{ad(i + 1)}</span>
+                    <span className="min-w-0 flex-1 text-sm leading-6">
+                      <span className={`font-semibold ${st.rating === "good" ? "text-success" : st.rating === "ok" ? "text-gem" : "text-destructive"}`}>
+                        {RATING_WORD[st.rating]}:{" "}
                       </span>
-                      <span className="font-bold">{s.choice}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="rounded-2xl border border-border bg-white p-4 text-sm leading-7">
-                <p className="mb-2 flex items-center gap-1.5 text-sm font-black text-primary">
-                  <Quote className="h-4 w-4" /> خلاصة الموقف
-                </p>
-                {scenario.end}
-              </div>
+                      {st.choice}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </Card>
 
-              <div>
-                <p className="mb-2 flex items-center gap-1.5 text-sm font-black">
-                  <BookOpen className="h-4 w-4 text-primary" /> مفاهيم من المكتبة تخدم هذا الموقف
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {scenario.conceptIds.map((cid) => {
-                    const c = conceptById(cid);
-                    if (!c) return null;
-                    return (
-                      <button
-                        key={cid}
-                        onClick={() => openConceptDeep(cid)}
-                        className="rounded-full border border-primary/30 bg-white px-3 py-1.5 text-xs font-bold text-primary"
-                      >
-                        {c.title}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+            {scenario.conceptIds.length > 0 && (
+              <section>
+                <SectionHeader title="مفاهيم مرتبطة بالموقف" />
+                {conceptChips(scenario.conceptIds)}
+              </section>
+            )}
 
-              <div className="rounded-2xl border-2 border-border bg-white p-4">
-                <p className="mb-3 flex items-center gap-2 text-sm font-black">
-                  <Eye className="h-4 w-4 text-primary" /> مرآة المعلّم — تأمل بعد التجربة
-                </p>
-                <div className="space-y-3">
-                  {(
-                    [
-                      ["success", "ما الذي نجح في تصرفاتك؟"],
-                      ["failed", "ما القرار الذي لم ينجح؟ ولماذا؟"],
-                      ["change", "ما الذي سأغيّره في المرة المقبلة؟"],
-                    ] as const
-                  ).map(([k, lbl]) => (
-                    <div key={k}>
-                      <label className="mb-1 block text-xs font-bold text-muted-foreground">{lbl}</label>
-                      <textarea
-                        value={reflect[k]}
-                        onChange={(e) => setReflect((r) => ({ ...r, [k]: e.target.value }))}
-                        rows={2}
-                        className="w-full rounded-xl border-2 border-border bg-background p-3 text-sm leading-6 outline-none focus:border-primary"
-                      />
-                    </div>
-                  ))}
-                </div>
-                <button
-                  onClick={saveAttempt}
-                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-black text-primary-foreground"
-                >
-                  <CheckCircle2 className="h-5 w-5" /> {examMode ? "احفظ نتيجة الاختبار والتأمل" : "احفظ التجربة والتأمل"}
-                </button>
+            <Card className="p-5">
+              <SectionHeader title="مرآة المعلّم" sub="تأمل قصير يثبّت ما تعلمته من الموقف" />
+              <div className="space-y-4">
+                {(
+                  [
+                    ["success", "ما الذي نجح في تصرفاتك؟"],
+                    ["failed", "ما القرار الذي لم ينجح؟ ولماذا؟"],
+                    ["change", "ما الذي ستغيّره في المرة المقبلة؟"],
+                  ] as const
+                ).map(([k, lbl]) => (
+                  <label key={k} className="block space-y-1.5">
+                    <span className="text-sm font-medium text-secondary-foreground">{lbl}</span>
+                    <textarea
+                      value={reflect[k]}
+                      onChange={(e) => setReflect((r) => ({ ...r, [k]: e.target.value }))}
+                      rows={2}
+                      className="w-full rounded-xl border border-input bg-card p-3 text-[15px] leading-7 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    />
+                  </label>
+                ))}
               </div>
-            </motion.div>
-          )}
-        </div>
-      </motion.div>
+            </Card>
+          </motion.div>
+        )}
+      </ScreenShell>
     );
   }
 
-  // ---------- تبويب المواقف التدريبية ----------
-  if (tab === "list") {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 24 }}
-        className="fixed inset-0 z-50 overflow-y-auto bg-background"
-      >
-        {header(tab)}
-        <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
-          <div className="mb-4 rounded-2xl border-2 border-primary/20 bg-gradient-to-l from-accent to-white p-4">
-            <p className="flex items-center gap-2 text-sm font-black text-primary">
-              <FlaskConical className="h-4 w-4" /> كيف يعمل المختبر؟
-            </p>
-            <p className="mt-1 text-xs leading-6 text-muted-foreground">
-              تدخل موقفاً صفياً حقيقياً، وتتخذ قراراتك خطوة بخطوة، فيتحول الموقف بأثرها، ثم ترى تحليل كل قرار وتتأمل في أدائك في «مرآة المعلّم».
-            </p>
-          </div>
+  const tabs = (
+    <div role="tablist" aria-label="أقسام المختبر" className="mb-6 grid grid-cols-4 rounded-xl bg-muted p-1">
+      {(
+        [
+          ["list", "المواقف", Dumbbell],
+          ["exam", "الاستقلال", ShieldCheck],
+          ["map", "الكفاءات", MapIcon],
+          ["mirror", "تأملاتي", Eye],
+        ] as const
+      ).map(([id, lbl, Icon]) => (
+        <button
+          key={id}
+          type="button"
+          role="tab"
+          aria-selected={tab === id}
+          onClick={() => setTab(id)}
+          className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg text-[13px] transition-colors ${
+            tab === id ? "bg-card font-medium text-foreground shadow-sm" : "text-muted-foreground"
+          }`}
+        >
+          <Icon className="h-4 w-4" />
+          {lbl}
+        </button>
+      ))}
+    </div>
+  );
 
-          <button
+  const scenarioRow = (s: LabScenario, asExam: boolean) => {
+    const st = lastStatusOf(s.id);
+    return (
+      <button
+        key={s.id}
+        type="button"
+        onClick={() => startScenario(s, asExam)}
+        className="flex w-full items-start gap-3 px-4 py-4 text-right transition-colors hover:bg-muted/60"
+      >
+        <IconTile icon={asExam ? ShieldCheck : FlaskConical} />
+        <span className="min-w-0 flex-1">
+          <span className="block text-[15px] font-medium leading-6">{s.title}</span>
+          <span className="mt-2 flex flex-wrap gap-1.5">
+            {!asExam && <Chip tone="primary">{s.skill}</Chip>}
+            <Chip>{s.stage}</Chip>
+            {st && <Chip>{st}</Chip>}
+          </span>
+        </span>
+        <ChevronLeft className="mt-2 h-4 w-4 shrink-0 text-muted-foreground/60" />
+      </button>
+    );
+  };
+
+  const mirrorList = [...labAttempts].sort((a, b) => b.ts - a.ts);
+
+  return (
+    <ScreenShell title="مختبر المعلّم" sub="قرار المعلم في مواقف الحصة الحقيقية" onClose={clearLab}>
+      {tabs}
+
+      {tab === "list" && (
+        <div className="space-y-5">
+          <p className="text-[15px] leading-7 text-secondary-foreground">
+            تدخل موقفًا صفيًا، وتتخذ قراراتك خطوة بخطوة، فيتحول الموقف بأثرها. بعد كل قرار ترى تحليله، وفي النهاية تتأمل أداءك.
+          </p>
+          <ListRowCard
             onClick={() => {
               clearLab();
               startScenarios();
             }}
-            className="mb-4 flex w-full items-center justify-between rounded-2xl border-2 border-border bg-white p-4 text-right"
-          >
-            <div>
-              <p className="text-sm font-black">مواقف سريعة</p>
-              <p className="text-xs text-muted-foreground">محاكاة قرار واحد مع تفسيره التربوي</p>
-            </div>
-            <ArrowLeft className="h-4 w-4 text-muted-foreground" />
-          </button>
-
-          <div className="space-y-3">
-            {LAB_SCENARIOS.map((s) => {
-              const st = lastStatusOf(s.id);
-              return (
-                <button
-                  key={s.id}
-                  onClick={() => startScenario(s)}
-                  className="block w-full rounded-2xl border-2 border-border bg-white p-4 text-right transition hover:border-primary"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm font-black leading-6">{s.title}</p>
-                    {st && <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{st}</span>}
-                  </div>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-primary">{s.skill}</span>
-                    <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{s.stage}</span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+          />
+          <Divided>{LAB_SCENARIOS.map((s) => scenarioRow(s, false))}</Divided>
         </div>
-      </motion.div>
-    );
-  }
+      )}
 
-  // ---------- تبويب اختبار الاستقلال ----------
-  if (tab === "exam") {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 24 }}
-        className="fixed inset-0 z-50 overflow-y-auto bg-background"
-      >
-        {header(tab)}
-        <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
-          <div className="mb-4 rounded-2xl border-2 border-primary/25 bg-white p-4">
-            <p className="flex items-center gap-2 text-sm font-black text-primary">
-              <ShieldCheck className="h-4 w-4" /> إثبات القرار بمعلم داخلك
-            </p>
-            <p className="mt-1 text-xs leading-6 text-muted-foreground">
-              هنا مواقف جديدة لم تتدرّب عليها ولا تقرأ حلولها. أثناء القرار لا يظهر تقييم ولا نتيجة ولا شرح — التحليل الكامل يفتح عند الختام وحده. ما تحققه هنا هو دليلك الحقيقي على الاستقلال المهني، وهو ما تثبته في خريطة الكفاءات.
-            </p>
-          </div>
-          <div className="space-y-3">
-            {LAB_EXAM_SCENARIOS.map((s) => {
-              const st = lastStatusOf(s.id);
-              return (
-                <button
-                  key={s.id}
-                  onClick={() => startScenario(s, true)}
-                  className="block w-full rounded-2xl border-2 border-primary/20 bg-white p-4 text-right transition hover:border-primary"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm font-black leading-6">{s.title}</p>
-                    {st && <span className="shrink-0 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-primary">{st}</span>}
-                  </div>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{s.stage}</span>
-                    <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">قرارات متتابعة بلا تلميح</span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+      {tab === "exam" && (
+        <div className="space-y-5">
+          <Callout tone="info" icon={ShieldCheck} title="مواقف جديدة بلا تلميح">
+            لم تتدرّب عليها من قبل. لا يظهر تقييم أثناء القرار، والتحليل الكامل في النهاية. نتيجتك هنا هي دليل استقلالك المهني في خريطة الكفاءات.
+          </Callout>
+          <Divided>{LAB_EXAM_SCENARIOS.map((s) => scenarioRow(s, true))}</Divided>
         </div>
-      </motion.div>
-    );
-  }
+      )}
 
-  // ---------- تبويب خريطة الكفاءات ----------
-  if (tab === "map") {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 24 }}
-        className="fixed inset-0 z-50 overflow-y-auto bg-background"
-      >
-        {header(tab)}
-        <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
-          <p className="mb-4 rounded-2xl border border-border bg-white p-4 text-xs leading-6 text-muted-foreground">
-            حالتك هنا تُبنى من أدلة تجاربك لا من درجات: قراراتك في المواقف، ونتائج أسئلة مفاهيم المكتبة المرتبطة بكل كفاءة، واختبار الاستقلال الذي يثبت الأثر. لا تظهر أرقام — الأدلة نصوص من عملك أنت.
+      {tab === "map" && (
+        <div className="space-y-4">
+          <p className="text-[15px] leading-7 text-secondary-foreground">
+            تُبنى حالة كل كفاءة من قراراتك في المواقف، ومن إجاباتك عن أسئلة المفاهيم المرتبطة بها، ومن اختبار الاستقلال.
           </p>
-          <div className="space-y-3">
-            {reports.map((r) => (
-              <div key={r.skill} className="rounded-2xl border-2 border-border bg-white p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm font-black">{r.skill}</p>
-                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-black ${labStatusColor[r.status]}`}>
-                    {STATUS_WORD[r.status]}
-                  </span>
-                </div>
-                {r.examVerdict && (
-                  <p className="mt-3 flex items-start gap-2 rounded-xl border border-indigo-200 bg-indigo-50 p-2.5 text-[11px] leading-5 text-indigo-800">
-                    <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" /> {r.examVerdict}
-                  </p>
-                )}
-                {r.evidence.length > 0 && (
-                  <div className="mt-3 space-y-1.5">
-                    {r.evidence.map((ev, i) => (
-                      <p key={i} className="rounded-xl bg-muted/60 p-2.5 text-[11px] leading-5 text-muted-foreground">
-                        {ev}
-                      </p>
-                    ))}
-                  </div>
-                )}
-                {r.quizEvidence.length > 0 && (
-                  <div className="mt-2 space-y-1.5">
-                    {r.quizEvidence.map((ev, i) => (
-                      <p key={i} className="flex items-start gap-1.5 rounded-xl border border-amber-200 bg-amber-50/70 p-2.5 text-[11px] leading-5 text-amber-800">
-                        <Quote className="mt-0.5 h-3.5 w-3.5 shrink-0" /> {ev}
-                      </p>
-                    ))}
-                  </div>
-                )}
-                {r.scenarioIds.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {r.scenarioIds.map((sid) => {
-                      const sc = labScenarioById.get(sid);
-                      if (!sc) return null;
-                      return (
-                        <button
-                          key={sid}
-                          onClick={() => startScenario(sc)}
-                          className="rounded-full border border-primary/30 px-3 py-1 text-[11px] font-bold text-primary"
-                        >
-                          جرّب: {sc.title}
-                        </button>
-                      );
-                    })}
-                    {r.examScenarioIds.map((sid) => {
-                      const sc = labScenarioById.get(sid);
-                      if (!sc) return null;
-                      return (
-                        <button
-                          key={sid}
-                          onClick={() => startScenario(sc, true)}
-                          className="flex items-center gap-1 rounded-full border border-primary/40 px-3 py-1 text-[11px] font-bold text-primary"
-                        >
-                          <ShieldCheck className="h-3 w-3" /> اختبر استقلالك: {sc.title}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
+          {reports.map((r) => (
+            <Card key={r.skill} className="p-5">
+              <div className="flex items-center justify-between gap-2">
+                <p className="font-display text-base font-semibold">{r.skill}</p>
+                <Chip tone={r.status === "strong" ? "success" : r.status === "weak" ? "danger" : r.status === "none" ? "neutral" : "warning"}>
+                  {STATUS_WORD[r.status]}
+                </Chip>
               </div>
-            ))}
-          </div>
+              {r.examVerdict && (
+                <Callout tone="success" icon={ShieldCheck} className="mt-3">
+                  {r.examVerdict}
+                </Callout>
+              )}
+              {(r.evidence.length > 0 || r.quizEvidence.length > 0) && (
+                <ul className="mt-3 space-y-2 text-sm leading-6 text-secondary-foreground">
+                  {r.evidence.map((ev, i) => (
+                    <li key={`e${i}`} className="flex gap-2">
+                      <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      {ev}
+                    </li>
+                  ))}
+                  {r.quizEvidence.map((ev, i) => (
+                    <li key={`q${i}`} className="flex gap-2">
+                      <Quote className="mt-1 h-3.5 w-3.5 shrink-0 text-gem" />
+                      {ev}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {(r.scenarioIds.length > 0 || r.examScenarioIds.length > 0) && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {r.scenarioIds.map((sid) => {
+                    const sc = labScenarioById.get(sid);
+                    if (!sc) return null;
+                    return (
+                      <button key={sid} type="button" onClick={() => startScenario(sc)} className="min-h-[36px] rounded-full border border-border px-3 text-sm text-primary hover:bg-accent">
+                        جرّب: {sc.title}
+                      </button>
+                    );
+                  })}
+                  {r.examScenarioIds.map((sid) => {
+                    const sc = labScenarioById.get(sid);
+                    if (!sc) return null;
+                    return (
+                      <button
+                        key={sid}
+                        type="button"
+                        onClick={() => startScenario(sc, true)}
+                        className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-border px-3 text-sm text-primary hover:bg-accent"
+                      >
+                        <ShieldCheck className="h-3.5 w-3.5" /> اختبر استقلالك: {sc.title}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </Card>
+          ))}
         </div>
-      </motion.div>
-    );
-  }
+      )}
 
-  // ---------- تبويب مرآتي ----------
-  const mirrorList = [...labAttempts].sort((a, b) => b.ts - a.ts);
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 24 }}
-      className="fixed inset-0 z-50 overflow-y-auto bg-background"
-    >
-      {header(tab)}
-      <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
-        {mirrorList.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-border bg-white p-6 text-center">
-            <Eye className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
-            <p className="text-sm font-black">لا تأملات محفوظة بعد</p>
-            <p className="mt-1 text-xs leading-6 text-muted-foreground">
-              أكمل أي موقف من تبويب «المواقف» أو موقفاً من «الاستقلال»، وأجب عن أسئلة مرآة المعلّم في نهايته — فتجمع تأملاتك هنا لترى تطورك.
-            </p>
-          </div>
+      {tab === "mirror" &&
+        (mirrorList.length === 0 ? (
+          <EmptyState icon={Eye} title="لا تأملات محفوظة بعد" sub="أكمل أي موقف وأجب عن أسئلة مرآة المعلّم في نهايته، فتُجمع تأملاتك هنا لترى تطورك." />
         ) : (
           <div className="space-y-3">
             {mirrorList.map((a, i) => {
               const sc = labScenarioById.get(a.sid);
               return (
-                <div key={i} className="rounded-2xl border-2 border-border bg-white p-4">
-                  <div className="mb-2 flex items-center justify-between">
-                    <p className="flex items-center gap-1.5 text-sm font-black">
+                <Card key={i} className="p-5">
+                  <div className="mb-3 flex items-start justify-between gap-2">
+                    <p className="flex items-center gap-1.5 text-[15px] font-semibold">
                       {a.mode === "exam" && <ShieldCheck className="h-4 w-4 text-primary" />}
                       {sc?.title ?? "موقف تدريبي"}
                     </p>
-                    <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-primary">{sc?.skill}</span>
+                    {sc?.skill && <Chip tone="primary">{sc.skill}</Chip>}
                   </div>
-                  <div className="space-y-1.5 text-xs leading-6">
-                    <p>
-                      <span className="font-black text-indigo-700">ما نجح: </span>
-                      <span className="text-muted-foreground">{a.reflection.success || "—"}</span>
-                    </p>
-                    <p>
-                      <span className="font-black text-red-700">ما لم ينجح: </span>
-                      <span className="text-muted-foreground">{a.reflection.failed || "—"}</span>
-                    </p>
-                    <p>
-                      <span className="font-black text-primary">ما سأغيّره: </span>
-                      <span className="text-muted-foreground">{a.reflection.change || "—"}</span>
-                    </p>
-                  </div>
-                </div>
+                  <dl className="space-y-2 text-sm leading-6">
+                    <div>
+                      <dt className="font-medium text-success">ما نجح</dt>
+                      <dd className="text-secondary-foreground">{a.reflection.success || "—"}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-medium text-destructive">ما لم ينجح</dt>
+                      <dd className="text-secondary-foreground">{a.reflection.failed || "—"}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-medium text-primary">ما سأغيّره</dt>
+                      <dd className="text-secondary-foreground">{a.reflection.change || "—"}</dd>
+                    </div>
+                  </dl>
+                </Card>
               );
             })}
           </div>
-        )}
-      </div>
-    </motion.div>
+        ))}
+    </ScreenShell>
+  );
+}
+
+function ListRowCard({ onClick }: { onClick: () => void }) {
+  return (
+    <Card className="overflow-hidden">
+      <button type="button" onClick={onClick} className="flex w-full items-center gap-3 px-4 py-4 text-right transition-colors hover:bg-muted/60">
+        <IconTile icon={Sparkles} color="var(--gem)" />
+        <span className="min-w-0 flex-1">
+          <span className="block text-[15px] font-medium">مواقف سريعة</span>
+          <span className="mt-0.5 block text-[13px] text-muted-foreground">قرار واحد مع تفسيره التربوي</span>
+        </span>
+        <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground/60" />
+      </button>
+    </Card>
   );
 }
 
