@@ -11,7 +11,7 @@
 import { useApp } from './store'
 
 const SYNC_KEYS = [
-  'attempts', 'sessions', 'conceptReads', 'best', 'scenarioChoices', 'notes', 'lessonPlans', 'fieldVisits',
+  'attempts', 'sessions', 'conceptReads', 'best', 'scenarioChoices', 'notes', 'mindMaps', 'lessonPlans', 'fieldVisits',
   'labAttempts', 'simAttempts', 'challengeStats', 'studentExamples', 'reportedQuestions', 'goal', 'examDate',
   'lastStudy', 'xp', 'onboarded',
 ] as const
@@ -56,6 +56,7 @@ export function mergeProgress(local: Progress, remote: Progress): Progress {
     best: mergeRecordBy(local.best, remote.best, max),
     scenarioChoices: mergeRecordBy(local.scenarioChoices, remote.scenarioChoices, byTs),
     notes: listsById(local.notes, remote.notes),
+    mindMaps: unionBy(arr<any>(local.mindMaps), arr<any>(remote.mindMaps), (m) => String(m?.id)).sort((x, y) => (y?.ts ?? 0) - (x?.ts ?? 0)),
     studentExamples: listsById(local.studentExamples, remote.studentExamples),
     lessonPlans: unionBy(arr<any>(local.lessonPlans), arr<any>(remote.lessonPlans), (p) => String(p?.id)),
     fieldVisits: unionBy(arr<any>(local.fieldVisits), arr<any>(remote.fieldVisits), (v) => String(v?.id)),

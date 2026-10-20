@@ -3,16 +3,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertTriangle, CheckCircle2, XCircle, ChevronDown, Lightbulb, BookOpen, Timer as TimerIcon, Brain, ArrowLeft, Flag, Gem, RotateCcw } from "lucide-react";
-import { questionById, conceptById, OPTION_LETTERS, COURSES, COURSE_SHORT, shuffle } from "@/lib/qbank";
+import { Check, X, AlertTriangle, CheckCircle2, XCircle, ChevronDown, Lightbulb, BookOpen, Timer as TimerIcon, Brain, Flag, Gem, RotateCcw } from "lucide-react";
+import { questionById, conceptById, COURSES, COURSE_SHORT, shuffle } from "@/lib/qbank";
 import { useApp } from "@/lib/store";
 import { useUi, type QuizConfig } from "@/lib/ui-store";
 import { saveSnapshot, loadSnapshot, clearSnapshot, RESUME_FLAG, type Confidence } from "@/lib/session-snapshot";
-import { buildSocraticSteps, type SocraticStep } from "@/lib/socratic";
 import { ad, arCount, QUESTION_OBJ_FORMS, splitReason } from "@/lib/arabic";
 import { ConceptReader } from "./ConceptsView";
 import { toast } from "@/hooks/use-toast";
-import { Callout, Card, Chip, Divided, EmptyState, OptionButton, PrimaryButton, ProgressBar, Ring, ScreenShell, SecondaryButton, SectionHeader, SkillBar, pct } from "./ui-kit";
+import { Callout, Card, Divided, EmptyState, PrimaryButton, Ring, ScreenShell, SecondaryButton, SectionHeader, SkillBar, pct } from "./ui-kit";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -67,52 +66,6 @@ function Timer({ seconds, onTimeout }: { seconds: number; onTimeout: () => void 
   );
 }
 
-// المدرّب السقراطي: أسئلة متدرجة تقود إلى الفهم قبل كشف الإجابة الكاملة
-function SocraticBox({ q }: { q: Question }) {
-  const [stepIdx, setStepIdx] = useState(0);
-  const [showHint, setShowHint] = useState(false);
-  const steps: SocraticStep[] = useMemo(() => buildSocraticSteps(q), [q]);
-  const done = stepIdx >= steps.length;
-
-  return (
-    <Card className="p-4">
-      <p className="flex items-center gap-2 text-sm font-semibold">
-        <Brain className="h-4 w-4 text-primary" /> فكّر خطوة بخطوة
-        {!done && <span className="mr-auto text-xs font-normal text-muted-foreground">{ad(stepIdx + 1)} من {ad(steps.length)}</span>}
-      </p>
-      {!done ? (
-        <div className="mt-3 space-y-3">
-          <p className="text-base leading-7">{steps[stepIdx].prompt}</p>
-          {showHint && (
-            <motion.p initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="rounded-lg bg-muted p-3 text-sm leading-7 text-secondary-foreground">
-              {steps[stepIdx].hint}
-            </motion.p>
-          )}
-          {!showHint ? (
-            <SecondaryButton onClick={() => setShowHint(true)} className="h-10 text-sm">
-              أظهر التلميح
-            </SecondaryButton>
-          ) : (
-            <SecondaryButton
-              onClick={() => {
-                setStepIdx((i) => i + 1);
-                setShowHint(false);
-              }}
-              className="h-10 text-sm"
-            >
-              {stepIdx + 1 < steps.length ? "الخطوة التالية" : "الإجابة الكاملة"} <ArrowLeft className="h-4 w-4" />
-            </SecondaryButton>
-          )}
-        </div>
-      ) : (
-        <div className="mt-3">
-          <AcademicReason reason={q.reason} />
-        </div>
-      )}
-    </Card>
-  );
-}
-
 // الشرح: سبب صحة الإجابة، ثم لماذا البدائل خاطئة
 function AcademicReason({ reason }: { reason: string }) {
   const { base, rest } = useMemo(() => splitReason(reason), [reason]);
@@ -148,6 +101,7 @@ const CONF_OPTIONS: { id: Confidence; label: string }[] = [
 ];
 const CONF_LABEL: Record<Confidence, string> = { sure: "متأكد", unsure: "متردد", guess: "تخمين" };
 
+const PRAISE = ["أحسنت!", "رائع!", "ممتاز!", "إجابة صحيحة!", "عمل جيد!"];
 const KEY_INDEX: Record<string, number> = { "1": 0, "2": 1, "3": 2, "4": 3, "١": 0, "٢": 1, "٣": 2, "٤": 3, "أ": 0, "ب": 1, "ج": 2, "د": 3 };
 
 /** «٤٢ ث» أو «٣:٠٥ د» */
@@ -193,9 +147,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
   const [idx, setIdx] = useState(resumed?.idx ?? 0);
   const [selected, setSelected] = useState<string | null>(null);
   const [graded, setGraded] = useState<null | boolean>(null);
-  const [struck, setStruck] = useState<string[]>([]);
   const [conf, setConf] = useState<Confidence | null>(null);
-  const [socratic, setSocratic] = useState(false);
+  const [showWhy, setShowWhy] = useState(false);
   const [readerId, setReaderId] = useState<string | null>(null);
   const [exiting, setExiting] = useState(false);
   const [finished, setFinished] = useState(false);
@@ -266,19 +219,13 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
   const choose = (text: string) => {
     if (graded !== null) return;
     setSelected(text);
-    setStruck((s) => s.filter((x) => x !== text));
-  };
-
-  const toggleStrike = (text: string) => {
-    if (graded !== null) return;
-    setStruck((s) => (s.includes(text) ? s.filter((x) => x !== text) : [...s, text]));
-    if (selected === text) setSelected(null);
   };
 
   const grade = () => {
     if (!q || selected === null || graded !== null) return;
     const ok = selected === q.correct;
     setGraded(ok);
+    if (!ok) setShowWhy(true); // الخطأ يبقى أمام الطالب مع شرحه
     try {
       if ("vibrate" in navigator && useApp.getState().haptics) navigator.vibrate(ok ? 35 : [60, 40, 60]);
     } catch {}
@@ -303,8 +250,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     if (graded === null) return;
     setSelected(null);
     setGraded(null);
-    setSocratic(false);
-    setStruck([]);
+    setShowWhy(false);
     setConf(null);
     qStartedAt.current = Date.now();
     if (idx + 1 >= questions.length) {
@@ -317,6 +263,14 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
       setIdx((i) => i + 1);
     }
   };
+
+  // الإجابة الصحيحة تنتقل وحدها إلى السؤال التالي، وكذلك كل إجابة في الاختبار المحاكي
+  useEffect(() => {
+    if (graded === null || finished) return;
+    if (instantFeedback && !graded) return;
+    const t = setTimeout(next, instantFeedback ? 900 : 150);
+    return () => clearTimeout(t);
+  }, [graded]);
 
   const exit = () => {
     if (finished || review.length === 0) {
@@ -582,149 +536,149 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     );
   }
 
-  // ---------- شاشة السؤال ----------
+  // ---------- شاشة السؤال (على نمط Duolingo) ----------
   const answered = graded !== null;
-  const split = answered && instantFeedback;
-  const optState = (o: { text: string; isCorrect: boolean }): "idle" | "selected" | "correct" | "wrong" | "dim" => {
+  const showFeedback = answered && instantFeedback;
+  const progress = ((idx + (answered ? 1 : 0)) / questions.length) * 100;
+  // الإجابات الصحيحة المتتالية حتى الآن
+  let combo = 0;
+  for (let i = review.length - 1; i >= 0 && review[i].ok; i--) combo++;
+
+  const optClass = (o: { text: string; isCorrect: boolean }) => {
     const isSel = selected === o.text;
-    // كشف الصواب والخطأ في الأنماط ذات التغذية الفورية فقط، والمحاكاة لا تكشف الإجابة
-    if (!answered || !instantFeedback) return isSel ? "selected" : "idle";
-    if (o.isCorrect) return "correct";
-    if (isSel) return "wrong";
-    return "dim";
+    if (showFeedback && o.isCorrect) return "border-[#58CC02] bg-[#D7FFB8] text-[#3C7A00] dark:bg-[#58CC02]/15 dark:text-[#9BE15D]";
+    if (showFeedback && isSel) return "border-[#FF4B4B] bg-[#FFDFE0] text-[#B3261E] dark:bg-[#FF4B4B]/15 dark:text-[#FF8A8A]";
+    if (isSel) return "border-[#1CB0F6] bg-[#DDF4FF] text-[#1478A8] dark:bg-[#1CB0F6]/15 dark:text-[#7DD3FC]";
+    return "border-border bg-card text-foreground hover:bg-muted/60";
   };
 
   return (
     <>
-      <ScreenShell
-        wide
-        title={config.label}
-        sub={`السؤال ${ad(idx + 1)} من ${ad(questions.length)}`}
-        onClose={exit}
-        actions={config.timeLimitSec ? <Timer seconds={config.timeLimitSec} onTimeout={() => setFinished(true)} /> : undefined}
-        footer={
-          <>
-            <p className="hidden flex-1 items-center text-xs text-muted-foreground lg:flex">اختصارات: ١ إلى ٤ للاختيار، وEnter للتحقق والمتابعة</p>
-            {graded === null ? (
-              <PrimaryButton disabled={selected === null} onClick={grade} className="w-full lg:w-auto lg:min-w-[200px]">
-                {instantFeedback ? "تحقّق" : "تأكيد الإجابة"}
-              </PrimaryButton>
-            ) : (
-              <PrimaryButton onClick={next} className="w-full lg:w-auto lg:min-w-[200px]">
-                {idx + 1 >= questions.length ? "عرض التقرير" : "السؤال التالي"} <ArrowLeft className="h-4 w-4" />
-              </PrimaryButton>
-            )}
-          </>
-        }
-      >
-        <ProgressBar value={((idx + (answered ? 1 : 0)) / questions.length) * 100} height={4} className="mb-6" />
-        <div className={split ? "lg:grid lg:grid-cols-2 lg:items-start lg:gap-10" : "mx-auto max-w-[720px]"}>
+      <div className="fixed inset-0 z-40 flex flex-col bg-background">
+        {/* الرأس: إغلاق وشريط تقدم سميك */}
+        <header className="safe-top mx-auto flex w-full max-w-[720px] items-center gap-3 px-4 pb-2 pt-4">
+          <button type="button" onClick={exit} aria-label="إغلاق" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted">
+            <X className="h-7 w-7" strokeWidth={2.5} />
+          </button>
+          <div className="flex h-4 flex-1 justify-start overflow-hidden rounded-full bg-muted" role="progressbar" aria-valuenow={Math.round(progress)} aria-valuemin={0} aria-valuemax={100}>
+            <motion.div className="relative h-full rounded-full bg-[#58CC02]" animate={{ width: `${Math.max(progress, 3)}%` }} transition={{ type: "spring", stiffness: 120, damping: 20 }}>
+              <span className="absolute inset-x-2 top-1 h-1 rounded-full bg-white/35" />
+            </motion.div>
+          </div>
+          {config.timeLimitSec ? (
+            <Timer seconds={config.timeLimitSec} onTimeout={() => setFinished(true)} />
+          ) : (
+            <span className="min-w-[2.5rem] text-center text-base font-bold text-muted-foreground">
+              {ad(idx + 1)}/{ad(questions.length)}
+            </span>
+          )}
+        </header>
+
+        {/* السؤال والخيارات */}
+        <main className="no-scrollbar flex-1 overflow-y-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={q.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0, x: -24 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 24 }}
               transition={{ duration: 0.2 }}
-              className={`space-y-5 ${wrongShake && instantFeedback ? "shake" : ""}`}
+              className={`mx-auto w-full max-w-[640px] px-4 pb-8 pt-6 ${wrongShake && instantFeedback ? "shake" : ""}`}
             >
-              <div className="flex flex-wrap items-center gap-2">
-                <Chip tone={q.difficulty === "سهل" ? "success" : q.difficulty === "متوسط" ? "warning" : "danger"}>{q.difficulty}</Chip>
-                {concept && <Chip>{concept.title}</Chip>}
-              </div>
+              {combo >= 3 && !answered && (
+                <p className="mb-3 text-base font-bold text-[#FF9600]">{ad(combo)} إجابات صحيحة متتالية!</p>
+              )}
+              {concept && <p className="text-sm font-bold text-[#CE82FF]">{concept.title}</p>}
+              <h2 className="mt-2 font-display text-2xl font-bold leading-[1.75]">{q.question}</h2>
 
-              <div className="flex items-start gap-2">
-                <h2 className="min-w-0 flex-1 font-display text-lg font-semibold leading-9 sm:text-xl">{q.question}</h2>
-              </div>
-
-              <div className={q.type === "tf" ? "grid grid-cols-2 gap-3" : "space-y-3"}>
+              <div className={q.type === "tf" ? "mt-8 grid grid-cols-2 gap-3" : "mt-8 space-y-3"}>
                 {opts.map((o, i) => (
-                  <OptionButton
+                  <button
                     key={i}
-                    letter={q.type === "mcq" ? OPTION_LETTERS[i] : undefined}
-                    state={optState(o)}
+                    type="button"
                     disabled={answered}
-                    shortcut={String(i + 1)}
-                    struck={struck.includes(o.text)}
-                    onToggleStrike={q.type === "mcq" ? () => toggleStrike(o.text) : undefined}
                     onClick={() => choose(o.text)}
+                    className={`flex min-h-[64px] w-full items-center gap-3 rounded-2xl border-2 border-b-4 px-4 py-3 text-right text-lg font-medium leading-8 transition-colors active:translate-y-[2px] active:border-b-2 disabled:active:translate-y-0 ${optClass(o)} ${
+                      q.type === "tf" ? "justify-center text-center font-bold" : ""
+                    }`}
                   >
-                    {q.type === "tf" ? <span className="block text-center font-medium">{o.text}</span> : o.text}
-                  </OptionButton>
+                    {q.type === "mcq" && (
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border-2 border-current/30 text-sm font-bold opacity-70">{ad(i + 1)}</span>
+                    )}
+                    <span className={q.type === "mcq" ? "min-w-0 flex-1" : ""}>{o.text}</span>
+                  </button>
                 ))}
               </div>
-
-              {!answered && (
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="text-sm text-muted-foreground">ثقتك بإجابتك</span>
-                  <div role="radiogroup" aria-label="ثقتك بإجابتك" className="flex rounded-lg bg-muted p-0.5">
-                    {CONF_OPTIONS.map((c) => (
-                      <button
-                        key={c.id}
-                        type="button"
-                        role="radio"
-                        aria-checked={conf === c.id}
-                        onClick={() => setConf(conf === c.id ? null : c.id)}
-                        className={`min-h-[34px] rounded-md px-3 text-sm transition-colors ${conf === c.id ? "bg-card font-medium text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-                      >
-                        {c.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
             </motion.div>
           </AnimatePresence>
+        </main>
 
-          {/* التغذية الراجعة والشرح: بجوار السؤال على الشاشات الواسعة */}
-          {split && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-6 space-y-4 lg:sticky lg:top-0 lg:mt-0">
-              <Callout tone={graded ? "success" : "danger"} icon={graded ? CheckCircle2 : XCircle} title={graded ? "إجابة صحيحة" : "إجابة غير صحيحة"}>
-                {!graded && (
-                  <>
-                    الإجابة الصحيحة: <b>{q.correct}</b>
-                  </>
-                )}
-                {graded && conf === "guess" && "أصبت بالتخمين، فأضفناه إلى «أخطائي» لتثبيته."}
-              </Callout>
-
-              <Card className="p-4">
-                <AcademicReason reason={q.reason} />
-              </Card>
-
-              {concept && (
-                <Card className="p-4">
-                  <p className="text-sm text-muted-foreground">المفهوم</p>
-                  <p className="mt-0.5 font-display text-base font-semibold leading-7">{concept.title}</p>
-                  <p className="mt-1.5 line-clamp-3 text-sm leading-7 text-secondary-foreground">{concept.explanation}</p>
-                  <button type="button" onClick={() => setReaderId(concept.id)} className="mt-2 flex min-h-[40px] items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-primary hover:bg-accent">
-                    <BookOpen className="h-4 w-4" /> اقرأ المفهوم وأمثلته
+        {/* الشريط السفلي: «تحقّق» ثم لوحة النتيجة */}
+        <footer
+          className={`safe-bottom border-t-2 transition-colors ${
+            !showFeedback ? "border-border bg-background" : graded ? "border-transparent bg-[#D7FFB8] dark:bg-[#1F3A12]" : "border-transparent bg-[#FFDFE0] dark:bg-[#3D1517]"
+          }`}
+        >
+          <div className="mx-auto w-full max-w-[640px] px-4 py-4">
+            {showFeedback && (
+              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
+                <div className="flex items-center gap-3">
+                  <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white dark:bg-black/20 ${graded ? "text-[#58CC02]" : "text-[#FF4B4B]"}`}>
+                    {graded ? <Check className="h-8 w-8" strokeWidth={3.5} /> : <X className="h-8 w-8" strokeWidth={3.5} />}
+                  </span>
+                  <p className={`flex-1 font-display text-2xl font-bold ${graded ? "text-[#3C7A00] dark:text-[#9BE15D]" : "text-[#B3261E] dark:text-[#FF8A8A]"}`}>
+                    {graded ? PRAISE[idx % PRAISE.length] : "الإجابة الصحيحة:"}
+                  </p>
+                  <button type="button" onClick={handleReport} disabled={reported} aria-label="أبلغ عن خطأ في السؤال" className="flex h-10 w-10 items-center justify-center rounded-full opacity-60 hover:opacity-100 disabled:opacity-30">
+                    <Flag className="h-5 w-5" />
                   </button>
-                </Card>
-              )}
-
-              {!graded &&
-                (socratic ? (
-                  <SocraticBox q={q} />
-                ) : (
-                  <SecondaryButton onClick={() => setSocratic(true)} className="w-full">
-                    <Brain className="h-4 w-4" /> فكّر معي خطوة بخطوة
-                  </SecondaryButton>
-                ))}
-
-              {reported ? (
-                <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <Flag className="h-4 w-4" /> أُبلغ عن هذا السؤال
-                </p>
-              ) : (
-                <button type="button" onClick={handleReport} className="flex min-h-[40px] items-center gap-1.5 rounded-lg px-2 text-sm text-muted-foreground transition-colors hover:bg-muted">
-                  <Flag className="h-4 w-4" /> أبلغ عن خطأ في السؤال
+                </div>
+                {!graded && <p className="mt-2 text-lg font-medium leading-8 text-[#B3261E] dark:text-[#FF8A8A]">{q.correct}</p>}
+                {showWhy && (
+                  <div className="no-scrollbar mt-3 max-h-[38vh] overflow-y-auto rounded-2xl bg-white/70 p-4 dark:bg-black/20">
+                    <AcademicReason reason={q.reason} />
+                    {concept && (
+                      <button type="button" onClick={() => setReaderId(concept.id)} className="mt-3 flex min-h-[40px] items-center gap-1.5 text-sm font-bold text-primary">
+                        <BookOpen className="h-4 w-4" /> اقرأ المفهوم وأمثلته
+                      </button>
+                    )}
+                  </div>
+                )}
+              </motion.div>
+            )}
+            <div className="flex gap-3">
+              {showFeedback && !showWhy && (
+                <button
+                  type="button"
+                  onClick={() => setShowWhy(true)}
+                  className="min-h-[52px] flex-1 rounded-2xl border-2 border-b-4 border-black/10 bg-white text-base font-bold text-foreground active:translate-y-[2px] active:border-b-2 dark:bg-black/20"
+                >
+                  الشرح
                 </button>
               )}
-            </motion.div>
-          )}
-        </div>
-
+              {!answered ? (
+                <button
+                  type="button"
+                  disabled={selected === null}
+                  onClick={grade}
+                  className="min-h-[52px] flex-[2] rounded-2xl bg-[#58CC02] text-lg font-bold text-white shadow-[0_4px_0_#58A700] transition active:translate-y-[4px] active:shadow-none disabled:bg-muted disabled:text-muted-foreground disabled:shadow-none"
+                >
+                  {instantFeedback ? "تحقّق" : "تأكيد"}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={next}
+                  className={`min-h-[52px] flex-[2] rounded-2xl text-lg font-bold text-white transition active:translate-y-[4px] active:shadow-none ${
+                    !showFeedback || graded ? "bg-[#58CC02] shadow-[0_4px_0_#58A700]" : "bg-[#FF4B4B] shadow-[0_4px_0_#EA2B2B]"
+                  }`}
+                >
+                  {idx + 1 >= questions.length ? "النتيجة" : "متابعة"}
+                </button>
+              )}
+            </div>
+          </div>
+        </footer>
         {/* تأكيد الخروج */}
         <AlertDialog open={exiting} onOpenChange={setExiting}>
           <AlertDialogContent className="rounded-2xl">
@@ -746,7 +700,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      </ScreenShell>
+      </div>
       {reader}
     </>
   );

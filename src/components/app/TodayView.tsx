@@ -11,7 +11,7 @@ import { useUi } from "@/lib/ui-store";
 import { COURSES, COURSE_SHORT, chaptersOfCourse } from "@/lib/qbank";
 import { chapterSession, chapterStats, nextChapter, smartSession, topicKey, weakChapters } from "@/lib/practice-bank";
 import { useMistakes, buildReviewQids } from "@/lib/mistakes-client";
-import { ad, arCount, CHAPTER_GEN_FORMS, ERROR_DUE_FORMS, ERROR_OBJ_FORMS, QUESTION_FORMS } from "@/lib/arabic";
+import { ad, arCount, ERROR_DUE_FORMS, ERROR_OBJ_FORMS, QUESTION_FORMS } from "@/lib/arabic";
 import { cn } from "@/lib/utils";
 import type { Tab } from "./AppShell";
 import { Card, ProgressBar, SectionHeader, pct } from "./ui-kit";
@@ -97,20 +97,14 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const hero =
     due > 0
       ? {
-          eyebrow: "الخطوة التالية",
           title: `راجع ${arCount(due, ERROR_OBJ_FORMS)} قبل أن تُنسى`,
-          sub: "المراجعة في موعدها أسرع طريق لتثبيت ما أخطأت فيه.",
           cta: "ابدأ المراجعة",
           run: startReview,
-          progress: null as number | null,
         }
       : {
-          eyebrow: `${lastStudy ? "تابع من حيث توقفت" : "ابدأ من هنا"}، ${COURSE_SHORT[current.courseId] ?? ""}`,
           title: current.chapter,
-          sub: `أتقنت ${ad(current.done)} من ${arCount(current.total, CHAPTER_GEN_FORMS)} في هذا المقرر.`,
           cta: lastStudy ? "تابع" : "ابدأ الفصل",
           run: () => startChapter(current.courseId, current.chapter),
-          progress: current.total ? (current.done / current.total) * 100 : 0,
         };
 
   return (
@@ -118,26 +112,19 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           {/* الخطوة التالية */}
           <section className="overflow-hidden rounded-2xl bg-primary text-primary-foreground">
             <div className="p-5 lg:p-6">
-              <p className="text-sm opacity-80">{hero.eyebrow}</p>
-              <h2 className="mt-2 font-display text-2xl font-bold leading-[1.6]">{hero.title}</h2>
-              <p className="mt-1.5 text-base leading-7 opacity-90">{hero.sub}</p>
-              {hero.progress !== null && (
-                <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/20">
-                  <div className="h-full rounded-full bg-white" style={{ width: `${hero.progress}%` }} />
-                </div>
-              )}
+              <h2 className="font-display text-2xl font-bold leading-[1.6]">{hero.title}</h2>
               <div className="mt-5 grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={hero.run}
-                  className="min-h-[52px] rounded-xl bg-white px-3 text-base font-bold text-primary transition-opacity hover:opacity-90"
+                  className="min-h-[52px] rounded-2xl bg-white px-3 text-base font-bold text-primary shadow-[0_4px_0_rgba(0,0,0,0.18)] transition active:translate-y-[4px] active:shadow-none"
                 >
                   {hero.cta}
                 </button>
                 <button
                   type="button"
                   onClick={startSmart}
-                  className="min-h-[52px] rounded-xl border border-white/40 px-3 text-base font-bold text-white transition-colors hover:bg-white/10"
+                  className="min-h-[52px] rounded-2xl border-2 border-b-4 border-white/40 px-3 text-base font-bold text-white transition active:translate-y-[2px] active:border-b-2"
                 >
                   تدريب ذكي
                 </button>
@@ -168,7 +155,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                     <span className="min-w-0 flex-1">
                       <span className={cn("block truncate text-base font-medium", p.done && "text-muted-foreground line-through")}>{p.title}</span>
                       <span className="mt-0.5 block truncate text-sm text-muted-foreground">
-                        {p.sub}، {ad(p.minutes)} د
+                        {p.sub}
                       </span>
                     </span>
                     {!p.done && <span className="text-sm font-semibold text-primary">ابدأ</span>}

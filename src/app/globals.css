@@ -6,9 +6,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Noto Sans Arabic", "Segoe UI", Tahoma, system-ui, sans-serif;
-  --font-display: "Noto Kufi Arabic", "Noto Sans Arabic", system-ui, sans-serif;
-  --font-mono: "Noto Sans Arabic", monospace;
+  --font-sans: "Rubik", "Segoe UI", Tahoma, system-ui, sans-serif;
+  --font-display: "Rubik", system-ui, sans-serif;
+  --font-mono: "Rubik", monospace;
   --color-gem: var(--gem);
   --color-gem-soft: var(--gem-soft);
   --color-success-soft: var(--success-soft);
@@ -81,7 +81,7 @@
 }
 
 html {
-  font-size: 17px;
+  font-size: 18px;
 }
 
 html,
@@ -92,7 +92,7 @@ body {
 
 body {
   @apply bg-background text-foreground;
-  font-family: "Noto Sans Arabic", "Segoe UI", Tahoma, system-ui, sans-serif;
+  font-family: "Rubik", "Segoe UI", Tahoma, system-ui, sans-serif;
   -webkit-tap-highlight-color: transparent;
   text-rendering: optimizeLegibility;
 }

@@ -23,6 +23,18 @@ export interface ConceptNote {
   ts: number;
 }
 
+// خريطة ذهنية يرتب بها الطالب ما تعلّمه: فكرة في المركز وفروعها، ولكل فرع تفاصيله
+export interface MindMapBranch {
+  text: string;
+  items: string[];
+}
+export interface MindMapNote {
+  id: string;
+  center: string;
+  branches: MindMapBranch[];
+  ts: number;
+}
+
 // وقفة إلقاء مسجلة في مِسرح الإلقاء — من ميزة «د» في بحث مشاكل الطلبة (خوف التحدث أمام الجمهور)
 export interface SpeechRecord {
   ts: number;
@@ -50,6 +62,7 @@ interface AppState {
   fieldVisits: FieldVisit[]; // سجل التدريب الميداني — زيارات المشاهدة والتنفيذ وتأملها
   challengeStats: Record<string, { ok: number; total: number; lastTs: number }>; // إحصاء التحديات الذكية
   notes: Record<string, ConceptNote[]>; // ملاحظاتي المرتبطة بالمفاهيم
+  mindMaps: MindMapNote[]; // خرائطي الذهنية في «دفتري»
   focusCount: number; // عدد جلسات التركيز المكتملة
   speechRecords: SpeechRecord[]; // وقفات الإلقاء المسجلة — مِسرح الإلقاء
   studyDone: Record<string, number>; // دروس مدرسة المذاكرة المكتملة — معرف الدرس إلى زمن إتمامه
@@ -92,6 +105,8 @@ interface AppState {
   addChallengeStat: (id: string, ok: boolean) => void;
   addNote: (cid: string, text: string) => void;
   removeNote: (cid: string, id: string) => void;
+  saveMindMap: (m: MindMapNote) => void;
+  removeMindMap: (id: string) => void;
   addFocusSession: () => void;
   addSpeechRecord: (r: Omit<SpeechRecord, "ts">) => void;
   addStudyLesson: (lessonId: string) => void;
@@ -170,6 +185,7 @@ export const useApp = create<AppState>()(
       fieldVisits: [],
       challengeStats: {},
       notes: {},
+      mindMaps: [],
       focusCount: 0,
       speechRecords: [],
       studyDone: {},
@@ -320,6 +336,9 @@ export const useApp = create<AppState>()(
           notes: { ...st.notes, [cid]: (st.notes[cid] ?? []).filter((n) => n.id !== id) },
         })),
 
+      saveMindMap: (m) => set((st) => ({ mindMaps: [m, ...st.mindMaps.filter((x) => x.id !== m.id)] })),
+      removeMindMap: (id) => set((st) => ({ mindMaps: st.mindMaps.filter((x) => x.id !== id) })),
+
       // جلسات التركيز — عدّاد الإنجاز لمؤقت التركيز
       addFocusSession: () => set((st) => ({ focusCount: st.focusCount + 1 })),
 
@@ -368,6 +387,7 @@ export const useApp = create<AppState>()(
           fieldVisits: [],
           challengeStats: {},
           notes: {},
+          mindMaps: [],
           focusCount: 0,
           speechRecords: [],
           studyDone: {},
