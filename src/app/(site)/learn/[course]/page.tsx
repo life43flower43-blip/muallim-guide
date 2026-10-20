@@ -28,7 +28,7 @@ export default async function CoursePage({ params }: { params: Promise<{ course:
   return (
     <div className="space-y-8">
       <nav className="text-sm text-muted-foreground">
-        <Link href="/learn" className="hover:text-foreground">المقررات</Link> / {name}
+        <Link href="/learn" className="hover:text-foreground">المحاور</Link> / {name}
       </nav>
       <h1 className="font-display text-3xl font-bold">{name}</h1>
       {chapters.map((ch, i) => (

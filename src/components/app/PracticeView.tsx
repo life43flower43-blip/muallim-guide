@@ -6,7 +6,7 @@
 // ١) لوحة أداء: الجاهزية، وما استخدمته من البنك، والدقة، والأخطاء المستحقة.
 // ٢) أربعة إجراءات: تدريب ذكي، وأنشئ اختبارك، واختبار شامل، ومحاكي الاختبار الرسمي.
 // ٣) اختباراتك السابقة بنتائجها.
-// ٤) حسب المقرر: فصوله بنجوم أفضل نتيجة ودقة كل فصل.
+// ٤) حسب المحور: فصوله بنجوم أفضل نتيجة ودقة كل فصل.
 // ٥) التطبيق في مواقف حقيقية، والمراجعة السريعة.
 // ============================================================================
 
@@ -151,7 +151,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
       {/* الإجراءات */}
       <section className="grid gap-3 sm:grid-cols-2">
         <ActionCard primary icon={Sparkles} title="تدريب ذكي" sub="عشرة أسئلة تبدأ بأضعف فصولك" onClick={() => startSmart()} />
-        <ActionCard icon={SlidersHorizontal} title="أنشئ اختبارك" sub="اختر المقررات والعدد والنمط" onClick={() => setBuilder(true)} />
+        <ActionCard icon={SlidersHorizontal} title="أنشئ اختبارك" sub="اختر المحاور والعدد والنمط" onClick={() => setBuilder(true)} />
         <ActionCard
           icon={Timer}
           title="اختبار شامل"
@@ -202,9 +202,9 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
         </section>
       )}
 
-      {/* حسب المقرر */}
+      {/* حسب المحور */}
       <section>
-        <SectionHeader title="حسب المقرر" sub="افتح مقررًا لتتدرب على فصوله" />
+        <SectionHeader title="حسب المحور" sub="افتح محورًا لتتدرب على فصوله" />
         <div className="space-y-3">
           {COURSES.map((c) => {
             const isOpen = open === c.id;
@@ -226,11 +226,11 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
                 </button>
                 {isOpen && (
                   <div className="divide-y divide-border border-t border-border">
-                    <ListRow icon={Sparkles} title="تدريب ذكي في المقرر" sub="يبدأ بأضعف فصوله" onClick={() => startSmart(c.id, `تدريب ذكي: ${c.name}`)} />
+                    <ListRow icon={Sparkles} title="تدريب ذكي في المحور" sub="يبدأ بأضعف فصوله" onClick={() => startSmart(c.id, `تدريب ذكي: ${c.name}`)} />
                     <ListRow icon={Shuffle} title="مزيج من الفصول" sub="سؤالان من كل فصل من ثمانية" onClick={() => ui.startQuiz({ mode: "training", label: `مزيج: ${c.name}`, qids: courseMix(c.id) })} />
                     <ListRow
                       icon={ClipboardCheck}
-                      title="اختبار المقرر"
+                      title="اختبار المحور"
                       sub="ثلاثون سؤالًا متوسطًا وصعبًا في ثلاثين دقيقة"
                       meta={best[examKey(c.id)] !== undefined ? pct(best[examKey(c.id)]) : undefined}
                       onClick={() => ui.startQuiz({ mode: "exam", label: `اختبار: ${c.name}`, qids: courseExam(c.id), timeLimitSec: EXAM_SECONDS, topicKey: examKey(c.id) })}
@@ -281,7 +281,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
         <Divided>
           <ListRow icon={Layers} title="بطاقات المفاهيم" sub="بطاقة تنقلب لتعرض الشرح والمثال" onClick={ui.startFlash} />
           <ListRow icon={Brain} title="لعبة المطابقة" sub="مصطلح مقابل شرحه" onClick={ui.startMatch} />
-          <ListRow icon={Gauge} title="اختبار تحديد المستوى" sub="اثنا عشر سؤالًا من كل المقررات" onClick={ui.startPlacement} />
+          <ListRow icon={Gauge} title="اختبار تحديد المستوى" sub="اثنا عشر سؤالًا من كل المحاور" onClick={ui.startPlacement} />
           <ListRow icon={Users} title="تحدّي زميل" sub="أرسل رابط تحدٍّ بالأسئلة نفسها" onClick={ui.startPeer} />
         </Divided>
       </section>

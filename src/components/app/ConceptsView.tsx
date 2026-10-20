@@ -1,10 +1,10 @@
 "use client";
 
 // ============================================================================
-// التعلّم — مقرر ← فصل ← مفهوم
+// التعلّم — محور ← فصل ← مفهوم
 // ============================================================================
 // مبني على أنماط Coursera وKhan Academy:
-// - إتقان بأربعة مستويات لكل مفهوم وفصل ومقرر، مع شريط مقسّم ومفتاح ألوان.
+// - إتقان بأربعة مستويات لكل مفهوم وفصل ومحور، مع شريط مقسّم ومفتاح ألوان.
 // - «تابع التعلّم» يعيدك إلى آخر مفهوم قرأته.
 // - صفحة قراءة بمخطط الفصل جانبًا، ووقت قراءة، وسؤال «تحقّق من فهمك»،
 //   وانتقال «التالي» الذي يعلّم المفهوم مكتملًا، واختبار في نهاية الفصل.
@@ -98,7 +98,7 @@ import {
   pct,
 } from "./ui-kit";
 
-// أيقونة كل مقرر
+// أيقونة كل محور
 const COURSE_ICONS: Record<string, React.ElementType> = {
   M1: Dna,
   M2: Heart,
@@ -129,7 +129,7 @@ function CourseBadge({ id, size = 44 }: { id: string; size?: number }) {
 // أسماء الفصول تُعرض بلا حروف الترقيم الكتابية (أ. ب. ج.)
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
 
-// وصف موجز لكل مقرر
+// وصف موجز لكل محور
 const COURSE_SUBTITLE: Record<string, string> = {
   M1: "النمو بمراحله ومجالاته وتطبيقاته في الصف",
   M2: "الدوافع والانفعالات والذكاء والفروق الفردية",
@@ -488,6 +488,12 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
             <h1 className="mt-4 font-display text-2xl font-bold leading-[1.6] sm:text-[28px]">{c.title}</h1>
           </header>
 
+          {c.rule && (
+            <p className="rounded-2xl border-2 border-b-4 border-[#FFC800] bg-[#FFF8D6] p-4 text-lg font-bold leading-9 dark:bg-[#FFC800]/10">
+              {c.rule}
+            </p>
+          )}
+
           <ConceptDiagram conceptId={c.id} pageTitle={c.title} />
 
           <section className="space-y-5">
@@ -669,7 +675,7 @@ function ChapterPage({ courseId, chapter, onBack, onOpen }: { courseId: string; 
   );
 }
 
-// ---------- صفحة المقرر ----------
+// ---------- صفحة المحور ----------
 function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string; onBack: () => void; onChapter: (ch: string) => void; onOpen: (id: string) => void }) {
   const conceptReads = useApp((s) => s.conceptReads);
   const attempts = useApp((s) => s.attempts);
@@ -687,7 +693,7 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
   return (
     <ScreenShell wide title={course.name} sub={COURSE_SUBTITLE[courseId]} onBack={onBack}>
       <div className="grid gap-6 lg:grid-cols-[1fr_320px] lg:items-start">
-        {/* ملخص المقرر: أولًا على الجوال، وجانبًا على الحاسوب */}
+        {/* ملخص المحور: أولًا على الجوال، وجانبًا على الحاسوب */}
         <aside className="space-y-4 lg:sticky lg:top-0 lg:order-2">
           <Card className="p-5">
             <div className="flex items-start gap-3">
@@ -717,14 +723,14 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
             <div className="mt-5 flex flex-col gap-2.5">
               {nextUp && (
                 <PrimaryButton onClick={() => onOpen(nextUp.id)} className="w-full">
-                  <Play className="h-4 w-4" /> {read === 0 ? "ابدأ المقرر" : "تابع"}
+                  <Play className="h-4 w-4" /> {read === 0 ? "ابدأ المحور" : "تابع"}
                 </PrimaryButton>
               )}
               <SecondaryButton
                 className="w-full"
                 onClick={() => startQuiz({ mode: "exam", label: `اختبار: ${course.name}`, qids: courseExam(courseId), timeLimitSec: EXAM_SECONDS, topicKey: examKey(courseId) })}
               >
-                <ClipboardCheck className="h-4 w-4" /> اختبار المقرر
+                <ClipboardCheck className="h-4 w-4" /> اختبار المحور
               </SecondaryButton>
             </div>
             {nextUp && <p className="mt-3 text-center text-sm text-muted-foreground">التالي: {nextUp.title}</p>}
@@ -732,7 +738,7 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
         </aside>
 
         <section className="lg:order-1">
-          <SectionHeader title="الفصول" sub={`${arCount(questionsOfCourse(courseId).length, QUESTION_FORMS)} في بنك المقرر`} />
+          <SectionHeader title="الفصول" sub={`${arCount(questionsOfCourse(courseId).length, QUESTION_FORMS)} في بنك المحور`} />
           <Divided>
             {chapters.map((ch, i) => {
               const cs = all.filter((c) => c.chapter === ch);
@@ -796,7 +802,7 @@ export default function ConceptsView() {
     return CONCEPTS.filter((c) => c.title.includes(q) || chapterLabel(c.chapter).includes(q)).slice(0, 40);
   }, [query]);
 
-  // فتح مفهوم يضبط مقرره وفصله، فيعود «رجوع» إلى الفصل الصحيح
+  // فتح مفهوم يضبط محوره وفصله، فيعود «رجوع» إلى الفصل الصحيح
   const openConceptHere = (id: string) => {
     const c = conceptById(id);
     if (c) {
@@ -902,7 +908,7 @@ export default function ConceptsView() {
           )}
 
           <section>
-            <SectionHeader title="المقررات" />
+            <SectionHeader title="المحاور" />
             <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }} className="grid gap-3 sm:grid-cols-2">
               {COURSES.map((course) => {
                 const cs = conceptsOfCourse(course.id);

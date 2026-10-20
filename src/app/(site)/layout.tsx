@@ -18,7 +18,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
             <span className="font-display text-lg font-bold text-primary">تربوي</span>
           </Link>
           <nav className="flex flex-1 items-center gap-4 text-sm text-secondary-foreground">
-            <Link href="/learn" className="hover:text-foreground">المقررات</Link>
+            <Link href="/learn" className="hover:text-foreground">المحاور</Link>
             <Link href="/about" className="hidden hover:text-foreground sm:inline">عن الموقع</Link>
           </nav>
           <Link href="/" className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
