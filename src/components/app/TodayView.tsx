@@ -130,14 +130,14 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 <button
                   type="button"
                   onClick={hero.run}
-                  className="min-h-[52px] rounded-xl bg-white px-3 text-base font-bold text-primary transition-opacity hover:opacity-90"
+                  className="min-h-[52px] rounded-2xl bg-white px-3 text-base font-bold text-primary shadow-[0_4px_0_rgba(0,0,0,0.18)] transition active:translate-y-[4px] active:shadow-none"
                 >
                   {hero.cta}
                 </button>
                 <button
                   type="button"
                   onClick={startSmart}
-                  className="min-h-[52px] rounded-xl border border-white/40 px-3 text-base font-bold text-white transition-colors hover:bg-white/10"
+                  className="min-h-[52px] rounded-2xl border-2 border-b-4 border-white/40 px-3 text-base font-bold text-white transition active:translate-y-[2px] active:border-b-2"
                 >
                   تدريب ذكي
                 </button>

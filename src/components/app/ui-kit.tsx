@@ -13,7 +13,7 @@ import { ad } from "@/lib/arabic";
 
 export function Card({ className, children, ...rest }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("rounded-2xl border border-border bg-card card-soft", className)} {...rest}>
+    <div className={cn("rounded-2xl border-2 border-border bg-card", className)} {...rest}>
       {children}
     </div>
   );
@@ -174,7 +174,7 @@ export function PrimaryButton({ className, ...rest }: React.ButtonHTMLAttributes
     <button
       type="button"
       className={cn(
-        "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-primary px-5 text-base font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50",
+        "inline-flex min-h-[50px] items-center justify-center gap-2 rounded-2xl bg-primary px-5 text-base font-bold text-primary-foreground shadow-[0_4px_0_color-mix(in_srgb,var(--primary)_65%,black)] transition active:translate-y-[4px] active:shadow-none hover:brightness-105 disabled:bg-muted disabled:text-muted-foreground disabled:shadow-none",
         className
       )}
       {...rest}
@@ -187,7 +187,7 @@ export function SecondaryButton({ className, ...rest }: React.ButtonHTMLAttribut
     <button
       type="button"
       className={cn(
-        "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-input bg-card px-5 text-base font-semibold text-secondary-foreground transition-colors hover:bg-muted disabled:opacity-50",
+        "inline-flex min-h-[50px] items-center justify-center gap-2 rounded-2xl border-2 border-b-4 border-border bg-card px-5 text-base font-bold text-secondary-foreground transition active:translate-y-[2px] active:border-b-2 hover:bg-muted disabled:opacity-50",
         className
       )}
       {...rest}
