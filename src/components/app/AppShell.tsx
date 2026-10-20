@@ -173,10 +173,10 @@ function MobileTopBar({ tab }: { tab: Tab }) {
   if (tab !== "today")
     return (
       <header className="safe-top sticky top-0 z-30 border-b-2 border-black/15 bg-[#0E7C86] text-white lg:hidden">
-        <div className="flex h-14 items-center justify-between px-4">
+        <div className="relative flex h-14 items-center justify-center px-14">
           <h1 className="font-display text-xl font-bold">{NAV.find((n) => n.id === tab)?.label}</h1>
           {tab === "profile" && (
-            <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="flex h-11 w-11 items-center justify-center rounded-[4px] hover:bg-white/15">
+            <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="absolute left-2 flex h-11 w-11 items-center justify-center rounded-[4px] hover:bg-white/15">
               <Settings className="h-6 w-6" strokeWidth={2.2} />
             </button>
           )}

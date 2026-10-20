@@ -67,7 +67,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
         ))}
       </section>
 
-      <ConceptDiagram conceptId={c.id} />
+      <ConceptDiagram conceptId={c.id} pageTitle={c.title} />
 
       <AdSlot />
 

@@ -209,25 +209,56 @@ function MapsPart() {
     }
     const concepts = [...ts].sort((x, y) => y[1] - x[1]).map(([id]) => conceptById(id)).filter(Boolean) as Concept[];
     const chapters = [...new Set(concepts.map((c) => chapterLabel(c.chapter)))].slice(0, 6);
-    return { chapters, concepts: concepts.slice(0, 40) };
+    return { chapters, concepts: concepts.slice(0, 40), all: concepts };
   }, [conceptReads, attempts]);
+
+  // خرائط ما تعلّمه: لكل فصل درس منه شيئًا، فروعها المفاهيم التي درسها وتحت كل فرع قاعدته
+  const learned = useMemo(() => {
+    const byChapter = new Map<string, Concept[]>();
+    for (const c of suggestions.all) {
+      const k = `${c.courseId}::${c.chapter}`;
+      byChapter.set(k, [...(byChapter.get(k) ?? []), c]);
+    }
+    return [...byChapter.entries()].slice(0, 6).map(([k, cs]) => {
+      const [courseId, chapter] = k.split("::");
+      const total = conceptsOfCourse(courseId).filter((c) => c.chapter === chapter).length;
+      return {
+        key: k,
+        map: { center: chapterLabel(chapter), branches: cs.slice(0, MAX_BRANCHES).map((c) => ({ text: c.title, items: c.rule ? [c.rule] : [] })) },
+        left: Math.max(0, total - cs.length),
+      };
+    });
+  }, [suggestions]);
 
   if (editing) return <MapEditor key={editing === "new" ? "new" : editing.id} initial={editing === "new" ? null : editing} suggestions={suggestions} onClose={() => setEditing(null)} />;
 
   return (
-    <div className="space-y-4">
-      <PrimaryButton onClick={() => setEditing("new")} className="w-full">
-        <Plus className="h-5 w-5" /> خريطة جديدة
-      </PrimaryButton>
-      {mindMaps.length === 0 ? (
-        <EmptyState icon={Network} title="رتّب ما تعلّمته بطريقتك" sub="ضع فكرة في المركز، ثم أضف حولها الفروع، وتحت كل فرع تفاصيله وأمثلته." />
-      ) : (
-        mindMaps.map((m) => (
+    <div className="space-y-6">
+      <section className="space-y-3">
+        <h2 className="font-display text-lg font-bold">خريطة ما تعلّمته</h2>
+        {learned.length === 0 ? (
+          <EmptyState icon={Network} title="تُبنى خريطتك مع كل درس" sub="اقرأ مفهومًا أو أجب عن أسئلته، فيظهر هنا في خريطة فصله مع قاعدته." />
+        ) : (
+          learned.map((l) => (
+            <div key={l.key}>
+              <MapView map={l.map} />
+              {l.left > 0 && <p className="mt-1.5 text-center text-sm text-muted-foreground">بقي في هذا الفصل {arCount(l.left, CONCEPT_FORMS)} لم تدرسها بعد</p>}
+            </div>
+          ))
+        )}
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="font-display text-lg font-bold">خرائطي</h2>
+        <PrimaryButton onClick={() => setEditing("new")} className="w-full">
+          <Plus className="h-5 w-5" /> خريطة جديدة
+        </PrimaryButton>
+        {mindMaps.map((m) => (
           <button key={m.id} type="button" onClick={() => setEditing(m)} className="block w-full text-right" aria-label={`عدّل خريطة ${m.center}`}>
             <MapView map={m} />
           </button>
-        ))
-      )}
+        ))}
+      </section>
     </div>
   );
 }
@@ -243,7 +274,7 @@ function Rules({ concepts, color }: { concepts: Concept[]; color: string }) {
             </span>
             <span className="min-w-0 flex-1">
               <span className="block text-base font-bold leading-7">{c.title}</span>
-              <span className="mt-1 block text-base leading-8 text-secondary-foreground">{c.example}</span>
+              <span className="mt-1 block text-base leading-8 text-secondary-foreground">{c.rule}</span>
             </span>
           </div>
         </li>

@@ -255,9 +255,11 @@ export function ScreenShell({
             </button>
           ) : null}
           <div className="min-w-0 flex-1 px-1">
-            <h1 className="truncate font-display text-lg font-bold leading-7">{title}</h1>
+            <h1 className="truncate text-center font-display text-lg font-bold leading-7">{title}</h1>
           </div>
           {actions}
+          {/* موازنة زر الرجوع ليبقى العنوان في الوسط */}
+          {!actions && !(onBack && onClose) && (onBack || onClose) && <span className="w-11 shrink-0" aria-hidden="true" />}
           {onBack && onClose && (
             <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[4px] text-white/80 hover:bg-white/15">
               <X className="h-6 w-6" strokeWidth={2.5} />
@@ -423,6 +425,8 @@ export function MasteryBar({ counts, height = 8, className }: { counts: Record<0
 
 /** مفتاح ألوان الإتقان */
 export function MasteryLegend({ labels, counts }: { labels: Record<0 | 1 | 2 | 3, string>; counts?: Record<0 | 1 | 2 | 3, number> }) {
+  // لا معنى لمفتاح كل أرقامه أصفار
+  if (counts && counts[1] + counts[2] + counts[3] === 0) return null;
   return (
     <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
       {([3, 2, 1] as const).map((lv) => (

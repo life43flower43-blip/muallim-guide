@@ -7,15 +7,20 @@
 // مصطلحاتها هي مصطلحات شرح المفهوم نفسه في البنك.
 // ============================================================================
 
+import { createContext, useContext } from "react";
 import { ArrowDown, ArrowLeft } from "lucide-react";
+
+// عنوان الصفحة التي يظهر فيها الرسم: لا يتكرر عنوان الرسم إن طابقه
+const PageTitleCtx = createContext("");
 
 const C = ["#E8467C", "#FF9600", "#FFC800", "#58CC02", "#1CB0F6", "#A560E8", "#14B8A6", "#6366F1"];
 const tint = (c: string, p = 14) => `color-mix(in srgb, ${c} ${p}%, var(--card))`;
 
 function Frame({ title, children }: { title: string; children: React.ReactNode }) {
+  const page = useContext(PageTitleCtx);
   return (
-    <figure className="rounded-2xl border-2 border-border bg-card p-4">
-      <figcaption className="mb-4 text-center font-display text-base font-bold">{title}</figcaption>
+    <figure className="rounded-2xl border-2 border-border bg-card p-4" aria-label={title}>
+      {page.trim() !== title.trim() && <figcaption className="mb-4 text-center font-display text-base font-bold">{title}</figcaption>}
       {children}
     </figure>
   );
@@ -733,7 +738,11 @@ const MAP: Record<string, () => React.ReactElement> = {
   D1483: Motivation,
 };
 
-export function ConceptDiagram({ conceptId }: { conceptId: string }) {
+export function ConceptDiagram({ conceptId, pageTitle = "" }: { conceptId: string; pageTitle?: string }) {
   const D = MAP[conceptId];
-  return D ? <D /> : null;
+  return D ? (
+    <PageTitleCtx.Provider value={pageTitle}>
+      <D />
+    </PageTitleCtx.Provider>
+  ) : null;
 }

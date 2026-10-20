@@ -488,7 +488,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
             <h1 className="mt-4 font-display text-2xl font-bold leading-[1.6] sm:text-[28px]">{c.title}</h1>
           </header>
 
-          <ConceptDiagram conceptId={c.id} />
+          <ConceptDiagram conceptId={c.id} pageTitle={c.title} />
 
           <section className="space-y-5">
             {splitArParagraphs(c.explanation).map((p, i) => (
@@ -609,7 +609,6 @@ function ChapterPage({ courseId, chapter, onBack, onOpen }: { courseId: string; 
     >
       <div className="mx-auto max-w-3xl space-y-6">
         <Card className="p-5">
-          <p className="text-sm text-muted-foreground">{COURSES.find((x) => x.id === courseId)?.name}</p>
           <h2 className="mt-1 font-display text-xl font-bold leading-8">{chapterLabel(chapter)}</h2>
           <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
