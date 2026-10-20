@@ -241,12 +241,12 @@ export default function SimLabView() {
       <ScreenShell title="مختبر محاكاة الصفوف" sub="كل قرار يغيّر الموقف، ثم يُحلَّل" onClose={clearSim}>
         <div className="space-y-6">
           <div>
-            <p className="text-[15px] leading-7 text-secondary-foreground">
+            <p className="text-base leading-7 text-secondary-foreground">
               تقرأ مشهدًا من حصة حقيقية، وتختار قرارك، فيتطور الموقف بحسبه. في النهاية ترى كفاءاتك في إدارة الصف والتواصل وفهم المتعلم واتخاذ القرار والتقويم، مع تمرين لأضعفها.
             </p>
             <div className="mt-3 flex items-center gap-3">
               <ProgressBar value={(doneCount / Math.max(1, SIM_SCENARIOS.length)) * 100} className="flex-1" />
-              <span className="shrink-0 text-[13px] text-muted-foreground">
+              <span className="shrink-0 text-sm text-muted-foreground">
                 {ad(doneCount)} من {ad(SIM_SCENARIOS.length)} مواقف
               </span>
             </div>
@@ -292,8 +292,8 @@ export default function SimLabView() {
                       {ad(idx + 1)}
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block text-[15px] font-medium leading-6">{s.title}</span>
-                      <span className="mt-0.5 block text-[13px] text-muted-foreground">{s.stage}</span>
+                      <span className="block text-base font-medium leading-6">{s.title}</span>
+                      <span className="mt-0.5 block text-sm text-muted-foreground">{s.stage}</span>
                       <span className="mt-2 flex flex-wrap gap-1.5">
                         {s.skills.map((k) => (
                           <Chip key={k}>{k}</Chip>
@@ -353,7 +353,7 @@ export default function SimLabView() {
             <Chip tone="primary">القرار {ad(decisionNo)}</Chip>
             <Chip>{scenario.stage}</Chip>
           </div>
-          {nodeKey === "start" && <p className="text-[15px] leading-8 text-secondary-foreground">{scenario.intro}</p>}
+          {nodeKey === "start" && <p className="text-base leading-8 text-secondary-foreground">{scenario.intro}</p>}
           {node && (
             <Card className="p-5">
               <p className="text-base leading-8">{node.text}</p>
@@ -380,12 +380,12 @@ export default function SimLabView() {
             return <Callout tone={tone} icon={Icon} title={SIM_RATING_WORD[pendingOutcome.rating]} />;
           })()}
           <div>
-            <p className="mb-1 text-[13px] text-muted-foreground">قرارك</p>
-            <p className="text-[15px] font-medium leading-7">{pendingOutcome.choice}</p>
+            <p className="mb-1 text-sm text-muted-foreground">قرارك</p>
+            <p className="text-base font-medium leading-7">{pendingOutcome.choice}</p>
           </div>
           <Card className="p-5">
-            <p className="mb-1.5 text-[13px] text-muted-foreground">ما الذي حدث</p>
-            <p className="text-[15px] leading-8">{pendingOutcome.outcome}</p>
+            <p className="mb-1.5 text-sm text-muted-foreground">ما الذي حدث</p>
+            <p className="text-base leading-8">{pendingOutcome.outcome}</p>
           </Card>
           <Callout tone="info" icon={Eye} title="لماذا؟">
             <p>{pendingOpt?.insight}</p>
@@ -401,7 +401,7 @@ export default function SimLabView() {
             <Chip tone="success">
               <CheckCircle2 className="h-3.5 w-3.5" /> اكتمل الموقف
             </Chip>
-            <p className="mt-3 text-[15px] leading-8 text-secondary-foreground">{scenario.end}</p>
+            <p className="mt-3 text-base leading-8 text-secondary-foreground">{scenario.end}</p>
           </div>
 
           {sessionDone && (

@@ -71,7 +71,7 @@ const emptyForm = (): VisitForm => ({
 });
 
 const inputCls =
-  "w-full rounded-xl border border-input bg-card px-3 py-2.5 text-[15px] leading-7 outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20";
+  "w-full rounded-xl border border-input bg-card px-3 py-2.5 text-base leading-7 outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20";
 const chipOff = "min-h-[36px] rounded-full border border-border bg-card px-3 text-sm text-secondary-foreground transition-colors hover:bg-muted";
 const chipOn = "min-h-[36px] rounded-full border border-primary bg-accent px-3 text-sm font-medium text-accent-foreground";
 
@@ -82,7 +82,7 @@ function SectionCard({ icon: Icon, title, guide, children }: { icon: React.Eleme
         <IconTile icon={Icon} />
         <div className="min-w-0">
           <h3 className="font-display text-base font-semibold leading-7">{title}</h3>
-          {guide && <p className="text-[13px] leading-6 text-muted-foreground">{guide}</p>}
+          {guide && <p className="text-sm leading-6 text-muted-foreground">{guide}</p>}
         </div>
       </div>
       {children}
@@ -96,7 +96,7 @@ function VisitLines({ title, body }: { title: string; body: string }) {
   return (
     <section>
       <h3 className="mb-2 font-display text-base font-semibold">{title}</h3>
-      <ul className="space-y-1.5 text-[15px] leading-7 text-secondary-foreground">
+      <ul className="space-y-1.5 text-base leading-7 text-secondary-foreground">
         {lines.map((ln, i) => (
           <li key={i} className="flex gap-2">
             <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
@@ -266,7 +266,7 @@ export default function FieldLogView() {
           role="tab"
           aria-selected={tab === id}
           onClick={() => setTab(id)}
-          className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg text-[13px] transition-colors ${
+          className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg text-sm transition-colors ${
             tab === id ? "bg-card font-medium text-foreground shadow-sm" : "text-muted-foreground"
           }`}
         >
@@ -325,7 +325,7 @@ export default function FieldLogView() {
                       <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 ${on ? "border-primary bg-primary text-primary-foreground" : "border-input"}`}>
                         {on && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
                       </span>
-                      <span className={`text-[15px] leading-6 ${on ? "text-muted-foreground line-through" : ""}`}>{item}</span>
+                      <span className={`text-base leading-6 ${on ? "text-muted-foreground line-through" : ""}`}>{item}</span>
                     </button>
                   </li>
                 );
@@ -333,7 +333,7 @@ export default function FieldLogView() {
             </ul>
             <div className="mt-4 flex items-center gap-3">
               <ProgressBar value={(checked.length / Math.max(1, READY_CHECKLIST.length)) * 100} className="flex-1" />
-              <span className="shrink-0 text-[13px] text-muted-foreground">{readinessWord(checked.length)}</span>
+              <span className="shrink-0 text-sm text-muted-foreground">{readinessWord(checked.length)}</span>
             </div>
           </SectionCard>
 
@@ -421,7 +421,7 @@ export default function FieldLogView() {
               {REFLECT_FIELDS.map((f) => (
                 <label key={f.key} className="block space-y-1">
                   <span className="block text-sm font-semibold">{f.label}</span>
-                  <span className="block text-[13px] leading-6 text-muted-foreground">{f.guide}</span>
+                  <span className="block text-sm leading-6 text-muted-foreground">{f.guide}</span>
                   <textarea value={form[f.key]} onChange={(e) => setField(f.key, e.target.value)} rows={2} placeholder={f.placeholder} className={`${inputCls} mt-1.5`} />
                 </label>
               ))}
@@ -449,7 +449,7 @@ export default function FieldLogView() {
         />
       ) : (
         <div className="space-y-4">
-          <p className="text-[15px] text-secondary-foreground">رحلتك الميدانية: {fieldJourneyWord(fieldVisits.length)}</p>
+          <p className="text-base text-secondary-foreground">رحلتك الميدانية: {fieldJourneyWord(fieldVisits.length)}</p>
           <Divided>
             {fieldVisits.map((v) => (
               <button
@@ -463,8 +463,8 @@ export default function FieldLogView() {
               >
                 <IconTile icon={v.kind === "teach" ? Footprints : Eye} />
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[15px] font-medium leading-6">{v.school}</span>
-                  <span className="block truncate text-[13px] text-muted-foreground">{v.topic}</span>
+                  <span className="block text-base font-medium leading-6">{v.school}</span>
+                  <span className="block truncate text-sm text-muted-foreground">{v.topic}</span>
                   <span className="mt-2 flex flex-wrap gap-1.5">
                     <Chip tone="primary">{VISIT_KIND_LABEL[v.kind]}</Chip>
                     <Chip>{visitDayWord(v.ts)}</Chip>

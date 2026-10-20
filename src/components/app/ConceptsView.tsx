@@ -36,7 +36,6 @@ import {
   Share2,
   StickyNote,
   GraduationCap,
-  Clock,
   ClipboardCheck,
   Play,
   HelpCircle,
@@ -72,15 +71,13 @@ import {
   courseMastery,
   courseReadiness,
   examKey,
-  readingMinutes,
   starsFor,
   topicKey,
   EXAM_SECONDS,
   type MasteryLevel,
 } from "@/lib/practice-bank";
-import { ad, arCount, CONCEPT_FORMS, CHAPTER_FORMS, MINUTE_FORMS, QUESTION_FORMS, splitArParagraphs, splitReason, exampleContext } from "@/lib/arabic";
+import { ad, arCount, CONCEPT_FORMS, CHAPTER_FORMS, QUESTION_FORMS, splitArParagraphs, splitReason, exampleContext } from "@/lib/arabic";
 import { toast } from "@/hooks/use-toast";
-import SpeakButton from "./SpeakButton";
 import {
   Card,
   Chip,
@@ -147,12 +144,11 @@ const COURSE_SUBTITLE: Record<string, string> = {
 const MASTERY_TONE: Record<MasteryLevel, "neutral" | "primary" | "success"> = { 0: "neutral", 1: "neutral", 2: "primary", 3: "success" };
 const EXAMPLE_MORE = { one: "مثال آخر", two: "مثالان آخران", few: "أمثلة أخرى", many: "مثالًا آخر" };
 
-const conceptMinutes = (c: Concept) => readingMinutes(`${c.explanation} ${examplesOf(c).join(" ")}`);
 const conceptsOfChapter = (courseId: string, chapter: string) => conceptsOfCourse(courseId).filter((c) => c.chapter === chapter);
 
 const SPECIALTIES = ["تربية", "إنسانيات", "علوم", "هندسة", "طب", "أخرى"];
 const textareaCls =
-  "w-full resize-none rounded-xl border border-input bg-card p-3 text-[15px] leading-7 outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20";
+  "w-full resize-none rounded-xl border border-input bg-card p-3 text-base leading-7 outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20";
 
 // ---------- قسم قابل للطي ----------
 function Disclosure({ icon: Icon, title, count, children }: { icon: React.ElementType; title: string; count?: number; children: React.ReactNode }) {
@@ -166,7 +162,7 @@ function Disclosure({ icon: Icon, title, count, children }: { icon: React.Elemen
         className="flex min-h-[56px] w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
       >
         <Icon className="h-5 w-5 shrink-0 text-muted-foreground" />
-        <span className="flex-1 text-[15px] font-medium">{title}</span>
+        <span className="flex-1 text-base font-medium">{title}</span>
         {count !== undefined && count > 0 && <Chip>{ad(count)}</Chip>}
         <ChevronDown className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
@@ -357,7 +353,7 @@ function ChapterOutline({ concepts, currentId, onPick }: { concepts: Concept[]; 
                 {isRead ? (
                   <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-success" />
                 ) : (
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-input text-[11px]">{ad(i + 1)}</span>
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-input text-xs">{ad(i + 1)}</span>
                 )}
                 <span className="min-w-0 flex-1">{c.title}</span>
               </button>
@@ -434,7 +430,6 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
       onClose={onClose}
       actions={
         <>
-          <SpeakButton text={`${c.title}. ${c.explanation}`} label="استمع للشرح" />
           <button type="button" onClick={share} aria-label="شارك المفهوم" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted">
             <Share2 className="h-5 w-5" />
           </button>
@@ -478,12 +473,11 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
           <ProgressBar value={((pos + 1) / Math.max(1, siblings.length)) * 100} height={4} className="lg:hidden" />
           <header>
             <div className="flex flex-wrap items-center gap-2">
-              <Chip>
-                <Clock className="h-3.5 w-3.5" /> قراءة {arCount(conceptMinutes(c), MINUTE_FORMS)}
-              </Chip>
-              <Chip tone={MASTERY_TONE[level]}>
-                <MasteryDot level={level} size={10} /> {MASTERY_LABELS[level]}
-              </Chip>
+              {level > 0 && (
+                <Chip tone={MASTERY_TONE[level]}>
+                  <MasteryDot level={level} size={10} /> {MASTERY_LABELS[level]}
+                </Chip>
+              )}
               {isRead && (
                 <Chip tone="success">
                   <CheckCircle2 className="h-3.5 w-3.5" /> مكتمل
@@ -495,7 +489,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
 
           <section className="space-y-5">
             {splitArParagraphs(c.explanation).map((p, i) => (
-              <p key={i} className="text-[17px] leading-[2.1]">
+              <p key={i} className="text-lg leading-[2.1]">
                 {p}
               </p>
             ))}
@@ -510,16 +504,15 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
                     <div className="flex items-start gap-3">
                       <Lightbulb className="mt-1 h-5 w-5 shrink-0 text-gem" />
                       <div className="min-w-0 flex-1">
-                        <p className="text-[13px] font-medium text-muted-foreground">{exampleContext(ex)}</p>
+                        <p className="text-sm font-medium text-muted-foreground">{exampleContext(ex)}</p>
                         <div className="mt-1.5 space-y-2">
                           {splitArParagraphs(ex).map((p, j) => (
-                            <p key={j} className="text-[15px] leading-8 text-secondary-foreground">
+                            <p key={j} className="text-base leading-8 text-secondary-foreground">
                               {p}
                             </p>
                           ))}
                         </div>
                       </div>
-                      <SpeakButton text={ex} label="استمع للمثال" />
                     </div>
                   </Card>
                 ))}
@@ -543,8 +536,8 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
             <button type="button" onClick={train} disabled={qs.length === 0} className="flex min-h-[64px] w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60 disabled:opacity-50">
               <Dumbbell className="h-5 w-5 shrink-0 text-primary" />
               <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-medium">تدرّب على هذا المفهوم</span>
-                <span className="text-[13px] text-muted-foreground">{arCount(qs.length, QUESTION_FORMS)} بشرح كامل</span>
+                <span className="block text-base font-medium">تدرّب على هذا المفهوم</span>
+                <span className="text-sm text-muted-foreground">{arCount(qs.length, QUESTION_FORMS)} بشرح كامل</span>
               </span>
               <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground/60" />
             </button>
@@ -572,7 +565,6 @@ function ChapterPage({ courseId, chapter, onBack, onOpen }: { courseId: string; 
   const concepts = conceptsOfChapter(courseId, chapter);
   const read = concepts.filter((c) => conceptReads[c.id]).length;
   const mastery = chapterMastery(courseId, chapter, attempts);
-  const minutes = concepts.reduce((a, c) => a + conceptMinutes(c), 0);
   const nQ = questionsOfChapter(courseId, chapter).length;
   const nextUp = concepts.find((c) => !conceptReads[c.id]) ?? concepts[0];
   const b = best[topicKey(courseId, chapter)];
@@ -601,14 +593,11 @@ function ChapterPage({ courseId, chapter, onBack, onOpen }: { courseId: string; 
     >
       <div className="mx-auto max-w-3xl space-y-6">
         <Card className="p-5">
-          <p className="text-[13px] text-muted-foreground">{COURSES.find((x) => x.id === courseId)?.name}</p>
+          <p className="text-sm text-muted-foreground">{COURSES.find((x) => x.id === courseId)?.name}</p>
           <h2 className="mt-1 font-display text-xl font-bold leading-8">{chapterLabel(chapter)}</h2>
-          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-muted-foreground">
+          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
               <BookOpen className="h-4 w-4" /> {arCount(concepts.length, CONCEPT_FORMS)}
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <Clock className="h-4 w-4" /> قرابة {arCount(minutes, MINUTE_FORMS)}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Dumbbell className="h-4 w-4" /> {arCount(nQ, QUESTION_FORMS)}
@@ -646,13 +635,13 @@ function ChapterPage({ courseId, chapter, onBack, onOpen }: { courseId: string; 
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-input text-xs text-muted-foreground">{ad(i + 1)}</span>
                   )}
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] font-medium leading-6">{c.title}</span>
-                    <span className="mt-0.5 flex items-center gap-2 text-[13px] text-muted-foreground">
-                      <span>قراءة {arCount(conceptMinutes(c), MINUTE_FORMS)}</span>
-                      <span aria-hidden="true">،</span>
-                      <MasteryDot level={lv} size={10} />
-                      <span>{MASTERY_LABELS[lv]}</span>
-                    </span>
+                    <span className="block text-base font-medium leading-6">{c.title}</span>
+                    {lv > 0 && (
+                      <span className="mt-0.5 flex items-center gap-2 text-sm text-muted-foreground">
+                        <MasteryDot level={lv} size={10} />
+                        <span>{MASTERY_LABELS[lv]}</span>
+                      </span>
+                    )}
                   </span>
                   <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground/60" />
                 </button>
@@ -678,7 +667,6 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
   const read = all.filter((c) => conceptReads[c.id]).length;
   const mastery = courseMastery(courseId, attempts);
   const readiness = courseReadiness(courseId, attempts) * 100;
-  const hours = Math.max(1, Math.round(all.reduce((a, c) => a + conceptMinutes(c), 0) / 60));
   const nextUp = all.find((c) => !conceptReads[c.id]);
   const bestExam = best[examKey(courseId)];
 
@@ -692,8 +680,8 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
               <CourseBadge id={courseId} size={48} />
               <div className="min-w-0 flex-1">
                 <h2 className="font-display text-lg font-semibold leading-7">{course.name}</h2>
-                <p className="mt-0.5 text-[13px] text-muted-foreground">
-                  {arCount(chapters.length, CHAPTER_FORMS)}، {arCount(all.length, CONCEPT_FORMS)}، قرابة {ad(hours)} س
+                <p className="mt-0.5 text-sm text-muted-foreground">
+                  {arCount(chapters.length, CHAPTER_FORMS)}، {arCount(all.length, CONCEPT_FORMS)}
                 </p>
               </div>
             </div>
@@ -730,7 +718,7 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
                 <ClipboardCheck className="h-4 w-4" /> اختبار المقرر
               </SecondaryButton>
             </div>
-            {nextUp && <p className="mt-3 text-center text-[13px] text-muted-foreground">التالي: {nextUp.title}</p>}
+            {nextUp && <p className="mt-3 text-center text-sm text-muted-foreground">التالي: {nextUp.title}</p>}
           </Card>
         </aside>
 
@@ -742,7 +730,6 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
               const r = cs.filter((c) => conceptReads[c.id]).length;
               const m = chapterMastery(courseId, ch, attempts);
               const done = cs.length > 0 && r === cs.length;
-              const mins = cs.reduce((a, c) => a + conceptMinutes(c), 0);
               return (
                 <button
                   key={ch}
@@ -754,9 +741,9 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
                     {done ? <CheckCircle2 className="h-5 w-5" /> : ad(i + 1)}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] font-medium leading-6">{chapterLabel(ch)}</span>
-                    <span className="mt-0.5 block text-[13px] text-muted-foreground">
-                      {arCount(cs.length, CONCEPT_FORMS)}، {arCount(mins, MINUTE_FORMS)}
+                    <span className="block text-base font-medium leading-6">{chapterLabel(ch)}</span>
+                    <span className="mt-0.5 block text-sm text-muted-foreground">
+                      {arCount(cs.length, CONCEPT_FORMS)}
                     </span>
                     <MasteryBar counts={m} height={5} className="mt-2 max-w-[220px]" />
                   </span>
@@ -851,7 +838,7 @@ export default function ConceptsView() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="ابحث عن مفهوم أو نظرية"
           aria-label="ابحث عن مفهوم"
-          className="w-full bg-transparent text-[15px] outline-none placeholder:text-muted-foreground"
+          className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground"
         />
         {query && (
           <button type="button" onClick={() => setQuery("")} aria-label="مسح البحث" className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-muted">
@@ -876,8 +863,8 @@ export default function ConceptsView() {
                 >
                   <CourseBadge id={c.courseId} size={36} />
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] font-medium leading-6">{c.title}</span>
-                    <span className="block truncate text-[13px] text-muted-foreground">
+                    <span className="block text-base font-medium leading-6">{c.title}</span>
+                    <span className="block truncate text-sm text-muted-foreground">
                       {COURSE_SHORT[c.courseId]}، {chapterLabel(c.chapter)}
                     </span>
                   </span>
@@ -896,7 +883,7 @@ export default function ConceptsView() {
                 <div className="flex items-start gap-4">
                   <CourseBadge id={resume.courseId} />
                   <div className="min-w-0 flex-1">
-                    <p className="text-[13px] text-muted-foreground">
+                    <p className="text-sm text-muted-foreground">
                       {COURSE_SHORT[resume.courseId]}، {chapterLabel(resume.chapter)}
                     </p>
                     <p className="mt-0.5 font-display text-base font-semibold leading-7">{resume.title}</p>
@@ -920,7 +907,7 @@ export default function ConceptsView() {
             <Card className="space-y-3 p-5">
               <MasteryBar counts={totalMastery} height={10} />
               <MasteryLegend labels={MASTERY_LABELS} counts={totalMastery} />
-              <p className="text-[13px] leading-6 text-muted-foreground">يرتفع مستوى المفهوم كلما أجبت عن أسئلته بدقة: متعرِّف، ثم متمكِّن من ٧٠٪، ثم متقِن من ٩٠٪.</p>
+              <p className="text-sm leading-6 text-muted-foreground">يرتفع مستوى المفهوم كلما أجبت عن أسئلته بدقة: متعرِّف، ثم متمكِّن من ٧٠٪، ثم متقِن من ٩٠٪.</p>
             </Card>
           </section>
 
@@ -944,8 +931,8 @@ export default function ConceptsView() {
                     <span className="flex items-start gap-3">
                       <CourseBadge id={course.id} />
                       <span className="min-w-0 flex-1">
-                        <span className="block text-[15px] font-semibold leading-6">{course.name}</span>
-                        <span className="mt-0.5 block text-[13px] leading-5 text-muted-foreground">{COURSE_SUBTITLE[course.id]}</span>
+                        <span className="block text-base font-semibold leading-6">{course.name}</span>
+                        <span className="mt-0.5 block text-sm leading-5 text-muted-foreground">{COURSE_SUBTITLE[course.id]}</span>
                       </span>
                     </span>
                     <span className="mt-auto block space-y-2">

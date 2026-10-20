@@ -54,7 +54,7 @@ export default function Onboarding() {
           <>
             <div>
               <h1 className="font-display text-[26px] font-bold leading-[1.6]">ما الذي تستعد له؟</h1>
-              <p className="mt-2 text-[15px] leading-7 text-muted-foreground">
+              <p className="mt-2 text-base leading-7 text-muted-foreground">
                 نرتّب لك خطة اليوم والتدريب بحسب هدفك. يمكنك تغييره لاحقًا من حسابك.
               </p>
             </div>
@@ -78,8 +78,8 @@ export default function Onboarding() {
                       <g.icon className="h-5 w-5" />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block text-[15px] font-semibold">{g.title}</span>
-                      <span className="mt-0.5 block text-[13px] leading-5 text-muted-foreground">{g.sub}</span>
+                      <span className="block text-base font-semibold">{g.title}</span>
+                      <span className="mt-0.5 block text-sm leading-5 text-muted-foreground">{g.sub}</span>
                     </span>
                     <span className={cn("flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2", on ? "border-primary bg-primary text-primary-foreground" : "border-input")}>
                       {on && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
@@ -96,7 +96,7 @@ export default function Onboarding() {
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="h-12 w-full rounded-xl border border-input bg-card px-4 text-[15px] focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="h-12 w-full rounded-xl border border-input bg-card px-4 text-base focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
                 <span className="block text-xs text-muted-foreground">نحسب منه الأيام الباقية ونوزّع المراجعة عليها.</span>
               </label>

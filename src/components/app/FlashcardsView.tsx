@@ -133,7 +133,7 @@ export default function FlashcardsView() {
               <h2 className="font-display text-2xl font-bold leading-[1.7]">{card.title}</h2>
               <p className="mt-3 text-sm text-muted-foreground">{card.chapter}</p>
             </div>
-            <p className="flex items-center justify-center gap-1.5 text-[13px] text-muted-foreground">
+            <p className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
               <RotateCw className="h-3.5 w-3.5" /> اضغط البطاقة لترى الشرح
             </p>
           </div>
@@ -141,10 +141,10 @@ export default function FlashcardsView() {
           <div className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-border bg-card card-soft [backface-visibility:hidden] [transform:rotateY(180deg)]">
             <div className="border-b border-border px-5 py-4">
               <p className="font-display text-base font-semibold leading-7">{card.title}</p>
-              <p className="text-[13px] text-muted-foreground">{course?.name}</p>
+              <p className="text-sm text-muted-foreground">{course?.name}</p>
             </div>
             <div className="no-scrollbar flex-1 space-y-4 overflow-y-auto p-5">
-              <p className="text-[15px] leading-8">{card.explanation}</p>
+              <p className="text-base leading-8">{card.explanation}</p>
               <div className="space-y-2">
                 <p className="flex items-center gap-1.5 text-sm font-semibold">
                   <Lightbulb className="h-4 w-4 text-gem" /> أمثلة من الميدان

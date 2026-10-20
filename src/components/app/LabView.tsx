@@ -216,12 +216,12 @@ export default function LabView() {
               return <Callout tone={tone} icon={Icon} title={RATING_WORD[pendingOutcome.rating]} />;
             })()}
             <div>
-              <p className="mb-1 text-[13px] text-muted-foreground">قرارك</p>
-              <p className="text-[15px] font-medium leading-7">{pendingOutcome.choice}</p>
+              <p className="mb-1 text-sm text-muted-foreground">قرارك</p>
+              <p className="text-base font-medium leading-7">{pendingOutcome.choice}</p>
             </div>
             <Card className="p-5">
-              <p className="mb-1.5 text-[13px] text-muted-foreground">ما الذي حدث</p>
-              <p className="text-[15px] leading-8">{pendingOutcome.outcome}</p>
+              <p className="mb-1.5 text-sm text-muted-foreground">ما الذي حدث</p>
+              <p className="text-base leading-8">{pendingOutcome.outcome}</p>
             </Card>
           </motion.div>
         )}
@@ -232,7 +232,7 @@ export default function LabView() {
               <Chip tone="success">
                 <CheckCircle2 className="h-3.5 w-3.5" /> {examMode ? "انتهى اختبار الاستقلال" : "اكتمل الموقف"}
               </Chip>
-              <p className="mt-3 text-[15px] leading-8 text-secondary-foreground">{scenario.end}</p>
+              <p className="mt-3 text-base leading-8 text-secondary-foreground">{scenario.end}</p>
             </div>
 
             <Card className="p-5">
@@ -275,7 +275,7 @@ export default function LabView() {
                       value={reflect[k]}
                       onChange={(e) => setReflect((r) => ({ ...r, [k]: e.target.value }))}
                       rows={2}
-                      className="w-full rounded-xl border border-input bg-card p-3 text-[15px] leading-7 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      className="w-full rounded-xl border border-input bg-card p-3 text-base leading-7 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                     />
                   </label>
                 ))}
@@ -303,7 +303,7 @@ export default function LabView() {
           role="tab"
           aria-selected={tab === id}
           onClick={() => setTab(id)}
-          className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg text-[13px] transition-colors ${
+          className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg text-sm transition-colors ${
             tab === id ? "bg-card font-medium text-foreground shadow-sm" : "text-muted-foreground"
           }`}
         >
@@ -325,7 +325,7 @@ export default function LabView() {
       >
         <IconTile icon={asExam ? ShieldCheck : FlaskConical} />
         <span className="min-w-0 flex-1">
-          <span className="block text-[15px] font-medium leading-6">{s.title}</span>
+          <span className="block text-base font-medium leading-6">{s.title}</span>
           <span className="mt-2 flex flex-wrap gap-1.5">
             {!asExam && <Chip tone="primary">{s.skill}</Chip>}
             <Chip>{s.stage}</Chip>
@@ -345,7 +345,7 @@ export default function LabView() {
 
       {tab === "list" && (
         <div className="space-y-5">
-          <p className="text-[15px] leading-7 text-secondary-foreground">
+          <p className="text-base leading-7 text-secondary-foreground">
             تدخل موقفًا صفيًا، وتتخذ قراراتك خطوة بخطوة، فيتحول الموقف بأثرها. بعد كل قرار ترى تحليله، وفي النهاية تتأمل أداءك.
           </p>
           <ListRowCard
@@ -369,7 +369,7 @@ export default function LabView() {
 
       {tab === "map" && (
         <div className="space-y-4">
-          <p className="text-[15px] leading-7 text-secondary-foreground">
+          <p className="text-base leading-7 text-secondary-foreground">
             تُبنى حالة كل كفاءة من قراراتك في المواقف، ومن إجاباتك عن أسئلة المفاهيم المرتبطة بها، ومن اختبار الاستقلال.
           </p>
           {reports.map((r) => (
@@ -443,7 +443,7 @@ export default function LabView() {
               return (
                 <Card key={i} className="p-5">
                   <div className="mb-3 flex items-start justify-between gap-2">
-                    <p className="flex items-center gap-1.5 text-[15px] font-semibold">
+                    <p className="flex items-center gap-1.5 text-base font-semibold">
                       {a.mode === "exam" && <ShieldCheck className="h-4 w-4 text-primary" />}
                       {sc?.title ?? "موقف تدريبي"}
                     </p>
@@ -478,8 +478,8 @@ function ListRowCard({ onClick }: { onClick: () => void }) {
       <button type="button" onClick={onClick} className="flex w-full items-center gap-3 px-4 py-4 text-right transition-colors hover:bg-muted/60">
         <IconTile icon={Sparkles} color="var(--gem)" />
         <span className="min-w-0 flex-1">
-          <span className="block text-[15px] font-medium">مواقف سريعة</span>
-          <span className="mt-0.5 block text-[13px] text-muted-foreground">قرار واحد مع تفسيره التربوي</span>
+          <span className="block text-base font-medium">مواقف سريعة</span>
+          <span className="mt-0.5 block text-sm text-muted-foreground">قرار واحد مع تفسيره التربوي</span>
         </span>
         <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground/60" />
       </button>

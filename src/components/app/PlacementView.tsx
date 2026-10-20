@@ -122,7 +122,7 @@ export default function PlacementView() {
               <Compass className="h-7 w-7" />
             </span>
             <p className="mt-3 font-display text-2xl font-bold">{level.title}</p>
-            <p className="mx-auto mt-2 max-w-md text-[15px] leading-7 text-secondary-foreground">{level.desc}</p>
+            <p className="mx-auto mt-2 max-w-md text-base leading-7 text-secondary-foreground">{level.desc}</p>
             <p className="mt-3 text-sm text-muted-foreground">
               أجبت صوابًا عن {arCount(result.correctCount, QUESTION_OBJ_FORMS)} من {ad(result.total)}
             </p>

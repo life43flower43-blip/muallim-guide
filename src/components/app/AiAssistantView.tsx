@@ -131,7 +131,7 @@ export default function AiAssistantView() {
             aria-label="سؤالك"
             placeholder="اكتب سؤالك التربوي"
             disabled={busy}
-            className="max-h-32 min-h-[48px] flex-1 resize-none rounded-xl border border-input bg-background px-4 py-3 text-[15px] leading-6 placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+            className="max-h-32 min-h-[48px] flex-1 resize-none rounded-xl border border-input bg-background px-4 py-3 text-base leading-6 placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
           />
           <button
             type="button"
@@ -185,7 +185,7 @@ function EmptyState({ onPick }: { onPick: (t: string) => void }) {
                 className="flex min-h-[56px] w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
               >
                 <Icon className="h-5 w-5 shrink-0 text-primary" />
-                <span className="text-[15px] leading-6">{p.text}</span>
+                <span className="text-base leading-6">{p.text}</span>
               </button>
             );
           })}
@@ -202,7 +202,7 @@ function ChatBubble({ msg }: { msg: ChatMsg }) {
     return (
       <div className="flex justify-start">
         <div className="max-w-[85%] rounded-2xl rounded-tr-md bg-primary px-4 py-3">
-          <p className="whitespace-pre-wrap text-[15px] leading-7 text-primary-foreground">{msg.content}</p>
+          <p className="whitespace-pre-wrap text-base leading-7 text-primary-foreground">{msg.content}</p>
         </div>
       </div>
     );
@@ -227,7 +227,7 @@ function ChatBubble({ msg }: { msg: ChatMsg }) {
             )}
             <div className="space-y-3">
               {paragraphs.map((p, i) => (
-                <p key={i} className="whitespace-pre-wrap text-[15px] leading-8">
+                <p key={i} className="whitespace-pre-wrap text-base leading-8">
                   {p}
                 </p>
               ))}

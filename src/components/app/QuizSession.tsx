@@ -10,7 +10,6 @@ import { useUi, type QuizConfig } from "@/lib/ui-store";
 import { saveSnapshot, loadSnapshot, clearSnapshot, RESUME_FLAG, type Confidence } from "@/lib/session-snapshot";
 import { buildSocraticSteps, type SocraticStep } from "@/lib/socratic";
 import { ad, arCount, QUESTION_OBJ_FORMS, splitReason } from "@/lib/arabic";
-import SpeakButton from "./SpeakButton";
 import { ConceptReader } from "./ConceptsView";
 import { toast } from "@/hooks/use-toast";
 import { Callout, Card, Chip, Divided, EmptyState, OptionButton, PrimaryButton, ProgressBar, Ring, ScreenShell, SecondaryButton, SectionHeader, SkillBar, pct } from "./ui-kit";
@@ -83,7 +82,7 @@ function SocraticBox({ q }: { q: Question }) {
       </p>
       {!done ? (
         <div className="mt-3 space-y-3">
-          <p className="text-[15px] leading-7">{steps[stepIdx].prompt}</p>
+          <p className="text-base leading-7">{steps[stepIdx].prompt}</p>
           {showHint && (
             <motion.p initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="rounded-lg bg-muted p-3 text-sm leading-7 text-secondary-foreground">
               {steps[stepIdx].hint}
@@ -120,13 +119,13 @@ function AcademicReason({ reason }: { reason: string }) {
   return (
     <div className="space-y-4">
       <div>
-        <p className="text-[13px] font-semibold text-primary">لماذا هذه الإجابة صحيحة</p>
-        <p className="mt-1 text-[15px] leading-8">{base}</p>
+        <p className="text-sm font-semibold text-primary">لماذا هذه الإجابة صحيحة</p>
+        <p className="mt-1 text-base leading-8">{base}</p>
       </div>
       {rest && (
         <div>
-          <p className="text-[13px] font-semibold text-muted-foreground">لماذا البدائل الأخرى خاطئة</p>
-          <p className="mt-1 text-[15px] leading-8 text-secondary-foreground">{rest}</p>
+          <p className="text-sm font-semibold text-muted-foreground">لماذا البدائل الأخرى خاطئة</p>
+          <p className="mt-1 text-base leading-8 text-secondary-foreground">{rest}</p>
         </div>
       )}
     </div>
@@ -435,7 +434,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   <span className="font-display text-3xl font-bold">{pct(pctV)}</span>
                 </Ring>
                 <h2 className="mt-4 font-display text-xl font-bold">{headline}</h2>
-                {isProficiency && <p className="mt-1 text-[13px] text-muted-foreground">عتبة النجاح ٦٠٪</p>}
+                {isProficiency && <p className="mt-1 text-sm text-muted-foreground">عتبة النجاح ٦٠٪</p>}
                 {gemsEarned !== null && gemsEarned > 0 && (
                   <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-gem-soft px-3 py-1.5 text-sm font-medium text-gem">
                     <Gem className="h-4 w-4" /> {ad(gemsEarned)}+ جوهرة
@@ -539,7 +538,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                           <summary className="flex cursor-pointer list-none items-start gap-3 px-4 py-3 hover:bg-muted/60">
                             {r.ok ? <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-success" /> : <XCircle className="mt-1 h-5 w-5 shrink-0 text-destructive" />}
                             <span className="min-w-0 flex-1">
-                              <span className="block text-[15px] leading-7">
+                              <span className="block text-base leading-7">
                                 <span className="text-muted-foreground">{ad(n)}. </span>
                                 {rq.question}
                               </span>
@@ -636,7 +635,6 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
 
               <div className="flex items-start gap-2">
                 <h2 className="min-w-0 flex-1 font-display text-lg font-semibold leading-9 sm:text-xl">{q.question}</h2>
-                <SpeakButton text={q.question} label="استمع إلى السؤال" />
               </div>
 
               <div className={q.type === "tf" ? "grid grid-cols-2 gap-3" : "space-y-3"}>
@@ -658,7 +656,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
 
               {!answered && (
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="text-[13px] text-muted-foreground">ثقتك بإجابتك</span>
+                  <span className="text-sm text-muted-foreground">ثقتك بإجابتك</span>
                   <div role="radiogroup" aria-label="ثقتك بإجابتك" className="flex rounded-lg bg-muted p-0.5">
                     {CONF_OPTIONS.map((c) => (
                       <button
@@ -667,7 +665,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                         role="radio"
                         aria-checked={conf === c.id}
                         onClick={() => setConf(conf === c.id ? null : c.id)}
-                        className={`min-h-[34px] rounded-md px-3 text-[13px] transition-colors ${conf === c.id ? "bg-card font-medium text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                        className={`min-h-[34px] rounded-md px-3 text-sm transition-colors ${conf === c.id ? "bg-card font-medium text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                       >
                         {c.label}
                       </button>
@@ -696,8 +694,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
 
               {concept && (
                 <Card className="p-4">
-                  <p className="text-[13px] text-muted-foreground">المفهوم</p>
-                  <p className="mt-0.5 font-display text-[15px] font-semibold leading-7">{concept.title}</p>
+                  <p className="text-sm text-muted-foreground">المفهوم</p>
+                  <p className="mt-0.5 font-display text-base font-semibold leading-7">{concept.title}</p>
                   <p className="mt-1.5 line-clamp-3 text-sm leading-7 text-secondary-foreground">{concept.explanation}</p>
                   <button type="button" onClick={() => setReaderId(concept.id)} className="mt-2 flex min-h-[40px] items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-primary hover:bg-accent">
                     <BookOpen className="h-4 w-4" /> اقرأ المفهوم وأمثلته
@@ -715,11 +713,11 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                 ))}
 
               {reported ? (
-                <p className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
+                <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
                   <Flag className="h-4 w-4" /> أُبلغ عن هذا السؤال
                 </p>
               ) : (
-                <button type="button" onClick={handleReport} className="flex min-h-[40px] items-center gap-1.5 rounded-lg px-2 text-[13px] text-muted-foreground transition-colors hover:bg-muted">
+                <button type="button" onClick={handleReport} className="flex min-h-[40px] items-center gap-1.5 rounded-lg px-2 text-sm text-muted-foreground transition-colors hover:bg-muted">
                   <Flag className="h-4 w-4" /> أبلغ عن خطأ في السؤال
                 </button>
               )}

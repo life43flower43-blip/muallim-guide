@@ -182,7 +182,7 @@ export default function PeerChallenge() {
     return (
       <ScreenShell title="تحدّي الأقران" sub="نافس زميلك على الأسئلة نفسها" onClose={clearPeer}>
         <div className="space-y-6">
-          <p className="text-[15px] leading-7 text-secondary-foreground">
+          <p className="text-base leading-7 text-secondary-foreground">
             الدرس يثبت أكثر حين تنافس فيه زميلك. أنشئ تحديًا من أسئلة البنك وشارك رابطه، فيجيب زميلك عن الأسئلة نفسها وتقارنان النتيجة. كل شيء ينتقل في الرابط نفسه.
           </p>
           <Divided>
@@ -219,7 +219,7 @@ export default function PeerChallenge() {
                   type="button"
                   aria-pressed={scope === o.id}
                   onClick={() => setScope(o.id)}
-                  className="flex min-h-[52px] w-full items-center gap-3 px-4 py-3 text-right text-[15px] transition-colors hover:bg-muted/60"
+                  className="flex min-h-[52px] w-full items-center gap-3 px-4 py-3 text-right text-base transition-colors hover:bg-muted/60"
                 >
                   <span className="flex-1">{o.label}</span>
                   {scope === o.id && <Check className="h-5 w-5 text-primary" />}
@@ -273,7 +273,7 @@ export default function PeerChallenge() {
           dir="ltr"
           className="w-full rounded-xl border border-input bg-card p-3 text-sm leading-6 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
-        <p className="mt-2 text-[13px] leading-6 text-muted-foreground">نقرأ من الرابط الأسئلة ونتيجة زميلك، ثم نقارن نتيجتكما بعد الحل.</p>
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">نقرأ من الرابط الأسئلة ونتيجة زميلك، ثم نقارن نتيجتكما بعد الحل.</p>
       </ScreenShell>
     );
   }
@@ -393,8 +393,8 @@ export default function PeerChallenge() {
                   <div key={r.qid} className="flex items-start gap-3 px-4 py-3">
                     {r.ok ? <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-success" /> : <XCircle className="mt-1 h-5 w-5 shrink-0 text-destructive" />}
                     <div className="min-w-0 flex-1">
-                      <p className="text-[15px] leading-7">{rq.question}</p>
-                      {!r.ok && <p className="mt-1 text-[13px] text-success">الصحيح: {rq.correct}</p>}
+                      <p className="text-base leading-7">{rq.question}</p>
+                      {!r.ok && <p className="mt-1 text-sm text-success">الصحيح: {rq.correct}</p>}
                     </div>
                   </div>
                 );
@@ -412,7 +412,7 @@ export default function PeerChallenge() {
 function ScoreTile({ name, correct, total, highlight }: { name: string; correct: number; total: number; highlight: boolean }) {
   return (
     <Card className={`p-4 text-center ${highlight ? "border-primary bg-accent/40" : ""}`}>
-      <p className="truncate text-[13px] text-muted-foreground">{name}</p>
+      <p className="truncate text-sm text-muted-foreground">{name}</p>
       <p className="mt-1 font-display text-2xl font-bold tabular-nums">
         {ad(correct)} من {ad(total)}
       </p>

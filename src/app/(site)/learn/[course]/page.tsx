@@ -39,7 +39,7 @@ export default async function CoursePage({ params }: { params: Promise<{ course:
           <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
             {ch.concepts.map((c) => (
               <li key={c.id}>
-                <Link href={`/learn/${course}/${c.id}`} className="block px-4 py-3 text-[15px] hover:bg-muted/60">
+                <Link href={`/learn/${course}/${c.id}`} className="block px-4 py-3 text-base hover:bg-muted/60">
                   {c.title}
                 </Link>
               </li>

@@ -42,10 +42,8 @@ import {
   chapterStats,
   courseExam,
   courseMix,
-  courseReadiness,
   examKey,
   fullMockExam,
-  overallReadiness,
   smartSession,
   starsFor,
   topicKey,
@@ -56,7 +54,7 @@ import { ad, arCount, CHAPTER_FORMS, ERROR_DUE_FORMS, QUESTION_FORMS } from "@/l
 import { cn } from "@/lib/utils";
 import type { Tab } from "./AppShell";
 import TestBuilder from "./TestBuilder";
-import { Card, Divided, ListRow, PageTitle, ProgressBar, Ring, SecondaryButton, SectionHeader, Stars, pct } from "./ui-kit";
+import { Card, Divided, ListRow, PageTitle, ProgressBar, SecondaryButton, SectionHeader, Stars, pct } from "./ui-kit";
 
 const TEST_MODES = new Set(["training", "exam", "review", "redo", "proficiency", "quick", "intensive"]);
 const dateFmt = new Intl.DateTimeFormat("ar-u-nu-arab", { day: "numeric", month: "short" });
@@ -78,8 +76,8 @@ function ActionCard({ icon, title, sub, onClick, primary }: { icon: React.Elemen
         <Icon className="h-5 w-5" />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-[15px] font-semibold">{title}</span>
-        <span className={cn("mt-0.5 block text-[13px] leading-5", primary ? "text-primary-foreground/85" : "text-muted-foreground")}>{sub}</span>
+        <span className="block text-base font-semibold">{title}</span>
+        <span className={cn("mt-0.5 block text-sm leading-5", primary ? "text-primary-foreground/85" : "text-muted-foreground")}>{sub}</span>
       </span>
     </button>
   );
@@ -101,7 +99,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
   const summary = useMemo(() => {
     const all = Object.values(attempts);
     const correct = all.filter((a) => a.correct).length;
-    return { answered: all.length, accuracy: all.length ? (correct / all.length) * 100 : null, readiness: overallReadiness(attempts) * 100 };
+    return { answered: all.length, accuracy: all.length ? (correct / all.length) * 100 : null };
   }, [attempts]);
   const bank = QUESTIONS.length;
   const tests = useMemo(() => [...sessions].filter((s) => TEST_MODES.has(s.mode) && s.total > 0).sort((a, b) => b.ts - a.ts), [sessions]);
@@ -119,15 +117,6 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
       {/* لوحة الأداء */}
       <Card className="p-5 lg:p-6">
         <div className="flex flex-wrap items-center gap-5">
-          <div className="flex items-center gap-3">
-            <Ring value={summary.readiness} size={72} stroke={7}>
-              <span className="font-display text-base font-bold">{pct(summary.readiness)}</span>
-            </Ring>
-            <div>
-              <p className="font-display text-base font-semibold">جاهزيتك</p>
-              <p className="text-xs text-muted-foreground">الدقة مع تغطية البنك</p>
-            </div>
-          </div>
           <div className="grid min-w-[220px] flex-1 grid-cols-3 gap-3 text-center">
             <div>
               <p className="font-display text-xl font-bold">{ad(summary.answered)}</p>
@@ -144,7 +133,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
           </div>
         </div>
         <div className="mt-5">
-          <div className="mb-1.5 flex justify-between text-[13px] text-muted-foreground">
+          <div className="mb-1.5 flex justify-between text-sm text-muted-foreground">
             <span>ما استخدمته من بنك الأسئلة</span>
             <span>
               {ad(summary.answered)} من {ad(bank)}
@@ -153,7 +142,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
           <ProgressBar value={bank ? (summary.answered / bank) * 100 : 0} />
         </div>
         {weak.length > 0 && (
-          <p className="mt-4 text-[13px] leading-6 text-muted-foreground">
+          <p className="mt-4 text-sm leading-6 text-muted-foreground">
             أضعف فصولك الآن: <span className="text-foreground">{weak.map((w) => `${chapterLabel(w.chapter)} (${pct(w.accuracy * 100)})`).join("، ")}</span>
           </p>
         )}
@@ -200,8 +189,8 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
                 <div key={t.id} className="flex min-h-[60px] items-center gap-3 px-4 py-3">
                   <ListChecks className="h-5 w-5 shrink-0 text-muted-foreground" />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[15px] font-medium">{t.label}</p>
-                    <p className="text-[13px] text-muted-foreground">
+                    <p className="truncate text-base font-medium">{t.label}</p>
+                    <p className="text-sm text-muted-foreground">
                       {dateFmt.format(new Date(t.ts))}، {arCount(t.total, QUESTION_FORMS)}، {fmtDur(t.durationSec)}
                     </p>
                   </div>
@@ -222,22 +211,17 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
             const chapters = chaptersOfCourse(c.id);
             const stars = chapters.reduce((n, ch) => n + starsFor(best[topicKey(c.id, ch)]), 0);
             const color = COURSE_COLOR[c.id] ?? "var(--primary)";
-            const ready = courseReadiness(c.id, attempts) * 100;
             return (
               <Card key={c.id} className="overflow-hidden">
                 <button type="button" onClick={() => setOpen(isOpen ? null : c.id)} aria-expanded={isOpen} className="flex min-h-[72px] w-full items-center gap-3 px-4 py-3 text-right">
                   <span className="h-10 w-1.5 shrink-0 rounded-full" style={{ background: color }} aria-hidden="true" />
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] font-semibold">{c.name}</span>
-                    <span className="mt-0.5 block text-[13px] text-muted-foreground">
+                    <span className="block text-base font-semibold">{c.name}</span>
+                    <span className="mt-0.5 block text-sm text-muted-foreground">
                       {arCount(chapters.length, CHAPTER_FORMS)}، {arCount(questionsOfCourse(c.id).length, QUESTION_FORMS)}
                     </span>
-                    <span className="mt-2 flex items-center gap-2">
-                      <ProgressBar value={ready} height={4} className="max-w-[160px] flex-1" />
-                      <span className="text-xs text-muted-foreground">جاهزية {pct(ready)}</span>
-                    </span>
                   </span>
-                  <span className="text-[13px] text-gem">★ {ad(stars)}</span>
+                  <span className="text-sm text-gem">★ {ad(stars)}</span>
                   <ChevronDown className={cn("h-5 w-5 text-muted-foreground transition-transform", isOpen && "rotate-180")} />
                 </button>
                 {isOpen && (
@@ -303,7 +287,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
       </section>
 
       {due === 0 && (mistakes?.stats.open ?? 0) > 0 && (
-        <p className="text-center text-[13px] text-muted-foreground">
+        <p className="text-center text-sm text-muted-foreground">
           لا أخطاء مستحقة الآن.{" "}
           <button type="button" onClick={() => onGoTab("mistakes")} className="font-medium text-primary">
             عرض أخطائي

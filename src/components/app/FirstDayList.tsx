@@ -35,12 +35,12 @@ export default function FirstDayList() {
   return (
     <div className="space-y-5">
       <div>
-        <p className="text-[15px] leading-7 text-secondary-foreground">
+        <p className="text-base leading-7 text-secondary-foreground">
           أول دخول للمدرسة يقلق كل معلم متدرب. هذه القائمة تحوّل القلق إلى خطوات: علّم كل بند تنجزه.
         </p>
         <div className="mt-3 flex items-center gap-3">
           <ProgressBar value={total > 0 ? (progress / total) * 100 : 0} className="flex-1" />
-          <span className="shrink-0 text-[13px] text-muted-foreground">{firstDayReadinessWord(firstdayChecked)}</span>
+          <span className="shrink-0 text-sm text-muted-foreground">{firstDayReadinessWord(firstdayChecked)}</span>
         </div>
       </div>
 
@@ -52,7 +52,7 @@ export default function FirstDayList() {
             <div className="mb-3 flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <h3 className="font-display text-base font-semibold">{section.title}</h3>
-                <p className="mt-0.5 text-[13px] leading-6 text-muted-foreground">{section.guide}</p>
+                <p className="mt-0.5 text-sm leading-6 text-muted-foreground">{section.guide}</p>
               </div>
               {allDone && <Chip tone="success">اكتمل</Chip>}
             </div>
@@ -71,7 +71,7 @@ export default function FirstDayList() {
                       <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 ${on ? "border-primary bg-primary text-primary-foreground" : "border-input"}`}>
                         {on && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
                       </span>
-                      <span className={`text-[15px] leading-6 ${on ? "text-muted-foreground line-through" : ""}`}>{item.text}</span>
+                      <span className={`text-base leading-6 ${on ? "text-muted-foreground line-through" : ""}`}>{item.text}</span>
                     </button>
                   </li>
                 );

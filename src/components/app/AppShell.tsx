@@ -99,7 +99,7 @@ function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: 
               onClick={() => onTab(n.id)}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex min-h-[44px] items-center gap-3 rounded-lg px-3 text-[15px] transition-colors",
+                "flex min-h-[44px] items-center gap-3 rounded-lg px-3 text-base transition-colors",
                 active ? "bg-accent font-semibold text-accent-foreground" : "text-secondary-foreground hover:bg-muted"
               )}
             >
@@ -137,7 +137,7 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
               <span className={cn("flex h-8 w-14 items-center justify-center rounded-full transition-colors", active && "bg-accent")}>
                 <n.icon className={cn("h-[22px] w-[22px]", active ? "text-primary" : "text-muted-foreground")} strokeWidth={active ? 2.2 : 1.8} />
               </span>
-              <span className={cn("text-[11px]", active ? "font-semibold text-primary" : "text-muted-foreground")}>{n.label}</span>
+              <span className={cn("text-xs", active ? "font-semibold text-primary" : "text-muted-foreground")}>{n.label}</span>
               {n.id === "mistakes" && due > 0 && (
                 <span className="absolute right-1/2 top-1 translate-x-5 rounded-full bg-destructive px-1.5 text-[10px] font-semibold leading-4 text-white">
                   {ad(Math.min(due, 99))}
@@ -211,7 +211,7 @@ export default function AppShell() {
     document.documentElement.classList.toggle("dark", dark);
   }, [dark]);
   useEffect(() => {
-    document.documentElement.style.fontSize = fontScale === "large" ? "17.5px" : fontScale === "bigger" ? "19px" : "";
+    document.documentElement.style.fontSize = fontScale === "large" ? "19px" : fontScale === "bigger" ? "21px" : "";
   }, [fontScale]);
 
   // عامل الخدمة للعمل دون اتصال، وإعادة تحميل واحدة عند وصول نسخة أحدث

@@ -34,7 +34,7 @@ const TOOLS: { id: ToolId; label: string; icon: typeof Gauge; desc: string }[] =
 const pct = (v: number) => `${ad(Math.round(v * 100))}٪`;
 
 const inputCls =
-  "h-12 w-full rounded-xl border border-input bg-card px-3 text-center text-[15px] tabular-nums outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20";
+  "h-12 w-full rounded-xl border border-input bg-card px-3 text-center text-base tabular-nums outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20";
 
 function ToolHeader({ icon: Icon, label, desc }: { icon: typeof Gauge; label: string; desc: string }) {
   return (
@@ -42,7 +42,7 @@ function ToolHeader({ icon: Icon, label, desc }: { icon: typeof Gauge; label: st
       <IconTile icon={Icon} />
       <div className="min-w-0">
         <h3 className="font-display text-base font-semibold">{label}</h3>
-        <p className="text-[13px] leading-6 text-muted-foreground">{desc}</p>
+        <p className="text-sm leading-6 text-muted-foreground">{desc}</p>
       </div>
     </div>
   );
@@ -76,7 +76,7 @@ export default function MeasureKit() {
               role="tab"
               aria-selected={on}
               onClick={() => setTool(t.id)}
-              className={`flex min-h-[52px] items-center justify-center gap-2 rounded-xl border px-3 text-[13px] transition-colors ${
+              className={`flex min-h-[52px] items-center justify-center gap-2 rounded-xl border px-3 text-sm transition-colors ${
                 on ? "border-primary bg-accent font-medium text-accent-foreground ring-1 ring-primary" : "border-border bg-card text-secondary-foreground hover:bg-muted"
               }`}
             >
@@ -154,7 +154,7 @@ function DifficultyTool() {
       />
       <div className="mt-3 grid grid-cols-2 gap-2">
         <div>
-          <label className="mb-1.5 block text-center text-[13px] font-medium text-secondary-foreground">
+          <label className="mb-1.5 block text-center text-sm font-medium text-secondary-foreground">
             عدد المجيبين كلهم
           </label>
           <input
@@ -166,7 +166,7 @@ function DifficultyTool() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-center text-[13px] font-medium text-secondary-foreground">
+          <label className="mb-1.5 block text-center text-sm font-medium text-secondary-foreground">
             منهم أجاب صحيحًا
           </label>
           <input
@@ -319,7 +319,7 @@ function WeightTool() {
       <ToolHeader icon={Scale} label="وزن الدرجة" desc="كم يمثل هذا السؤال من الدرجة الكلية؟" />
       <div className="mt-3 grid grid-cols-2 gap-2">
         <div>
-          <label className="mb-1.5 block text-center text-[13px] font-medium text-secondary-foreground">
+          <label className="mb-1.5 block text-center text-sm font-medium text-secondary-foreground">
             درجة السؤال
           </label>
           <input
@@ -331,7 +331,7 @@ function WeightTool() {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-center text-[13px] font-medium text-secondary-foreground">
+          <label className="mb-1.5 block text-center text-sm font-medium text-secondary-foreground">
             الدرجة الكلية للاختبار
           </label>
           <input

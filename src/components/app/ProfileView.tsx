@@ -34,7 +34,7 @@ import {
 } from "lucide-react";
 import { useApp, type LearnerGoal } from "@/lib/store";
 import { COURSES, LEVEL_XP, chaptersOfCourse, levelFromXp, levelTitle, xpInLevel } from "@/lib/qbank";
-import { chapterStats } from "@/lib/practice-bank";
+import { chapterStats, overallReadiness } from "@/lib/practice-bank";
 import { useMistakes } from "@/lib/mistakes-client";
 import { GEM_RULES, MAX_STREAK_FREEZES } from "@/lib/gems-rules";
 import { GEM_REASON_LABELS, deleteAccount, signOut, spendGems, useAccount, useWallet } from "@/lib/account-client";
@@ -144,7 +144,7 @@ function ActivityMap({ sessions }: { sessions: { ts: number; total: number; dura
       </div>
       <div className="no-scrollbar mt-5 overflow-x-auto">
         <div className="inline-block min-w-full">
-          <div className="relative mb-1 h-4 text-[11px] text-muted-foreground" style={{ width: WEEKS * 16 }}>
+          <div className="relative mb-1 h-4 text-xs text-muted-foreground" style={{ width: WEEKS * 16 }}>
             {months.map((m) => (
               <span key={m.col + m.label} className="absolute" style={{ right: m.col * 16 }}>
                 {m.label}
@@ -163,7 +163,7 @@ function ActivityMap({ sessions }: { sessions: { ts: number; total: number; dura
           </div>
         </div>
       </div>
-      <div className="mt-3 flex items-center justify-end gap-1.5 text-[11px] text-muted-foreground">
+      <div className="mt-3 flex items-center justify-end gap-1.5 text-xs text-muted-foreground">
         أقل
         {colors.map((c) => (
           <span key={c} className="h-3 w-3 rounded-[3px]" style={{ background: c }} />
@@ -303,10 +303,10 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           )}
           <div className="min-w-0 flex-1">
             <p className="truncate font-display text-xl font-bold">{user.name}</p>
-            <p className="truncate text-[13px] text-muted-foreground" dir="ltr">
+            <p className="truncate text-sm text-muted-foreground" dir="ltr">
               {user.email}
             </p>
-            <p className="mt-0.5 text-[13px] text-muted-foreground">انضممت في {dateFmt.format(new Date(user.createdAt))}</p>
+            <p className="mt-0.5 text-sm text-muted-foreground">انضممت في {dateFmt.format(new Date(user.createdAt))}</p>
           </div>
         </Card>
       ) : (
@@ -317,7 +317,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             </span>
             <div className="min-w-0 flex-1">
               <p className="font-display text-lg font-semibold">ضيف</p>
-              <p className="mt-0.5 text-[13px] leading-6 text-muted-foreground">تقدمك محفوظ على هذا الجهاز فقط. ادخل بحساب Google لتتابع من أي جهاز، ولك ٥٠ جوهرة ترحيب.</p>
+              <p className="mt-0.5 text-sm leading-6 text-muted-foreground">تقدمك محفوظ على هذا الجهاز فقط. ادخل بحساب Google لتتابع من أي جهاز، ولك ٥٠ جوهرة ترحيب.</p>
             </div>
           </div>
           <div className="mt-4">
@@ -341,6 +341,13 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
               {ad(xpInLevel(xp))} من {ad(LEVEL_XP)} نقطة إلى المستوى {ad(levelFromXp(xp) + 1)}
             </p>
           </div>
+        </div>
+        <div className="mt-4 border-t border-border pt-4">
+          <div className="mb-1.5 flex justify-between text-sm">
+            <span className="font-medium">جاهزيتك للاختبار</span>
+            <span className="font-semibold text-primary">{ad(Math.round(overallReadiness(st.attempts) * 100))}٪</span>
+          </div>
+          <ProgressBar value={overallReadiness(st.attempts) * 100} />
         </div>
         {st.examDate && (
           <button type="button" onClick={() => setSettingsOpen(true)} className="mt-4 flex min-h-[44px] w-full items-center gap-3 border-t border-border pt-4 text-right text-sm">
@@ -366,7 +373,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           <div className="flex items-center gap-3">
             <IconTile icon={Gem} color="var(--gem)" size={48} />
             <div className="flex-1">
-              <p className="text-[13px] text-muted-foreground">رصيد الجواهر</p>
+              <p className="text-sm text-muted-foreground">رصيد الجواهر</p>
               <p className="font-display text-2xl font-bold">{ad(wallet.gems)}</p>
             </div>
           </div>
@@ -388,7 +395,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             <Snowflake className="h-5 w-5 shrink-0 text-primary" />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium">تجميد السلسلة</p>
-              <p className="text-[13px] text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 يحمي سلسلتك يومًا فائتًا، لديك {ad(wallet.streakFreeze)} من {ad(MAX_STREAK_FREEZES)}
               </p>
             </div>
@@ -402,7 +409,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           </div>
           {user && (history.data?.length ?? 0) > 0 && (
             <div className="mt-4">
-              <p className="mb-2 text-[13px] font-medium text-muted-foreground">آخر الحركات</p>
+              <p className="mb-2 text-sm font-medium text-muted-foreground">آخر الحركات</p>
               <ul className="divide-y divide-border text-sm">
                 {history.data!.slice(0, 6).map((h) => (
                   <li key={h.id} className="flex items-center justify-between py-2">
@@ -436,7 +443,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
               <div key={s.label} className="flex items-center gap-3 rounded-xl bg-muted/60 p-3">
                 <s.icon className="h-5 w-5 shrink-0 text-primary" />
                 <div className="min-w-0">
-                  <p className="truncate text-[15px] font-semibold">{s.value}</p>
+                  <p className="truncate text-base font-semibold">{s.value}</p>
                   <p className="truncate text-xs text-muted-foreground">{s.label}</p>
                 </div>
               </div>
@@ -458,7 +465,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
                 <IconTile icon={a.icon} color={level === 0 ? "var(--muted-foreground)" : "var(--primary)"} size={48} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-2">
-                    <p className="text-[15px] font-semibold">{a.name}</p>
+                    <p className="text-base font-semibold">{a.name}</p>
                     <span className="text-xs text-muted-foreground">المستوى {ad(level)} من ٥</span>
                   </div>
                   <ProgressBar value={(Math.min(a.value, target) / target) * 100} className="mt-2" />
@@ -488,7 +495,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
               type="date"
               value={st.examDate ?? ""}
               onChange={(e) => st.setExamDate(e.target.value || null)}
-              className="h-11 w-full rounded-xl border border-input bg-card px-3 text-[15px] focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="h-11 w-full rounded-xl border border-input bg-card px-3 text-base focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </label>
         </Card>
