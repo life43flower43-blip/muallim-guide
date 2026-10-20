@@ -829,13 +829,6 @@ export default function ConceptsView() {
   const resume = lastConcept ? conceptById(lastConcept) : undefined;
   const resumeSiblings = resume ? conceptsOfChapter(resume.courseId, resume.chapter) : [];
   const resumeRead = resumeSiblings.filter((c) => conceptReads[c.id]).length;
-  const totalMastery = COURSES.reduce(
-    (acc, c) => {
-      const m = courseMastery(c.id, attempts);
-      return { 0: acc[0] + m[0], 1: acc[1] + m[1], 2: acc[2] + m[2], 3: acc[3] + m[3] };
-    },
-    { 0: 0, 1: 0, 2: 0, 3: 0 } as Record<MasteryLevel, number>
-  );
 
   return (
     <div className="space-y-7 pb-6">
@@ -893,10 +886,7 @@ export default function ConceptsView() {
                 <div className="flex items-start gap-4">
                   <CourseBadge id={resume.courseId} />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm text-muted-foreground">
-                      {COURSE_SHORT[resume.courseId]}، {chapterLabel(resume.chapter)}
-                    </p>
-                    <p className="mt-0.5 font-display text-base font-semibold leading-7">{resume.title}</p>
+                    <p className="font-display text-lg font-bold leading-7">{resume.title}</p>
                     <div className="mt-3 flex items-center gap-3">
                       <ProgressBar value={resumeSiblings.length ? (resumeRead / resumeSiblings.length) * 100 : 0} className="flex-1" />
                       <span className="shrink-0 text-xs text-muted-foreground">
@@ -913,20 +903,10 @@ export default function ConceptsView() {
           )}
 
           <section>
-            <SectionHeader title="إتقانك" sub={`${arCount(CONCEPTS.length, CONCEPT_FORMS)} في كل المقررات`} />
-            <Card className="space-y-3 p-5">
-              <MasteryBar counts={totalMastery} height={10} />
-              <MasteryLegend labels={MASTERY_LABELS} counts={totalMastery} />
-              <p className="text-sm leading-6 text-muted-foreground">يرتفع مستوى المفهوم كلما أجبت عن أسئلته بدقة: متعرِّف، ثم متمكِّن من ٧٠٪، ثم متقِن من ٩٠٪.</p>
-            </Card>
-          </section>
-
-          <section>
             <SectionHeader title="المقررات" />
             <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }} className="grid gap-3 sm:grid-cols-2">
               {COURSES.map((course) => {
                 const cs = conceptsOfCourse(course.id);
-                const m = courseMastery(course.id, attempts);
                 const readCount = cs.filter((cc) => conceptReads[cc.id]).length;
                 return (
                   <button
@@ -936,23 +916,17 @@ export default function ConceptsView() {
                       setOpenCourseId(course.id);
                       setOpenChapter(null);
                     }}
-                    className="card-soft flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 text-right transition-colors hover:border-primary/40"
+                    className="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-border bg-card p-4 text-right transition active:translate-y-[2px] active:border-b-2"
                   >
-                    <span className="flex items-start gap-3">
-                      <CourseBadge id={course.id} />
-                      <span className="min-w-0 flex-1">
-                        <span className="block text-base font-semibold leading-6">{course.name}</span>
-                        <span className="mt-0.5 block text-sm leading-5 text-muted-foreground">{COURSE_SUBTITLE[course.id]}</span>
-                      </span>
-                    </span>
-                    <span className="mt-auto block space-y-2">
-                      <MasteryBar counts={m} />
-                      <span className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>
-                          {arCount(chaptersOfCourse(course.id).length, CHAPTER_FORMS)}، {arCount(cs.length, CONCEPT_FORMS)}
+                    <CourseBadge id={course.id} size={52} />
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-lg font-bold leading-7">{course.name}</span>
+                      <span className="mt-2 flex items-center gap-2">
+                        <span className="h-2.5 flex-1 overflow-hidden rounded-full bg-muted">
+                          <span className="block h-full rounded-full" style={{ width: `${cs.length ? (readCount / cs.length) * 100 : 0}%`, background: COURSE_COLOR[course.id] ?? "var(--primary)" }} />
                         </span>
-                        <span>
-                          قرأت {ad(readCount)}، أتقنت {ad(m[3])}
+                        <span className="shrink-0 text-sm font-bold text-muted-foreground">
+                          {ad(readCount)}/{ad(cs.length)}
                         </span>
                       </span>
                     </span>

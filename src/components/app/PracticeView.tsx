@@ -68,15 +68,15 @@ function ActionCard({ icon, title, sub, onClick, primary }: { icon: React.Elemen
       type="button"
       onClick={onClick}
       className={cn(
-        "flex min-h-[76px] items-center gap-3 rounded-2xl border p-4 text-right transition-colors",
-        primary ? "border-primary bg-primary text-primary-foreground hover:opacity-95" : "card-soft border-border bg-card hover:border-primary/40"
+        "flex min-h-[76px] items-center gap-3 rounded-2xl border-2 border-b-4 p-4 text-right transition active:translate-y-[2px] active:border-b-2",
+        primary ? "border-[color-mix(in_srgb,var(--primary)_70%,black)] bg-primary text-primary-foreground" : "border-border bg-card"
       )}
     >
-      <span className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", primary ? "bg-white/15" : "bg-accent text-primary")}>
-        <Icon className="h-5 w-5" />
+      <span className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-xl", primary ? "bg-white/15" : "bg-accent text-primary")}>
+        <Icon className="h-6 w-6" strokeWidth={2.2} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-base font-semibold">{title}</span>
+        <span className="block text-lg font-bold">{title}</span>
         <span className={cn("mt-0.5 block text-sm leading-5", primary ? "text-primary-foreground/85" : "text-muted-foreground")}>{sub}</span>
       </span>
     </button>
