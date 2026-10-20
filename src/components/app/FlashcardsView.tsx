@@ -15,12 +15,13 @@ import { COURSES, CONCEPTS, COURSE_COLOR, COURSE_SHORT, examplesOf, shuffle, que
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { ad } from "@/lib/arabic";
-import { Button } from "@/components/ui/button";
+import { Chip, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton } from "./ui-kit";
 
 // ---------- وضع البطاقات: بطاقة تنقلب باللمس لعرض الشرح والمثال ----------
 export default function FlashcardsView() {
   const { conceptReads, readConcept } = useApp();
   const startQuiz = useUi((s) => s.startQuiz);
+  const clearFlash = useUi((s) => s.clearFlash);
 
   const [courseFilter, setCourseFilter] = useState<string>("all");
   const [index, setIndex] = useState(0);
@@ -35,7 +36,7 @@ export default function FlashcardsView() {
   const safeIndex = Math.min(index, deck.length - 1);
   const card = deck[safeIndex];
   const course = COURSES.find((c) => c.id === card?.courseId);
-  const color = COURSE_COLOR[card?.courseId] ?? "#5B21B6";
+  const color = COURSE_COLOR[card?.courseId] ?? "#0E7C86";
   const isRead = card ? !!conceptReads[card.id] : false;
 
   const go = (dir: 1 | -1) => {
@@ -54,153 +55,110 @@ export default function FlashcardsView() {
   };
 
   if (!card) return null;
+  const chip = (id: string, label: string) => {
+    const active = courseFilter === id;
+    return (
+      <button
+        key={id}
+        type="button"
+        aria-pressed={active}
+        onClick={() => {
+          setCourseFilter(id);
+          setIndex(0);
+          setFlipped(false);
+        }}
+        className={`min-h-[36px] shrink-0 rounded-full border px-4 text-sm transition-colors ${
+          active ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-secondary-foreground hover:bg-muted"
+        }`}
+      >
+        {label}
+      </button>
+    );
+  };
 
   return (
-    <div className="space-y-3 px-4 pb-6">
-      {/* مرشّح المحاور */}
-      <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
-        <button
-          onClick={() => {
-            setCourseFilter("all");
-            setIndex(0);
-            setFlipped(false);
-          }}
-          className={`shrink-0 rounded-full px-4 py-2 text-xs font-black transition-colors ${
-            courseFilter === "all" ? "bg-primary text-primary-foreground" : "bg-white text-foreground/70 border border-border"
-          }`}
-        >
-          الكل
-        </button>
-        {COURSES.map((c) => {
-          const active = courseFilter === c.id;
-          return (
-            <button
-              key={c.id}
-              onClick={() => {
-                setCourseFilter(c.id);
-                setIndex(0);
-                setFlipped(false);
-              }}
-              className={`shrink-0 rounded-full px-4 py-2 text-xs font-black transition-colors ${
-                active ? "text-white" : "bg-white text-foreground/70 border border-border"
-              }`}
-              style={active ? { background: COURSE_COLOR[c.id] ?? "#5B21B6" } : undefined}
-            >
-              {COURSE_SHORT[c.id] ?? c.name}
-            </button>
-          );
-        })}
+    <ScreenShell
+      title="بطاقات المفاهيم"
+      sub={`البطاقة ${ad(safeIndex + 1)} من ${ad(deck.length)}`}
+      onClose={clearFlash}
+      footer={
+        <>
+          <SecondaryButton onClick={() => go(-1)} aria-label="البطاقة السابقة" className="px-3">
+            <ChevronRight className="h-5 w-5" />
+          </SecondaryButton>
+          <PrimaryButton
+            className="flex-1"
+            onClick={() => {
+              readConcept(card.id);
+              startQuiz({
+                mode: "training",
+                label: `تدريب: ${card.title}`,
+                qids: shuffle(questionsOfConcept(card.id)).map((q) => q.id),
+                conceptId: card.id,
+              });
+            }}
+          >
+            <Dumbbell className="h-4 w-4" /> تدرّب على هذا المفهوم
+          </PrimaryButton>
+          <SecondaryButton onClick={() => go(1)} aria-label="البطاقة التالية" className="px-3">
+            <ChevronLeft className="h-5 w-5" />
+          </SecondaryButton>
+        </>
+      }
+    >
+      <div className="no-scrollbar -mx-4 mb-4 flex gap-2 overflow-x-auto px-4">
+        {chip("all", "الكل")}
+        {COURSES.map((c) => chip(c.id, COURSE_SHORT[c.id] ?? c.name))}
       </div>
+      <ProgressBar value={((safeIndex + 1) / deck.length) * 100} className="mb-5" />
 
-      {/* شريط التقدم في المجموعة */}
-      <div>
-        <div className="progress-track h-2">
-          <div
-            className="progress-fill h-full"
-            style={{ width: `${((safeIndex + 1) / deck.length) * 100}%` }}
-          />
-        </div>
-        <p className="mt-1.5 text-center text-[11px] font-bold text-foreground/60">
-          البطاقة {ad(safeIndex + 1)} من {ad(deck.length)}
-        </p>
-      </div>
-
-      {/* البطاقة القابلة للقلب */}
       <div className="[perspective:1400px]">
         <motion.div
-          className="relative h-[430px] cursor-pointer select-none [transform-style:preserve-3d]"
+          className="relative h-[440px] cursor-pointer select-none [transform-style:preserve-3d]"
           animate={{ rotateY: flipped ? 180 : 0 }}
           transition={{ duration: 0.45, ease: [0.4, 0.0, 0.2, 1] }}
           onClick={flip}
+          role="button"
+          aria-label={flipped ? "اقلب لترى عنوان المفهوم" : "اقلب لترى الشرح"}
         >
-          {/* الوجه الأمامي: اسم المفهوم */}
-          <div className="absolute inset-0 flex flex-col rounded-3xl border border-border bg-white p-5 shadow-lg [backface-visibility:hidden]">
+          <div className="absolute inset-0 flex flex-col rounded-2xl border border-border bg-card p-6 card-soft [backface-visibility:hidden]">
             <div className="flex items-center justify-between">
-              <span
-                className="flex h-10 w-10 items-center justify-center rounded-2xl px-2 text-center text-[10px] font-black leading-tight text-white"
-                style={{ background: color }}
-              >
+              <Chip>
+                <span className="h-2 w-2 rounded-full" style={{ background: color }} />
                 {COURSE_SHORT[card.courseId] ?? ""}
-              </span>
-              {isRead && (
-                <span className="rounded-full bg-indigo-50 px-3 py-1 text-[10px] font-black text-indigo-700">
-                  قُرئت سابقاً
-                </span>
-              )}
+              </Chip>
+              {isRead && <Chip tone="success">قرأته</Chip>}
             </div>
             <div className="flex flex-1 flex-col items-center justify-center text-center">
-              <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent">
-                <BookOpen className="h-6 w-6" style={{ color }} />
-              </span>
-              <h2 className="text-2xl font-black leading-10 text-foreground">{card.title}</h2>
-              <p className="mt-3 text-[11px] font-bold text-foreground/50">{card.chapter}</p>
+              <h2 className="font-display text-2xl font-bold leading-[1.7]">{card.title}</h2>
+              <p className="mt-3 text-sm text-muted-foreground">{card.chapter}</p>
             </div>
-            <p className="flex items-center justify-center gap-1.5 text-[11px] font-black" style={{ color }}>
-              <RotateCw className="h-3.5 w-3.5" /> اضغط البطاقة لقلبها وعرض الشرح
+            <p className="flex items-center justify-center gap-1.5 text-[13px] text-muted-foreground">
+              <RotateCw className="h-3.5 w-3.5" /> اضغط البطاقة لترى الشرح
             </p>
           </div>
 
-          {/* الوجه الخلفي: الشرح والمثال */}
-          <div className="absolute inset-0 flex flex-col overflow-hidden rounded-3xl border border-border bg-white shadow-lg [backface-visibility:hidden] [transform:rotateY(180deg)]">
-            <div className="px-4 py-3 text-white" style={{ background: color }}>
-              <p className="text-sm font-black leading-6">{card.title}</p>
-              <p className="text-[10px] opacity-80">{course?.name}</p>
+          <div className="absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-border bg-card card-soft [backface-visibility:hidden] [transform:rotateY(180deg)]">
+            <div className="border-b border-border px-5 py-4">
+              <p className="font-display text-base font-semibold leading-7">{card.title}</p>
+              <p className="text-[13px] text-muted-foreground">{course?.name}</p>
             </div>
-            <div className="no-scrollbar flex-1 space-y-3 overflow-y-auto p-4">
-              <div>
-                <p className="mb-1 flex items-center gap-1.5 text-xs font-black" style={{ color }}>
-                  <BookOpen className="h-3.5 w-3.5" /> الشرح
-                </p>
-                <p className="text-[13px] leading-7 text-foreground">{card.explanation}</p>
-              </div>
+            <div className="no-scrollbar flex-1 space-y-4 overflow-y-auto p-5">
+              <p className="text-[15px] leading-8">{card.explanation}</p>
               <div className="space-y-2">
-                <p className="flex items-center gap-1.5 text-xs font-black text-amber-800">
-                  <Lightbulb className="h-3.5 w-3.5" /> أمثلة واقعية من الميدان
+                <p className="flex items-center gap-1.5 text-sm font-semibold">
+                  <Lightbulb className="h-4 w-4 text-gem" /> أمثلة من الميدان
                 </p>
                 {examplesOf(card).map((ex, i) => (
-                  <div key={i} className="rounded-2xl bg-amber-50 p-3">
-                    <p className="text-[12px] leading-6 text-amber-950/90">{ex}</p>
-                  </div>
+                  <p key={i} className="rounded-xl bg-muted p-3 text-sm leading-7 text-secondary-foreground">
+                    {ex}
+                  </p>
                 ))}
               </div>
             </div>
           </div>
         </motion.div>
       </div>
-
-      {/* التنقل */}
-      <div className="flex items-center gap-2">
-        <button
-          onClick={() => go(-1)}
-          className="card-soft flex h-12 flex-1 items-center justify-center gap-1 rounded-2xl border border-border bg-white text-sm font-black"
-        >
-          <ChevronRight className="h-5 w-5" /> السابقة
-        </button>
-        <Button
-          className="h-12 flex-1 rounded-2xl bg-primary text-sm font-black"
-          onClick={() => {
-            readConcept(card.id);
-            startQuiz({
-              mode: "training",
-              label: `تدريب: ${card.title}`,
-              qids: shuffle(questionsOfConcept(card.id)).map((q) => q.id),
-              conceptId: card.id,
-            });
-          }}
-        >
-          <Dumbbell className="ml-1 h-4 w-4" /> تدريب على هذه البطاقة
-        </Button>
-        <button
-          onClick={() => go(1)}
-          className="card-soft flex h-12 flex-1 items-center justify-center gap-1 rounded-2xl border border-border bg-white text-sm font-black"
-        >
-          التالية <ChevronLeft className="h-5 w-5" />
-        </button>
-      </div>
-
-      <p className="flex items-center justify-center gap-1.5 pt-1 text-center text-[10px] text-muted-foreground">
-        <Layers className="h-3.5 w-3.5" /> قلب البطاقة يعلمها كمقروءة تلقائياً
-      </p>
-    </div>
+    </ScreenShell>
   );
 }

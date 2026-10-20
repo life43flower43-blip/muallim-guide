@@ -5,6 +5,9 @@
 
 import type { QuizConfig } from "./ui-store";
 
+/** ثقة المتعلم بإجابته قبل التحقق */
+export type Confidence = "sure" | "unsure" | "guess";
+
 const KEY = "turbawy-active-session";
 export const RESUME_FLAG = "turbawy-resume-pending";
 const MAX_AGE = 7 * 86400000; // أسبوع واحد ثم تُهمل اللقطة
@@ -12,7 +15,7 @@ const MAX_AGE = 7 * 86400000; // أسبوع واحد ثم تُهمل اللقط�
 export interface SessionSnapshot {
   config: QuizConfig;
   idx: number;
-  review: { qid: string; ok: boolean }[];
+  review: { qid: string; ok: boolean; answer?: string; sec?: number; conf?: Confidence }[];
   sessionXp: number;
   savedAt: number;
 }

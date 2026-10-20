@@ -25,12 +25,16 @@ import {
   MessageSquareQuote,
   Star,
   Sunrise,
+  ChevronLeft,
+  Check,
 } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { useApp } from "@/lib/store";
 import { shareText } from "@/lib/share";
 import { toast } from "@/hooks/use-toast";
 import FirstDayList from "./FirstDayList";
+import { ad } from "@/lib/arabic";
+import { Callout, Card, Chip, Divided, EmptyState, IconTile, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton } from "./ui-kit";
 import {
   SIZE_OPTIONS,
   RATING_OPTIONS,
@@ -67,55 +71,40 @@ const emptyForm = (): VisitForm => ({
 });
 
 const inputCls =
-  "w-full rounded-xl border-2 border-border bg-background p-3 text-sm leading-6 outline-none focus:border-primary";
-const chipOff =
-  "rounded-full border-2 border-border bg-white px-3 py-1.5 text-xs font-bold text-muted-foreground transition hover:border-primary";
-const chipOn =
-  "rounded-full border-2 border-primary bg-accent px-3 py-1.5 text-xs font-black text-primary";
+  "w-full rounded-xl border border-input bg-card px-3 py-2.5 text-[15px] leading-7 outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20";
+const chipOff = "min-h-[36px] rounded-full border border-border bg-card px-3 text-sm text-secondary-foreground transition-colors hover:bg-muted";
+const chipOn = "min-h-[36px] rounded-full border border-primary bg-accent px-3 text-sm font-medium text-accent-foreground";
 
-// بطاقة قسم موجه — أيقونة وعنوان وسؤال توجيهي
-function SectionCard({
-  icon: Icon,
-  title,
-  guide,
-  children,
-}: {
-  icon: React.ElementType;
-  title: string;
-  guide?: string;
-  children: React.ReactNode;
-}) {
+function SectionCard({ icon: Icon, title, guide, children }: { icon: React.ElementType; title: string; guide?: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border-2 border-border bg-white p-4">
-      <div className="flex items-start gap-2.5">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent">
-          <Icon className="h-4.5 w-4.5 text-primary" />
-        </span>
+    <Card className="p-5">
+      <div className="mb-4 flex items-start gap-3">
+        <IconTile icon={Icon} />
         <div className="min-w-0">
-          <h3 className="text-sm font-black leading-6">{title}</h3>
-          {guide && <p className="text-[11px] font-bold leading-4 text-muted-foreground">{guide}</p>}
+          <h3 className="font-display text-base font-semibold leading-7">{title}</h3>
+          {guide && <p className="text-[13px] leading-6 text-muted-foreground">{guide}</p>}
         </div>
       </div>
-      <div className="mt-3">{children}</div>
-    </section>
+      {children}
+    </Card>
   );
 }
 
-// قسم نصي بعرض الزيارة — أسطر مفصولة تُعرض شرطات، ويختفي القسم إن كان فارغًا
 function VisitLines({ title, body }: { title: string; body: string }) {
   const lines = body.split(/\n+/).map((s) => s.trim()).filter(Boolean);
   if (!lines.length) return null;
   return (
-    <div className="rounded-2xl border-2 border-border bg-white p-4">
-      <h3 className="text-sm font-black">{title}</h3>
-      <div className="mt-2 space-y-1">
+    <section>
+      <h3 className="mb-2 font-display text-base font-semibold">{title}</h3>
+      <ul className="space-y-1.5 text-[15px] leading-7 text-secondary-foreground">
         {lines.map((ln, i) => (
-          <p key={i} className="text-xs font-bold leading-6">
-            – {ln}
-          </p>
+          <li key={i} className="flex gap-2">
+            <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+            {ln}
+          </li>
         ))}
-      </div>
-    </div>
+      </ul>
+    </section>
   );
 }
 
@@ -198,452 +187,296 @@ export default function FieldLogView() {
     toast({ title: "حُذفت الزيارة من السجل" });
   };
 
-  // ---------- شاشة عرض زيارة محفوظة ----------
+  // ---------- عرض زيارة محفوظة ----------
   if (selected) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 24 }}
-        className="fixed inset-0 z-50 overflow-y-auto bg-background"
+      <ScreenShell
+        title={selected.school}
+        sub={selected.topic}
+        onBack={() => setSelected(null)}
+        onClose={clearField}
+        footer={
+          <>
+            <PrimaryButton onClick={() => share(selected)} className="flex-1">
+              <Share2 className="h-4 w-4" /> مشاركة أو نسخ
+            </PrimaryButton>
+            <SecondaryButton onClick={() => startEdit(selected)} aria-label="تعديل الزيارة" className="px-3">
+              <Pencil className="h-4 w-4" />
+            </SecondaryButton>
+            <SecondaryButton
+              onClick={() => doDelete(selected.id)}
+              aria-label={confirmDel === selected.id ? "تأكيد حذف الزيارة" : "حذف الزيارة"}
+              className={confirmDel === selected.id ? "border-destructive px-3 text-destructive" : "px-3"}
+            >
+              <Trash2 className="h-4 w-4" />
+            </SecondaryButton>
+          </>
+        }
       >
-        <div className="mx-auto max-w-lg px-4 pb-28 pt-5">
-          <button
-            onClick={() => setSelected(null)}
-            className="mb-4 flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-xs font-bold text-muted-foreground"
-          >
-            <ChevronRight className="h-4 w-4" /> عودة إلى سجل الزيارات
-          </button>
-
-          <div className="rounded-2xl border-2 border-amber-500/30 bg-amber-500/10 p-4">
-            <div className="flex items-start justify-between gap-2">
-              <h2 className="text-lg font-black leading-7">{selected.school}</h2>
-              <span className="shrink-0 rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-black text-amber-800">
-                {VISIT_KIND_LABEL[selected.kind]}
-              </span>
-            </div>
-            <p className="mt-1 text-xs font-bold text-muted-foreground">{selected.topic}</p>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {selected.grade && (
-                <span className="rounded-full border border-amber-200 bg-white px-2.5 py-1 text-[10px] font-black text-amber-800">{selected.grade}</span>
-              )}
-              {selected.subject && (
-                <span className="rounded-full border border-amber-200 bg-white px-2.5 py-1 text-[10px] font-black text-amber-800">{selected.subject}</span>
-              )}
-              {selected.supervisor && (
-                <span className="rounded-full border border-amber-200 bg-white px-2.5 py-1 text-[10px] font-black text-amber-800">المشرف: {selected.supervisor}</span>
-              )}
-              {selected.size && (
-                <span className="rounded-full border border-border bg-muted/60 px-2.5 py-1 text-[10px] font-black text-muted-foreground">{selected.size}</span>
-              )}
-              <span className="rounded-full bg-muted px-2.5 py-1 text-[10px] font-black text-muted-foreground">{visitDayWord(selected.ts)}</span>
-            </div>
+        <div className="space-y-6">
+          <div className="flex flex-wrap gap-2">
+            <Chip tone="primary">{VISIT_KIND_LABEL[selected.kind]}</Chip>
+            <Chip>{visitDayWord(selected.ts)}</Chip>
+            {selected.grade && <Chip>{selected.grade}</Chip>}
+            {selected.subject && <Chip>{selected.subject}</Chip>}
+            {selected.size && <Chip>{selected.size}</Chip>}
+            {selected.supervisor && <Chip>المشرف: {selected.supervisor}</Chip>}
           </div>
-
-          <div className="mt-4 space-y-3">
+          {confirmDel === selected.id && <Callout tone="danger">اضغط زر الحذف مرة أخرى للتأكيد.</Callout>}
+          <Card className="space-y-6 p-5">
             {selected.observed.length > 0 && (
-              <div className="rounded-2xl border-2 border-border bg-white p-4">
-                <h3 className="text-sm font-black">ما لاحظته أثناء الحصة</h3>
-                <div className="mt-2 flex flex-wrap gap-1.5">
+              <section>
+                <h3 className="mb-2 font-display text-base font-semibold">ما لاحظته أثناء الحصة</h3>
+                <div className="flex flex-wrap gap-2">
                   {selected.observed.map((o) => (
-                    <span key={o} className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-black text-primary">
+                    <Chip key={o} tone="primary">
                       {o}
-                    </span>
+                    </Chip>
                   ))}
                 </div>
-              </div>
+              </section>
             )}
             <VisitLines title="ما حدث في الحصة" body={selected.happened} />
             {REFLECT_FIELDS.filter((f) => selected[f.key].trim()).map((f) => (
               <VisitLines key={f.key} title={f.label} body={selected[f.key]} />
             ))}
-            {selected.rating && (
-              <div className="rounded-2xl border-2 border-amber-200 bg-amber-50 p-4">
-                <p className="flex items-center gap-1.5 text-sm font-black text-amber-900">
-                  <Star className="h-4 w-4" /> تقييم الحصة
-                </p>
-                <p className="mt-1 text-xs font-black text-amber-800">{selected.rating}</p>
-              </div>
-            )}
-          </div>
-
-          <div className="mt-4 flex gap-2">
-            <button
-              onClick={() => share(selected)}
-              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-black text-primary-foreground"
-            >
-              <Share2 className="h-4.5 w-4.5" /> مشاركة أو نسخ
-            </button>
-            <button
-              onClick={() => startEdit(selected)}
-              aria-label="تعديل الزيارة"
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-border bg-white text-muted-foreground"
-            >
-              <Pencil className="h-4.5 w-4.5" />
-            </button>
-            <button
-              onClick={() => doDelete(selected.id)}
-              aria-label={confirmDel === selected.id ? "تأكيد حذف الزيارة" : "حذف الزيارة"}
-              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 ${
-                confirmDel === selected.id ? "border-red-300 bg-red-50 text-red-600" : "border-border bg-white text-muted-foreground"
-              }`}
-            >
-              <Trash2 className="h-4.5 w-4.5" />
-            </button>
-          </div>
-          {confirmDel === selected.id && (
-            <p className="mt-2 text-center text-xs font-bold text-red-600">اضغط زر الحذف مجددًا للتأكيد</p>
+          </Card>
+          {selected.rating && (
+            <Callout tone="warning" icon={Star} title="تقييمك للحصة">
+              {selected.rating}
+            </Callout>
           )}
         </div>
-      </motion.div>
+      </ScreenShell>
     );
   }
 
-  // ---------- الشاشة الرئيسية: هيدر + تبويبان ----------
+  const tabs = (
+    <div role="tablist" aria-label="أقسام السجل" className="mb-6 grid grid-cols-3 rounded-xl bg-muted p-1">
+      {(
+        [
+          ["new", editingId ? "تعديل الزيارة" : "زيارة جديدة", NotebookPen],
+          ["log", `زياراتي${fieldVisits.length ? ` (${ad(fieldVisits.length)})` : ""}`, FolderOpen],
+          ["first", "اليوم الأول", Sunrise],
+        ] as const
+      ).map(([id, lbl, Icon]) => (
+        <button
+          key={id}
+          type="button"
+          role="tab"
+          aria-selected={tab === id}
+          onClick={() => setTab(id)}
+          className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg text-[13px] transition-colors ${
+            tab === id ? "bg-card font-medium text-foreground shadow-sm" : "text-muted-foreground"
+          }`}
+        >
+          <Icon className="h-4 w-4" /> {lbl}
+        </button>
+      ))}
+    </div>
+  );
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 24 }}
-      className="fixed inset-0 z-50 overflow-y-auto bg-background"
+    <ScreenShell
+      title="سجل التدريب الميداني"
+      sub="وثّق زياراتك وتأملها، من الملاحظة إلى صفك الخاص"
+      onClose={clearField}
+      footer={
+        tab === "new" ? (
+          <PrimaryButton onClick={doSave} className="w-full">
+            <Save className="h-4 w-4" /> {editingId ? "احفظ التعديل" : "احفظ الزيارة"}
+          </PrimaryButton>
+        ) : undefined
+      }
     >
-      <div className="sticky top-0 z-10 border-b border-border bg-white/95 px-4 pb-3 pt-4 backdrop-blur">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-md shadow-amber-500/25">
-              <Backpack className="h-5.5 w-5.5" />
-            </span>
-            <div>
-              <h1 className="text-xl font-black text-foreground">سجل التدريب الميداني</h1>
-              <p className="text-xs text-muted-foreground">وثّق زياراتك وتأملها — من الملاحظة إلى صفك الخاص</p>
-            </div>
-          </div>
-          <button
-            onClick={clearField}
-            aria-label="إغلاق"
-            className="rounded-full bg-muted p-2 text-muted-foreground hover:bg-accent"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        <div className="mt-3 flex gap-1.5">
-          {(
-            [
-              ["new", "زيارة جديدة", NotebookPen],
-              ["log", "سجل الزيارات", FolderOpen],
-              ["first", "اليوم الأول", Sunrise],
-            ] as const
-          ).map(([id, lbl, Icon]) => (
-            <button
-              key={id}
-              onClick={() => setTab(id)}
-              className={`flex flex-1 items-center justify-center gap-1 rounded-xl border-2 px-1.5 py-2 text-[11px] font-bold ${
-                tab === id ? "border-primary bg-accent text-primary" : "border-border bg-white text-muted-foreground"
-              }`}
-            >
-              <Icon className="h-4 w-4" /> {lbl}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="mx-auto max-w-lg px-4 pb-28 pt-4">
-        {tab === "new" ? (
-          <div className="space-y-3">
-            <div className="rounded-2xl border-2 border-amber-500/30 bg-amber-500/10 p-4">
-              <p className="flex items-center gap-2 text-sm font-black text-amber-900">
-                <Footprints className="h-4 w-4" /> كيف يعمل السجل؟
-              </p>
-              <p className="mt-1 text-xs leading-6 text-muted-foreground">
-                استعد بقائمة الجاهزية قبل دخول المدرسة، ثم سجّل زيارتك بعد الحصة: ما لاحظته وما حدث وما تعلمته —
-                فالتأمل المكتوب هو ما يحوّل الزيارة من مشاهدة إلى خبرة تبقى.
-              </p>
-            </div>
-
-            {/* الجاهزية قبل دخول المدرسة — ماذا أفعل؟ ماذا أحضر؟ الأخلاقيات */}
-            <SectionCard
-              icon={ListChecks}
-              title="جاهزيتك قبل دخول المدرسة"
-              guide="انقر ما أنجزته — الأخلاقيات أولًا دائمًا"
-            >
-              <div className="space-y-1.5">
-                {READY_CHECKLIST.map((item, i) => {
-                  const on = checked.includes(i);
-                  return (
-                    <button
-                      key={i}
-                      onClick={() => toggleReady(i)}
-                      aria-pressed={on}
-                      className={`flex w-full items-start gap-2.5 rounded-xl border-2 p-2.5 text-right transition ${
-                        on ? "border-indigo-300 bg-indigo-50" : "border-border bg-white"
-                      }`}
-                    >
-                      <span
-                        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 ${
-                          on ? "border-indigo-600 bg-indigo-600 text-white" : "border-border bg-white"
-                        }`}
-                      >
-                        {on && <span className="text-[10px] font-black">✓</span>}
-                      </span>
-                      <span className={`text-xs font-bold leading-5 ${on ? "text-indigo-900" : "text-foreground"}`}>
-                        {item}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-              <p className="mt-2.5 rounded-xl bg-muted/60 px-3 py-2 text-xs font-black text-primary">
-                جاهزيتك الآن: {readinessWord(checked.length)}
-              </p>
-            </SectionCard>
-
-            {/* نوع الزيارة */}
-            <SectionCard icon={Eye} title="نوع الزيارة" guide="تشاهد حصة معلم أم تنفذ حصة بنفسك؟">
-              <div className="grid grid-cols-2 gap-2">
-                {(
-                  [
-                    ["observe", "مشاهدة حصة", Eye],
-                    ["teach", "تنفيذ حصة", Footprints],
-                  ] as const
-                ).map(([k, lbl, Icon]) => (
-                  <button
-                    key={k}
-                    onClick={() => setField("kind", k)}
-                    aria-pressed={form.kind === k}
-                    className={`flex min-h-[64px] flex-col items-center justify-center gap-1 rounded-2xl text-xs font-black transition-colors ${
-                      form.kind === k
-                        ? "bg-primary text-primary-foreground"
-                        : "border-2 border-border bg-white text-muted-foreground"
-                    }`}
-                  >
-                    <Icon className="h-5 w-5" />
-                    {lbl}
-                  </button>
-                ))}
-              </div>
-            </SectionCard>
-
-            {/* بطاقة الزيارة */}
-            <SectionCard icon={School} title="بطاقة الزيارة" guide="معلومات الحصة التي عشتها اليوم">
-              <div className="space-y-2.5">
-                <input
-                  value={form.school}
-                  onChange={(e) => setField("school", e.target.value)}
-                  placeholder="المدرسة — مثال: مدرسة الأمل الابتدائية"
-                  aria-label="المدرسة"
-                  className={inputCls}
-                />
-                <input
-                  value={form.topic}
-                  onChange={(e) => setField("topic", e.target.value)}
-                  placeholder="موضوع الدرس الذي شاهدته أو نفذته"
-                  aria-label="موضوع الدرس"
-                  className={inputCls}
-                />
-                <div className="flex gap-2.5">
-                  <input
-                    value={form.grade}
-                    onChange={(e) => setField("grade", e.target.value)}
-                    placeholder="الصف"
-                    aria-label="الصف"
-                    className={inputCls}
-                  />
-                  <input
-                    value={form.subject}
-                    onChange={(e) => setField("subject", e.target.value)}
-                    placeholder="المادة"
-                    aria-label="المادة"
-                    className={inputCls}
-                  />
-                </div>
-                <input
-                  value={form.supervisor}
-                  onChange={(e) => setField("supervisor", e.target.value)}
-                  placeholder="اسم المشرف المرافق — اختياري"
-                  aria-label="المشرف"
-                  className={inputCls}
-                />
-                <div>
-                  <label className="mb-1.5 block text-xs font-bold text-muted-foreground">حجم الصف</label>
-                  <div className="flex flex-wrap gap-1.5">
-                    {SIZE_OPTIONS.map((s) => (
-                      <button
-                        key={s}
-                        onClick={() => setField("size", form.size === s ? "" : s)}
-                        className={form.size === s ? chipOn : chipOff}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </SectionCard>
-
-            {/* قائمة الملاحظة أثناء الحصة */}
-            <SectionCard
-              icon={Search}
-              title="ما لاحظته أثناء الحصة"
-              guide="انقر ما ركزت عليه في ملاحظتك — ويمكن الجمع"
-            >
-              <div className="flex flex-wrap gap-1.5">
-                {OBSERVE_OPTIONS.map((o) => {
-                  const on = form.observed.includes(o);
-                  return (
-                    <button key={o} onClick={() => toggleObserved(o)} className={on ? chipOn : chipOff}>
-                      {o}
-                    </button>
-                  );
-                })}
-              </div>
-            </SectionCard>
-
-            {/* ما حدث */}
-            <SectionCard icon={MessageSquareQuote} title="ما حدث في الحصة" guide="اسرد الموقف كما جرى — بلا تجميل">
-              <textarea
-                value={form.happened}
-                onChange={(e) => setField("happened", e.target.value)}
-                rows={3}
-                placeholder="مثال: بدأت المعلم بعرض تجربة محيرة فقام الطلاب بطرح أسئلة متتالية حتى صاغوا الفكرة بأنفسهم"
-                aria-label="ما حدث في الحصة"
-                className={inputCls}
-              />
-            </SectionCard>
-
-            {/* التأمل الرباعي بعد الحصة — أسئلة رؤية المستخدم */}
-            <SectionCard
-              icon={NotebookPen}
-              title="تأملك بعد الحصة"
-              guide="أربعة أسئلة تحوّل الزيارة إلى خبرة — اجب بها بشيء من الصدق"
-            >
-              <div className="space-y-3">
-                {REFLECT_FIELDS.map((f) => (
-                  <div key={f.key} className="rounded-xl bg-muted/50 p-3">
-                    <p className="text-xs font-black text-primary">{f.label}</p>
-                    <p className="text-[11px] font-bold leading-4 text-muted-foreground">{f.guide}</p>
-                    <textarea
-                      value={form[f.key]}
-                      onChange={(e) => setField(f.key, e.target.value)}
-                      rows={2}
-                      placeholder={f.placeholder}
-                      aria-label={f.label}
-                      className={`${inputCls} mt-2 bg-white`}
-                    />
-                  </div>
-                ))}
-              </div>
-            </SectionCard>
-
-            {/* تقييم الحصة */}
-            <SectionCard icon={Star} title="تقييمك للحصة" guide="حكم واحد بلسان صريح">
-              <div className="flex flex-wrap gap-1.5">
-                {RATING_OPTIONS.map((r) => (
-                  <button
-                    key={r}
-                    onClick={() => setField("rating", form.rating === r ? "" : r)}
-                    className={form.rating === r ? chipOn : chipOff}
-                  >
-                    {r}
-                  </button>
-                ))}
-              </div>
-            </SectionCard>
-
-            <button
-              onClick={doSave}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 font-black text-primary-foreground"
-            >
-              <Save className="h-5 w-5" /> {editingId ? "احفظ التعديل" : "احفظ الزيارة في السجل"}
-            </button>
-            {formErr && <p className="text-center text-xs font-black text-red-600">{formErr}</p>}
-            {editingId && (
+      {tabs}
+      {tab === "new" ? (
+        <div className="space-y-4">
+          {formErr && <Callout tone="danger">{formErr}</Callout>}
+          {editingId && (
+            <Callout tone="info" title="تعدّل زيارة محفوظة">
               <button
+                type="button"
                 onClick={() => {
                   setForm(emptyForm());
                   setEditingId(null);
                   setFormErr("");
                 }}
-                className="w-full py-1 text-center text-xs font-bold text-muted-foreground underline"
+                className="font-medium text-primary underline"
               >
-                إلغاء التعديل والبدء من جديد
+                ابدأ زيارة جديدة بدلًا من ذلك
               </button>
-            )}
-          </div>
-        ) : tab === "first" ? (
-          <FirstDayList />
-        ) : fieldVisits.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-border bg-white p-8 text-center">
-            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent">
-              <Backpack className="h-7 w-7 text-primary" />
-            </span>
-            <h3 className="mt-3 text-sm font-black">لم تسجل زيارة بعد</h3>
-            <p className="mt-1 text-xs font-bold leading-5 text-muted-foreground">
-              {fieldJourneyWord(0)} — من تبويب «زيارة جديدة»: جاهزيتك قبل الحصة، وما لاحظته، وتأملك بعدها
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <p className="rounded-2xl border-2 border-amber-200 bg-amber-50 px-4 py-2.5 text-center text-xs font-black text-amber-900">
-              رحلتك الميدانية: {fieldJourneyWord(fieldVisits.length)}
-            </p>
+            </Callout>
+          )}
+
+          <SectionCard icon={ListChecks} title="جاهزيتك قبل دخول المدرسة" guide="علّم ما أنجزته، والأخلاقيات أولًا دائمًا">
+            <ul className="space-y-1">
+              {READY_CHECKLIST.map((item, i) => {
+                const on = checked.includes(i);
+                return (
+                  <li key={i}>
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={on}
+                      onClick={() => toggleReady(i)}
+                      className="flex min-h-[44px] w-full items-start gap-3 rounded-lg px-1 py-2 text-right hover:bg-muted/60"
+                    >
+                      <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 ${on ? "border-primary bg-primary text-primary-foreground" : "border-input"}`}>
+                        {on && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
+                      </span>
+                      <span className={`text-[15px] leading-6 ${on ? "text-muted-foreground line-through" : ""}`}>{item}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+            <div className="mt-4 flex items-center gap-3">
+              <ProgressBar value={(checked.length / Math.max(1, READY_CHECKLIST.length)) * 100} className="flex-1" />
+              <span className="shrink-0 text-[13px] text-muted-foreground">{readinessWord(checked.length)}</span>
+            </div>
+          </SectionCard>
+
+          <SectionCard icon={Eye} title="نوع الزيارة" guide="تشاهد حصة معلم، أم تنفذ حصة بنفسك؟">
+            <div role="radiogroup" className="grid grid-cols-2 gap-3">
+              {(
+                [
+                  ["observe", "مشاهدة حصة", Eye],
+                  ["teach", "تنفيذ حصة", Footprints],
+                ] as const
+              ).map(([k, lbl, Icon]) => (
+                <button
+                  key={k}
+                  type="button"
+                  role="radio"
+                  aria-checked={form.kind === k}
+                  onClick={() => setField("kind", k)}
+                  className={`flex min-h-[52px] items-center justify-center gap-2 rounded-xl border px-3 text-sm transition-colors ${
+                    form.kind === k ? "border-primary bg-accent font-medium text-accent-foreground ring-1 ring-primary" : "border-border bg-card text-secondary-foreground"
+                  }`}
+                >
+                  <Icon className="h-5 w-5" />
+                  {lbl}
+                </button>
+              ))}
+            </div>
+          </SectionCard>
+
+          <SectionCard icon={School} title="بطاقة الزيارة" guide="معلومات الحصة التي عشتها">
+            <div className="space-y-3">
+              <label className="block space-y-1.5">
+                <span className="text-sm font-medium text-secondary-foreground">المدرسة</span>
+                <input value={form.school} onChange={(e) => setField("school", e.target.value)} placeholder="مثال: مدرسة الأمل الابتدائية" className={inputCls} />
+              </label>
+              <label className="block space-y-1.5">
+                <span className="text-sm font-medium text-secondary-foreground">موضوع الدرس</span>
+                <input value={form.topic} onChange={(e) => setField("topic", e.target.value)} className={inputCls} />
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <label className="block space-y-1.5">
+                  <span className="text-sm font-medium text-secondary-foreground">الصف</span>
+                  <input value={form.grade} onChange={(e) => setField("grade", e.target.value)} className={inputCls} />
+                </label>
+                <label className="block space-y-1.5">
+                  <span className="text-sm font-medium text-secondary-foreground">المادة</span>
+                  <input value={form.subject} onChange={(e) => setField("subject", e.target.value)} className={inputCls} />
+                </label>
+              </div>
+              <label className="block space-y-1.5">
+                <span className="text-sm font-medium text-secondary-foreground">المشرف المرافق (اختياري)</span>
+                <input value={form.supervisor} onChange={(e) => setField("supervisor", e.target.value)} className={inputCls} />
+              </label>
+              <div>
+                <p className="mb-2 text-sm font-medium text-secondary-foreground">حجم الصف</p>
+                <div className="flex flex-wrap gap-2">
+                  {SIZE_OPTIONS.map((x) => (
+                    <button key={x} type="button" onClick={() => setField("size", form.size === x ? "" : x)} className={form.size === x ? chipOn : chipOff}>
+                      {x}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </SectionCard>
+
+          <SectionCard icon={Search} title="ما لاحظته أثناء الحصة" guide="اختر ما ركزت عليه، ويمكن الجمع">
+            <div className="flex flex-wrap gap-2">
+              {OBSERVE_OPTIONS.map((o) => {
+                const on = form.observed.includes(o);
+                return (
+                  <button key={o} type="button" aria-pressed={on} onClick={() => toggleObserved(o)} className={on ? chipOn : chipOff}>
+                    {o}
+                  </button>
+                );
+              })}
+            </div>
+          </SectionCard>
+
+          <SectionCard icon={MessageSquareQuote} title="ما حدث في الحصة" guide="اسرد الموقف كما جرى">
+            <textarea value={form.happened} onChange={(e) => setField("happened", e.target.value)} rows={3} aria-label="ما حدث في الحصة" className={inputCls} />
+          </SectionCard>
+
+          <SectionCard icon={NotebookPen} title="تأملك بعد الحصة" guide="أربعة أسئلة تحوّل الزيارة إلى خبرة">
+            <div className="space-y-4">
+              {REFLECT_FIELDS.map((f) => (
+                <label key={f.key} className="block space-y-1">
+                  <span className="block text-sm font-semibold">{f.label}</span>
+                  <span className="block text-[13px] leading-6 text-muted-foreground">{f.guide}</span>
+                  <textarea value={form[f.key]} onChange={(e) => setField(f.key, e.target.value)} rows={2} placeholder={f.placeholder} className={`${inputCls} mt-1.5`} />
+                </label>
+              ))}
+            </div>
+          </SectionCard>
+
+          <SectionCard icon={Star} title="تقييمك للحصة" guide="حكم واحد صريح">
+            <div className="flex flex-wrap gap-2">
+              {RATING_OPTIONS.map((r) => (
+                <button key={r} type="button" onClick={() => setField("rating", form.rating === r ? "" : r)} className={form.rating === r ? chipOn : chipOff}>
+                  {r}
+                </button>
+              ))}
+            </div>
+          </SectionCard>
+        </div>
+      ) : tab === "first" ? (
+        <FirstDayList />
+      ) : fieldVisits.length === 0 ? (
+        <EmptyState
+          icon={Backpack}
+          title="لم تسجل زيارة بعد"
+          sub="سجّل زيارتك بعد كل حصة: ما لاحظته، وما حدث، وتأملك."
+          action={<PrimaryButton onClick={() => setTab("new")}>زيارة جديدة</PrimaryButton>}
+        />
+      ) : (
+        <div className="space-y-4">
+          <p className="text-[15px] text-secondary-foreground">رحلتك الميدانية: {fieldJourneyWord(fieldVisits.length)}</p>
+          <Divided>
             {fieldVisits.map((v) => (
-              <div
+              <button
                 key={v.id}
-                role="button"
-                tabIndex={0}
+                type="button"
                 onClick={() => {
                   setSelected(v);
                   setConfirmDel(null);
                 }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    setSelected(v);
-                    setConfirmDel(null);
-                  }
-                }}
-                className="block w-full cursor-pointer rounded-2xl border-2 border-border bg-white p-4 text-right transition hover:border-primary"
+                className="flex w-full items-start gap-3 px-4 py-4 text-right transition-colors hover:bg-muted/60"
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <p className="text-sm font-black leading-6">{v.school}</p>
-                    <p className="truncate text-[11px] font-bold text-muted-foreground">{v.topic}</p>
-                  </div>
-                  <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-black text-amber-800">
-                    {VISIT_KIND_LABEL[v.kind]}
+                <IconTile icon={v.kind === "teach" ? Footprints : Eye} />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[15px] font-medium leading-6">{v.school}</span>
+                  <span className="block truncate text-[13px] text-muted-foreground">{v.topic}</span>
+                  <span className="mt-2 flex flex-wrap gap-1.5">
+                    <Chip tone="primary">{VISIT_KIND_LABEL[v.kind]}</Chip>
+                    <Chip>{visitDayWord(v.ts)}</Chip>
+                    {v.rating && <Chip>{v.rating}</Chip>}
                   </span>
-                </div>
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{visitDayWord(v.ts)}</span>
-                  {v.grade && <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-primary">{v.grade}</span>}
-                  {v.rating && <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">{v.rating}</span>}
-                </div>
-                <div className="mt-3 flex items-center gap-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      startEdit(v);
-                    }}
-                    className="flex items-center gap-1 rounded-full border border-primary/30 bg-white px-3 py-1 text-[11px] font-black text-primary"
-                  >
-                    <Pencil className="h-3 w-3" /> تعديل
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      doDelete(v.id);
-                    }}
-                    className={`flex items-center gap-1 rounded-full border px-3 py-1 text-[11px] font-black ${
-                      confirmDel === v.id ? "border-red-300 bg-red-50 text-red-600" : "border-border bg-white text-muted-foreground"
-                    }`}
-                  >
-                    <Trash2 className="h-3 w-3" /> {confirmDel === v.id ? "اضغط مجددًا للتأكيد" : "حذف"}
-                  </button>
-                </div>
-              </div>
+                </span>
+                <ChevronLeft className="mt-2 h-4 w-4 shrink-0 text-muted-foreground/60" />
+              </button>
             ))}
-          </div>
-        )}
-      </div>
-    </motion.div>
+          </Divided>
+        </div>
+      )}
+    </ScreenShell>
   );
 }

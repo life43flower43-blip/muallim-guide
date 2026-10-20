@@ -10,8 +10,7 @@ import { CONCEPTS, conceptById, shuffle } from "@/lib/qbank";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { ad } from "@/lib/arabic";
-import { Button } from "@/components/ui/button";
-import { NewBadge } from "./shared";
+import { Card, PrimaryButton, ScreenShell } from "./ui-kit";
 
 interface Tile {
   key: string; // معرف فريد للبلاطة
@@ -134,129 +133,77 @@ export default function MatchGameView() {
     matched[t.cid] ? "matched" : wrongShake === t.key ? "wrong" : isSel(t.key) ? "sel" : "idle";
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 24 }}
-      className="fixed inset-0 z-50 overflow-y-auto bg-background"
+    <ScreenShell
+      title="لعبة المطابقة"
+      sub="صِل كل مصطلح بشرحه المختصر"
+      onClose={close}
+      footer={
+        finished ? (
+          <PrimaryButton onClick={restart} className="w-full">
+            <RotateCcw className="h-4 w-4" /> جولة جديدة
+          </PrimaryButton>
+        ) : undefined
+      }
     >
-      <div className="mx-auto max-w-lg px-4 pb-16 pt-5">
-        <div className="flex items-center justify-between">
-          <p className="flex items-center gap-2 text-sm font-black text-primary">
-            <Puzzle className="h-5 w-5" /> لعبة المطابقة
-            <NewBadge tone="violet" />
-          </p>
-          <button
-            onClick={close}
-            aria-label="إغلاق اللعبة"
-            className="rounded-full bg-muted p-2.5 text-muted-foreground"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        <p className="mt-1.5 text-[11px] font-bold leading-5 text-muted-foreground">
-          صِل كل مصطلح بشرحه المصغّر — البلاطتان المتقابلتان تختفيان، والأخطاء تُحسب عليك
-        </p>
-
-        {/* شريط الحالة */}
-        <div className="mt-3 grid grid-cols-3 gap-2">
-          <div className="flex items-center justify-center gap-1.5 rounded-2xl border border-border bg-white py-2.5">
-            <Timer className="h-4 w-4 text-primary" />
-            <span className="text-sm font-black tabular-nums">{ad(elapsed)}</span>
-            <span className="text-[10px] font-bold text-muted-foreground">ثانية</span>
-          </div>
-          <div className="flex items-center justify-center gap-1.5 rounded-2xl border border-border bg-white py-2.5">
-            <Flame className="h-4 w-4 text-red-500" />
-            <span className="text-sm font-black tabular-nums">{ad(mistakes)}</span>
-            <span className="text-[10px] font-bold text-muted-foreground">خطأ</span>
-          </div>
-          <div className="flex items-center justify-center gap-1.5 rounded-2xl border border-border bg-white py-2.5">
-            <Puzzle className="h-4 w-4 text-amber-500" />
-            <span className="text-sm font-black tabular-nums">{ad(matchedCount)}/{ad(6)}</span>
-            <span className="text-[10px] font-bold text-muted-foreground">أزواج</span>
-          </div>
-        </div>
-
-        {/* شبكة البلاطات */}
-        <div className="mt-4 grid grid-cols-3 gap-2">
-          {tiles.map((t) => {
-            const st = stateOf(t);
-            return (
-              <motion.button
-                key={`${round}-${t.key}`}
-                whileTap={st === "idle" || st === "sel" ? { scale: 0.94 } : undefined}
-                animate={
-                  st === "wrong"
-                    ? { x: [0, -6, 6, -4, 4, 0] }
-                    : st === "matched"
-                      ? { scale: [1, 1.08, 0.96] }
-                      : {}
-                }
-                transition={{ duration: 0.4 }}
-                onClick={() => tap(t)}
-                className={`flex min-h-[86px] items-center justify-center rounded-2xl border p-2.5 text-center text-[10.5px] font-black leading-4 transition-colors ${
-                  st === "matched"
-                    ? "border-border bg-muted text-muted-foreground/50"
-                    : st === "sel"
-                      ? t.kind === "term"
-                        ? "border-primary bg-primary text-white shadow-md"
-                        : "border-amber-500 bg-amber-400 text-amber-950 shadow-md"
-                      : st === "wrong"
-                        ? "border-red-400 bg-red-50 text-red-600"
-                        : t.kind === "term"
-                          ? "border-primary/25 bg-accent text-foreground"
-                          : "border-amber-200 bg-amber-50 text-foreground"
-                }`}
-              >
-                {t.text}
-              </motion.button>
-            );
-          })}
-        </div>
-
-        {/* مفتاح الألوان */}
-        <div className="mt-3 flex items-center justify-center gap-4 text-[10px] font-bold text-muted-foreground">
-          <span className="flex items-center gap-1.5">
-            <span className="h-3 w-3 rounded bg-accent ring-1 ring-primary/25" /> المصطلح
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-3 w-3 rounded bg-amber-50 ring-1 ring-amber-200" /> الشرح المصغّر
-          </span>
-        </div>
-
-        {/* شاشة الختام */}
-        {finished && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mt-5 rounded-3xl border border-border bg-white p-6 text-center shadow-soft"
-          >
-            <Trophy className="mx-auto h-10 w-10 text-amber-500" />
-            <p className="mt-2 text-lg font-black">
-              {mistakes === 0 ? "مطابقة كاملة بلا خطأ — ذاكرة صفّية حادة!" : "أكملت المطابقة"}
-            </p>
-            <p className="mt-1 text-xs font-bold text-muted-foreground">
-              الزمن {ad(elapsed)} ثانية — والأخطاء {ad(mistakes)}
-              {mistakes === 0 ? "" : " — أعد الجولة لتخفيضها"}
-            </p>
-            <p className="mt-2 flex items-center justify-center gap-1 text-[11px] font-black text-primary">
-              <Sparkles className="h-3.5 w-3.5" /> أضيفت لك نقاط خبرة على هذا الأداء
-            </p>
-            <Button
-              onClick={restart}
-              className="mt-4 h-12 w-full rounded-2xl bg-primary text-sm font-black"
-            >
-              <RotateCcw className="ml-1.5 h-4 w-4" /> جولة جديدة بمفاهيم أخرى
-            </Button>
-          </motion.div>
-        )}
-
-        {!started && !finished && (
-          <p className="mt-4 text-center text-[11px] font-bold text-muted-foreground">
-            اضغط أي بلاطة لتبدأ — المؤقت يتحرك مع أول لمسة
-          </p>
-        )}
+      <div className="mb-4 grid grid-cols-3 gap-3">
+        {[
+          { icon: Timer, value: ad(elapsed), label: "ثانية" },
+          { icon: Flame, value: ad(mistakes), label: "أخطاء" },
+          { icon: Puzzle, value: `${ad(matchedCount)} من ${ad(6)}`, label: "أزواج" },
+        ].map((x) => (
+          <Card key={x.label} className="flex flex-col items-center gap-0.5 py-3">
+            <span className="flex items-center gap-1.5 text-base font-semibold tabular-nums">
+              <x.icon className="h-4 w-4 text-primary" />
+              {x.value}
+            </span>
+            <span className="text-xs text-muted-foreground">{x.label}</span>
+          </Card>
+        ))}
       </div>
-    </motion.div>
+
+      {finished ? (
+        <Card className="flex flex-col items-center p-6 text-center">
+          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-success-soft text-success">
+            <Trophy className="h-7 w-7" />
+          </span>
+          <p className="mt-3 font-display text-lg font-semibold">{mistakes === 0 ? "مطابقة كاملة بلا خطأ" : "أكملت المطابقة"}</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            في {ad(elapsed)} ثانية، وبأخطاء عددها {ad(mistakes)}.
+          </p>
+        </Card>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {tiles.map((t) => {
+              const st = stateOf(t);
+              return (
+                <motion.button
+                  key={`${round}-${t.key}`}
+                  type="button"
+                  disabled={st === "matched"}
+                  animate={st === "wrong" ? { x: [0, -6, 6, -4, 4, 0] } : {}}
+                  transition={{ duration: 0.4 }}
+                  onClick={() => tap(t)}
+                  className={`flex min-h-[96px] items-center justify-center rounded-xl border p-3 text-center leading-6 transition-colors ${
+                    t.kind === "term" ? "text-[15px] font-semibold" : "text-[13px]"
+                  } ${
+                    st === "matched"
+                      ? "border-transparent bg-muted text-muted-foreground/40"
+                      : st === "sel"
+                        ? "border-primary bg-accent text-accent-foreground ring-2 ring-primary"
+                        : st === "wrong"
+                          ? "border-destructive bg-danger-soft text-destructive"
+                          : "border-border bg-card hover:bg-muted/60"
+                  }`}
+                >
+                  {t.text}
+                </motion.button>
+              );
+            })}
+          </div>
+          {!started && <p className="mt-4 text-center text-[13px] text-muted-foreground">يبدأ المؤقت مع أول ضغطة.</p>}
+        </>
+      )}
+    </ScreenShell>
   );
 }

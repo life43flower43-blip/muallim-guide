@@ -1,14 +1,13 @@
 {
-  "name": "تربوي — رفيقك في علم النفس التربوي",
+  "name": "تربوي — الإعداد المهني للمعلم",
   "short_name": "تربوي",
-  "description": "تطبيق تعليمي لطلاب كليات التربية: مفاهيم، اختبارات تفاعلية، توجيه بعد الخطأ، ومراجعة متباعدة.",
+  "description": "منصة إعداد مهني لطلبة كليات التربية والمتقدمين لاختبار التوظيف والمعلمين.",
   "lang": "ar",
   "dir": "rtl",
   "start_url": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#FAFAF4",
-  "theme_color": "#1B4332",
+  "background_color": "#F7F8FA",
+  "theme_color": "#0E7C86",
   "icons": [
     {
       "src": "/icons/icon-192.png",
