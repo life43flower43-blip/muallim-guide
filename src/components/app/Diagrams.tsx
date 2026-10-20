@@ -324,6 +324,348 @@ function Pavlov() {
   );
 }
 
+
+/** بطاقات متجاورة: عنوان وشرح قصير لكل عنصر */
+function Tiles({ title, items, cols = 2 }: { title: string; items: [string, string][]; cols?: 1 | 2 }) {
+  return (
+    <Frame title={title}>
+      <div className={cols === 2 ? "grid grid-cols-2 gap-2" : "space-y-2"}>
+        {items.map(([k, n], i) => (
+          <div key={k} className="rounded-xl border-2 border-b-4 p-2.5 text-center" style={{ borderColor: C[i % C.length], background: tint(C[i % C.length]) }}>
+            <p className="text-base font-bold leading-6">{k}</p>
+            <p className="text-sm leading-6 text-secondary-foreground">{n}</p>
+          </div>
+        ))}
+      </div>
+    </Frame>
+  );
+}
+
+/** مقارنة بين جهتين في صفوف */
+function Compare({ title, a, b, rows }: { title: string; a: string; b: string; rows: [string, string, string][] }) {
+  return (
+    <Frame title={title}>
+      <div className="grid grid-cols-2 gap-2 text-center">
+        <p className="rounded-[6px] bg-[#1CB0F6] p-2 text-base font-bold text-white">{a}</p>
+        <p className="rounded-[6px] bg-[#A560E8] p-2 text-base font-bold text-white">{b}</p>
+        {rows.map(([topic, x, y]) => (
+          <div key={topic} className="col-span-2">
+            <p className="mb-1 text-sm font-bold text-muted-foreground">{topic}</p>
+            <div className="grid grid-cols-2 gap-2">
+              <p className="rounded-[6px] p-2 text-sm font-medium leading-6" style={{ background: tint("#1CB0F6") }}>{x}</p>
+              <p className="rounded-[6px] p-2 text-sm font-medium leading-6" style={{ background: tint("#A560E8") }}>{y}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Frame>
+  );
+}
+
+function InfoProcessing() {
+  const box = (name: string, note: string, c: string) => (
+    <div className="flex-1 rounded-xl border-2 p-2.5 text-center" style={{ borderColor: c, background: tint(c) }}>
+      <p className="text-base font-bold leading-6">{name}</p>
+      <p className="text-sm leading-5 text-secondary-foreground">{note}</p>
+    </div>
+  );
+  return (
+    <Frame title="نموذج معالجة المعلومات عند أتكينسون وشفرين">
+      <div className="space-y-1">
+        <p className="text-center text-sm font-bold text-muted-foreground">مدخلات الحواس</p>
+        <ArrowDown className="mx-auto h-4 w-4 text-muted-foreground" />
+        {box("المخزن الحسي", "جزء من الثانية للبصري وثوانٍ للسمعي", C[1])}
+        <p className="text-center text-sm font-bold text-[#1478A8]">↓ الانتباه</p>
+        {box("المخزن قصير المدى", "نحو سبعة عناصر ونحو عشرين ثانية", C[4])}
+        <p className="text-center text-sm font-bold text-[#3C7A00]">↓ المراجعة والتنظيم</p>
+        {box("المخزن طويل المدى", "سعة شبه غير محدودة ومدد ممتدة", C[3])}
+        <p className="pt-1 text-center text-sm text-muted-foreground">ما لا يُنتبه إليه يسقط، وما لا يُراجَع يُنسى</p>
+      </div>
+    </Frame>
+  );
+}
+
+function WorkingMemory() {
+  return (
+    <Frame title="الذاكرة العاملة عند باديلي">
+      <div className="mx-auto w-fit rounded-xl bg-[#E8467C] px-5 py-2.5 text-center text-white">
+        <p className="text-base font-bold">التنفيذي المركزي</p>
+        <p className="text-sm opacity-90">يوزع الانتباه وينسق</p>
+      </div>
+      <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+        {[
+          ["الحلقة الصوتية", "المعلومات اللفظية", C[4]],
+          ["المخزن المرحلي", "يربط المكونات بالذاكرة الطويلة", C[5]],
+          ["المفكرة البصرية المكانية", "الصور والمواقع", C[3]],
+        ].map(([n, d, c]) => (
+          <div key={n} className="rounded-xl border-2 p-2" style={{ borderColor: c, background: tint(c) }}>
+            <p className="text-sm font-bold leading-6">{n}</p>
+            <p className="text-xs leading-5 text-secondary-foreground">{d}</p>
+          </div>
+        ))}
+      </div>
+    </Frame>
+  );
+}
+
+function Bandura() {
+  return (
+    <Steps
+      title="مراحل التعلم بالملاحظة عند باندورا"
+      steps={[
+        { name: "الانتباه", note: "تركيز النظر على أفعال النموذج" },
+        { name: "الاحتفاظ", note: "تخزين المشهد صورًا ذهنية وترميزًا لفظيًّا" },
+        { name: "الإعادة الإنتاجية", note: "تحويل ما حُفظ إلى أداء فعلي" },
+        { name: "الدافعية", note: "محفز يدفع إلى إظهار السلوك" },
+      ]}
+    />
+  );
+}
+
+function PiagetStages() {
+  return (
+    <Steps
+      title="مراحل النمو المعرفي عند بياجيه"
+      steps={[
+        { name: "الحس حركية", note: "التعلم بالحواس والحركة وثبات الشيء", tag: "٠–٢" },
+        { name: "ما قبل العمليات", note: "الرمز واللغة والتمركز حول الذات", tag: "٢–٧" },
+        { name: "العمليات المادية", note: "منطق منظم مقيد بالملموس", tag: "٧–١١" },
+        { name: "العمليات المجردة", note: "الفرضيات والتفكير في التفكير", tag: "١١ فما بعد" },
+      ]}
+    />
+  );
+}
+
+function PiagetVygotsky() {
+  return (
+    <Compare
+      title="بياجيه وفيجوتسكي"
+      a="بياجيه"
+      b="فيجوتسكي"
+      rows={[
+        ["صورة الطفل", "عالم صغير يكتشف وحده", "اجتماعي منذ البداية"],
+        ["التعلم والنمو", "النمو يسبق التعلم", "التعلم يقود النمو"],
+        ["مصدر المعرفة", "التفاعل الفردي مع الأشياء", "اللغة والتفاعل مع الأدرى"],
+        ["في الصف", "أنشطة اكتشاف تناسب الجاهزية", "دعم موجه وحوار وتعاون"],
+      ]}
+    />
+  );
+}
+
+function ValidityReliability() {
+  const target = (hits: [number, number][], label: string, note: string, ok: boolean) => (
+    <div className="text-center">
+      <svg viewBox="0 0 100 100" className="mx-auto w-full max-w-[120px]" aria-hidden="true">
+        <circle cx="50" cy="50" r="46" fill="var(--card)" stroke="var(--border)" strokeWidth="3" />
+        <circle cx="50" cy="50" r="31" fill="none" stroke="var(--border)" strokeWidth="3" />
+        <circle cx="50" cy="50" r="15" fill="#FFDFE0" stroke="#FF4B4B" strokeWidth="3" />
+        {hits.map(([x, y], i) => (
+          <circle key={i} cx={x} cy={y} r="5" fill={ok ? "#58CC02" : "#1CB0F6"} stroke="#fff" strokeWidth="1.5" />
+        ))}
+      </svg>
+      <p className="mt-1 text-sm font-bold">{label}</p>
+      <p className="text-xs leading-5 text-muted-foreground">{note}</p>
+    </div>
+  );
+  return (
+    <Frame title="العلاقة بين الصدق والثبات">
+      <div className="grid grid-cols-3 gap-2">
+        {target([[22, 30], [74, 26], [30, 76], [70, 72], [52, 14]], "لا ثبات", "ولا صدق", false)}
+        {target([[24, 24], [29, 21], [22, 30], [30, 28], [26, 33]], "ثبات بلا صدق", "مستقر في الخطأ", false)}
+        {target([[48, 47], [53, 52], [46, 54], [55, 46], [50, 50]], "ثبات وصدق", "مستقر ويصيب الهدف", true)}
+      </div>
+      <p className="mt-3 text-center text-sm font-bold">لا صدق بلا ثبات، وقد يوجد ثبات بلا صدق</p>
+    </Frame>
+  );
+}
+
+function AssessmentTimeline() {
+  const items: [string, string, string][] = [
+    ["قبل التعلم", "التشخيصي", "رسم نقاط القوة والضعف"],
+    ["أثناء التعلم", "التكويني", "تغذية راجعة وتعديل التدريس"],
+    ["بعد التعلم", "الختامي", "الحكم على تحقق الأهداف"],
+  ];
+  return (
+    <Frame title="التقويم بحسب توقيته">
+      <div className="relative grid grid-cols-3 gap-2 text-center">
+        <span className="absolute inset-x-6 top-4 h-1 rounded-full bg-border" aria-hidden="true" />
+        {items.map(([when, name, note], i) => (
+          <div key={name} className="relative">
+            <span className="mx-auto block h-9 w-9 rounded-full border-4 border-card" style={{ background: C[[1, 4, 3][i]] }} />
+            <p className="mt-1 text-xs text-muted-foreground">{when}</p>
+            <p className="text-base font-bold">{name}</p>
+            <p className="text-sm leading-5 text-secondary-foreground">{note}</p>
+          </div>
+        ))}
+      </div>
+    </Frame>
+  );
+}
+
+function NormalCurve() {
+  return (
+    <Frame title="التوزيع الاعتدالي والانحراف المعياري">
+      <svg viewBox="0 0 320 150" className="w-full" role="img" aria-label="منحنى الجرس: أغلب الدرجات قرب المتوسط وتقل كلما ابتعدنا عنه">
+        <path d="M10 130 C 70 130, 100 128, 125 80 C 145 38, 150 18, 160 18 C 170 18, 175 38, 195 80 C 220 128, 250 130, 310 130 Z" fill="#DDF4FF" stroke="#1CB0F6" strokeWidth="3" />
+        <path d="M125 80 C 145 38, 150 18, 160 18 C 170 18, 175 38, 195 80 L195 130 L125 130 Z" fill="#1CB0F6" opacity="0.35" />
+        <line x1="160" y1="14" x2="160" y2="132" stroke="#E8467C" strokeWidth="2.5" strokeDasharray="5 4" />
+        <line x1="10" y1="132" x2="310" y2="132" stroke="var(--border)" strokeWidth="2" />
+      </svg>
+      <div className="mt-1 grid grid-cols-3 text-center text-sm">
+        <span className="text-muted-foreground">درجات منخفضة</span>
+        <span className="font-bold text-[#E8467C]">المتوسط</span>
+        <span className="text-muted-foreground">درجات مرتفعة</span>
+      </div>
+      <div className="mt-3 grid grid-cols-2 gap-2 text-center text-sm">
+        <p className="rounded-[6px] p-2 leading-6" style={{ background: tint(C[3]) }}><b>انحراف صغير:</b> صف متجانس متقارب</p>
+        <p className="rounded-[6px] p-2 leading-6" style={{ background: tint(C[1]) }}><b>انحراف كبير:</b> تفاوت يستدعي تدريسًا متمايزًا</p>
+      </div>
+      <p className="mt-2 text-center text-sm text-muted-foreground">الرتبة المئينية: نسبة الطلاب الذين تقل درجاتهم عن درجة الطالب</p>
+    </Frame>
+  );
+}
+
+function ProblemSolving() {
+  return (
+    <Steps
+      title="خطوات حل المشكلات"
+      steps={[
+        { name: "فهم المشكلة وتحديدها", note: "المطلوب والمعطيات والقيود" },
+        { name: "تمثيل المشكلة", note: "رسم أو جدول أو معادلة" },
+        { name: "استدعاء المعرفة المرتبطة" },
+        { name: "تخطيط الحل", note: "اختيار استراتيجية مناسبة" },
+        { name: "التنفيذ مع المراقبة" },
+        { name: "التحقق من الحل" },
+        { name: "الاستفادة", note: "ماذا تعلمت من المشكلة؟" },
+      ]}
+    />
+  );
+}
+
+function CoopElements() {
+  return (
+    <Tiles
+      title="عناصر التعلم التعاوني الخمسة"
+      cols={1}
+      items={[
+        ["الاعتماد المتبادل الإيجابي", "نجاح الفرد مرتبط بنجاح المجموعة"],
+        ["المسؤولية الفردية", "يُحاسَب كل طالب على إسهامه"],
+        ["التفاعل المباشر", "عمل ونقاش وجهًا لوجه"],
+        ["المهارات الاجتماعية", "الحوار والإنصات وإدارة الخلاف"],
+        ["معالجة المجموعة", "مراجعة الأداء واقتراح التحسين"],
+      ]}
+    />
+  );
+}
+
+function Jigsaw() {
+  return (
+    <Steps
+      title="خطوات التعلم بالتجزيء (جيكسو)"
+      steps={[
+        { name: "تقسيم المحتوى", note: "أجزاء متكافئة بعدد أعضاء المجموعة" },
+        { name: "مجموعات الخبراء", note: "يجتمع أصحاب الجزء نفسه لدراسته" },
+        { name: "العودة إلى المجموعة الأصلية", note: "كل خبير يعلّم جزءه" },
+        { name: "التقويم الفردي", note: "يغطي المحتوى كله" },
+      ]}
+    />
+  );
+}
+
+function Thorndike() {
+  return (
+    <Tiles
+      title="قوانين ثورندايك الثلاثة"
+      cols={1}
+      items={[
+        ["قانون الأثر", "الاستجابة التي يتبعها رضا تقوى، والتي يتبعها عدم رضا تضعف"],
+        ["قانون الاستعداد", "الروابط المستعدة للعمل يبعث عملها على الرضا"],
+        ["قانون التمرين", "الممارسة تقوي الروابط وانقطاعها يضعفها"],
+      ]}
+    />
+  );
+}
+
+function Gestalt() {
+  const dot = (cx: number, cy: number, c = "#1CB0F6") => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="5" fill={c} />;
+  const law = (name: string, note: string, art: React.ReactNode) => (
+    <div className="rounded-xl border-2 border-border p-2 text-center">
+      <svg viewBox="0 0 80 50" className="mx-auto h-12 w-full" aria-hidden="true">{art}</svg>
+      <p className="text-sm font-bold">{name}</p>
+      <p className="text-xs leading-5 text-muted-foreground">{note}</p>
+    </div>
+  );
+  return (
+    <Frame title="قوانين الجشطالت في الإدراك">
+      <div className="grid grid-cols-2 gap-2">
+        {law("القرب", "المتقاربات مجموعة واحدة", <>{[10, 22].flatMap((x) => [15, 35].map((y) => dot(x, y)))}{[54, 66].flatMap((x) => [15, 35].map((y) => dot(x, y)))}</>)}
+        {law("الشبه", "المتشابهات تُجمع معًا", <>{[10, 30, 50, 70].map((x, i) => dot(x, 15, i % 2 ? "#FF9600" : "#1CB0F6"))}{[10, 30, 50, 70].map((x, i) => dot(x, 35, i % 2 ? "#FF9600" : "#1CB0F6"))}</>)}
+        {law("الإغلاق", "يكمل الذهن الشكل الناقص", <circle cx="40" cy="25" r="18" fill="none" stroke="#58CC02" strokeWidth="4" strokeDasharray="24 8" />)}
+        {law("الشكل والخلفية", "يبرز المهم على محيطه", <><rect x="5" y="3" width="70" height="44" rx="4" fill="var(--muted)" /><rect x="27" y="13" width="26" height="24" rx="4" fill="#E8467C" /></>)}
+      </div>
+    </Frame>
+  );
+}
+
+function Ausubel() {
+  return (
+    <Frame title="المنظم المتقدم عند أوزوبل">
+      <div className="space-y-1 text-center">
+        <p className="rounded-xl bg-[#A560E8] p-2.5 text-base font-bold text-white">المنظم المتقدم: إطار عام قبل الدرس</p>
+        <ArrowDown className="mx-auto h-4 w-4 text-muted-foreground" />
+        <div className="grid grid-cols-2 gap-2">
+          <p className="rounded-xl border-2 border-[#1CB0F6] p-2 text-sm font-bold leading-6" style={{ background: tint("#1CB0F6") }}>الاستدلالي: إطار تُشتق منه التفاصيل</p>
+          <p className="rounded-xl border-2 border-[#FF9600] p-2 text-sm font-bold leading-6" style={{ background: tint("#FF9600") }}>المقارن: يوازن بالمألوف ليمنع الخلط</p>
+        </div>
+        <ArrowDown className="mx-auto h-4 w-4 text-muted-foreground" />
+        <p className="rounded-xl border-2 border-[#58CC02] p-2.5 text-base font-bold" style={{ background: tint("#58CC02") }}>المحتوى الجديد يرتبط بالبنية المعرفية السابقة</p>
+        <p className="pt-1 text-sm text-muted-foreground">فيصير التلقي ذا معنى لا حفظًا رتيبًا</p>
+      </div>
+    </Frame>
+  );
+}
+
+function Cpa() {
+  return (
+    <Frame title="من الملموس إلى المجرد">
+      <div className="grid grid-cols-[1fr_20px_1fr_20px_1fr] items-center text-center">
+        <div className="rounded-xl border-2 p-2" style={{ borderColor: C[1], background: tint(C[1]) }}>
+          <div className="mx-auto mb-1 flex w-fit gap-1">{[0, 1, 2].map((i) => <span key={i} className="h-4 w-4 rounded-[3px] bg-[#FF9600]" />)}</div>
+          <p className="text-sm font-bold">ملموس</p>
+          <p className="text-xs text-muted-foreground">مكعبات بين اليدين</p>
+        </div>
+        <ArrowLeft className="mx-auto h-4 w-4 text-muted-foreground" />
+        <div className="rounded-xl border-2 p-2" style={{ borderColor: C[4], background: tint(C[4]) }}>
+          <div className="mx-auto mb-1 flex w-fit gap-1">{[0, 1, 2].map((i) => <span key={i} className="h-4 w-4 rounded-full border-2 border-[#1CB0F6]" />)}</div>
+          <p className="text-sm font-bold">صوري</p>
+          <p className="text-xs text-muted-foreground">رسوم وأشكال</p>
+        </div>
+        <ArrowLeft className="mx-auto h-4 w-4 text-muted-foreground" />
+        <div className="rounded-xl border-2 p-2" style={{ borderColor: C[5], background: tint(C[5]) }}>
+          <p className="mb-1 text-base font-extrabold text-[#A560E8]">٣</p>
+          <p className="text-sm font-bold">مجرد</p>
+          <p className="text-xs text-muted-foreground">رموز وأرقام</p>
+        </div>
+      </div>
+    </Frame>
+  );
+}
+
+function Motivation() {
+  return (
+    <Compare
+      title="الدافعية الداخلية والخارجية"
+      a="داخلية"
+      b="خارجية"
+      rows={[
+        ["مصدرها", "النشاط نفسه: الفضول ومتعة الفهم والإتقان", "عوامل خارجه: الجوائز والدرجات والثناء"],
+        ["استمرارها", "ثابتة لا تتوقف على المعزز", "تضعف حين تزول المكافأة"],
+        ["أثرها", "تعلم أعمق وإبداع أكبر", "مفيدة في بداية تعلم مهارة جديدة"],
+      ]}
+    />
+  );
+}
+
 const MAP: Record<string, () => React.ReactElement> = {
   C078: Maslow,
   D1332: Maslow,
@@ -347,6 +689,48 @@ const MAP: Record<string, () => React.ReactElement> = {
   C071: Forgetting,
   C059: Pavlov,
   D1204: Pavlov,
+  D1234: InfoProcessing,
+  D1235: WorkingMemory,
+  D1211: Bandura,
+  C065: Bandura,
+  D921: PiagetStages,
+  D922: PiagetStages,
+  D923: PiagetStages,
+  D924: PiagetStages,
+  D1222: PiagetStages,
+  D1223: PiagetStages,
+  D1224: PiagetStages,
+  D1225: PiagetStages,
+  D1227: PiagetStages,
+  D1233: PiagetVygotsky,
+  D1629: ValidityReliability,
+  C086: ValidityReliability,
+  C087: ValidityReliability,
+  D1311: ValidityReliability,
+  C094: AssessmentTimeline,
+  D1605: AssessmentTimeline,
+  D1603: AssessmentTimeline,
+  D1604: AssessmentTimeline,
+  C282: AssessmentTimeline,
+  C283: AssessmentTimeline,
+  D1705: NormalCurve,
+  D1706: NormalCurve,
+  D1707: NormalCurve,
+  D1425: ProblemSolving,
+  D1272: ProblemSolving,
+  D2013: ProblemSolving,
+  D1474: CoopElements,
+  D1270: CoopElements,
+  C181: CoopElements,
+  D1810: Jigsaw,
+  C060: Thorndike,
+  D1206: Thorndike,
+  D1215: Gestalt,
+  D1218: Ausubel,
+  C105: Cpa,
+  N604: Cpa,
+  C077: Motivation,
+  D1483: Motivation,
 };
 
 export function ConceptDiagram({ conceptId }: { conceptId: string }) {
