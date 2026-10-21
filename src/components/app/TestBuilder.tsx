@@ -5,7 +5,7 @@
 // ============================================================================
 // النمط: تعلّم (شرح بعد كل سؤال) أو اختبار موقوت (الشرح في التقرير).
 // مصدر الأسئلة: لم أجب عنها، أو أخطأت فيها، أو الكل. والصعوبة.
-// المقررات والفصول باختيار متعدد، ولكل منها عدد الأسئلة المتاحة وفق التصفية.
+// المحاور والفصول باختيار متعدد، ولكل منها عدد الأسئلة المتاحة وفق التصفية.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -119,7 +119,7 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
     <ScreenShell
       wide
       title="أنشئ اختبارك"
-      sub="اختر النمط والمصدر والمقررات"
+      sub="اختر النمط والمصدر والمحاور"
       onClose={onClose}
       footer={
         <>
@@ -214,7 +214,7 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
         </div>
 
         <section>
-          <SectionHeader title="المقررات والفصول" sub={`اخترت ${ad(picked.size)} من ${ad(allKeys.length)} فصلًا`} />
+          <SectionHeader title="المحاور والفصول" sub={`اخترت ${ad(picked.size)} من ${ad(allKeys.length)} فصلًا`} />
           <Card className="overflow-hidden">
             <button
               type="button"
@@ -222,7 +222,7 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
               className="flex min-h-[52px] w-full items-center gap-3 border-b border-border bg-muted/40 px-4 text-right"
             >
               <CheckBox state={allState} />
-              <span className="flex-1 text-base font-medium">كل المقررات</span>
+              <span className="flex-1 text-base font-medium">كل المحاور</span>
               <span className="text-sm text-muted-foreground">{ad(countOf(allKeys))}</span>
             </button>
             <div className="divide-y divide-border">

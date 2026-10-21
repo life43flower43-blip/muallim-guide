@@ -3,8 +3,8 @@ import Link from "next/link";
 import { SITE_URL, courseChapters, courseList } from "@/lib/public-bank";
 
 export const metadata: Metadata = {
-  title: "مقررات إعداد المعلم | تربوي",
-  description: "مقررات مجانية لطلاب كليات التربية والمتقدمين لاختبارات التوظيف والرخصة المهنية للمعلمين: النمو، وعلم النفس التربوي، والتعلم، والتقويم، وطرق التدريس، والتربية الخاصة.",
+  title: "محاور إعداد المعلم | تربوي",
+  description: "محاور مجانية لطلاب كليات التربية والمتقدمين لاختبارات التوظيف والرخصة المهنية للمعلمين: النمو، وعلم النفس التربوي، والتعلم، والتقويم، وطرق التدريس، والتربية الخاصة.",
   alternates: { canonical: `${SITE_URL}/learn` },
 };
 
@@ -13,7 +13,7 @@ export default function LearnIndex() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="font-display text-3xl font-bold">مقررات إعداد المعلم</h1>
+        <h1 className="font-display text-3xl font-bold">محاور إعداد المعلم</h1>
         <p className="mt-2 max-w-2xl leading-8 text-secondary-foreground">
           شرح مبسط لكل مفهوم تربوي مع أمثلة من الصف وأسئلة تدريب بمستوى اختبارات التوظيف والرخصة المهنية في الدول العربية.
         </p>

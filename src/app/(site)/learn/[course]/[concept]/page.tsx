@@ -55,7 +55,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
     <article className="mx-auto max-w-3xl space-y-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <nav className="text-sm text-muted-foreground">
-        <Link href="/learn" className="hover:text-foreground">المقررات</Link> / <Link href={`/learn/${course}`} className="hover:text-foreground">{courseName}</Link> / {chapterLabel(c.chapter)}
+        <Link href="/learn" className="hover:text-foreground">المحاور</Link> / <Link href={`/learn/${course}`} className="hover:text-foreground">{courseName}</Link> / {chapterLabel(c.chapter)}
       </nav>
       <header>
         <h1 className="font-display text-3xl font-bold leading-[1.6]">{c.title}</h1>
@@ -67,7 +67,9 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
         ))}
       </section>
 
-      <ConceptDiagram conceptId={c.id} />
+      {c.rule && <p className="rounded-2xl border-2 border-[#FFC800] bg-[#FFF8D6] p-4 text-lg font-bold leading-9 dark:bg-[#FFC800]/10">{c.rule}</p>}
+
+      <ConceptDiagram conceptId={c.id} pageTitle={c.title} />
 
       <AdSlot />
 

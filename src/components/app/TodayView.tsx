@@ -1,7 +1,7 @@
 "use client";
 
 // ============================================================================
-// الرئيسية: الخطوة التالية وخطة اليوم فقط. الجاهزية في «حسابي»، والمقررات في «التعلّم»، والأدوات في «التدريب».
+// الرئيسية: الخطوة التالية وخطة اليوم فقط. الجاهزية في «حسابي»، والمحاور في «التعلّم»، والأدوات في «التدريب».
 // ============================================================================
 
 import { useMemo } from "react";
@@ -27,7 +27,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const due = mistakes?.stats.due ?? 0;
   const weak = useMemo(() => weakChapters(attempts, undefined, 1)[0] ?? null, [attempts]);
 
-  // الفصل الذي يُتابَع: آخر ما درسه، وإلا أول فصل في أول مقرر
+  // الفصل الذي يُتابَع: آخر ما درسه، وإلا أول فصل في أول محور
   const current = useMemo(() => {
     const courseId = lastStudy?.courseId ?? COURSES[0]?.id ?? "M1";
     const last = lastStudy?.chapter;

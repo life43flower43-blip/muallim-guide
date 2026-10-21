@@ -170,7 +170,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
   const mcqOpts = useMemo(() => (q && q.type === "mcq" ? (q.fixedOrder ? q.options : shuffle(q.options)) : []), [q]);
   const opts = q ? (q.type === "tf" ? [q.options[0], q.options[1]] : mcqOpts) : [];
 
-  // تفصيل النتيجة: حسب المقرر إن تعددت المقررات، وإلا حسب الفصل
+  // تفصيل النتيجة: حسب المحور إن تعددت المحاور، وإلا حسب الفصل
   const breakdown = useMemo(() => {
     const byCourse = new Map<string, { ok: number; total: number }>();
     const byChapter = new Map<string, { ok: number; total: number }>();
@@ -189,7 +189,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
       }
     }
     if (byCourse.size > 1)
-      return { title: "الأداء حسب المقرر", rows: [...byCourse].map(([id, v]) => ({ id, name: COURSE_SHORT[id] ?? COURSES.find((c) => c.id === id)?.name ?? id, ...v })) };
+      return { title: "الأداء حسب المحور", rows: [...byCourse].map(([id, v]) => ({ id, name: COURSE_SHORT[id] ?? COURSES.find((c) => c.id === id)?.name ?? id, ...v })) };
     return { title: "الأداء حسب الفصل", rows: [...byChapter].map(([id, v]) => ({ id, name: chapterLabel(id), ...v })) };
   }, [review]);
 

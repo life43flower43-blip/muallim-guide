@@ -27,6 +27,8 @@ export interface Concept {
   title: string;
   explanation: string;
   example: string;
+  /** قاعدة المفهوم في جملة واحدة — تظهر في «دفتري» */
+  rule?: string;
   /** أمثلة واقعية متعددة (٥ لكل مفهوم) — تُولَّد من ميدان المدرسة وتغطي زوايا مختلفة للمفهوم */
   examples?: string[];
 }

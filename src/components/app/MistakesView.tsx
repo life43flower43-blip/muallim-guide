@@ -6,7 +6,7 @@
 // ١) إجراء واحد في الأعلى: مراجعة المستحق الآن، مع تقدم الإصلاح.
 // ٢) جدول المراجعة للأيام السبعة القادمة (كم خطأً يعود كل يوم).
 // ٣) المفاهيم الأضعف: أين تتجمع أخطاؤك، مع قراءة المفهوم أو التدرب عليه.
-// ٤) قائمة الأخطاء بأسلوب «تذكّر أولًا»، وتصفية حسب الحالة والمقرر.
+// ٤) قائمة الأخطاء بأسلوب «تذكّر أولًا»، وتصفية حسب الحالة والمحور.
 // ============================================================================
 
 import { useMemo, useState } from "react";
@@ -246,7 +246,7 @@ export default function MistakesView({ onGoTab }: { onGoTab: (t: Tab) => void })
           action={
             course && (
               <button type="button" onClick={() => review(course)} className="min-h-[36px] text-sm font-medium text-primary">
-                راجع هذا المقرر
+                راجع هذا المحور
               </button>
             )
           }
@@ -272,8 +272,8 @@ export default function MistakesView({ onGoTab }: { onGoTab: (t: Tab) => void })
             ))}
           </div>
           {data.byCourse.length > 1 && (
-            <div className="no-scrollbar -mx-4 flex flex-1 gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0" role="tablist" aria-label="تصفية حسب المقرر">
-              {[{ courseId: null as string | null, name: "كل المقررات", count: open }, ...data.byCourse].map((g) => (
+            <div className="no-scrollbar -mx-4 flex flex-1 gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0" role="tablist" aria-label="تصفية حسب المحور">
+              {[{ courseId: null as string | null, name: "كل المحاور", count: open }, ...data.byCourse].map((g) => (
                 <button
                   key={g.courseId ?? "all"}
                   type="button"

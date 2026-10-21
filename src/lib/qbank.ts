@@ -1,9 +1,13 @@
 import type { Concept, Course, Question } from "./types";
 
+/** خريطة فصل ذهنية: سلاسل تبيّن كيف تقود كل فكرة إلى التي بعدها */
+export type ChapterMap = { chains: { steps: string[]; links: string[] }[] };
+
 type QbankRaw = {
   courses: Record<string, string>;
   concepts: Concept[];
   questions: Question[];
+  maps?: Record<string, ChapterMap>;
 };
 
 // الحالة القابلة للتعبئة — تُملأ بعد تحميل البنك من «/data/qbank.json» وقت التشغيل
@@ -11,6 +15,8 @@ type QbankRaw = {
 export let COURSES: Course[] = [];
 export let CONCEPTS: Concept[] = [];
 export let QUESTIONS: Question[] = [];
+/** خرائط الفصول، مفتاحها «المحور::الفصل» */
+export let CHAPTER_MAPS: Record<string, ChapterMap> = {};
 
 let CONCEPT_MAP = new Map<string, Concept>();
 let QUESTION_MAP = new Map<string, Question>();
@@ -28,6 +34,7 @@ export function applyQbank(raw: QbankRaw) {
   }));
   CONCEPTS = raw.concepts as Concept[];
   QUESTIONS = raw.questions as Question[];
+  CHAPTER_MAPS = raw.maps ?? {};
   CONCEPT_MAP = new Map(CONCEPTS.map((c) => [c.id, c]));
   QUESTION_MAP = new Map(QUESTIONS.map((q) => [q.id, q]));
   const done = resolveReady;

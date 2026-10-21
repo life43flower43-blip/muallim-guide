@@ -1,10 +1,10 @@
 "use client";
 
 // ============================================================================
-// التعلّم — مقرر ← فصل ← مفهوم
+// التعلّم — محور ← فصل ← مفهوم
 // ============================================================================
 // مبني على أنماط Coursera وKhan Academy:
-// - إتقان بأربعة مستويات لكل مفهوم وفصل ومقرر، مع شريط مقسّم ومفتاح ألوان.
+// - إتقان بأربعة مستويات لكل مفهوم وفصل ومحور، مع شريط مقسّم ومفتاح ألوان.
 // - «تابع التعلّم» يعيدك إلى آخر مفهوم قرأته.
 // - صفحة قراءة بمخطط الفصل جانبًا، ووقت قراءة، وسؤال «تحقّق من فهمك»،
 //   وانتقال «التالي» الذي يعلّم المفهوم مكتملًا، واختبار في نهاية الفصل.
@@ -98,7 +98,7 @@ import {
   pct,
 } from "./ui-kit";
 
-// أيقونة كل مقرر
+// أيقونة كل محور
 const COURSE_ICONS: Record<string, React.ElementType> = {
   M1: Dna,
   M2: Heart,
@@ -129,7 +129,7 @@ function CourseBadge({ id, size = 44 }: { id: string; size?: number }) {
 // أسماء الفصول تُعرض بلا حروف الترقيم الكتابية (أ. ب. ج.)
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
 
-// وصف موجز لكل مقرر
+// وصف موجز لكل محور
 const COURSE_SUBTITLE: Record<string, string> = {
   M1: "النمو بمراحله ومجالاته وتطبيقاته في الصف",
   M2: "الدوافع والانفعالات والذكاء والفروق الفردية",
@@ -488,7 +488,13 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
             <h1 className="mt-4 font-display text-2xl font-bold leading-[1.6] sm:text-[28px]">{c.title}</h1>
           </header>
 
-          <ConceptDiagram conceptId={c.id} />
+          {c.rule && (
+            <p className="rounded-2xl border-2 border-b-4 border-[#FFC800] bg-[#FFF8D6] p-4 text-lg font-bold leading-9 dark:bg-[#FFC800]/10">
+              {c.rule}
+            </p>
+          )}
+
+          <ConceptDiagram conceptId={c.id} pageTitle={c.title} />
 
           <section className="space-y-5">
             {splitArParagraphs(c.explanation).map((p, i) => (
@@ -609,7 +615,6 @@ function ChapterPage({ courseId, chapter, onBack, onOpen }: { courseId: string; 
     >
       <div className="mx-auto max-w-3xl space-y-6">
         <Card className="p-5">
-          <p className="text-sm text-muted-foreground">{COURSES.find((x) => x.id === courseId)?.name}</p>
           <h2 className="mt-1 font-display text-xl font-bold leading-8">{chapterLabel(chapter)}</h2>
           <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
@@ -670,7 +675,7 @@ function ChapterPage({ courseId, chapter, onBack, onOpen }: { courseId: string; 
   );
 }
 
-// ---------- صفحة المقرر ----------
+// ---------- صفحة المحور ----------
 function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string; onBack: () => void; onChapter: (ch: string) => void; onOpen: (id: string) => void }) {
   const conceptReads = useApp((s) => s.conceptReads);
   const attempts = useApp((s) => s.attempts);
@@ -688,7 +693,7 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
   return (
     <ScreenShell wide title={course.name} sub={COURSE_SUBTITLE[courseId]} onBack={onBack}>
       <div className="grid gap-6 lg:grid-cols-[1fr_320px] lg:items-start">
-        {/* ملخص المقرر: أولًا على الجوال، وجانبًا على الحاسوب */}
+        {/* ملخص المحور: أولًا على الجوال، وجانبًا على الحاسوب */}
         <aside className="space-y-4 lg:sticky lg:top-0 lg:order-2">
           <Card className="p-5">
             <div className="flex items-start gap-3">
@@ -718,14 +723,14 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
             <div className="mt-5 flex flex-col gap-2.5">
               {nextUp && (
                 <PrimaryButton onClick={() => onOpen(nextUp.id)} className="w-full">
-                  <Play className="h-4 w-4" /> {read === 0 ? "ابدأ المقرر" : "تابع"}
+                  <Play className="h-4 w-4" /> {read === 0 ? "ابدأ المحور" : "تابع"}
                 </PrimaryButton>
               )}
               <SecondaryButton
                 className="w-full"
                 onClick={() => startQuiz({ mode: "exam", label: `اختبار: ${course.name}`, qids: courseExam(courseId), timeLimitSec: EXAM_SECONDS, topicKey: examKey(courseId) })}
               >
-                <ClipboardCheck className="h-4 w-4" /> اختبار المقرر
+                <ClipboardCheck className="h-4 w-4" /> اختبار المحور
               </SecondaryButton>
             </div>
             {nextUp && <p className="mt-3 text-center text-sm text-muted-foreground">التالي: {nextUp.title}</p>}
@@ -733,7 +738,7 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
         </aside>
 
         <section className="lg:order-1">
-          <SectionHeader title="الفصول" sub={`${arCount(questionsOfCourse(courseId).length, QUESTION_FORMS)} في بنك المقرر`} />
+          <SectionHeader title="الفصول" sub={`${arCount(questionsOfCourse(courseId).length, QUESTION_FORMS)} في بنك المحور`} />
           <Divided>
             {chapters.map((ch, i) => {
               const cs = all.filter((c) => c.chapter === ch);
@@ -797,7 +802,7 @@ export default function ConceptsView() {
     return CONCEPTS.filter((c) => c.title.includes(q) || chapterLabel(c.chapter).includes(q)).slice(0, 40);
   }, [query]);
 
-  // فتح مفهوم يضبط مقرره وفصله، فيعود «رجوع» إلى الفصل الصحيح
+  // فتح مفهوم يضبط محوره وفصله، فيعود «رجوع» إلى الفصل الصحيح
   const openConceptHere = (id: string) => {
     const c = conceptById(id);
     if (c) {
@@ -829,13 +834,6 @@ export default function ConceptsView() {
   const resume = lastConcept ? conceptById(lastConcept) : undefined;
   const resumeSiblings = resume ? conceptsOfChapter(resume.courseId, resume.chapter) : [];
   const resumeRead = resumeSiblings.filter((c) => conceptReads[c.id]).length;
-  const totalMastery = COURSES.reduce(
-    (acc, c) => {
-      const m = courseMastery(c.id, attempts);
-      return { 0: acc[0] + m[0], 1: acc[1] + m[1], 2: acc[2] + m[2], 3: acc[3] + m[3] };
-    },
-    { 0: 0, 1: 0, 2: 0, 3: 0 } as Record<MasteryLevel, number>
-  );
 
   return (
     <div className="space-y-7 pb-6">
@@ -893,10 +891,7 @@ export default function ConceptsView() {
                 <div className="flex items-start gap-4">
                   <CourseBadge id={resume.courseId} />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm text-muted-foreground">
-                      {COURSE_SHORT[resume.courseId]}، {chapterLabel(resume.chapter)}
-                    </p>
-                    <p className="mt-0.5 font-display text-base font-semibold leading-7">{resume.title}</p>
+                    <p className="font-display text-lg font-bold leading-7">{resume.title}</p>
                     <div className="mt-3 flex items-center gap-3">
                       <ProgressBar value={resumeSiblings.length ? (resumeRead / resumeSiblings.length) * 100 : 0} className="flex-1" />
                       <span className="shrink-0 text-xs text-muted-foreground">
@@ -913,20 +908,10 @@ export default function ConceptsView() {
           )}
 
           <section>
-            <SectionHeader title="إتقانك" sub={`${arCount(CONCEPTS.length, CONCEPT_FORMS)} في كل المقررات`} />
-            <Card className="space-y-3 p-5">
-              <MasteryBar counts={totalMastery} height={10} />
-              <MasteryLegend labels={MASTERY_LABELS} counts={totalMastery} />
-              <p className="text-sm leading-6 text-muted-foreground">يرتفع مستوى المفهوم كلما أجبت عن أسئلته بدقة: متعرِّف، ثم متمكِّن من ٧٠٪، ثم متقِن من ٩٠٪.</p>
-            </Card>
-          </section>
-
-          <section>
-            <SectionHeader title="المقررات" />
+            <SectionHeader title="المحاور" />
             <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }} className="grid gap-3 sm:grid-cols-2">
               {COURSES.map((course) => {
                 const cs = conceptsOfCourse(course.id);
-                const m = courseMastery(course.id, attempts);
                 const readCount = cs.filter((cc) => conceptReads[cc.id]).length;
                 return (
                   <button
@@ -936,23 +921,17 @@ export default function ConceptsView() {
                       setOpenCourseId(course.id);
                       setOpenChapter(null);
                     }}
-                    className="card-soft flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 text-right transition-colors hover:border-primary/40"
+                    className="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-border bg-card p-4 text-right transition active:translate-y-[2px] active:border-b-2"
                   >
-                    <span className="flex items-start gap-3">
-                      <CourseBadge id={course.id} />
-                      <span className="min-w-0 flex-1">
-                        <span className="block text-base font-semibold leading-6">{course.name}</span>
-                        <span className="mt-0.5 block text-sm leading-5 text-muted-foreground">{COURSE_SUBTITLE[course.id]}</span>
-                      </span>
-                    </span>
-                    <span className="mt-auto block space-y-2">
-                      <MasteryBar counts={m} />
-                      <span className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>
-                          {arCount(chaptersOfCourse(course.id).length, CHAPTER_FORMS)}، {arCount(cs.length, CONCEPT_FORMS)}
+                    <CourseBadge id={course.id} size={52} />
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-lg font-bold leading-7">{course.name}</span>
+                      <span className="mt-2 flex items-center gap-2">
+                        <span className="h-2.5 flex-1 overflow-hidden rounded-full bg-muted">
+                          <span className="block h-full rounded-full" style={{ width: `${cs.length ? (readCount / cs.length) * 100 : 0}%`, background: COURSE_COLOR[course.id] ?? "var(--primary)" }} />
                         </span>
-                        <span>
-                          قرأت {ad(readCount)}، أتقنت {ad(m[3])}
+                        <span className="shrink-0 text-sm font-bold text-muted-foreground">
+                          {ad(readCount)}/{ad(cs.length)}
                         </span>
                       </span>
                     </span>
