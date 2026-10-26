@@ -6,7 +6,9 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { useApp } from "@/lib/store";
+import { Check } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { dayStr, dayXpOf, useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { CONCEPTS, conceptsOfCourse } from "@/lib/qbank";
 import { overallReadiness } from "@/lib/practice-bank";
@@ -60,6 +62,21 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
     };
   }, [conceptReads]);
 
+  // أيام الأسبوع من السبت إلى الجمعة: يمتلئ بالذهبي كل يوم درست فيه الطالبة
+  const sessions = useApp((s) => s.sessions);
+  const week = useMemo(() => {
+    const now = new Date();
+    const start = new Date(now);
+    start.setDate(now.getDate() - ((now.getDay() + 1) % 7));
+    const today = dayStr(now);
+    return ["س", "ح", "ن", "ث", "ر", "خ", "ج"].map((label, i) => {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      const key = dayStr(d);
+      return { label, done: dayXpOf(sessions, key) > 0, today: key === today, future: key > today };
+    });
+  }, [sessions]);
+
   const doors: Door[] = [
     { title: "المفاهيم التربوية", img: "/home/concepts-v2.jpg", progress: prog.concepts, run: ui.startLearn },
     { title: "مهارات التدريس", img: "/home/skills-v2.jpg", progress: frac(labCount, 20), run: ui.startLab },
@@ -89,6 +106,24 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           </span>
         </span>
       </button>
+
+      {/* شريط الأسبوع */}
+      <div className="flex items-center justify-between px-3" aria-label="أيام دراستك هذا الأسبوع">
+        {week.map((d) => (
+          <span key={d.label} className="flex flex-col items-center gap-1">
+            <span
+              className={cn(
+                "flex h-[26px] w-[26px] items-center justify-center rounded-full",
+                d.done ? "bg-gradient-to-br from-[#FFE27A] to-[#D9A400]" : d.future ? "border-2 border-dashed border-[#C9DDD3]" : "border-2 border-[#C9DDD3] bg-white dark:bg-card",
+                d.today && "ring-2 ring-[#136F5C] ring-offset-2 ring-offset-background"
+              )}
+            >
+              {d.done && <Check className="h-[14px] w-[14px] text-white" strokeWidth={3.2} />}
+            </span>
+            <span className={cn("text-[12px] leading-none", d.today ? "font-extrabold text-[#136F5C]" : "font-bold text-[#5D7A71]")}>{d.label}</span>
+          </span>
+        ))}
+      </div>
 
       {/* أبواب التطبيق */}
       <div ref={gridRef} className="-mx-1 grid grid-cols-2 gap-2.5">
