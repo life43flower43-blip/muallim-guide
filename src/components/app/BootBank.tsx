@@ -1,6 +1,6 @@
 "use client";
 
-import { RefreshCcw, GraduationCap } from "lucide-react";
+import { RefreshCcw } from "lucide-react";
 
 // تحويل الأرقام إلى مشرقية للعرض
 const east = (n: number | string) =>
@@ -19,8 +19,8 @@ export default function BootBank({
   const pct = Math.floor(progress * 100);
   return (
     <div className="flex h-dvh flex-col items-center justify-center gap-6 bg-background px-8 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-        <GraduationCap className="h-8 w-8" />
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl overflow-hidden bg-white">
+<img src="/icons/logo-128.png" alt="" className="h-full w-full object-contain p-0.5" />
       </div>
       <div className="space-y-2">
         <h1 className="font-display text-xl font-bold text-primary">تربوي</h1>

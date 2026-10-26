@@ -36,8 +36,8 @@ export default function Onboarding() {
     <div className="min-h-dvh bg-background">
       <div className="safe-top mx-auto flex max-w-xl flex-col gap-8 px-5 pb-10 pt-10">
         <div className="flex items-center gap-2.5">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <GraduationCap className="h-5 w-5" />
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden bg-white">
+<img src="/icons/logo-128.png" alt="" className="h-full w-full object-contain p-0.5" />
           </span>
           <span className="font-display text-xl font-bold text-primary">تربوي</span>
         </div>

@@ -55,6 +55,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { Tab } from "./AppShell";
 import { OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
+import { disablePush, enablePush, usePushState } from "@/lib/push-client";
 import AuthPanel from "./AuthPanel";
 import { Card, IconTile, PageTitle, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, pct } from "./ui-kit";
 
@@ -184,6 +185,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
   const fileRef = useRef<HTMLInputElement>(null);
   const [installEvt, setInstallEvt] = useState<InstallPromptEvent | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const push = usePushState();
   useEffect(() => {
     const open = () => setSettingsOpen(true);
     window.addEventListener(OPEN_SETTINGS_EVENT, open);
@@ -529,6 +531,24 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
               <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all", st.haptics ? "right-0.5" : "right-[22px]")} />
             </span>
           </button>
+          {push !== "unsupported" && (
+            <button
+              type="button"
+              role="switch"
+              aria-checked={push === "on"}
+              disabled={push === "denied"}
+              onClick={() => (push === "on" ? disablePush() : enablePush().then((ok) => !ok && toast({ title: "لم يُسمح بالإشعارات على هذا الجهاز" })))}
+              className="flex min-h-[44px] w-full items-center justify-between text-sm disabled:opacity-60"
+            >
+              <span className="text-right">
+                تذكير يومي بالدراسة ومواعيد المراجعة
+                {push === "denied" && <span className="block text-xs text-muted-foreground">الإشعارات محظورة في إعدادات المتصفح</span>}
+              </span>
+              <span className={cn("relative h-6 w-11 shrink-0 rounded-full transition-colors", push === "on" ? "bg-primary" : "bg-input")}>
+                <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all", push === "on" ? "right-0.5" : "right-[22px]")} />
+              </span>
+            </button>
+          )}
         </Card>
       </div>
 

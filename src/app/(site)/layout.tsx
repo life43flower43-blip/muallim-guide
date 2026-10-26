@@ -1,7 +1,6 @@
 // قالب صفحات الموقع العامة: رأس وتذييل بسيطان، وسكربت الإعلانات هنا وحده لا في التطبيق
 import Link from "next/link";
 import Script from "next/script";
-import { GraduationCap } from "lucide-react";
 
 const ADS = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 
@@ -12,8 +11,8 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex h-16 max-w-5xl items-center gap-4 px-4">
           <Link href="/learn" className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <GraduationCap className="h-5 w-5" />
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl overflow-hidden bg-white">
+<img src="/icons/logo-128.png" alt="" className="h-full w-full object-contain p-0.5" />
             </span>
             <span className="font-display text-lg font-bold text-primary">تربوي</span>
           </Link>
