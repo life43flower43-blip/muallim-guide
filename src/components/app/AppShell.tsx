@@ -12,7 +12,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
 import { Bell, Flame, Settings, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff } from "lucide-react";
-import { useApp, useAppHydrated } from "@/lib/store";
+import { useApp, useAppHydrated, xpToday, DAILY_GOAL_XP } from "@/lib/store";
 import { useUi, OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
 import { loadQbank } from "@/lib/qbank";
 import { readPeerHash } from "@/lib/peer";
@@ -154,6 +154,8 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
 // الشريط العلوي فاتح بلون خلفية التطبيق (ولون شريط حالة الهاتف): في الرئيسية الشعار والترحيب، وفي غيرها اسم الصفحة
 function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
   const { streak } = useWallet();
+  const sessions = useApp((s) => s.sessions);
+  const goal = Math.min(1, xpToday(sessions) / DAILY_GOAL_XP);
   const openSettings = () => {
     onTab("profile");
     setTimeout(() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT)), 50);
@@ -176,13 +178,26 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
       <div className="flex items-center justify-between gap-2 px-4 pb-3 pt-2">
         <span className="flex min-w-0 items-center gap-2 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icons/logo-128.png" alt="" className="h-12 w-12 shrink-0 rounded-2xl bg-white object-contain p-1 shadow-sm" />
-          <span className="whitespace-nowrap font-display text-[clamp(20px,6.8vw,28px)] font-extrabold leading-9">تربوي</span>
+          <img src="/icons/logo-128.png" alt="" className="h-12 w-12 shrink-0 rounded-2xl bg-white object-contain p-1 shadow-[0_2px_10px_-2px_rgba(227,169,59,0.55)] ring-1 ring-[#E3A93B]/50" />
+          <span className="shrink-0 whitespace-nowrap font-display text-[clamp(20px,6.8vw,28px)] font-extrabold leading-9">تربوي</span>
         </span>
         <span className="flex shrink-0 items-center gap-1">
-          <span className="flex items-center gap-0.5 rounded-full bg-white px-2 py-1.5 text-base font-extrabold text-[#B9821F] max-[380px]:hidden shadow-sm dark:bg-card" aria-label={`سلسلة ${ad(streak)} يوم`}>
-            <Flame className="h-5 w-5" fill="#E3A93B" stroke="#B9821F" strokeWidth={1.5} />
-            {ad(streak)}
+          <span className="flex items-center gap-1 rounded-full bg-white py-1 pl-2.5 pr-1 max-[400px]:hidden text-base font-extrabold text-[#B9821F] shadow-sm dark:bg-card" aria-label={`سلسلة ${ad(streak)} يوم، وهدف اليوم ${ad(Math.round(goal * 100))}٪`}>
+            {/* حلقة هدف اليوم تمتلئ بالذهبي حول الشعلة، وتتوهج عند اكتمالها */}
+            <span className={cn("relative h-8 w-8 rounded-full", goal >= 1 && "shadow-[0_0_10px_2px_rgba(245,196,81,0.7)]")}>
+              <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90" aria-hidden="true">
+                <defs>
+                  <linearGradient id="goalGold" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stopColor="#F5C451" />
+                    <stop offset="1" stopColor="#B9821F" />
+                  </linearGradient>
+                </defs>
+                <circle cx="18" cy="18" r="15" fill="none" stroke="#F3E7CB" strokeWidth="3.5" />
+                <circle cx="18" cy="18" r="15" fill="none" stroke="url(#goalGold)" strokeWidth="3.5" strokeLinecap="round" strokeDasharray={`${goal * 94.25} 94.25`} className="transition-[stroke-dasharray] duration-700" />
+              </svg>
+              <Flame className="absolute inset-0 m-auto h-4 w-4" fill="#E3A93B" stroke="#B9821F" strokeWidth={1.5} />
+            </span>
+            <span>{ad(streak)}</span>
           </span>
           <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#1F6F5C] shadow-sm dark:bg-card">
             <Bell className="h-5 w-5" strokeWidth={2.2} />
