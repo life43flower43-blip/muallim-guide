@@ -88,7 +88,6 @@ import {
   MasteryDot,
   MasteryLegend,
   OptionButton,
-  PageTitle,
   PrimaryButton,
   ProgressBar,
   ScreenShell,
@@ -837,7 +836,6 @@ export default function ConceptsView() {
 
   return (
     <div className="space-y-7 pb-6">
-      <PageTitle title="التعلّم" sub="اقرأ المفهوم، وتحقّق من فهمك، ثم تدرّب حتى تتقنه" />
 
       <div className="flex h-12 items-center gap-2 rounded-xl border border-input bg-card px-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
         <Search className="h-4 w-4 shrink-0 text-muted-foreground" />

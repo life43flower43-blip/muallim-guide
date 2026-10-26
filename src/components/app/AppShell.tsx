@@ -11,7 +11,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
-import { Settings, BookOpen, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff } from "lucide-react";
+import { Settings, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff } from "lucide-react";
 import { useApp, useAppHydrated } from "@/lib/store";
 import { useUi, OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
 import { loadQbank } from "@/lib/qbank";
@@ -45,13 +45,13 @@ import MatchGameView from "./MatchGameView";
 import FlashcardsView from "./FlashcardsView";
 import AiAssistantView from "./AiAssistantView";
 import BootBank from "./BootBank";
+import { ScreenShell } from "./ui-kit";
 import { GemBadge, StreakBadge } from "./ui-kit";
 
-export type Tab = "today" | "learn" | "notebook" | "practice" | "mistakes" | "profile";
+export type Tab = "today" | "notebook" | "practice" | "mistakes" | "profile";
 
 const NAV: { id: Tab; label: string; icon: React.ElementType }[] = [
   { id: "today", label: "الرئيسية", icon: House },
-  { id: "learn", label: "التعلّم", icon: BookOpen },
   { id: "notebook", label: "دفتري", icon: NotebookPen },
   { id: "practice", label: "التدريب", icon: PencilLine },
   { id: "mistakes", label: "أخطائي", icon: Target },
@@ -125,7 +125,7 @@ function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: 
 function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
   return (
     <nav aria-label="التنقل الرئيسي" className="safe-bottom rounded-t-[28px] bg-card px-2 pt-2 shadow-[0_-6px_20px_-12px_rgba(16,64,52,0.35)] lg:hidden">
-      <div className="grid grid-cols-6 gap-1">
+      <div className="grid grid-cols-5 gap-1">
         {NAV.map((n) => {
           const active = tab === n.id;
           return (
@@ -224,7 +224,7 @@ export default function AppShell() {
     const q = new URLSearchParams(window.location.search);
     const asked = q.get("tab");
     if (asked && NAV.some((n) => n.id === asked)) return asked as Tab;
-    return q.has("login") ? "profile" : q.has("concept") ? "learn" : "today";
+    return q.has("login") ? "profile" : "today";
   });
 
   const [bankLoaded, setBankLoaded] = useState(false);
@@ -353,7 +353,6 @@ export default function AppShell() {
               className="mx-auto w-full max-w-5xl px-4 pb-10 pt-5 lg:px-8 lg:pt-8"
             >
               {tab === "today" && <TodayView onGoTab={go} />}
-              {tab === "learn" && <ConceptsView />}
               {tab === "notebook" && <NotebookView />}
               {tab === "practice" && <PracticeView onGoTab={go} />}
               {tab === "mistakes" && <MistakesView onGoTab={go} />}
@@ -372,6 +371,11 @@ export default function AppShell() {
       <AnimatePresence>{ui.examsimOpen && <ExamSimView key="examsim" />}</AnimatePresence>
       <AnimatePresence>{ui.placementOpen && <PlacementView key="placement" />}</AnimatePresence>
       <AnimatePresence>{ui.matchOpen && <MatchGameView key="match" />}</AnimatePresence>
+      {ui.learnOpen && (
+        <ScreenShell title="المفاهيم التربوية" onClose={ui.clearLearn}>
+          <ConceptsView />
+        </ScreenShell>
+      )}
       {ui.flashOpen && <FlashcardsView />}
       <AnimatePresence>{ui.aiOpen && <AiAssistantView key="ai" />}</AnimatePresence>
     </div>
