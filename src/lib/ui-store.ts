@@ -31,6 +31,7 @@ interface UiState {
   placementOpen: boolean; // اختبار تحديد المستوى — تشخيص ثلاثي المستويات
   matchOpen: boolean; // لعبة المطابقة — مصطلح مقابل شرحه المصغّر
   flashOpen: boolean; // بطاقات المفاهيم — وضع بطاقات القلب
+  learnOpen: boolean; // شاشة المفاهيم التربوية (المحاور والفصول والمفاهيم)
   aiOpen: boolean; // المساعد الذكي — إجابات تربوية فورية من المحرك المحلي
   startQuiz: (c: QuizConfig) => void;
   clearQuiz: () => void;
@@ -67,6 +68,8 @@ interface UiState {
   clearFlash: () => void;
   startAi: () => void;
   clearAi: () => void;
+  startLearn: () => void;
+  clearLearn: () => void;
   /** يغلق كل الطبقات المفتوحة عند الانتقال بين الوجهات */
   closeOverlays: () => void;
 }
@@ -90,11 +93,12 @@ export const useUi = create<UiState>((set) => ({
   matchOpen: false,
   flashOpen: false,
   aiOpen: false,
+  learnOpen: false,
   startQuiz: (c) => set({ quizConfig: c }),
   clearQuiz: () => set({ quizConfig: null }),
-  openConcept: (id) => set({ pendingConceptId: id }),
+  openConcept: (id) => set({ pendingConceptId: id, learnOpen: true }),
   clearPendingConcept: () => set({ pendingConceptId: null }),
-  openCourseTab: (id) => set({ pendingCourseId: id }),
+  openCourseTab: (id) => set({ pendingCourseId: id, learnOpen: true }),
   clearPendingCourse: () => set({ pendingCourseId: null }),
   startScenarios: () => set({ scenariosOpen: true }),
   clearScenarios: () => set({ scenariosOpen: false }),
@@ -125,6 +129,8 @@ export const useUi = create<UiState>((set) => ({
   clearFlash: () => set({ flashOpen: false }),
   startAi: () => set({ aiOpen: true }),
   clearAi: () => set({ aiOpen: false }),
+  startLearn: () => set({ learnOpen: true }),
+  clearLearn: () => set({ learnOpen: false, pendingConceptId: null, pendingCourseId: null }),
   closeOverlays: () =>
     set({
       scenariosOpen: false,
@@ -141,6 +147,7 @@ export const useUi = create<UiState>((set) => ({
       matchOpen: false,
       flashOpen: false,
       aiOpen: false,
+      learnOpen: false,
     }),
 }));
 

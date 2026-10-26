@@ -11,7 +11,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
-import { Settings, BookOpen, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff } from "lucide-react";
+import { Bell, Flame, Settings, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff } from "lucide-react";
 import { useApp, useAppHydrated } from "@/lib/store";
 import { useUi, OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
 import { loadQbank } from "@/lib/qbank";
@@ -45,13 +45,13 @@ import MatchGameView from "./MatchGameView";
 import FlashcardsView from "./FlashcardsView";
 import AiAssistantView from "./AiAssistantView";
 import BootBank from "./BootBank";
+import { ScreenShell } from "./ui-kit";
 import { GemBadge, StreakBadge } from "./ui-kit";
 
-export type Tab = "today" | "learn" | "notebook" | "practice" | "mistakes" | "profile";
+export type Tab = "today" | "notebook" | "practice" | "mistakes" | "profile";
 
 const NAV: { id: Tab; label: string; icon: React.ElementType }[] = [
   { id: "today", label: "الرئيسية", icon: House },
-  { id: "learn", label: "التعلّم", icon: BookOpen },
   { id: "notebook", label: "دفتري", icon: NotebookPen },
   { id: "practice", label: "التدريب", icon: PencilLine },
   { id: "mistakes", label: "أخطائي", icon: Target },
@@ -125,7 +125,7 @@ function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: 
 function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
   return (
     <nav aria-label="التنقل الرئيسي" className="safe-bottom rounded-t-[28px] bg-card px-2 pt-2 shadow-[0_-6px_20px_-12px_rgba(16,64,52,0.35)] lg:hidden">
-      <div className="grid grid-cols-6 gap-1">
+      <div className="grid grid-cols-5 gap-1">
         {NAV.map((n) => {
           const active = tab === n.id;
           return (
@@ -152,8 +152,8 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
 }
 
 // الشريط العلوي فاتح بلون خلفية التطبيق (ولون شريط حالة الهاتف): في الرئيسية الشعار والترحيب، وفي غيرها اسم الصفحة
-function MobileTopBar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
-  const { user } = useAccount();
+function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
+  const { streak } = useWallet();
   const openSettings = () => {
     onTab("profile");
     setTimeout(() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT)), 50);
@@ -172,24 +172,26 @@ function MobileTopBar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
       </header>
     );
   return (
-    <header className="safe-top sticky top-0 z-30 bg-[#EAF4EF] text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
-      <div className="grid grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-2 px-4 pb-3 pt-2">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/icons/logo-128.png" alt="" className="h-12 w-12 rounded-2xl bg-white object-contain p-1 shadow-sm" />
-        <span className="text-center">
-          <span className="block font-display text-[28px] font-extrabold leading-9">تربوي</span>
+    <header className="safe-top sticky top-0 z-30 border-b border-[#D5E6DD] bg-[#EAF4EF] text-[#174D41] lg:hidden dark:border-border dark:bg-background dark:text-foreground">
+      <div className="flex items-center justify-between gap-2 px-4 pb-3 pt-2">
+        <span className="flex min-w-0 items-center gap-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/icons/logo-128.png" alt="" className="h-12 w-12 shrink-0 rounded-2xl bg-white object-contain p-1 shadow-sm" />
+          <span className="whitespace-nowrap font-display text-[clamp(20px,6.8vw,28px)] font-extrabold leading-9">تربوي</span>
         </span>
-        <span className="flex items-center gap-0.5">
-          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-10 w-10 items-center justify-center rounded-full text-[#1F6F5C] hover:bg-black/5">
-            <Settings className="h-6 w-6" strokeWidth={2.2} />
-          </button>
-          <button type="button" onClick={() => onTab("profile")} aria-label="حسابي" className="h-12 w-12 overflow-hidden rounded-full border-2 border-[#1F6F5C] bg-white">
-            {user?.avatar ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={user.avatar} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
-            ) : (
-              <CircleUser className="m-auto h-8 w-8 text-[#1F6F5C]" strokeWidth={1.8} />
+        <span className="flex shrink-0 items-center gap-1.5">
+          <span className="flex items-center gap-0.5 rounded-full bg-white px-2 py-1.5 text-base font-extrabold text-[#E8590C] shadow-sm dark:bg-card" aria-label={`سلسلة ${ad(streak)} يوم`}>
+            <Flame className="h-5 w-5" fill="#FF9600" stroke="#E8590C" strokeWidth={1.5} />
+            {ad(streak)}
+          </span>
+          <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#1F6F5C] shadow-sm dark:bg-card">
+            <Bell className="h-5 w-5" strokeWidth={2.2} />
+            {due > 0 && (
+              <span className="absolute -right-1 -top-1 min-w-[20px] rounded-full bg-destructive px-1 text-center text-[11px] font-bold leading-5 text-white">{ad(Math.min(due, 99))}</span>
             )}
+          </button>
+          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#1F6F5C] shadow-sm dark:bg-card">
+            <Settings className="h-5 w-5" strokeWidth={2.2} />
           </button>
         </span>
       </div>
@@ -224,7 +226,7 @@ export default function AppShell() {
     const q = new URLSearchParams(window.location.search);
     const asked = q.get("tab");
     if (asked && NAV.some((n) => n.id === asked)) return asked as Tab;
-    return q.has("login") ? "profile" : q.has("concept") ? "learn" : "today";
+    return q.has("login") ? "profile" : "today";
   });
 
   const [bankLoaded, setBankLoaded] = useState(false);
@@ -335,7 +337,7 @@ export default function AppShell() {
     <div className="flex h-dvh bg-background">
       <SideNav tab={tab} onTab={go} due={due} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <MobileTopBar tab={tab} onTab={go} />
+        <MobileTopBar tab={tab} onTab={go} due={due} />
         {!isOnline && (
           <div role="status" className="flex items-center justify-center gap-2 border-b border-border bg-gem-soft px-4 py-1.5 text-xs font-medium text-gem">
             <WifiOff className="h-3.5 w-3.5 shrink-0" />
@@ -353,7 +355,6 @@ export default function AppShell() {
               className="mx-auto w-full max-w-5xl px-4 pb-10 pt-5 lg:px-8 lg:pt-8"
             >
               {tab === "today" && <TodayView onGoTab={go} />}
-              {tab === "learn" && <ConceptsView />}
               {tab === "notebook" && <NotebookView />}
               {tab === "practice" && <PracticeView onGoTab={go} />}
               {tab === "mistakes" && <MistakesView onGoTab={go} />}
@@ -372,6 +373,11 @@ export default function AppShell() {
       <AnimatePresence>{ui.examsimOpen && <ExamSimView key="examsim" />}</AnimatePresence>
       <AnimatePresence>{ui.placementOpen && <PlacementView key="placement" />}</AnimatePresence>
       <AnimatePresence>{ui.matchOpen && <MatchGameView key="match" />}</AnimatePresence>
+      {ui.learnOpen && (
+        <ScreenShell title="المفاهيم التربوية" onClose={ui.clearLearn}>
+          <ConceptsView />
+        </ScreenShell>
+      )}
       {ui.flashOpen && <FlashcardsView />}
       <AnimatePresence>{ui.aiOpen && <AiAssistantView key="ai" />}</AnimatePresence>
     </div>
