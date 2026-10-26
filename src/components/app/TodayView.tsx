@@ -38,13 +38,8 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         className="relative block w-full overflow-hidden rounded-[24px] bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] px-4 py-3 text-right text-white shadow-[0_8px_24px_-12px_rgba(19,111,92,0.7)]"
       >
         <span className="flex items-center gap-4">
-          {/* العنوان وتحته الشريط مباشرة، والحلقة بجانبهما في الوسط */}
-          <span className="min-w-0 flex-1">
-            <FitText max={17} className="font-bold leading-6">مستوى الاستعداد للتدريس</FitText>
-            <span className="mt-2 block h-2 overflow-hidden rounded-full bg-white/20">
-              <span className="block h-full rounded-full bg-[#9BE8CF]" style={{ width: `${readiness}%` }} />
-            </span>
-          </span>
+          {/* العنوان في منتصف الحلقة رأسيًّا، والنسبة داخل الحلقة */}
+          <FitText max={17} className="flex-1 font-bold leading-6">مستوى الاستعداد للتدريس</FitText>
           <span className="relative h-12 w-12 shrink-0" aria-hidden="true">
             <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
               <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(255,255,255,.18)" strokeWidth="3.5" />
