@@ -590,7 +590,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               {combo >= 3 && !answered && (
                 <p className="mb-3 text-base font-bold text-[#E3A93B]">{ad(combo)} إجابات صحيحة متتالية!</p>
               )}
-              {concept && <p className="text-sm font-bold text-[#CE82FF]">{concept.title}</p>}
+              {concept && <p className="text-sm font-bold text-[#B8860B]">{concept.title}</p>}
               <h2 className="mt-2 font-display text-2xl font-bold leading-[1.75]">{q.question}</h2>
 
               <div className={q.type === "tf" ? "mt-8 grid grid-cols-2 gap-3" : "mt-8 space-y-3"}>

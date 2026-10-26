@@ -2,6 +2,7 @@
 
 // مختبر المعلّم — تدريب مهني على المواقف: قرار متفرع الأثر ← تحليل ← تأمل ← خريطة كفاءات
 // + اختبار الاستقلال: مواقف جديدة تُدار بلا تقييم أثناء القرار، والتحليل بعد الختام
+import { FitText } from "./FitText";
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -288,7 +289,7 @@ export default function LabView() {
   }
 
   const tabs = (
-    <div role="tablist" aria-label="أقسام المختبر" className="mb-6 grid grid-cols-4 rounded-xl bg-muted p-1">
+    <div role="tablist" aria-label="أقسام المختبر" className="mb-5 grid grid-cols-4 gap-1 rounded-[22px] border border-[#E3D3A0] bg-white p-1 dark:bg-card">
       {(
         [
           ["list", "المواقف", Dumbbell],
@@ -296,19 +297,18 @@ export default function LabView() {
           ["map", "الكفاءات", MapIcon],
           ["mirror", "تأملاتي", Eye],
         ] as const
-      ).map(([id, lbl, Icon]) => (
+      ).map(([id, lbl]) => (
         <button
           key={id}
           type="button"
           role="tab"
           aria-selected={tab === id}
           onClick={() => setTab(id)}
-          className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg text-sm transition-colors ${
-            tab === id ? "bg-card font-medium text-foreground shadow-sm" : "text-muted-foreground"
+          className={`flex min-h-[42px] min-w-0 items-center justify-center rounded-[18px] px-1 font-bold transition-colors ${
+            tab === id ? "bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] text-white" : "text-[#5D7A71]"
           }`}
         >
-          <Icon className="h-4 w-4" />
-          {lbl}
+          <FitText max={15} min={10} group="lab-tabs" className="text-center">{lbl}</FitText>
         </button>
       ))}
     </div>
@@ -321,18 +321,18 @@ export default function LabView() {
         key={s.id}
         type="button"
         onClick={() => startScenario(s, asExam)}
-        className="flex w-full items-start gap-3 px-4 py-4 text-right transition-colors hover:bg-muted/60"
+        className="flex w-full min-w-0 items-center gap-3 px-4 py-3.5 text-right transition-colors hover:bg-muted/60"
       >
         <IconTile icon={asExam ? ShieldCheck : FlaskConical} />
         <span className="min-w-0 flex-1">
-          <span className="block text-base font-medium leading-6">{s.title}</span>
+          <FitText max={17} min={12} className="font-bold leading-7">{s.title}</FitText>
           <span className="mt-2 flex flex-wrap gap-1.5">
             {!asExam && <Chip tone="primary">{s.skill}</Chip>}
             <Chip>{s.stage}</Chip>
             {st && <Chip>{st}</Chip>}
           </span>
         </span>
-        <ChevronLeft className="mt-2 h-4 w-4 shrink-0 text-muted-foreground/60" />
+        <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" />
       </button>
     );
   };
@@ -345,9 +345,6 @@ export default function LabView() {
 
       {tab === "list" && (
         <div className="space-y-5">
-          <p className="text-base leading-7 text-secondary-foreground">
-            تدخل موقفًا صفيًا، وتتخذ قراراتك خطوة بخطوة، فيتحول الموقف بأثرها. بعد كل قرار ترى تحليله، وفي النهاية تتأمل أداءك.
-          </p>
           <ListRowCard
             onClick={() => {
               clearLab();
