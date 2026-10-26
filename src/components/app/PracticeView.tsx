@@ -68,11 +68,11 @@ function ActionCard({ icon, title, sub, onClick, primary }: { icon: React.Elemen
       type="button"
       onClick={onClick}
       className={cn(
-        "flex min-h-[76px] items-center gap-3 rounded-2xl border-2 border-b-4 p-4 text-right transition active:translate-y-[2px] active:border-b-2",
-        primary ? "border-[color-mix(in_srgb,var(--primary)_70%,black)] bg-primary text-primary-foreground" : "border-border bg-card"
+        "flex min-h-[72px] items-center gap-3 rounded-[24px] border p-3.5 text-right transition active:scale-[0.98]",
+        primary ? "border-transparent bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] text-white" : "border-[#E2ECE7] bg-white text-[#174D41] dark:border-border dark:bg-card dark:text-foreground"
       )}
     >
-      <span className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-xl", primary ? "bg-white/15" : "bg-accent text-primary")}>
+      <span className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px]", primary ? "bg-white/15 text-[#FFE27A]" : "bg-[#FFF5D6] text-[#C99A06]")}>
         <Icon className="h-6 w-6" strokeWidth={2.2} />
       </span>
       <span className="min-w-0 flex-1">
@@ -110,35 +110,35 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       <PageTitle title="التدريب" sub="تدرّب على ما درسته، وقِس نفسك باختبارات بمستوى الاختبار الحقيقي" />
 
       {/* لوحة الأداء */}
       <Card className="p-5 lg:p-6">
         <div className="flex flex-wrap items-center gap-5">
-          <div className="grid min-w-[220px] flex-1 grid-cols-3 gap-3 text-center">
+          <div className="grid min-w-[220px] flex-1 grid-cols-3 divide-x divide-[#EADFBE] text-center">
             <div>
-              <p className="font-display text-xl font-bold">{ad(summary.answered)}</p>
-              <p className="text-xs text-muted-foreground">سؤالًا أجبت عنه</p>
+              <p className="font-display text-2xl font-extrabold text-[#136F5C]">{ad(summary.answered)}</p>
+              <p className="whitespace-nowrap text-sm font-bold text-[#7E978E]">أجبت</p>
             </div>
             <div>
-              <p className="font-display text-xl font-bold">{summary.accuracy === null ? "—" : pct(summary.accuracy)}</p>
-              <p className="text-xs text-muted-foreground">الدقة</p>
+              <p className="font-display text-2xl font-extrabold text-[#136F5C]">{summary.accuracy === null ? "—" : pct(summary.accuracy)}</p>
+              <p className="whitespace-nowrap text-sm font-bold text-[#7E978E]">الدقة</p>
             </div>
             <div>
-              <p className={cn("font-display text-xl font-bold", due > 0 && "text-destructive")}>{ad(due)}</p>
-              <p className="text-xs text-muted-foreground">خطأ مستحق</p>
+              <p className={cn("font-display text-2xl font-extrabold text-[#136F5C]", due > 0 && "text-destructive")}>{ad(due)}</p>
+              <p className="whitespace-nowrap text-sm font-bold text-[#7E978E]">للمراجعة</p>
             </div>
           </div>
         </div>
         <div className="mt-5">
           <div className="mb-1.5 flex justify-between text-sm text-muted-foreground">
-            <span>ما استخدمته من بنك الأسئلة</span>
+            <span className="whitespace-nowrap">ما استخدمته من بنك الأسئلة</span>
             <span>
               {ad(summary.answered)} من {ad(bank)}
             </span>
           </div>
-          <ProgressBar value={bank ? (summary.answered / bank) * 100 : 0} />
+          <ProgressBar value={bank ? (summary.answered / bank) * 100 : 0} color="#E3B23C" />
         </div>
         {weak.length > 0 && (
           <p className="mt-4 text-sm leading-6 text-muted-foreground">

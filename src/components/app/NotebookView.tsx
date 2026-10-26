@@ -11,6 +11,7 @@ import { CHAPTER_MAPS, COURSES, COURSE_SHORT, conceptById, conceptsOfCourse, typ
 import { cn } from "@/lib/utils";
 import type { Concept } from "@/lib/types";
 import { EmptyState, PageTitle, SecondaryButton } from "./ui-kit";
+import { FitText } from "./FitText";
 
 type Part = "maps" | "rules" | "notes";
 const PARTS: { id: Part; label: string }[] = [
@@ -33,7 +34,7 @@ function CausalMap({ map, color }: { map: ChapterMap; color: string }) {
             {ch.steps.map((st, k) => (
               <li key={k}>
                 <p
-                  className="rounded-xl border-2 border-b-4 bg-card px-3 py-2.5 text-center text-base font-bold leading-7"
+                  className="rounded-[18px] border-[1.5px] bg-white px-3 py-2.5 text-center text-base font-bold leading-7 dark:bg-card"
                   style={{ borderColor: k === 0 ? color : bc }}
                 >
                   {st}
@@ -58,7 +59,7 @@ function Rules({ concepts, color }: { concepts: Concept[]; color: string }) {
     <ol className="space-y-3">
       {concepts.map((c, i) => (
         <li key={c.id}>
-          <div className="flex w-full gap-3 rounded-2xl border-2 border-border bg-card p-4">
+          <div className="flex w-full gap-3 rounded-[22px] border border-[#E2ECE7] bg-white p-4 dark:border-border dark:bg-card">
             <span className="mt-2.5 h-3 w-3 shrink-0 rounded-full" style={{ background: color }} aria-hidden="true" />
             <span className="min-w-0 flex-1">
               <span className="block text-base font-bold leading-7">{c.title}</span>
@@ -104,7 +105,7 @@ export default function NotebookView() {
     <div className="mx-auto max-w-2xl space-y-5">
       <PageTitle title="دفتري" />
 
-      <div role="tablist" aria-label="أقسام الدفتر" className="grid grid-cols-3 gap-2">
+      <div role="tablist" aria-label="أقسام الدفتر" className="grid grid-cols-3 gap-1 rounded-[22px] border border-[#E3D3A0] bg-white p-1 dark:bg-card">
         {PARTS.map((p) => (
           <button
             key={p.id}
@@ -113,11 +114,11 @@ export default function NotebookView() {
             aria-selected={part === p.id}
             onClick={() => setPart(p.id)}
             className={cn(
-              "min-h-[48px] rounded-2xl border-2 border-b-4 text-base font-bold transition active:translate-y-[2px] active:border-b-2",
-              part === p.id ? "border-[#136F5C] bg-[#DCEFE5] text-[#0D5848] dark:bg-accent dark:text-accent-foreground" : "border-border bg-card text-secondary-foreground"
+              "min-h-[44px] min-w-0 rounded-[18px] px-1 font-bold transition active:scale-[0.98]",
+              part === p.id ? "bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] text-white" : "text-[#5D7A71]"
             )}
           >
-            {p.label}
+            <FitText max={16} min={10} group="nb-tabs" className="text-center">{p.label}</FitText>
           </button>
         ))}
       </div>
@@ -132,8 +133,7 @@ export default function NotebookView() {
                 setCourseId(c.id);
                 setChIndex(0);
               }}
-              className={cn("min-h-[40px] shrink-0 rounded-full border-2 px-4 text-sm font-bold transition-colors", courseId === c.id ? "text-white" : "border-border bg-card text-secondary-foreground")}
-              style={courseId === c.id ? { background: "#136F5C", borderColor: "#136F5C" } : undefined}
+              className={cn("min-h-[38px] shrink-0 whitespace-nowrap rounded-full border px-4 text-sm font-bold transition-colors", courseId === c.id ? "border-transparent bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] text-white" : "border-[#E3D3A0] bg-white text-[#5D7A71] dark:bg-card")}
             >
               {COURSE_SHORT[c.id] ?? c.name}
             </button>
@@ -162,10 +162,9 @@ export default function NotebookView() {
           <button
             type="button"
             onClick={() => setPicking(true)}
-            className="flex min-h-[60px] w-full items-center gap-3 rounded-2xl border-2 border-b-4 bg-card px-4 text-right transition active:translate-y-[2px] active:border-b-2"
-            style={{ borderColor: color }}
+            className="flex min-h-[56px] w-full items-center gap-3 rounded-[22px] border border-[#E2ECE7] bg-white px-4 text-right transition active:scale-[0.98] dark:bg-card"
           >
-            <span className="min-w-0 flex-1 text-lg font-bold leading-7">{chapterLabel(current.chapter)}</span>
+            <FitText max={18} min={11} className="flex-1 font-bold">{chapterLabel(current.chapter)}</FitText>
             <ChevronDown className="h-5 w-5 shrink-0" style={{ color }} />
           </button>
 

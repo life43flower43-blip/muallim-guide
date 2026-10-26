@@ -7,6 +7,7 @@
 // ثم الإحصاءات والإنجازات بمستويات، ثم الهدف وموعد الاختبار والإعدادات.
 // ============================================================================
 
+import { FitText } from "./FitText";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -320,12 +321,12 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
       ) : (
         <Card className="p-5">
           <div className="flex items-center gap-4">
-            <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
-              <UserRound className="h-8 w-8" />
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#DCEFE5] text-[#136F5C] ring-2 ring-[#F4D27A]">
+              <UserRound className="h-7 w-7" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="font-display text-lg font-semibold">ضيف</p>
-              <p className="mt-0.5 text-sm leading-6 text-muted-foreground">تقدمك محفوظ على هذا الجهاز فقط. ادخل بحساب Google لتتابع من أي جهاز، ولك ٥٠ جوهرة ترحيب.</p>
+              <p className="font-display text-lg font-bold">ضيف</p>
+              <FitText max={14} min={10} className="mt-0.5 text-muted-foreground">تقدمك محفوظ على هذا الجهاز فقط</FitText>
             </div>
           </div>
           <div className="mt-4">
