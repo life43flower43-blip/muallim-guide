@@ -80,7 +80,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       >
         <span className="flex items-center gap-4">
           {/* العنوان في منتصف الحلقة رأسيًّا، والنسبة داخل الحلقة */}
-          <FitText max={16} className="flex-1 font-bold leading-6">مستوى الاستعداد للتدريس</FitText>
+          <FitText max={16} className="flex-1 font-bold leading-6">مستوى استعدادك للتدريس</FitText>
           <span className="relative h-[40px] w-[40px] shrink-0" aria-hidden="true">
             <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
               <circle cx="18" cy="18" r="15.5" fill="none" stroke="#DCEFE5" strokeWidth="3.5" />
