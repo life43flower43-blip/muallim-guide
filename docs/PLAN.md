@@ -44,6 +44,8 @@
 - `NEXT_PUBLIC_ADSENSE_CLIENT`: معرّف ناشر AdSense (ca-pub-…) بعد قبول الموقع، واختياريًا `NEXT_PUBLIC_ADSENSE_SLOT`
 - `NEXT_PUBLIC_CONTACT_EMAIL`: بريد التواصل الظاهر في صفحة «اتصل بنا»
 - `JWT_SECRET`: نص عشوائي من ٣٢ حرفًا فأكثر (ضروري، وإلا خرج المستخدمون عند كل إعادة تشغيل)
+- `NEXT_PUBLIC_VAPID_PUBLIC_KEY` و`VAPID_PRIVATE_KEY`: مفتاحا الإشعارات (تُولَّد بـ `npx web-push generate-vapid-keys`)
+- `CRON_SECRET`: يحمي مسار التذكير اليومي `/api/push/cron` الذي يستدعيه مجدول Vercel كل يوم الساعة ١٦ بتوقيت غرينتش (vercel.json)
 - `GOOGLE_CLIENT_ID` و`GOOGLE_CLIENT_SECRET`: ضروريان، فالدخول بحساب Google وحده (قرار صاحبة التطبيق، كما في أوريندو). يُضاف في Google Cloud رابط العودة: `https://<نطاق التطبيق>/api/auth/google/callback`
 
 ## قرارات صاحبة التطبيق (١٨ أكتوبر ٢٠٢٦)

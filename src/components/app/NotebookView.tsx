@@ -5,13 +5,12 @@
 // ============================================================================
 
 import { useMemo, useState } from "react";
-import { ArrowDown, ChevronDown, StickyNote } from "lucide-react";
+import { ArrowDown, ChevronDown, ChevronLeft, ChevronRight, StickyNote } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { CHAPTER_MAPS, COURSES, COURSE_COLOR, COURSE_SHORT, conceptById, conceptsOfCourse, type ChapterMap } from "@/lib/qbank";
-import { ad, arCount, CONCEPT_FORMS } from "@/lib/arabic";
 import { cn } from "@/lib/utils";
 import type { Concept } from "@/lib/types";
-import { EmptyState, PageTitle } from "./ui-kit";
+import { EmptyState, PageTitle, SecondaryButton } from "./ui-kit";
 
 type Part = "maps" | "rules" | "notes";
 const PARTS: { id: Part; label: string }[] = [
@@ -60,9 +59,7 @@ function Rules({ concepts, color }: { concepts: Concept[]; color: string }) {
       {concepts.map((c, i) => (
         <li key={c.id}>
           <div className="flex w-full gap-3 rounded-2xl border-2 border-border bg-card p-4">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white" style={{ background: color }}>
-              {ad(i + 1)}
-            </span>
+            <span className="mt-2.5 h-3 w-3 shrink-0 rounded-full" style={{ background: color }} aria-hidden="true" />
             <span className="min-w-0 flex-1">
               <span className="block text-base font-bold leading-7">{c.title}</span>
               <span className="mt-1 block text-base leading-8 text-secondary-foreground">{c.rule}</span>
@@ -79,7 +76,8 @@ export default function NotebookView() {
   const notes = useApp((s) => s.notes);
   const [courseId, setCourseId] = useState(lastStudy?.courseId ?? COURSES[0]?.id ?? "M1");
   const [part, setPart] = useState<Part>("maps");
-  const [openCh, setOpenCh] = useState<string | null>(null);
+  const [chIndex, setChIndex] = useState(0);
+  const [picking, setPicking] = useState(false);
 
   const chapters = useMemo(() => {
     const out: { chapter: string; concepts: Concept[] }[] = [];
@@ -91,6 +89,7 @@ export default function NotebookView() {
     return out;
   }, [courseId]);
   const color = COURSE_COLOR[courseId] ?? "var(--primary)";
+  const current = chapters[Math.min(chIndex, chapters.length - 1)];
 
   const myNotes = useMemo(
     () =>
@@ -131,7 +130,7 @@ export default function NotebookView() {
               type="button"
               onClick={() => {
                 setCourseId(c.id);
-                setOpenCh(null);
+                setChIndex(0);
               }}
               className={cn("min-h-[40px] shrink-0 rounded-full border-2 px-4 text-sm font-bold transition-colors", courseId === c.id ? "text-white" : "border-border bg-card text-secondary-foreground")}
               style={courseId === c.id ? { background: COURSE_COLOR[c.id], borderColor: COURSE_COLOR[c.id] } : undefined}
@@ -157,39 +156,64 @@ export default function NotebookView() {
             ))}
           </ul>
         )
-      ) : (
-        <div className="space-y-3">
-          {chapters.map(({ chapter, concepts }) => {
-            const open = openCh === chapter;
-            return (
-              <section key={chapter} className="overflow-hidden rounded-2xl border-2 border-border bg-card">
-                <button type="button" onClick={() => setOpenCh(open ? null : chapter)} aria-expanded={open} className="flex min-h-[64px] w-full items-center gap-3 px-4 py-3 text-right">
-                  <span className="h-9 w-1.5 shrink-0 rounded-full" style={{ background: color }} aria-hidden="true" />
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-base font-bold leading-7">{chapterLabel(chapter)}</span>
-                    <span className="block text-sm text-muted-foreground">{arCount(concepts.length, CONCEPT_FORMS)}</span>
-                  </span>
-                  <ChevronDown className={cn("h-5 w-5 shrink-0 text-muted-foreground transition-transform", open && "rotate-180")} />
-                </button>
-                {open && (
-                  <div className="border-t-2 border-border p-3">
-                    {part === "maps" ? (
-                      CHAPTER_MAPS[`${courseId}::${chapter}`] ? (
-                        <CausalMap map={CHAPTER_MAPS[`${courseId}::${chapter}`]} color={color} />
-                      ) : (
-                        <p className="p-3 text-center text-sm text-muted-foreground">خريطة هذا الفصل قيد الإعداد</p>
-                      )
-                    ) : (
-                      <Rules concepts={concepts} color={color} />
-                    )}
-                  </div>
-                )}
-              </section>
-            );
-          })}
-        </div>
-      )}
+      ) : current ? (
+        <div className="space-y-4">
+          {/* الفصل الحالي: يُختار من قائمة، ويظهر محتواه مباشرة */}
+          <button
+            type="button"
+            onClick={() => setPicking(true)}
+            className="flex min-h-[60px] w-full items-center gap-3 rounded-2xl border-2 border-b-4 bg-card px-4 text-right transition active:translate-y-[2px] active:border-b-2"
+            style={{ borderColor: color }}
+          >
+            <span className="min-w-0 flex-1 text-lg font-bold leading-7">{chapterLabel(current.chapter)}</span>
+            <ChevronDown className="h-5 w-5 shrink-0" style={{ color }} />
+          </button>
 
+          {part === "maps" ? (
+            CHAPTER_MAPS[`${courseId}::${current.chapter}`] ? (
+              <CausalMap map={CHAPTER_MAPS[`${courseId}::${current.chapter}`]} color={color} />
+            ) : (
+              <p className="p-3 text-center text-sm text-muted-foreground">خريطة هذا الفصل قيد الإعداد</p>
+            )
+          ) : (
+            <Rules concepts={current.concepts} color={color} />
+          )}
+
+          <div className="grid grid-cols-2 gap-3">
+            <SecondaryButton disabled={chIndex <= 0} onClick={() => setChIndex(chIndex - 1)}>
+              <ChevronRight className="h-5 w-5" /> السابق
+            </SecondaryButton>
+            <SecondaryButton disabled={chIndex >= chapters.length - 1} onClick={() => setChIndex(chIndex + 1)}>
+              التالي <ChevronLeft className="h-5 w-5" />
+            </SecondaryButton>
+          </div>
+
+          {picking && (
+            <div className="fixed inset-0 z-50 flex items-end bg-black/40" onClick={() => setPicking(false)}>
+              <div className="safe-bottom max-h-[75dvh] w-full overflow-y-auto rounded-t-3xl bg-card p-4" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="اختر الفصل">
+                <span className="mx-auto mb-3 block h-1.5 w-12 rounded-full bg-border" aria-hidden="true" />
+                <ul className="space-y-2">
+                  {chapters.map(({ chapter }, i) => (
+                    <li key={chapter}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setChIndex(i);
+                          setPicking(false);
+                        }}
+                        className={cn("min-h-[52px] w-full rounded-2xl border-2 px-4 text-right text-base font-bold", i === chIndex ? "text-white" : "border-border")}
+                        style={i === chIndex ? { background: color, borderColor: color } : undefined}
+                      >
+                        {chapterLabel(chapter)}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }
