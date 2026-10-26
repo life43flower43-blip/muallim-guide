@@ -124,7 +124,7 @@ function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: 
 
 function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
   return (
-    <nav aria-label="التنقل الرئيسي" className="safe-bottom rounded-t-[28px] bg-card px-2 pt-2 shadow-[0_-6px_20px_-12px_rgba(16,64,52,0.35)] lg:hidden">
+    <nav aria-label="التنقل الرئيسي" className="nav-gold safe-bottom rounded-t-[28px] px-2 pt-2 shadow-[0_-6px_20px_-12px_rgba(16,64,52,0.35)] lg:hidden">
       <div className="grid grid-cols-5 gap-1">
         {NAV.map((n) => {
           const active = tab === n.id;
@@ -134,10 +134,10 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
               type="button"
               onClick={() => onTab(n.id)}
               aria-current={active ? "page" : undefined}
-              className={cn("relative flex min-h-[60px] flex-col items-center justify-center gap-1 rounded-2xl pb-1.5 pt-1.5 transition-colors", active && "bg-[#DCEFE5] dark:bg-accent")}
+              className={cn("relative flex min-h-[60px] flex-col items-center justify-center gap-1 rounded-[20px] pb-1.5 pt-1.5 transition-all duration-200", active ? "-translate-y-1 bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] shadow-[0_8px_16px_-8px_rgba(19,111,92,0.85)]" : "active:scale-95")}
             >
-              <n.icon className={cn("h-6 w-6", active ? "text-[#136F5C] dark:text-primary" : "text-[#5D7A71]")} strokeWidth={active ? 2.4 : 1.8} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.15 : 0} />
-              <span className={cn("text-xs", active ? "font-bold text-[#136F5C] dark:text-primary" : "text-[#5D7A71]")}>{n.label}</span>
+              <n.icon className={cn("h-6 w-6", active ? "text-[#FFD95A] drop-shadow-[0_0_4px_rgba(255,215,0,0.55)]" : "text-[#2F7F6A] dark:text-primary")} strokeWidth={active ? 2.4 : 1.9} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.2 : 0} />
+              <span className={cn("text-xs", active ? "font-bold text-white" : "font-medium text-[#2F7F6A] dark:text-primary")}>{n.label}</span>
               {n.id === "mistakes" && due > 0 && (
                 <span className="absolute right-1/2 top-1 translate-x-5 rounded-full bg-destructive px-1.5 text-[10px] font-semibold leading-4 text-white">
                   {ad(Math.min(due, 99))}
