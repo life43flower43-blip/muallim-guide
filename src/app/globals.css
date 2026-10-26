@@ -533,16 +533,11 @@ body {
   color: #fff;
 }
 
-/* الشريط السفلي: حافة علوية بخط ذهبي رفيع */
+/* الشريط السفلي العائم: إطار ذهبي رفيع */
 .nav-gold {
-  border-top: 2px solid transparent;
+  border: 1.5px solid transparent;
   background:
     linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(90deg, #D4AF37, #FFE680 25%, #F4C430 50%, #FFE680 75%, #D4AF37) border-box;
-}
-.dark .nav-gold {
-  background:
-    linear-gradient(var(--card), var(--card)) padding-box,
     linear-gradient(90deg, #D4AF37, #FFE680 25%, #F4C430 50%, #FFE680 75%, #D4AF37) border-box;
 }
 .dark .nav-gold {
