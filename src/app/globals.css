@@ -488,7 +488,7 @@ body {
   height: 3px;
   background: linear-gradient(90deg, #D4AF37, #F7D774 20%, #FFF8DC 35%, #F4C430 50%, #D4AF37 65%, #FFE88A 80%, #D4AF37);
   background-size: 200% 100%;
-  box-shadow: 0 1px 3px rgba(244, 196, 48, 0.5);
+  
   animation: gold-shine 6s linear infinite;
   pointer-events: none;
 }
@@ -508,7 +508,7 @@ body {
     linear-gradient(#F8FCFA, #F8FCFA) padding-box,
     linear-gradient(115deg, #C9A227, #F4D03F 14%, #FFF6CC 24%, #FFD700 34%, #D4AF37 48%, #FFE680 62%, #FFFBE6 70%, #F4C430 82%, #C9A227) border-box;
   background-size: 100% 100%, 300% 100%;
-  box-shadow: 0 8px 20px -10px rgba(212, 175, 55, 0.7), 0 0 0 1px rgba(255, 236, 160, 0.35);
+  box-shadow: 0 4px 12px -8px rgba(16, 64, 52, 0.25);
   animation: gold-flow 7s linear infinite;
 }
 .dark .gold-frame {
