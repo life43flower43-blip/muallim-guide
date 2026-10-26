@@ -30,17 +30,17 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   ];
 
   return (
-    <div className="mx-auto max-w-2xl space-y-3">
+    <div className="mx-auto -mt-3 max-w-2xl space-y-3 lg:mt-0">
       {/* مستوى الاستعداد */}
       <button
         type="button"
         onClick={() => onGoTab("practice")}
-        className="relative block w-full overflow-hidden gold-frame !rounded-[24px] px-4 py-3 text-right text-[#174D41] dark:text-foreground"
+        className="relative block w-full overflow-hidden gold-frame !rounded-[20px] px-4 py-[6px] text-right text-[#174D41] dark:text-foreground"
       >
         <span className="flex items-center gap-4">
           {/* العنوان في منتصف الحلقة رأسيًّا، والنسبة داخل الحلقة */}
-          <FitText max={17} className="flex-1 font-bold leading-6">مستوى الاستعداد للتدريس</FitText>
-          <span className="relative h-12 w-12 shrink-0" aria-hidden="true">
+          <FitText max={16} className="flex-1 font-bold leading-6">مستوى الاستعداد للتدريس</FitText>
+          <span className="relative h-[40px] w-[40px] shrink-0" aria-hidden="true">
             <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
               <circle cx="18" cy="18" r="15.5" fill="none" stroke="#DCEFE5" strokeWidth="3.5" />
               <circle cx="18" cy="18" r="15.5" fill="none" stroke="#136F5C" strokeWidth="3.5" strokeLinecap="round" strokeDasharray={`${(readiness / 100) * 97.4} 97.4`} />
