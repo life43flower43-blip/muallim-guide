@@ -34,22 +34,22 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       <button
         type="button"
         onClick={() => onGoTab("practice")}
-        className="relative block w-full overflow-hidden rounded-[28px] bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] p-4 text-right text-white shadow-[0_8px_24px_-12px_rgba(19,111,92,0.7)]"
+        className="relative block w-full overflow-hidden rounded-[24px] bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] px-4 py-3 text-right text-white shadow-[0_8px_24px_-12px_rgba(19,111,92,0.7)]"
       >
         <span className="flex items-center gap-4">
           {/* العنوان وتحته الشريط مباشرة، والحلقة بجانبهما في الوسط */}
           <span className="min-w-0 flex-1">
-            <span className="block text-lg font-bold leading-7">مستوى الاستعداد للتدريس</span>
-            <span className="mt-2.5 block h-2.5 overflow-hidden rounded-full bg-white/20">
+            <span className="block text-base font-bold leading-6">مستوى الاستعداد للتدريس</span>
+            <span className="mt-2 block h-2 overflow-hidden rounded-full bg-white/20">
               <span className="block h-full rounded-full bg-[#9BE8CF]" style={{ width: `${readiness}%` }} />
             </span>
           </span>
-          <span className="relative h-16 w-16 shrink-0" aria-hidden="true">
+          <span className="relative h-12 w-12 shrink-0" aria-hidden="true">
             <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
               <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(255,255,255,.18)" strokeWidth="3.5" />
               <circle cx="18" cy="18" r="15.5" fill="none" stroke="#9BE8CF" strokeWidth="3.5" strokeLinecap="round" strokeDasharray={`${(readiness / 100) * 97.4} 97.4`} />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-sm font-extrabold">{ad(readiness)}٪</span>
+            <span className="absolute inset-0 flex items-center justify-center text-xs font-extrabold">{ad(readiness)}٪</span>
           </span>
         </span>
       </button>
