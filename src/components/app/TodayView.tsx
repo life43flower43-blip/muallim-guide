@@ -6,7 +6,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { useApp } from "@/lib/store";
+import { cn } from "@/lib/utils";
+import { dayStr, dayXpOf, useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { CONCEPTS, conceptsOfCourse } from "@/lib/qbank";
 import { overallReadiness } from "@/lib/practice-bank";
@@ -60,6 +61,21 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
     };
   }, [conceptReads]);
 
+  // أيام الأسبوع من السبت إلى الجمعة: يمتلئ بالذهبي كل يوم درست فيه الطالبة
+  const sessions = useApp((s) => s.sessions);
+  const week = useMemo(() => {
+    const now = new Date();
+    const start = new Date(now);
+    start.setDate(now.getDate() - ((now.getDay() + 1) % 7));
+    const today = dayStr(now);
+    return ["س", "ح", "ن", "ث", "ر", "خ", "ج"].map((label, i) => {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      const key = dayStr(d);
+      return { label, done: dayXpOf(sessions, key) > 0, today: key === today, future: key > today };
+    });
+  }, [sessions]);
+
   const doors: Door[] = [
     { title: "المفاهيم التربوية", img: "/home/concepts-v2.jpg", progress: prog.concepts, run: ui.startLearn },
     { title: "مهارات التدريس", img: "/home/skills-v2.jpg", progress: frac(labCount, 20), run: ui.startLab },
@@ -89,6 +105,26 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           </span>
         </span>
       </button>
+
+      {/* شريط الأسبوع: كبسولة بسبع دوائر، يصل بينها خيط ذهبي في الأيام المتتالية التي درست فيها الطالبة */}
+      <div className="flex items-center rounded-full border border-[#E3D3A0] bg-white px-2 py-1.5 dark:bg-card" aria-label="أيام دراستك هذا الأسبوع">
+        {week.map((d, i) => (
+          <span key={d.label} className="flex flex-1 items-center last:flex-none">
+            <span
+              className={cn(
+                "flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-full text-[12px] font-extrabold",
+                d.done ? "bg-gradient-to-br from-[#FFE27A] to-[#C99A06] text-white" : d.future ? "border border-dashed border-[#C9DDD3] text-[#9DB5AB]" : "bg-[#EEF5F1] text-[#7E978E]",
+                d.today && "ring-2 ring-[#136F5C] ring-offset-1"
+              )}
+            >
+              {d.label}
+            </span>
+            {i < week.length - 1 && (
+              <span className={cn("mx-0.5 h-[3px] flex-1 rounded-full", d.done && week[i + 1].done ? "bg-gradient-to-l from-[#F4C430] to-[#C99A06]" : "bg-[#E6EEEA]")} aria-hidden="true" />
+            )}
+          </span>
+        ))}
+      </div>
 
       {/* أبواب التطبيق */}
       <div ref={gridRef} className="-mx-1 grid grid-cols-2 gap-2.5">
