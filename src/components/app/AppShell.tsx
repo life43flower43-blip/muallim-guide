@@ -188,7 +188,7 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
         <span className="flex min-w-0 items-center gap-2 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/icons/logo-128.png" alt="" className="h-11 w-11 shrink-0 rounded-[14px] bg-white object-contain p-0.5 ring-1 ring-[#F4C430]/70" />
-          <span className="shrink-0 whitespace-nowrap font-display text-[clamp(20px,6.8vw,28px)] font-extrabold leading-9">تربوي</span>
+          <span className="shrink-0 whitespace-nowrap font-display text-[clamp(20px,6.8vw,28px)] font-extrabold leading-9 bg-gradient-to-b from-[#FFF3B0] via-[#F4C430] to-[#D9A400] bg-clip-text text-transparent">تربوي</span>
         </span>
         <span className="flex shrink-0 items-center gap-1">
           <span className="flex items-center gap-1 rounded-full bg-white p-[4px] max-[360px]:hidden text-base font-extrabold text-[#D19B00] dark:bg-card" aria-label={`هدف اليوم ${ad(Math.round(goal * 100))}٪`}>
