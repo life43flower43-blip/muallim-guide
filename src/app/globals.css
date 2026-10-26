@@ -628,3 +628,31 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .card-wave { animation: none; display: none; }
 }
+
+/* شريط اختبار المحاكاة: لمعة ذهبية تعبره كل بضع ثوانٍ، وعقرب الساعة يدور */
+.exam-cta {
+  border: 1.5px solid #E3B23C;
+}
+.exam-cta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 226, 122, 0.28) 50%, transparent 60%);
+  background-size: 250% 100%;
+  animation: exam-shine 4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes exam-shine {
+  0%, 30% { background-position: 120% 0; }
+  70%, 100% { background-position: -120% 0; }
+}
+.exam-hand {
+  transform-origin: 12px 13px;
+  animation: exam-tick 6s steps(12) infinite;
+}
+@keyframes exam-tick {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .exam-cta::after, .exam-hand { animation: none; }
+}

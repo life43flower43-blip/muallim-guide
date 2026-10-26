@@ -50,7 +50,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       const nav = document.getElementById("bottom-nav");
       if (!g || !nav || window.innerWidth >= 1024) return setCardH(null);
       const avail = nav.getBoundingClientRect().top - g.getBoundingClientRect().top - 10;
-      setCardH(Math.max(96, Math.min(210, (avail - 2 * 10) / 3)));
+      setCardH(Math.max(72, Math.min(210, (avail - 2 * 10) / 3)));
     };
     fit();
     const t = setTimeout(fit, 350);
@@ -164,13 +164,35 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         ))}
       </motion.div>
 
+      {/* اختبار المحاكاة: شريط أخضر داكن بساعة ذهبية تدق ولمعة تعبره، مختلف عن البطاقات المصوّرة */}
+      <motion.button
+        {...rise(2)}
+        type="button"
+        whileTap={{ scale: 0.97 }}
+        onClick={() => {
+          tick();
+          ui.startExamsim();
+        }}
+        className="exam-cta relative flex w-full items-center gap-3 overflow-hidden rounded-[22px] bg-gradient-to-l from-[#1C5E4F] via-[#174D41] to-[#0F3D33] py-1.5 pl-1.5 pr-2 text-right text-white"
+      >
+        <span className="relative flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#FFE27A] to-[#C99A06]" aria-hidden="true">
+          <svg viewBox="0 0 24 24" className="h-5 w-5">
+            <circle cx="12" cy="13" r="8" fill="none" stroke="#174D41" strokeWidth="2" />
+            <path d="M10 2.5h4M12 2.5V5" stroke="#174D41" strokeWidth="2" strokeLinecap="round" />
+            <path className="exam-hand" d="M12 13V8.5" stroke="#174D41" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </span>
+        <FitText max={17} min={12} className="flex-1 font-extrabold leading-6">اختبار محاكاة</FitText>
+        <span className="shrink-0 rounded-full bg-gradient-to-l from-[#FFE27A] to-[#E3B23C] px-3.5 py-1 text-[13px] font-extrabold leading-5 text-[#174D41]">ابدأ</span>
+      </motion.button>
+
       {/* أبواب التطبيق */}
       <div ref={gridRef} className="-mx-1 grid grid-cols-2 gap-2.5">
         {doors.map((d, i) => (
           <motion.button
             key={d.title}
             type="button"
-            {...rise(2 + i)}
+            {...rise(3 + i)}
             whileTap={{ scale: 0.95 }}
             onClick={() => {
               if (pressed) return;
