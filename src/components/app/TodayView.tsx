@@ -53,11 +53,11 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       {/* أبواب التطبيق */}
       <div className="-mx-1 grid grid-cols-2 gap-2.5">
         {doors.map((d) => (
-          <button key={d.title} type="button" onClick={d.run} className="overflow-hidden rounded-[26px] bg-white pb-1.5 text-right shadow-[0_8px_22px_-14px_rgba(16,64,52,0.5)] transition active:scale-[0.97] dark:bg-card">
+          <button key={d.title} type="button" onClick={d.run} className="overflow-hidden rounded-[26px] bg-white pb-1.5 text-right transition active:scale-[0.97] dark:bg-card">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={d.img} alt="" className="h-[clamp(64px,calc((100dvh-440px)/3),130px)] w-full object-cover" />
             {/* لوحة العنوان طافية فوق الصورة، والأيقونة على حافتها، فيأخذ العنوان العرض كله */}
-            <span className="relative mx-1 -mt-7 flex min-h-[50px] items-center rounded-[20px] bg-white py-2 pl-[46px] pr-3 shadow-[0_2px_10px_-4px_rgba(16,64,52,0.35)] dark:bg-card">
+            <span className="relative mx-1 -mt-7 flex min-h-[50px] items-center rounded-[20px] bg-white py-2 pl-[46px] pr-3 dark:bg-card">
               <span className="absolute left-2 top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-[10px] bg-[#FFF5D6] text-[#D9A400] dark:bg-[#E3A93B]/15 dark:text-[#F5C451]">
                 <d.icon className="h-[17px] w-[17px]" strokeWidth={2} />
               </span>
