@@ -153,7 +153,7 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
 
 // الشريط العلوي فاتح بلون خلفية التطبيق (ولون شريط حالة الهاتف): في الرئيسية الشعار والترحيب، وفي غيرها اسم الصفحة
 function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
-  const { streak } = useWallet();
+  // الشعلة بلا رقم: حلقة هدف اليوم وحدها
   const sessions = useApp((s) => s.sessions);
   const goal = Math.min(1, xpToday(sessions) / DAILY_GOAL_XP);
   const openSettings = () => {
@@ -162,11 +162,11 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
   };
   if (tab !== "today")
     return (
-      <header className="safe-top sticky top-0 z-30 gold-line bg-[#EAF4EF] text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
-        <div className="relative flex h-14 items-center justify-center px-14">
+      <header className="safe-top sticky top-0 z-30 bg-[#EAF4EF] px-2 pb-3 pt-1.5 text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
+        <div className="gold-frame flex h-14 items-center justify-center px-14">
           <h1 className="font-display text-xl font-extrabold">{NAV.find((n) => n.id === tab)?.label}</h1>
           {tab === "profile" && (
-            <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="absolute left-2 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
+            <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="absolute left-1.5 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
               <Settings className="h-6 w-6" strokeWidth={2.2} />
             </button>
           )}
@@ -174,15 +174,15 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
       </header>
     );
   return (
-    <header className="safe-top sticky top-0 z-30 gold-line bg-[#EAF4EF] text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
-      <div className="flex items-center justify-between gap-2 px-4 pb-3 pt-2">
+    <header className="safe-top sticky top-0 z-30 bg-[#EAF4EF] px-2 pb-3 pt-1.5 text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
+      <div className="gold-frame flex items-center justify-between gap-2 px-2.5 py-2">
         <span className="flex min-w-0 items-center gap-2 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/icons/logo-128.png" alt="" className="h-12 w-12 shrink-0 rounded-2xl bg-white object-contain p-1 shadow-[0_2px_10px_-2px_rgba(244,196,48,0.6)] ring-1 ring-[#F4C430]/70" />
           <span className="shrink-0 whitespace-nowrap font-display text-[clamp(20px,6.8vw,28px)] font-extrabold leading-9">تربوي</span>
         </span>
         <span className="flex shrink-0 items-center gap-1">
-          <span className="flex items-center gap-1 rounded-full bg-white py-1 pl-2.5 pr-1 max-[400px]:hidden text-base font-extrabold text-[#D19B00] shadow-sm dark:bg-card" aria-label={`سلسلة ${ad(streak)} يوم، وهدف اليوم ${ad(Math.round(goal * 100))}٪`}>
+          <span className="flex items-center gap-1 rounded-full bg-white p-1 max-[360px]:hidden text-base font-extrabold text-[#D19B00] shadow-sm dark:bg-card" aria-label={`هدف اليوم ${ad(Math.round(goal * 100))}٪`}>
             {/* حلقة هدف اليوم تمتلئ بالذهبي حول الشعلة، وتتوهج عند اكتمالها */}
             <span className={cn("relative h-8 w-8 rounded-full", goal >= 1 && "shadow-[0_0_10px_2px_rgba(245,196,81,0.7)]")}>
               <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90" aria-hidden="true">
@@ -197,7 +197,7 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
               </svg>
               <Flame className="absolute inset-0 m-auto h-4 w-4" fill="#F7C934" stroke="#E0A800" strokeWidth={1.5} />
             </span>
-            <span>{ad(streak)}</span>
+            
           </span>
           <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#1F6F5C] shadow-sm dark:bg-card">
             <Bell className="h-5 w-5" strokeWidth={2.2} />

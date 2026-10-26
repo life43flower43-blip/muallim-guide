@@ -243,8 +243,8 @@ export function ScreenShell({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
-      <header className="safe-top relative shrink-0 gold-line bg-[#EAF4EF] text-[#174D41] dark:bg-background dark:text-foreground">
-        <div className={cn("mx-auto flex min-h-[60px] items-center gap-2 px-2", wide ? "max-w-5xl" : "max-w-3xl")}>
+      <header className="safe-top shrink-0 bg-[#EAF4EF] px-2 pb-3 pt-1.5 text-[#174D41] dark:bg-background dark:text-foreground">
+        <div className={cn("gold-frame mx-auto flex min-h-[56px] items-center gap-2 px-1", wide ? "max-w-5xl" : "max-w-3xl")}>
           {onBack ? (
             <button type="button" onClick={onBack} aria-label="رجوع" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#174D41] hover:bg-black/5 dark:text-foreground">
               <ArrowRight className="h-6 w-6" strokeWidth={2.5} />
