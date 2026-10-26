@@ -550,7 +550,8 @@ body {
     radial-gradient(120% 90% at 85% -20%, rgba(255, 255, 255, 0.16), transparent 55%),
     radial-gradient(70% 80% at 0% 120%, rgba(244, 196, 48, 0.14), transparent 60%),
     linear-gradient(180deg, #2A7A66, #3A927B);
-  border-radius: 0 0 32px 32px;
-  border-bottom: 2px solid #F4D27A;
+  /* انحناء سفلي ناعم ممتد على العرض كله بدل الزوايا */
+  border-radius: 0 0 50% 50% / 0 0 22px 22px;
+  border-bottom: 1.5px solid rgba(244, 210, 122, 0.85);
   color: #fff;
 }
