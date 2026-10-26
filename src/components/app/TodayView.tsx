@@ -5,7 +5,7 @@
 // ============================================================================
 
 import { useMemo } from "react";
-import { Brain, CalendarDays, ChevronLeft, ClipboardList, Network, Presentation, Star, Users } from "lucide-react";
+import { Brain, CalendarDays, ClipboardList, Network, Presentation, Star, Users } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { overallReadiness } from "@/lib/practice-bank";
@@ -34,26 +34,28 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       <button
         type="button"
         onClick={() => onGoTab("practice")}
-        className="relative flex w-full items-center gap-2.5 overflow-hidden rounded-[28px] bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] p-4 text-right text-white shadow-[0_8px_24px_-12px_rgba(19,111,92,0.7)]"
+        className="relative block w-full overflow-hidden rounded-[28px] bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] p-4 text-right text-white shadow-[0_8px_24px_-12px_rgba(19,111,92,0.7)]"
       >
-        <span className="min-w-0 flex-1">
-          <span className="flex items-center gap-1.5 whitespace-nowrap text-[17px] font-bold">
-            <Star className="h-5 w-5 shrink-0" fill="#F5C451" stroke="#F5C451" /> مستوى الاستعداد
+        <span className="flex items-center gap-3">
+          <span className="min-w-0 flex-1">
+            <span className="flex items-center gap-1.5 text-lg font-bold leading-7">
+              <Star className="h-5 w-5 shrink-0" fill="#F5C451" stroke="#F5C451" /> مستوى الاستعداد
+            </span>
+            <span className="block text-sm text-white/80">للتدريس</span>
           </span>
-          <span className="block text-sm text-white/80">للتدريس</span>
-          <span className="mt-3 block h-2.5 overflow-hidden rounded-full bg-white/20">
-            <span className="block h-full rounded-full bg-[#9BE8CF]" style={{ width: `${readiness}%` }} />
+          <span className="relative h-16 w-16 shrink-0" aria-hidden="true">
+            <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
+              <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(255,255,255,.18)" strokeWidth="3.5" />
+              <circle cx="18" cy="18" r="15.5" fill="none" stroke="#9BE8CF" strokeWidth="3.5" strokeLinecap="round" strokeDasharray={`${(readiness / 100) * 97.4} 97.4`} />
+            </svg>
+            <span className="absolute inset-0 flex items-center justify-center text-sm font-extrabold">{ad(readiness)}٪</span>
           </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/home/ready.png" alt="" className="hidden h-16 w-20 shrink-0 rounded-2xl object-cover min-[380px]:block" />
         </span>
-        <span className="relative h-16 w-16 shrink-0" aria-hidden="true">
-          <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
-            <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(255,255,255,.18)" strokeWidth="3.5" />
-            <circle cx="18" cy="18" r="15.5" fill="none" stroke="#9BE8CF" strokeWidth="3.5" strokeLinecap="round" strokeDasharray={`${(readiness / 100) * 97.4} 97.4`} />
-          </svg>
-          <span className="absolute inset-0 flex items-center justify-center text-base font-extrabold">{ad(readiness)}٪</span>
+        <span className="mt-3 block h-2.5 overflow-hidden rounded-full bg-white/20">
+          <span className="block h-full rounded-full bg-[#9BE8CF]" style={{ width: `${readiness}%` }} />
         </span>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/home/ready.png" alt="" className="h-[76px] w-[92px] shrink-0 rounded-2xl object-cover" />
       </button>
 
       {/* أبواب التطبيق */}
@@ -67,8 +69,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full" style={{ background: d.tint, color: d.ink }}>
                 <d.icon className="h-[18px] w-[18px]" strokeWidth={2.2} />
               </span>
-              <span className="min-w-0 flex-1 whitespace-nowrap text-[14px] font-extrabold text-[#174D41] dark:text-foreground">{d.title}</span>
-              <ChevronLeft className="h-3.5 w-3.5 shrink-0 text-[#174D41]/60" strokeWidth={3} />
+              <span className="min-w-0 flex-1 text-[15px] font-extrabold leading-5 text-[#174D41] dark:text-foreground">{d.title}</span>
             </span>
           </button>
         ))}
