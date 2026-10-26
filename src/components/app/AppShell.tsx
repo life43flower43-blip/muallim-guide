@@ -160,7 +160,7 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
   };
   if (tab !== "today")
     return (
-      <header className="safe-top sticky top-0 z-30 border-b-2 border-[#E3A93B] bg-[#EAF4EF] text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
+      <header className="safe-top sticky top-0 z-30 gold-line bg-[#EAF4EF] text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
         <div className="relative flex h-14 items-center justify-center px-14">
           <h1 className="font-display text-xl font-extrabold">{NAV.find((n) => n.id === tab)?.label}</h1>
           {tab === "profile" && (
@@ -172,7 +172,7 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
       </header>
     );
   return (
-    <header className="safe-top sticky top-0 z-30 border-b-2 border-[#E3A93B] bg-[#EAF4EF] text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
+    <header className="safe-top sticky top-0 z-30 gold-line bg-[#EAF4EF] text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
       <div className="flex items-center justify-between gap-2 px-4 pb-3 pt-2">
         <span className="flex min-w-0 items-center gap-2 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}

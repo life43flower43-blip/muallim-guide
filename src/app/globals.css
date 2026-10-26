@@ -478,3 +478,23 @@ body {
 .font-display {
   font-family: var(--font-display);
 }
+
+/* خط ذهبي لامع تحت شريط العنوان */
+.gold-line::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #A8741A, #E3A93B 20%, #FFF3C4 35%, #F5C451 50%, #C98A1E 65%, #FFE7A0 80%, #A8741A);
+  background-size: 200% 100%;
+  box-shadow: 0 1px 3px rgba(201, 138, 30, 0.45);
+  animation: gold-shine 6s linear infinite;
+  pointer-events: none;
+}
+@keyframes gold-shine {
+  to { background-position: -200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gold-line::after { animation: none; }
+}
