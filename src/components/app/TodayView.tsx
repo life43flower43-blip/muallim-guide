@@ -58,7 +58,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             <img src={d.img} alt="" className="h-[clamp(64px,calc((100dvh-440px)/3),130px)] w-full object-cover" />
             {/* لوحة العنوان طافية فوق الصورة، والأيقونة على حافتها، فيأخذ العنوان العرض كله */}
             <span className="relative mx-1 -mt-7 flex min-h-[50px] items-center rounded-[20px] bg-white py-2 pl-[46px] pr-3 shadow-[0_2px_10px_-4px_rgba(16,64,52,0.35)] dark:bg-card">
-              <span className="absolute left-2 top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-[10px] bg-[#FBF1DC] text-[#B9821F] dark:bg-[#E3A93B]/15 dark:text-[#F5C451]">
+              <span className="absolute left-2 top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-[10px] bg-[#FFF5D6] text-[#D9A400] dark:bg-[#E3A93B]/15 dark:text-[#F5C451]">
                 <d.icon className="h-[17px] w-[17px]" strokeWidth={2} />
               </span>
               <FitText max={15} min={8} className="flex-1 font-extrabold text-[#174D41] dark:text-foreground">{d.title}</FitText>
