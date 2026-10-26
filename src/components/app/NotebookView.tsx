@@ -19,7 +19,7 @@ const PARTS: { id: Part; label: string }[] = [
   { id: "notes", label: "ملاحظاتي" },
 ];
 
-const BRANCH_COLORS = ["#1F7A63", "#C98A1E", "#3A8F7A", "#B2683A", "#2E6F8E", "#7A8F3A", "#1F7A63", "#C98A1E"];
+const BRANCH_COLORS = ["#1F7A63", "#C98A1E", "#3A8F7A", "#B9821F", "#2F7F6A", "#5E9C86", "#1F7A63", "#C98A1E"];
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
 
 /** خريطة الفصل: كل سلسلة خطوات متتابعة، وبين كل خطوتين رابطها */
@@ -148,8 +148,8 @@ export default function NotebookView() {
           <ul className="space-y-3">
             {myNotes.map((n) => (
               <li key={n.id}>
-                <div className="w-full rounded-2xl border-2 border-[#FFC800] bg-[#FFF8D6] p-4 dark:bg-[#FFC800]/10">
-                  <span className="block text-sm font-bold text-[#946200] dark:text-[#FFD84D]">{n.concept!.title}</span>
+                <div className="w-full rounded-2xl border-2 border-[#E3A93B] bg-[#FFF8D6] p-4 dark:bg-[#E3A93B]/10">
+                  <span className="block text-sm font-bold text-[#946200] dark:text-[#F5C451]">{n.concept!.title}</span>
                   <span className="mt-1 block whitespace-pre-line text-base leading-8">{n.text}</span>
                 </div>
               </li>

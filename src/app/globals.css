@@ -68,7 +68,7 @@
   --teal: #136F5C;
   --amber: #B54708;
   --rose: #B42318;
-  --violet: #5925DC;
+  --violet: #1F7A63;
   --mint: #067647;
   --gem: #B54708;
   --gem-soft: #FEF6E7;
@@ -76,8 +76,10 @@
   --danger-soft: #FEF3F2;
 }
 
-* {
-  border-color: var(--border);
+@layer base {
+  * {
+    border-color: var(--border);
+  }
 }
 
 html {

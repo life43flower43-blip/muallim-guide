@@ -180,8 +180,8 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
           <span className="whitespace-nowrap font-display text-[clamp(20px,6.8vw,28px)] font-extrabold leading-9">تربوي</span>
         </span>
         <span className="flex shrink-0 items-center gap-1">
-          <span className="flex items-center gap-0.5 rounded-full bg-white px-2 py-1.5 text-base font-extrabold text-[#E8590C] max-[380px]:hidden shadow-sm dark:bg-card" aria-label={`سلسلة ${ad(streak)} يوم`}>
-            <Flame className="h-5 w-5" fill="#FF9600" stroke="#E8590C" strokeWidth={1.5} />
+          <span className="flex items-center gap-0.5 rounded-full bg-white px-2 py-1.5 text-base font-extrabold text-[#B9821F] max-[380px]:hidden shadow-sm dark:bg-card" aria-label={`سلسلة ${ad(streak)} يوم`}>
+            <Flame className="h-5 w-5" fill="#E3A93B" stroke="#B9821F" strokeWidth={1.5} />
             {ad(streak)}
           </span>
           <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#1F6F5C] shadow-sm dark:bg-card">

@@ -13,7 +13,7 @@ import { ArrowDown, ArrowLeft } from "lucide-react";
 // عنوان الصفحة التي يظهر فيها الرسم: لا يتكرر عنوان الرسم إن طابقه
 const PageTitleCtx = createContext("");
 
-const C = ["#E8467C", "#FF9600", "#FFC800", "#58CC02", "#1CB0F6", "#A560E8", "#14B8A6", "#6366F1"];
+const C = ["#C98A1E", "#E3A93B", "#E3A93B", "#1F8A6E", "#136F5C", "#1F7A63", "#14B8A6", "#6366F1"];
 const tint = (c: string, p = 14) => `color-mix(in srgb, ${c} ${p}%, var(--card))`;
 
 function Frame({ title, children }: { title: string; children: React.ReactNode }) {
@@ -109,15 +109,15 @@ function Bloom() {
 function FreudStructure() {
   return (
     <Frame title="بنية الشخصية عند فرويد">
-      <div className="overflow-hidden rounded-xl border-2 border-[#1CB0F6]">
-        <div className="bg-[#DDF4FF] p-3 text-center dark:bg-[#1CB0F6]/15">
+      <div className="overflow-hidden rounded-xl border-2 border-[#136F5C]">
+        <div className="bg-[#DCEFE5] p-3 text-center dark:bg-[#136F5C]/15">
           <p className="text-sm text-secondary-foreground">الشعور</p>
           <p className="mt-1 text-base font-bold">الأنا الأعلى: الضمير ومبدأ الكمال</p>
         </div>
-        <div className="bg-[#B8E6FF] p-3 text-center dark:bg-[#1CB0F6]/25">
+        <div className="bg-[#B8E6FF] p-3 text-center dark:bg-[#136F5C]/25">
           <p className="text-base font-bold">الأنا: الوسيط الواقعي بين الرغبة والواقع</p>
         </div>
-        <div className="bg-[#1478A8] p-4 text-center text-white">
+        <div className="bg-[#0D5848] p-4 text-center text-white">
           <p className="text-sm opacity-80">اللاشعور</p>
           <p className="mt-1 text-base font-bold">الهو: الدوافع ومبدأ اللذة</p>
         </div>
@@ -244,15 +244,15 @@ function Zpd() {
   return (
     <Frame title="منطقة النمو القريب عند فيجوتسكي">
       <div className="mx-auto flex aspect-square max-w-[300px] items-center justify-center rounded-full bg-muted p-[9%] text-center">
-        <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-[#FFC800] p-[14%] dark:bg-[#FFC800]/70">
-          <div className="flex h-full w-full items-center justify-center rounded-full bg-[#58CC02] p-2 text-white">
+        <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-[#E3A93B] p-[14%] dark:bg-[#E3A93B]/70">
+          <div className="flex h-full w-full items-center justify-center rounded-full bg-[#1F8A6E] p-2 text-white">
             <p className="text-sm font-bold leading-5">ما يستطيعه وحده</p>
           </div>
         </div>
       </div>
       <div className="mt-3 space-y-1.5 text-sm">
-        <p className="flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-[#58CC02]" /> ما يؤديه الطالب بمفرده</p>
-        <p className="flex items-start gap-2"><span className="mt-1.5 h-3 w-3 shrink-0 rounded-sm bg-[#FFC800]" /><span><b>منطقة النمو القريب:</b> ما يؤديه بمساعدة الأكثر خبرة، وفيها يُثمر التدريس</span></p>
+        <p className="flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-[#1F8A6E]" /> ما يؤديه الطالب بمفرده</p>
+        <p className="flex items-start gap-2"><span className="mt-1.5 h-3 w-3 shrink-0 rounded-sm bg-[#E3A93B]" /><span><b>منطقة النمو القريب:</b> ما يؤديه بمساعدة الأكثر خبرة، وفيها يُثمر التدريس</span></p>
         <p className="flex items-center gap-2"><span className="h-3 w-3 rounded-sm border border-border bg-muted" /> ما يفوق قدرته حتى بالمساعدة</p>
       </div>
     </Frame>
@@ -293,7 +293,7 @@ function Forgetting() {
         {/* دون مراجعة */}
         <path d="M300 18 C 270 95, 230 120, 20 132" fill="none" stroke="#FF4B4B" strokeWidth="4" strokeLinecap="round" />
         {/* مع المراجعة: ارتداد بعد كل مراجعة وانحدار أبطأ */}
-        <path d="M300 18 C 288 50, 270 60, 250 64 L250 22 C 235 45, 210 52, 180 55 L180 22 C 160 36, 120 42, 90 44 L90 22 C 70 30, 45 33, 20 34" fill="none" stroke="#58CC02" strokeWidth="4" strokeLinejoin="round" strokeLinecap="round" />
+        <path d="M300 18 C 288 50, 270 60, 250 64 L250 22 C 235 45, 210 52, 180 55 L180 22 C 160 36, 120 42, 90 44 L90 22 C 70 30, 45 33, 20 34" fill="none" stroke="#1F8A6E" strokeWidth="4" strokeLinejoin="round" strokeLinecap="round" />
       </svg>
       <div className="mt-1 flex justify-between text-sm text-muted-foreground">
         <span>لحظة التعلم</span>
@@ -301,7 +301,7 @@ function Forgetting() {
       </div>
       <div className="mt-3 space-y-1.5 text-sm">
         <p className="flex items-center gap-2"><span className="h-1.5 w-6 rounded-full bg-[#FF4B4B]" /> دون مراجعة: يضيع جزء كبير في اليوم الأول</p>
-        <p className="flex items-center gap-2"><span className="h-1.5 w-6 rounded-full bg-[#58CC02]" /> مع مراجعات متباعدة: كل مراجعة تبطئ النسيان التالي</p>
+        <p className="flex items-center gap-2"><span className="h-1.5 w-6 rounded-full bg-[#1F8A6E]" /> مع مراجعات متباعدة: كل مراجعة تبطئ النسيان التالي</p>
       </div>
     </Frame>
   );
@@ -351,14 +351,14 @@ function Compare({ title, a, b, rows }: { title: string; a: string; b: string; r
   return (
     <Frame title={title}>
       <div className="grid grid-cols-2 gap-2 text-center">
-        <p className="rounded-[6px] bg-[#1CB0F6] p-2 text-base font-bold text-white">{a}</p>
-        <p className="rounded-[6px] bg-[#A560E8] p-2 text-base font-bold text-white">{b}</p>
+        <p className="rounded-[6px] bg-[#136F5C] p-2 text-base font-bold text-white">{a}</p>
+        <p className="rounded-[6px] bg-[#1F7A63] p-2 text-base font-bold text-white">{b}</p>
         {rows.map(([topic, x, y]) => (
           <div key={topic} className="col-span-2">
             <p className="mb-1 text-sm font-bold text-muted-foreground">{topic}</p>
             <div className="grid grid-cols-2 gap-2">
-              <p className="rounded-[6px] p-2 text-sm font-medium leading-6" style={{ background: tint("#1CB0F6") }}>{x}</p>
-              <p className="rounded-[6px] p-2 text-sm font-medium leading-6" style={{ background: tint("#A560E8") }}>{y}</p>
+              <p className="rounded-[6px] p-2 text-sm font-medium leading-6" style={{ background: tint("#136F5C") }}>{x}</p>
+              <p className="rounded-[6px] p-2 text-sm font-medium leading-6" style={{ background: tint("#1F7A63") }}>{y}</p>
             </div>
           </div>
         ))}
@@ -380,9 +380,9 @@ function InfoProcessing() {
         <p className="text-center text-sm font-bold text-muted-foreground">مدخلات الحواس</p>
         <ArrowDown className="mx-auto h-4 w-4 text-muted-foreground" />
         {box("المخزن الحسي", "جزء من الثانية للبصري وثوانٍ للسمعي", C[1])}
-        <p className="text-center text-sm font-bold text-[#1478A8]">↓ الانتباه</p>
+        <p className="text-center text-sm font-bold text-[#0D5848]">↓ الانتباه</p>
         {box("المخزن قصير المدى", "نحو سبعة عناصر ونحو عشرين ثانية", C[4])}
-        <p className="text-center text-sm font-bold text-[#3C7A00]">↓ المراجعة والتنظيم</p>
+        <p className="text-center text-sm font-bold text-[#0D5848]">↓ المراجعة والتنظيم</p>
         {box("المخزن طويل المدى", "سعة شبه غير محدودة ومدد ممتدة", C[3])}
         <p className="pt-1 text-center text-sm text-muted-foreground">ما لا يُنتبه إليه يسقط، وما لا يُراجَع يُنسى</p>
       </div>
@@ -393,7 +393,7 @@ function InfoProcessing() {
 function WorkingMemory() {
   return (
     <Frame title="الذاكرة العاملة عند باديلي">
-      <div className="mx-auto w-fit rounded-xl bg-[#E8467C] px-5 py-2.5 text-center text-white">
+      <div className="mx-auto w-fit rounded-xl bg-[#C98A1E] px-5 py-2.5 text-center text-white">
         <p className="text-base font-bold">التنفيذي المركزي</p>
         <p className="text-sm opacity-90">يوزع الانتباه وينسق</p>
       </div>
@@ -465,7 +465,7 @@ function ValidityReliability() {
         <circle cx="50" cy="50" r="31" fill="none" stroke="var(--border)" strokeWidth="3" />
         <circle cx="50" cy="50" r="15" fill="#FFDFE0" stroke="#FF4B4B" strokeWidth="3" />
         {hits.map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r="5" fill={ok ? "#58CC02" : "#1CB0F6"} stroke="#fff" strokeWidth="1.5" />
+          <circle key={i} cx={x} cy={y} r="5" fill={ok ? "#1F8A6E" : "#136F5C"} stroke="#fff" strokeWidth="1.5" />
         ))}
       </svg>
       <p className="mt-1 text-sm font-bold">{label}</p>
@@ -511,14 +511,14 @@ function NormalCurve() {
   return (
     <Frame title="التوزيع الاعتدالي والانحراف المعياري">
       <svg viewBox="0 0 320 150" className="w-full" role="img" aria-label="منحنى الجرس: أغلب الدرجات قرب المتوسط وتقل كلما ابتعدنا عنه">
-        <path d="M10 130 C 70 130, 100 128, 125 80 C 145 38, 150 18, 160 18 C 170 18, 175 38, 195 80 C 220 128, 250 130, 310 130 Z" fill="#DDF4FF" stroke="#1CB0F6" strokeWidth="3" />
-        <path d="M125 80 C 145 38, 150 18, 160 18 C 170 18, 175 38, 195 80 L195 130 L125 130 Z" fill="#1CB0F6" opacity="0.35" />
-        <line x1="160" y1="14" x2="160" y2="132" stroke="#E8467C" strokeWidth="2.5" strokeDasharray="5 4" />
+        <path d="M10 130 C 70 130, 100 128, 125 80 C 145 38, 150 18, 160 18 C 170 18, 175 38, 195 80 C 220 128, 250 130, 310 130 Z" fill="#DCEFE5" stroke="#136F5C" strokeWidth="3" />
+        <path d="M125 80 C 145 38, 150 18, 160 18 C 170 18, 175 38, 195 80 L195 130 L125 130 Z" fill="#136F5C" opacity="0.35" />
+        <line x1="160" y1="14" x2="160" y2="132" stroke="#C98A1E" strokeWidth="2.5" strokeDasharray="5 4" />
         <line x1="10" y1="132" x2="310" y2="132" stroke="var(--border)" strokeWidth="2" />
       </svg>
       <div className="mt-1 grid grid-cols-3 text-center text-sm">
         <span className="text-muted-foreground">درجات منخفضة</span>
-        <span className="font-bold text-[#E8467C]">المتوسط</span>
+        <span className="font-bold text-[#C98A1E]">المتوسط</span>
         <span className="text-muted-foreground">درجات مرتفعة</span>
       </div>
       <div className="mt-3 grid grid-cols-2 gap-2 text-center text-sm">
@@ -592,7 +592,7 @@ function Thorndike() {
 }
 
 function Gestalt() {
-  const dot = (cx: number, cy: number, c = "#1CB0F6") => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="5" fill={c} />;
+  const dot = (cx: number, cy: number, c = "#136F5C") => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="5" fill={c} />;
   const law = (name: string, note: string, art: React.ReactNode) => (
     <div className="rounded-xl border-2 border-border p-2 text-center">
       <svg viewBox="0 0 80 50" className="mx-auto h-12 w-full" aria-hidden="true">{art}</svg>
@@ -604,9 +604,9 @@ function Gestalt() {
     <Frame title="قوانين الجشطالت في الإدراك">
       <div className="grid grid-cols-2 gap-2">
         {law("القرب", "المتقاربات مجموعة واحدة", <>{[10, 22].flatMap((x) => [15, 35].map((y) => dot(x, y)))}{[54, 66].flatMap((x) => [15, 35].map((y) => dot(x, y)))}</>)}
-        {law("الشبه", "المتشابهات تُجمع معًا", <>{[10, 30, 50, 70].map((x, i) => dot(x, 15, i % 2 ? "#FF9600" : "#1CB0F6"))}{[10, 30, 50, 70].map((x, i) => dot(x, 35, i % 2 ? "#FF9600" : "#1CB0F6"))}</>)}
-        {law("الإغلاق", "يكمل الذهن الشكل الناقص", <circle cx="40" cy="25" r="18" fill="none" stroke="#58CC02" strokeWidth="4" strokeDasharray="24 8" />)}
-        {law("الشكل والخلفية", "يبرز المهم على محيطه", <><rect x="5" y="3" width="70" height="44" rx="4" fill="var(--muted)" /><rect x="27" y="13" width="26" height="24" rx="4" fill="#E8467C" /></>)}
+        {law("الشبه", "المتشابهات تُجمع معًا", <>{[10, 30, 50, 70].map((x, i) => dot(x, 15, i % 2 ? "#E3A93B" : "#136F5C"))}{[10, 30, 50, 70].map((x, i) => dot(x, 35, i % 2 ? "#E3A93B" : "#136F5C"))}</>)}
+        {law("الإغلاق", "يكمل الذهن الشكل الناقص", <circle cx="40" cy="25" r="18" fill="none" stroke="#1F8A6E" strokeWidth="4" strokeDasharray="24 8" />)}
+        {law("الشكل والخلفية", "يبرز المهم على محيطه", <><rect x="5" y="3" width="70" height="44" rx="4" fill="var(--muted)" /><rect x="27" y="13" width="26" height="24" rx="4" fill="#C98A1E" /></>)}
       </div>
     </Frame>
   );
@@ -616,14 +616,14 @@ function Ausubel() {
   return (
     <Frame title="المنظم المتقدم عند أوزوبل">
       <div className="space-y-1 text-center">
-        <p className="rounded-xl bg-[#A560E8] p-2.5 text-base font-bold text-white">المنظم المتقدم: إطار عام قبل الدرس</p>
+        <p className="rounded-xl bg-[#1F7A63] p-2.5 text-base font-bold text-white">المنظم المتقدم: إطار عام قبل الدرس</p>
         <ArrowDown className="mx-auto h-4 w-4 text-muted-foreground" />
         <div className="grid grid-cols-2 gap-2">
-          <p className="rounded-xl border-2 border-[#1CB0F6] p-2 text-sm font-bold leading-6" style={{ background: tint("#1CB0F6") }}>الاستدلالي: إطار تُشتق منه التفاصيل</p>
-          <p className="rounded-xl border-2 border-[#FF9600] p-2 text-sm font-bold leading-6" style={{ background: tint("#FF9600") }}>المقارن: يوازن بالمألوف ليمنع الخلط</p>
+          <p className="rounded-xl border-2 border-[#136F5C] p-2 text-sm font-bold leading-6" style={{ background: tint("#136F5C") }}>الاستدلالي: إطار تُشتق منه التفاصيل</p>
+          <p className="rounded-xl border-2 border-[#E3A93B] p-2 text-sm font-bold leading-6" style={{ background: tint("#E3A93B") }}>المقارن: يوازن بالمألوف ليمنع الخلط</p>
         </div>
         <ArrowDown className="mx-auto h-4 w-4 text-muted-foreground" />
-        <p className="rounded-xl border-2 border-[#58CC02] p-2.5 text-base font-bold" style={{ background: tint("#58CC02") }}>المحتوى الجديد يرتبط بالبنية المعرفية السابقة</p>
+        <p className="rounded-xl border-2 border-[#1F8A6E] p-2.5 text-base font-bold" style={{ background: tint("#1F8A6E") }}>المحتوى الجديد يرتبط بالبنية المعرفية السابقة</p>
         <p className="pt-1 text-sm text-muted-foreground">فيصير التلقي ذا معنى لا حفظًا رتيبًا</p>
       </div>
     </Frame>
@@ -635,19 +635,19 @@ function Cpa() {
     <Frame title="من الملموس إلى المجرد">
       <div className="grid grid-cols-[1fr_20px_1fr_20px_1fr] items-center text-center">
         <div className="rounded-xl border-2 p-2" style={{ borderColor: C[1], background: tint(C[1]) }}>
-          <div className="mx-auto mb-1 flex w-fit gap-1">{[0, 1, 2].map((i) => <span key={i} className="h-4 w-4 rounded-[3px] bg-[#FF9600]" />)}</div>
+          <div className="mx-auto mb-1 flex w-fit gap-1">{[0, 1, 2].map((i) => <span key={i} className="h-4 w-4 rounded-[3px] bg-[#E3A93B]" />)}</div>
           <p className="text-sm font-bold">ملموس</p>
           <p className="text-xs text-muted-foreground">مكعبات بين اليدين</p>
         </div>
         <ArrowLeft className="mx-auto h-4 w-4 text-muted-foreground" />
         <div className="rounded-xl border-2 p-2" style={{ borderColor: C[4], background: tint(C[4]) }}>
-          <div className="mx-auto mb-1 flex w-fit gap-1">{[0, 1, 2].map((i) => <span key={i} className="h-4 w-4 rounded-full border-2 border-[#1CB0F6]" />)}</div>
+          <div className="mx-auto mb-1 flex w-fit gap-1">{[0, 1, 2].map((i) => <span key={i} className="h-4 w-4 rounded-full border-2 border-[#136F5C]" />)}</div>
           <p className="text-sm font-bold">صوري</p>
           <p className="text-xs text-muted-foreground">رسوم وأشكال</p>
         </div>
         <ArrowLeft className="mx-auto h-4 w-4 text-muted-foreground" />
         <div className="rounded-xl border-2 p-2" style={{ borderColor: C[5], background: tint(C[5]) }}>
-          <p className="mb-1 text-base font-extrabold text-[#A560E8]">٣</p>
+          <p className="mb-1 text-base font-extrabold text-[#1F7A63]">٣</p>
           <p className="text-sm font-bold">مجرد</p>
           <p className="text-xs text-muted-foreground">رموز وأرقام</p>
         </div>
