@@ -173,7 +173,7 @@ function MobileTopBar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
     );
   return (
     <header className="safe-top sticky top-0 z-30 bg-[#EAF4EF] text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
-      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 px-4 pb-3 pt-2">
+      <div className="grid grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-2 px-4 pb-3 pt-2">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/icons/logo-128.png" alt="" className="h-12 w-12 rounded-2xl bg-white object-contain p-1 shadow-sm" />
         <span className="text-center">
