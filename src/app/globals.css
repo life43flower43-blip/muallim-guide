@@ -611,3 +611,20 @@ body {
   .energy-ring, .energy-aura { animation: none; }
   .energy-ring { display: none; }
 }
+
+/* موجات حواف بطاقة الاستعداد: خطوط خضراء رفيعة تخرج من المستطيل كله وتتلاشى ببطء */
+.card-wave {
+  position: absolute;
+  inset: -3px;
+  border-radius: 22px;
+  border: 1.5px solid rgba(19, 111, 92, 0.5);
+  pointer-events: none;
+  animation: card-wave 4.5s ease-out infinite;
+}
+@keyframes card-wave {
+  0% { inset: -3px; border-radius: 22px; opacity: 0.9; }
+  100% { inset: -18px; border-radius: 36px; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-wave { animation: none; display: none; }
+}
