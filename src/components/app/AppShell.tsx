@@ -46,6 +46,8 @@ import FlashcardsView from "./FlashcardsView";
 import AiAssistantView from "./AiAssistantView";
 import BootBank from "./BootBank";
 import { ScreenShell } from "./ui-kit";
+import { Splash } from "./Splash";
+import { GoalBurst } from "./GoalBurst";
 import { GemBadge, HeaderArt, StreakBadge } from "./ui-kit";
 
 export type Tab = "today" | "notebook" | "practice" | "mistakes" | "profile";
@@ -196,6 +198,7 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
           <span className="flex items-center gap-1 rounded-full bg-white p-[4px] max-[360px]:hidden text-base font-extrabold text-[#D19B00] dark:bg-card" aria-label={`هدف اليوم ${ad(Math.round(goal * 100))}٪`}>
             {/* حلقة هدف اليوم تمتلئ بالذهبي حول الشعلة، وتتوهج عند اكتمالها */}
             <span className={cn("relative h-[28px] w-[28px] rounded-full", goal >= 1 && "ring-2 ring-[#FFE27A]")}>
+              <GoalBurst done={goal >= 1} />
               <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90" aria-hidden="true">
                 <defs>
                   <linearGradient id="goalGold" x1="0" y1="0" x2="1" y2="1">
@@ -361,6 +364,7 @@ export default function AppShell() {
 
   return (
     <div className="flex h-dvh bg-background">
+      <Splash />
       <SideNav tab={tab} onTab={go} due={due} />
       <div className="flex min-w-0 flex-1 flex-col">
         <MobileTopBar tab={tab} onTab={go} due={due} />

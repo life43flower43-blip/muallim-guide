@@ -19,6 +19,18 @@ type Door = { title: string; img: string; progress: number; run: () => void };
 
 const frac = (n: number, of: number) => (of > 0 ? Math.min(1, n / of) : 0);
 
+// دخول متتابع لعناصر الرئيسية: كل عنصر يصعد بنعومة بعد الذي قبله، كما في التطبيقات
+const rise = (i: number) => ({
+  initial: { opacity: 0, y: 18 },
+  animate: { opacity: 1, y: 0 },
+  transition: { delay: 0.05 + i * 0.06, type: "spring" as const, stiffness: 260, damping: 24 },
+});
+
+// اهتزاز خفيف عند اللمس إن سمحت به الإعدادات
+const tick = () => {
+  if (typeof navigator !== "undefined" && "vibrate" in navigator && useApp.getState().haptics) navigator.vibrate(8);
+};
+
 export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const attempts = useApp((s) => s.attempts);
   const ui = useUi();
@@ -88,9 +100,13 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   return (
     <div className="mx-auto -mt-1 max-w-2xl space-y-3 lg:mt-0">
       {/* مستوى الاستعداد */}
-      <button
+      <motion.button
+        {...rise(0)}
         type="button"
-        onClick={() => onGoTab("practice")}
+        onClick={() => {
+          tick();
+          onGoTab("practice");
+        }}
         className="relative block w-full overflow-hidden gold-frame !rounded-[20px] px-4 py-[6px] text-right text-[#174D41] dark:text-foreground"
       >
         <span className="flex items-center gap-4">
@@ -99,18 +115,32 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           <span className="relative h-[40px] w-[40px] shrink-0" aria-hidden="true">
             <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
               <circle cx="18" cy="18" r="15.5" fill="none" stroke="#DCEFE5" strokeWidth="3.5" />
-              <circle cx="18" cy="18" r="15.5" fill="none" stroke="#136F5C" strokeWidth="3.5" strokeLinecap="round" strokeDasharray={`${(readiness / 100) * 97.4} 97.4`} />
+              <motion.circle
+                cx="18"
+                cy="18"
+                r="15.5"
+                fill="none"
+                stroke="#136F5C"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                initial={{ strokeDasharray: "0 97.4" }}
+                animate={{ strokeDasharray: `${(readiness / 100) * 97.4} 97.4` }}
+                transition={{ delay: 0.3, duration: 1, ease: "easeOut" }}
+              />
             </svg>
             <span className="absolute inset-0 flex items-center justify-center text-xs font-extrabold">{ad(readiness)}٪</span>
           </span>
         </span>
-      </button>
+      </motion.button>
 
       {/* شريط الأسبوع: كبسولة بسبع دوائر، يصل بينها خيط ذهبي في الأيام المتتالية التي درست فيها الطالبة */}
-      <div className="flex items-center rounded-full border border-[#E3D3A0] bg-white px-2 py-1.5 dark:bg-card" aria-label="أيام دراستك هذا الأسبوع">
+      <motion.div {...rise(1)} className="flex items-center rounded-full border border-[#E3D3A0] bg-white px-2 py-1.5 dark:bg-card" aria-label="أيام دراستك هذا الأسبوع">
         {week.map((d, i) => (
           <span key={d.label} className="flex flex-1 items-center last:flex-none">
-            <span
+            <motion.span
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2 + i * 0.05, type: "spring", stiffness: 420, damping: 18 }}
               className={cn(
                 "flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-full text-[12px] font-extrabold",
                 d.done ? "bg-gradient-to-br from-[#FFE27A] to-[#C99A06] text-white" : d.future ? "border border-dashed border-[#C9DDD3] text-[#9DB5AB]" : "bg-[#EEF5F1] text-[#7E978E]",
@@ -118,24 +148,25 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               )}
             >
               {d.label}
-            </span>
+            </motion.span>
             {i < week.length - 1 && (
               <span className={cn("mx-0.5 h-[3px] flex-1 rounded-full", d.done && week[i + 1].done ? "bg-gradient-to-l from-[#F4C430] to-[#C99A06]" : "bg-[#E6EEEA]")} aria-hidden="true" />
             )}
           </span>
         ))}
-      </div>
+      </motion.div>
 
       {/* أبواب التطبيق */}
       <div ref={gridRef} className="-mx-1 grid grid-cols-2 gap-2.5">
-        {doors.map((d) => (
+        {doors.map((d, i) => (
           <motion.button
             key={d.title}
             type="button"
+            {...rise(2 + i)}
             whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 500, damping: 30 }}
             onClick={() => {
               if (pressed) return;
+              tick();
               setPressed(d.title);
               // انكماش قصير ثم يفتح القسم
               setTimeout(() => {
