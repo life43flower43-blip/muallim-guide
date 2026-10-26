@@ -11,6 +11,7 @@ import { useUi } from "@/lib/ui-store";
 import { overallReadiness } from "@/lib/practice-bank";
 import { ad } from "@/lib/arabic";
 import type { Tab } from "./AppShell";
+import { FitText } from "./FitText";
 
 type Door = { title: string; img: string; icon: React.ElementType; tint: string; ink: string; run: () => void };
 
@@ -39,7 +40,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         <span className="flex items-center gap-4">
           {/* العنوان وتحته الشريط مباشرة، والحلقة بجانبهما في الوسط */}
           <span className="min-w-0 flex-1">
-            <span className="block text-base font-bold leading-6">مستوى الاستعداد للتدريس</span>
+            <FitText max={17} className="font-bold leading-6">مستوى الاستعداد للتدريس</FitText>
             <span className="mt-2 block h-2 overflow-hidden rounded-full bg-white/20">
               <span className="block h-full rounded-full bg-[#9BE8CF]" style={{ width: `${readiness}%` }} />
             </span>
@@ -61,11 +62,11 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={d.img} alt="" className="h-[130px] w-full object-cover" />
             {/* لوحة العنوان طافية فوق الصورة، والأيقونة على حافتها، فيأخذ العنوان العرض كله */}
-            <span className="relative mx-1 -mt-7 flex min-h-[50px] items-center rounded-[20px] bg-white px-3 pt-2 shadow-[0_2px_10px_-4px_rgba(16,64,52,0.35)] dark:bg-card">
-              <span className="absolute -top-5 left-3 flex h-10 w-10 items-center justify-center rounded-full border-[3px] border-white shadow-sm dark:border-card" style={{ background: d.tint, color: d.ink }}>
-                <d.icon className="h-5 w-5" strokeWidth={2.2} />
+            <span className="relative mx-1 -mt-7 flex min-h-[50px] items-center rounded-[20px] bg-white py-2 pl-[46px] pr-3 shadow-[0_2px_10px_-4px_rgba(16,64,52,0.35)] dark:bg-card">
+              <span className="absolute left-1.5 top-1/2 flex h-[34px] w-[34px] -translate-y-1/2 items-center justify-center rounded-full border-[3px] border-white shadow-sm dark:border-card" style={{ background: d.tint, color: d.ink }}>
+                <d.icon className="h-[18px] w-[18px]" strokeWidth={2.2} />
               </span>
-              <span className="min-w-0 flex-1 whitespace-nowrap text-[15px] font-extrabold text-[#174D41] dark:text-foreground">{d.title}</span>
+              <FitText max={15} min={8} className="flex-1 font-extrabold text-[#174D41] dark:text-foreground">{d.title}</FitText>
             </span>
           </button>
         ))}
