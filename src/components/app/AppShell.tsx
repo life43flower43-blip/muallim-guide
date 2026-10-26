@@ -175,7 +175,7 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
         <div className="relative flex h-14 items-center justify-center px-14">
           <h1 className="font-display text-xl font-extrabold">{NAV.find((n) => n.id === tab)?.label}</h1>
           {tab === "profile" && (
-            <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="absolute left-1.5 flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10">
+            <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="absolute left-1.5 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
               <Settings className="h-6 w-6" strokeWidth={2.2} />
             </button>
           )}

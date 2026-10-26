@@ -109,7 +109,7 @@ export default function AiAssistantView() {
             onClick={clearChat}
             disabled={busy}
             aria-label="محادثة جديدة"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white hover:bg-white/10 dark:text-foreground disabled:opacity-40"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#174D41] hover:bg-black/5 dark:text-foreground disabled:opacity-40"
           >
             <Trash2 className="h-5 w-5" />
           </button>
