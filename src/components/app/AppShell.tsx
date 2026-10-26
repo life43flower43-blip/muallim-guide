@@ -199,13 +199,13 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
             </span>
             
           </span>
-          <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#1F6F5C] shadow-sm dark:bg-card">
+          <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#D9A400] shadow-sm dark:bg-card">
             <Bell className="h-5 w-5" strokeWidth={2.2} />
             {due > 0 && (
               <span className="absolute -right-1 -top-1 min-w-[20px] rounded-full bg-destructive px-1 text-center text-[11px] font-bold leading-5 text-white">{ad(Math.min(due, 99))}</span>
             )}
           </button>
-          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#1F6F5C] shadow-sm dark:bg-card">
+          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#D9A400] shadow-sm dark:bg-card">
             <Settings className="h-5 w-5" strokeWidth={2.2} />
           </button>
         </span>
