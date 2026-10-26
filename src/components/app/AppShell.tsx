@@ -46,7 +46,7 @@ import FlashcardsView from "./FlashcardsView";
 import AiAssistantView from "./AiAssistantView";
 import BootBank from "./BootBank";
 import { ScreenShell } from "./ui-kit";
-import { GemBadge, StreakBadge } from "./ui-kit";
+import { GemBadge, HeaderArt, StreakBadge } from "./ui-kit";
 
 export type Tab = "today" | "notebook" | "practice" | "mistakes" | "profile";
 
@@ -172,6 +172,7 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
   if (tab !== "today")
     return (
       <header className="green-head safe-top sticky top-0 z-30 px-2 pb-2 lg:hidden">
+        <HeaderArt />
         <div className="relative flex h-14 items-center justify-center px-14">
           <h1 className="font-display text-xl font-extrabold">{NAV.find((n) => n.id === tab)?.label}</h1>
           {tab === "profile" && (
@@ -184,6 +185,7 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
     );
   return (
     <header className="green-head safe-top sticky top-0 z-30 px-2 pb-2 lg:hidden">
+        <HeaderArt />
       <div className="flex items-center justify-between gap-2 px-2.5 pb-1 pt-1">
         <span className="flex min-w-0 items-center gap-2 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
