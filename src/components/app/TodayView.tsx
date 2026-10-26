@@ -5,7 +5,7 @@
 // ============================================================================
 
 import { useMemo } from "react";
-import { Brain, CalendarDays, ClipboardList, Network, Presentation, Star, Users } from "lucide-react";
+import { Brain, CalendarDays, ClipboardList, Network, Presentation, Users } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { overallReadiness } from "@/lib/practice-bank";
@@ -37,7 +37,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         className="relative block w-full overflow-hidden rounded-[28px] bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] p-4 text-right text-white shadow-[0_8px_24px_-12px_rgba(19,111,92,0.7)]"
       >
         <span className="flex items-center gap-1.5 text-lg font-bold leading-7">
-          <Star className="h-5 w-5 shrink-0" fill="#F5C451" stroke="#F5C451" /> مستوى الاستعداد للتدريس
+          مستوى الاستعداد للتدريس
         </span>
         <span className="mt-2 flex items-center gap-3">
           <span className="block h-2.5 min-w-0 flex-1 overflow-hidden rounded-full bg-white/20">
@@ -50,8 +50,6 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             </svg>
             <span className="absolute inset-0 flex items-center justify-center text-sm font-extrabold">{ad(readiness)}٪</span>
           </span>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/home/ready.png" alt="" className="h-16 w-20 shrink-0 rounded-2xl object-cover" />
         </span>
       </button>
 
