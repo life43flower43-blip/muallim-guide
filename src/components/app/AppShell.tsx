@@ -172,7 +172,7 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
       </header>
     );
   return (
-    <header className="safe-top sticky top-0 z-30 bg-[#EAF4EF] text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
+    <header className="safe-top sticky top-0 z-30 border-b border-[#D5E6DD] bg-[#EAF4EF] text-[#174D41] lg:hidden dark:border-border dark:bg-background dark:text-foreground">
       <div className="flex items-center justify-between gap-2 px-4 pb-3 pt-2">
         <span className="flex min-w-0 items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
