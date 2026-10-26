@@ -4,7 +4,7 @@
 // الرئيسية: واجهة التطبيق — بطاقة الاستعداد، ثم ستة أبواب مصوّرة لأقسامه
 // ============================================================================
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Brain, CalendarDays, ClipboardList, Network, Presentation, Users } from "lucide-react";
 import { useApp } from "@/lib/store";
@@ -28,6 +28,29 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const simCount = useApp((s) => s.simAttempts.length);
   const planCount = useApp((s) => s.lessonPlans.length);
   const [pressed, setPressed] = useState<string | null>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [cardH, setCardH] = useState<number | null>(null);
+
+  // تمتد البطاقات لتملأ الشاشة حتى تستقر فوق الشريط السفلي مباشرة
+  useEffect(() => {
+    const fit = () => {
+      const g = gridRef.current;
+      const nav = document.getElementById("bottom-nav");
+      if (!g || !nav || window.innerWidth >= 1024) return setCardH(null);
+      const avail = nav.getBoundingClientRect().top - g.getBoundingClientRect().top - 10;
+      setCardH(Math.max(96, Math.min(210, (avail - 2 * 10) / 3)));
+    };
+    fit();
+    const t = setTimeout(fit, 350);
+    const ro = new ResizeObserver(fit);
+    const main = document.getElementById("main-scroll");
+    if (main) ro.observe(main);
+    document.fonts?.ready.then(fit);
+    return () => {
+      clearTimeout(t);
+      ro.disconnect();
+    };
+  }, []);
 
   // تقدّم كل باب: نسبة ما أُنجز فيه، تظهر خطًّا ذهبيًّا رفيعًا أسفل عنوانه
   const prog = useMemo(() => {
@@ -69,7 +92,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       </button>
 
       {/* أبواب التطبيق */}
-      <div className="-mx-1 grid grid-cols-2 gap-2.5">
+      <div ref={gridRef} className="-mx-1 grid grid-cols-2 gap-2.5">
         {doors.map((d) => (
           <motion.button
             key={d.title}
@@ -89,10 +112,10 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           >
             {/* الصورة تملأ البطاقة، ولوحة العنوان نصف شفافة تطفو فوق أسفلها */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={d.img} alt="" className="block h-[calc(clamp(64px,calc((100dvh-440px)/3),130px)+34px)] w-full object-cover" />
+            <img src={d.img} alt="" className="block h-[calc(clamp(64px,calc((100dvh-440px)/3),130px)+34px)] w-full object-cover" style={cardH ? { height: cardH } : undefined} />
             <span className="absolute inset-x-1.5 bottom-1.5 flex min-h-[48px] flex-col justify-center overflow-hidden rounded-[20px] bg-white/80 py-2 pl-[44px] pr-3 backdrop-blur-md dark:bg-card/80">
-              <span className="absolute left-2 top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-[10px] bg-[#FFF5D6] text-[#D9A400] dark:bg-[#E3A93B]/15 dark:text-[#F5C451]">
-                <d.icon className="h-[17px] w-[17px]" strokeWidth={2} />
+              <span className="absolute left-2 top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#FFE27A] to-[#E0B12E] text-white">
+                <d.icon className="h-[17px] w-[17px]" strokeWidth={2.3} />
               </span>
               <FitText max={15} min={8} className="font-extrabold text-[#174D41] dark:text-foreground">{d.title}</FitText>
               {/* خط التقدّم الذهبي */}
