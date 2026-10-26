@@ -77,7 +77,6 @@ function ActionCard({ icon, title, sub, onClick, primary }: { icon: React.Elemen
       </span>
       <span className="min-w-0 flex-1">
         <span className="block text-lg font-bold">{title}</span>
-        <span className={cn("mt-0.5 block text-sm leading-5", primary ? "text-primary-foreground/85" : "text-muted-foreground")}>{sub}</span>
       </span>
     </button>
   );
