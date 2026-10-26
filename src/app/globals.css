@@ -549,12 +549,35 @@ body {
 
 /* شريط العنوان متصل بأعلى الشاشة وجانبيها، بلون شريط حالة الهاتف نفسه، وحوافه السفلى مستديرة */
 .green-head {
-  background:
-    radial-gradient(120% 90% at 85% -20%, rgba(255, 255, 255, 0.16), transparent 55%),
-    radial-gradient(70% 80% at 0% 120%, rgba(244, 196, 48, 0.14), transparent 60%),
-    linear-gradient(180deg, #2A7A66, #3A927B);
-  /* انحناء سفلي ناعم ممتد على العرض كله بدل الزوايا */
-  border-radius: 0 0 50% 50% / 0 0 22px 22px;
-  border-bottom: 1.5px solid rgba(244, 210, 122, 0.85);
-  color: #fff;
+  overflow: hidden;
+  background: linear-gradient(180deg, #F3F9F6, #EAF4EF);
+  color: #174D41;
+}
+.dark .green-head {
+  background: var(--background);
+  color: var(--foreground);
+}
+.green-head > :not(.head-art) {
+  position: relative;
+  z-index: 1;
+}
+/* حركة هادئة للموجات ووميض النجوم الذهبية */
+@keyframes wave-drift {
+  0%, 100% { transform: translateX(0) }
+  50% { transform: translateX(-14px) }
+}
+@keyframes wave-drift-2 {
+  0%, 100% { transform: translateX(0) }
+  50% { transform: translateX(10px) }
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.7) }
+  50% { opacity: 1; transform: scale(1) }
+}
+.head-art .w1 { animation: wave-drift 9s ease-in-out infinite; }
+.head-art .w2 { animation: wave-drift-2 11s ease-in-out infinite; }
+.head-art .w3 { animation: wave-drift 13s ease-in-out infinite; }
+.head-art .sp { transform-box: fill-box; transform-origin: center; animation: twinkle 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .head-art * { animation: none !important; }
 }

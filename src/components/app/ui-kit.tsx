@@ -243,14 +243,15 @@ export function ScreenShell({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
-      <header className="green-head safe-top shrink-0 px-2 pb-1.5">
+      <header className="green-head safe-top relative shrink-0 px-2 pb-1.5">
+        <HeaderArt />
         <div className={cn("mx-auto flex min-h-[56px] items-center gap-2 px-1", wide ? "max-w-5xl" : "max-w-3xl")}>
           {onBack ? (
-            <button type="button" onClick={onBack} aria-label="رجوع" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white hover:bg-white/10 dark:text-foreground">
+            <button type="button" onClick={onBack} aria-label="رجوع" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#174D41] hover:bg-black/5 dark:text-foreground">
               <ArrowRight className="h-6 w-6" strokeWidth={2.5} />
             </button>
           ) : onClose ? (
-            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white hover:bg-white/10 dark:text-foreground">
+            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#174D41] hover:bg-black/5 dark:text-foreground">
               <X className="h-6 w-6" strokeWidth={2.5} />
             </button>
           ) : null}
@@ -261,7 +262,7 @@ export function ScreenShell({
           {/* موازنة زر الرجوع ليبقى العنوان في الوسط */}
           {!actions && !(onBack && onClose) && (onBack || onClose) && <span className="w-11 shrink-0" aria-hidden="true" />}
           {onBack && onClose && (
-            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white/80 hover:bg-white/10 dark:text-muted-foreground">
+            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#174D41]/70 hover:bg-black/5 dark:text-muted-foreground">
               <X className="h-6 w-6" strokeWidth={2.5} />
             </button>
           )}
@@ -448,5 +449,51 @@ export function MasteryDot({ level, size = 14 }: { level: 0 | 1 | 2 | 3; size?: 
       style={{ width: size, height: size, background: MASTERY_COLORS[level], outline: level === 0 ? "1px solid var(--border)" : undefined }}
       aria-hidden="true"
     />
+  );
+}
+
+/** زخرفة شريط العنوان: موجات خضراء متراكبة تنساب من الزاوية، وخيطان ذهبيان، ونجوم ذهبية تومض */
+export function HeaderArt() {
+  const star = "M0 -6 C0.8 -1.2 1.2 -0.8 6 0 C1.2 0.8 0.8 1.2 0 6 C-0.8 1.2 -1.2 0.8 -6 0 C-1.2 -0.8 -0.8 -1.2 0 -6Z";
+  return (
+    <svg className="head-art pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 400 130" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="ha1" x1="0" y1="0" x2="1" y2="0.5">
+          <stop offset="0" stopColor="#1F6B57" stopOpacity="0.85" />
+          <stop offset="0.6" stopColor="#4FA187" stopOpacity="0.35" />
+          <stop offset="1" stopColor="#9FD6C0" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id="ha2" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#8FCFB6" stopOpacity="0.8" />
+          <stop offset="1" stopColor="#DFF1E8" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id="ha3" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#CDEBDD" />
+          <stop offset="1" stopColor="#E6F4EC" stopOpacity="0.3" />
+        </linearGradient>
+        <linearGradient id="hag" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#F4C430" stopOpacity="0.2" />
+          <stop offset="0.35" stopColor="#E3B23C" />
+          <stop offset="0.75" stopColor="#FFE27A" />
+          <stop offset="1" stopColor="#F4C430" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path className="w3" d="M-20 0H420V6C340 16 280 2 215 16C145 32 80 58 -20 118Z" fill="url(#ha3)" />
+      <path className="w2" d="M-20 0H330C280 16 225 8 170 28C115 48 60 78 -20 104Z" fill="url(#ha2)" />
+      <path className="w1" d="M-20 0H240C200 12 160 12 118 30C78 48 40 70 -20 90Z" fill="url(#ha1)" />
+      {/* الموجات نفسها معكوسة من الزاوية المقابلة فيكتمل الشريط من الطرفين */}
+      <g transform="translate(400 0) scale(-1 1)" opacity="0.75">
+        <path className="w3" d="M-20 0H300C250 10 200 6 150 20C100 34 50 56 -20 96Z" fill="url(#ha3)" />
+        <path className="w2" d="M-20 0H200C165 10 130 12 95 26C62 40 30 58 -20 76Z" fill="url(#ha2)" />
+        <path className="w1" d="M-20 0H120C95 8 70 12 48 22C28 32 10 44 -20 56Z" fill="url(#ha1)" />
+        <path className="w2" d="M-20 88C30 52 80 34 130 20C190 4 260 2 300 2" stroke="url(#hag)" strokeWidth="1.6" fill="none" />
+        <g transform="translate(70 32)"><path className="sp" style={{ animationDelay: "1.5s" }} d={star} fill="#F4C430" transform="scale(1.2)" /></g>
+      </g>
+      <path className="w2" d="M-20 108C40 62 92 44 140 28C205 8 290 4 420 2" stroke="url(#hag)" strokeWidth="1.8" fill="none" />
+      <path className="w1" d="M-20 98C38 58 88 40 132 25C190 6 270 2 420 -1" stroke="url(#hag)" strokeWidth="0.9" fill="none" opacity="0.7" />
+      <g transform="translate(150 22) scale(1.6)"><path className="sp" d={star} fill="#F4C430" /></g>
+      <g transform="translate(212 12) scale(1.1)"><path className="sp" style={{ animationDelay: "1s" }} d={star} fill="#FFE27A" /></g>
+      <g transform="translate(96 46) scale(1.3)"><path className="sp" style={{ animationDelay: "2s" }} d={star} fill="#E3B23C" /></g>
+    </svg>
   );
 }
