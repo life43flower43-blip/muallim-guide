@@ -274,7 +274,7 @@ function Gardner() {
     <Frame title="الذكاءات الثمانية عند جاردنر">
       <div className="grid grid-cols-2 gap-2">
         {kinds.map(([k, n], i) => (
-          <div key={k} className="rounded-xl border-2 border-b-4 p-2.5 text-center" style={{ borderColor: C[i], background: tint(C[i]) }}>
+          <div key={k} className="rounded-xl border-[1.5px] p-2.5 text-center" style={{ borderColor: C[i], background: tint(C[i]) }}>
             <p className="text-base font-bold">{k}</p>
             <p className="text-sm leading-5 text-secondary-foreground">{n}</p>
           </div>
@@ -336,7 +336,7 @@ function Tiles({ title, items, cols = 2 }: { title: string; items: [string, stri
     <Frame title={title}>
       <div className={cols === 2 ? "grid grid-cols-2 gap-2" : "space-y-2"}>
         {items.map(([k, n], i) => (
-          <div key={k} className="rounded-xl border-2 border-b-4 p-2.5 text-center" style={{ borderColor: C[i % C.length], background: tint(C[i % C.length]) }}>
+          <div key={k} className="rounded-xl border-[1.5px] p-2.5 text-center" style={{ borderColor: C[i % C.length], background: tint(C[i % C.length]) }}>
             <p className="text-base font-bold leading-6">{k}</p>
             <p className="text-sm leading-6 text-secondary-foreground">{n}</p>
           </div>

@@ -36,7 +36,7 @@ export const BLUEPRINTS: ExamBlueprint[] = [
       { courseId: "M3", quota: 13 },
       { courseId: "M4", quota: 12 },
     ],
-    color: "#0E7C86",
+    color: "#136F5C",
   },
   {
     id: "specialty",
@@ -46,7 +46,7 @@ export const BLUEPRINTS: ExamBlueprint[] = [
     minutes: 30,
     passPct: 60,
     sections: [{ courseId: "M5", quota: 30 }],
-    color: "#B45309",
+    color: "#B8860B",
   },
   {
     id: "cadre",
@@ -66,7 +66,7 @@ export const BLUEPRINTS: ExamBlueprint[] = [
       { courseId: "F1", quota: 10 },
       { courseId: "SE1", quota: 8 },
     ],
-    color: "#0B6870",
+    color: "#0D5848",
   },
 ];
 
@@ -196,16 +196,16 @@ export const PLACEMENT_LEVELS: Record<
   seed: {
     title: "بادئ في المسار",
     desc: "أنت في بداية الطريق — أساسك التربوي يحتاج بناءً من دليل المعلم قبل خوض المحاكاة الصارمة",
-    color: "#B45309",
+    color: "#B8860B",
   },
   growing: {
     title: "نامٍ ومتقدم",
     desc: "أساسك موجود وتتوزع فجواتك في محاور بعينها — التركيز عليها سيرفعك سريعًا",
-    color: "#0E7C86",
+    color: "#136F5C",
   },
   ready: {
     title: "جاهز للاحتراف",
     desc: "مستواك القاعدي ممتاز — انقل جهدك إلى المحاكاة الموقوتة ودفتر الأخطاء لصقل الأداء تحت الضغط",
-    color: "#0B6870",
+    color: "#0D5848",
   },
 };

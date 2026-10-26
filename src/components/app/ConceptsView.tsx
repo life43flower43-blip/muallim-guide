@@ -10,6 +10,7 @@
 //   وانتقال «التالي» الذي يعلّم المفهوم مكتملًا، واختبار في نهاية الفصل.
 // ============================================================================
 
+import { FitText } from "./FitText";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -488,7 +489,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
           </header>
 
           {c.rule && (
-            <p className="rounded-2xl border-2 border-b-4 border-[#E3A93B] bg-[#FFF8D6] p-4 text-lg font-bold leading-9 dark:bg-[#E3A93B]/10">
+            <p className="rounded-2xl border-[1.5px] border-[#E3A93B] bg-[#FFF8D6] p-4 text-lg font-bold leading-9 dark:bg-[#E3A93B]/10">
               {c.rule}
             </p>
           )}
@@ -919,11 +920,11 @@ export default function ConceptsView() {
                       setOpenCourseId(course.id);
                       setOpenChapter(null);
                     }}
-                    className="flex items-center gap-3 rounded-2xl border-2 border-b-4 border-border bg-card p-4 text-right transition active:translate-y-[2px] active:border-b-2"
+                    className="flex min-w-0 items-center gap-3 rounded-[24px] border border-[#E2ECE7] bg-white p-3.5 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
                   >
-                    <CourseBadge id={course.id} size={52} />
+                    <CourseBadge id={course.id} size={48} />
                     <span className="min-w-0 flex-1">
-                      <span className="block text-lg font-bold leading-7">{course.name}</span>
+                      <FitText max={20} min={13} className="font-bold leading-7">{course.name}</FitText>
                       <span className="mt-2 flex items-center gap-2">
                         <span className="h-2.5 flex-1 overflow-hidden rounded-full bg-muted">
                           <span className="block h-full rounded-full" style={{ width: `${cs.length ? (readCount / cs.length) * 100 : 0}%`, background: COURSE_COLOR[course.id] ?? "var(--primary)" }} />
