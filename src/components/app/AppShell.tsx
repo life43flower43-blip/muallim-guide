@@ -178,24 +178,24 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
       <div className="flex items-center justify-between gap-2 px-4 pb-3 pt-2">
         <span className="flex min-w-0 items-center gap-2 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icons/logo-128.png" alt="" className="h-12 w-12 shrink-0 rounded-2xl bg-white object-contain p-1 shadow-[0_2px_10px_-2px_rgba(227,169,59,0.55)] ring-1 ring-[#E3A93B]/50" />
+          <img src="/icons/logo-128.png" alt="" className="h-12 w-12 shrink-0 rounded-2xl bg-white object-contain p-1 shadow-[0_2px_10px_-2px_rgba(244,196,48,0.6)] ring-1 ring-[#F4C430]/70" />
           <span className="shrink-0 whitespace-nowrap font-display text-[clamp(20px,6.8vw,28px)] font-extrabold leading-9">تربوي</span>
         </span>
         <span className="flex shrink-0 items-center gap-1">
-          <span className="flex items-center gap-1 rounded-full bg-white py-1 pl-2.5 pr-1 max-[400px]:hidden text-base font-extrabold text-[#B9821F] shadow-sm dark:bg-card" aria-label={`سلسلة ${ad(streak)} يوم، وهدف اليوم ${ad(Math.round(goal * 100))}٪`}>
+          <span className="flex items-center gap-1 rounded-full bg-white py-1 pl-2.5 pr-1 max-[400px]:hidden text-base font-extrabold text-[#D19B00] shadow-sm dark:bg-card" aria-label={`سلسلة ${ad(streak)} يوم، وهدف اليوم ${ad(Math.round(goal * 100))}٪`}>
             {/* حلقة هدف اليوم تمتلئ بالذهبي حول الشعلة، وتتوهج عند اكتمالها */}
             <span className={cn("relative h-8 w-8 rounded-full", goal >= 1 && "shadow-[0_0_10px_2px_rgba(245,196,81,0.7)]")}>
               <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90" aria-hidden="true">
                 <defs>
                   <linearGradient id="goalGold" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0" stopColor="#F5C451" />
-                    <stop offset="1" stopColor="#B9821F" />
+                    <stop offset="0" stopColor="#FFE27A" />
+                    <stop offset="1" stopColor="#E0B430" />
                   </linearGradient>
                 </defs>
-                <circle cx="18" cy="18" r="15" fill="none" stroke="#F3E7CB" strokeWidth="3.5" />
+                <circle cx="18" cy="18" r="15" fill="none" stroke="#FBF0CF" strokeWidth="3.5" />
                 <circle cx="18" cy="18" r="15" fill="none" stroke="url(#goalGold)" strokeWidth="3.5" strokeLinecap="round" strokeDasharray={`${goal * 94.25} 94.25`} className="transition-[stroke-dasharray] duration-700" />
               </svg>
-              <Flame className="absolute inset-0 m-auto h-4 w-4" fill="#E3A93B" stroke="#B9821F" strokeWidth={1.5} />
+              <Flame className="absolute inset-0 m-auto h-4 w-4" fill="#F7C934" stroke="#E0A800" strokeWidth={1.5} />
             </span>
             <span>{ad(streak)}</span>
           </span>

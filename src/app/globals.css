@@ -486,9 +486,9 @@ body {
   inset-inline: 0;
   bottom: 0;
   height: 3px;
-  background: linear-gradient(90deg, #A8741A, #E3A93B 20%, #FFF3C4 35%, #F5C451 50%, #C98A1E 65%, #FFE7A0 80%, #A8741A);
+  background: linear-gradient(90deg, #D4AF37, #F7D774 20%, #FFF8DC 35%, #F4C430 50%, #D4AF37 65%, #FFE88A 80%, #D4AF37);
   background-size: 200% 100%;
-  box-shadow: 0 1px 3px rgba(201, 138, 30, 0.45);
+  box-shadow: 0 1px 3px rgba(244, 196, 48, 0.5);
   animation: gold-shine 6s linear infinite;
   pointer-events: none;
 }
