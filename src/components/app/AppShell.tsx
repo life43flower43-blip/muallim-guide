@@ -197,24 +197,24 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
               <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90" aria-hidden="true">
                 <defs>
                   <linearGradient id="goalGold" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0" stopColor="#FFE27A" />
-                    <stop offset="1" stopColor="#E0B430" />
+                    <stop offset="0" stopColor="#F2C230" />
+                    <stop offset="1" stopColor="#C99A06" />
                   </linearGradient>
                 </defs>
                 <circle cx="18" cy="18" r="15" fill="none" stroke="#FBF0CF" strokeWidth="3.5" />
                 <circle cx="18" cy="18" r="15" fill="none" stroke="url(#goalGold)" strokeWidth="3.5" strokeLinecap="round" strokeDasharray={`${goal * 94.25} 94.25`} className="transition-[stroke-dasharray] duration-700" />
               </svg>
-              <Flame className="absolute inset-0 m-auto h-[14px] w-[14px]" fill="#F7C934" stroke="#E0A800" strokeWidth={1.5} />
+              <Flame className="absolute inset-0 m-auto h-[14px] w-[14px]" fill="#E8B511" stroke="#BF8E05" strokeWidth={1.5} />
             </span>
             
           </span>
-          <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-[36px] w-[36px] items-center justify-center rounded-full bg-white text-[#D9A400] dark:bg-card">
+          <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-[36px] w-[36px] items-center justify-center rounded-full bg-white text-[#C99A06] dark:bg-card">
             <Bell className="h-[18px] w-[18px]" strokeWidth={2.2} />
             {due > 0 && (
               <span className="absolute -right-1 -top-1 min-w-[20px] rounded-full bg-destructive px-1 text-center text-[11px] font-bold leading-5 text-white">{ad(Math.min(due, 99))}</span>
             )}
           </button>
-          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-[36px] w-[36px] items-center justify-center rounded-full bg-white text-[#D9A400] dark:bg-card">
+          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-[36px] w-[36px] items-center justify-center rounded-full bg-white text-[#C99A06] dark:bg-card">
             <Settings className="h-[18px] w-[18px]" strokeWidth={2.2} />
           </button>
         </span>
