@@ -498,3 +498,29 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .gold-line::after { animation: none; }
 }
+
+/* إطار ذهبي معدني يحيط بشريط العنوان: تدرّج يحاكي الذهب الحقيقي، ولمعة تنساب عليه */
+.gold-frame {
+  position: relative;
+  border: 2.5px solid transparent;
+  border-radius: 22px;
+  background:
+    linear-gradient(#F8FCFA, #F8FCFA) padding-box,
+    linear-gradient(115deg, #C9A227, #F4D03F 14%, #FFF6CC 24%, #FFD700 34%, #D4AF37 48%, #FFE680 62%, #FFFBE6 70%, #F4C430 82%, #C9A227) border-box;
+  background-size: 100% 100%, 300% 100%;
+  box-shadow: 0 8px 20px -10px rgba(212, 175, 55, 0.7), 0 0 0 1px rgba(255, 236, 160, 0.35);
+  animation: gold-flow 7s linear infinite;
+}
+.dark .gold-frame {
+  background:
+    linear-gradient(var(--card), var(--card)) padding-box,
+    linear-gradient(115deg, #C9A227, #F4D03F 14%, #FFF6CC 24%, #FFD700 34%, #D4AF37 48%, #FFE680 62%, #FFFBE6 70%, #F4C430 82%, #C9A227) border-box;
+  background-size: 100% 100%, 300% 100%;
+}
+@keyframes gold-flow {
+  from { background-position: 0 0, 0% 0; }
+  to { background-position: 0 0, 300% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gold-frame { animation: none; }
+}
