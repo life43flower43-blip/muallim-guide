@@ -172,7 +172,7 @@ function MobileTopBar({ tab }: { tab: Tab }) {
   // كل وجهة تعرض اسمها، والرئيسية تعرض الإحصاءات
   if (tab !== "today")
     return (
-      <header className="safe-top sticky top-0 z-30 border-b-2 border-black/15 bg-[#0E7C86] text-white lg:hidden">
+      <header className="safe-top sticky top-0 z-30 border-b-2 border-black/15 bg-[#136F5C] text-white lg:hidden">
         <div className="relative flex h-14 items-center justify-center px-14">
           <h1 className="font-display text-xl font-bold">{NAV.find((n) => n.id === tab)?.label}</h1>
           {tab === "profile" && (
@@ -184,7 +184,7 @@ function MobileTopBar({ tab }: { tab: Tab }) {
       </header>
     );
   return (
-    <header className="safe-top sticky top-0 z-30 border-b-2 border-black/15 bg-[#0E7C86] text-white lg:hidden">
+    <header className="safe-top sticky top-0 z-30 border-b-2 border-black/15 bg-[#136F5C] text-white lg:hidden">
       <div className="flex h-14 items-center justify-between px-4">
         <span className="flex h-9 w-9 items-center justify-center rounded-[4px] overflow-hidden bg-white" aria-label="تربوي">
 <img src="/icons/logo-128.png" alt="" className="h-full w-full object-contain p-0.5" />

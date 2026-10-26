@@ -6,11 +6,12 @@
 
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Bell, BookOpen, Check, Dumbbell, RotateCcw, Sparkles } from "lucide-react";
+import { Bell, BookOpen, Brain, CalendarDays, Check, ChevronLeft, ClipboardCheck, Dumbbell, Lightbulb, MessagesSquare, Network, NotebookPen, PencilRuler, Presentation, RotateCcw, School, Sparkles, Timer, Users } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { COURSES, COURSE_COLOR, COURSE_SHORT, chaptersOfCourse, questionById, questionsOfCourse } from "@/lib/qbank";
-import { chapterSession, chapterStats, nextChapter, smartSession, topicKey, weakChapters } from "@/lib/practice-bank";
+import { chapterSession, chapterStats, nextChapter, overallReadiness, smartSession, topicKey, weakChapters } from "@/lib/practice-bank";
+import { useAccount } from "@/lib/account-client";
 import { useMistakes, buildReviewQids, recordMistake } from "@/lib/mistakes-client";
 import { enablePush, usePushState } from "@/lib/push-client";
 import { arCount, splitReason, ERROR_DUE_FORMS, ERROR_OBJ_FORMS, QUESTION_FORMS } from "@/lib/arabic";
@@ -108,41 +109,78 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           run: () => startChapter(current.courseId, current.chapter),
         };
 
+  const { user } = useAccount();
+  const first = user?.name?.trim().split(/\s+/)[0];
+  const greeting = first ? `أهلًا ${first}` : "أهلًا بك";
+  // الجاهزية تظهر بعد قدر كافٍ من الإجابات فقط، فلا يُحبط الطالب بصفر في البداية
+  const answeredCount = Object.keys(attempts).length;
+  const readiness = answeredCount >= 30 ? overallReadiness(attempts) * 100 : null;
+
+  const doors: DoorProps[] = [
+    { title: "المفاهيم التربوية", icon: Brain, art: [BookOpen, Lightbulb], tone: "#136F5C", run: () => onGoTab("learn") },
+    { title: "مهارات التدريس", icon: Presentation, art: [Users, Sparkles], tone: "#2F7FA8", run: ui.startLab },
+    { title: "طرائق التدريس", icon: Network, art: [PencilRuler, BookOpen], tone: "#C98A1E", run: () => { ui.openCourseTab("M5"); onGoTab("learn"); } },
+    { title: "المواقف الصفية", icon: Users, art: [MessagesSquare, School], tone: "#2F8F6B", run: ui.startSim },
+    { title: "اختبر نفسك", icon: ClipboardCheck, art: [Timer, Check], tone: "#7A5BA8", run: () => onGoTab("practice") },
+    { title: "خطة الدرس", icon: CalendarDays, art: [NotebookPen, PencilRuler], tone: "#D9603B", run: ui.startStudio },
+  ];
+
   const PLAN_ICON: Record<string, { icon: React.ElementType; color: string }> = {
     review: { icon: RotateCcw, color: "#FF4B4B" },
-    chapter: { icon: BookOpen, color: COURSE_COLOR[current.courseId] ?? "#0E7C86" },
+    chapter: { icon: BookOpen, color: COURSE_COLOR[current.courseId] ?? "#136F5C" },
     weak: { icon: Dumbbell, color: "#FF9600" },
     smart: { icon: Sparkles, color: "#A560E8" },
   };
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      {/* الخطوة التالية */}
-      <section className="overflow-hidden rounded-2xl border-b-4 border-black/20 bg-primary text-primary-foreground">
-        <div className="p-5">
-          <h2 className="font-display text-2xl font-bold leading-[1.6]">{hero.title}</h2>
-          {due === 0 && current.stats.total > 0 && (
-            <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-white/25" aria-hidden="true">
-              <div className="h-full rounded-full bg-[#FFC800]" style={{ width: `${(current.stats.answered / current.stats.total) * 100}%` }} />
+      {/* الترحيب والخطوة التالية */}
+      <section className="relative overflow-hidden rounded-3xl border-b-4 border-black/20 bg-gradient-to-bl from-[#1B8A6F] to-[#0E5446] p-5 text-white">
+        <span className="pointer-events-none absolute -left-10 -top-12 h-40 w-40 rounded-full bg-white/10" aria-hidden="true" />
+        <span className="pointer-events-none absolute -bottom-16 left-16 h-36 w-36 rounded-full bg-[#E3A93B]/25" aria-hidden="true" />
+        <div className="relative flex items-start gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-lg font-bold text-[#FFE29A]">{greeting}</p>
+            <h2 className="mt-1 font-display text-2xl font-bold leading-[1.6]">{hero.title}</h2>
+          </div>
+          {readiness !== null && (
+            <div className="relative h-16 w-16 shrink-0" role="img" aria-label={`جاهزيتك ${pct(readiness)}`}>
+              <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(255,255,255,.2)" strokeWidth="4" />
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="#FFC800" strokeWidth="4" strokeLinecap="round" strokeDasharray={`${(readiness / 100) * 97.4} 97.4`} />
+              </svg>
+              <span className="absolute inset-0 flex items-center justify-center text-sm font-extrabold">{pct(readiness)}</span>
             </div>
           )}
-          <div className="mt-5 grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={hero.run}
-              className="min-h-[52px] rounded-2xl bg-white px-3 text-base font-bold text-primary shadow-[0_4px_0_rgba(0,0,0,0.18)] transition active:translate-y-[4px] active:shadow-none"
-            >
-              {hero.cta}
-            </button>
-            <button
-              type="button"
-              onClick={startSmart}
-              className="min-h-[52px] rounded-2xl border-2 border-b-4 border-white/40 px-3 text-base font-bold text-white transition active:translate-y-[2px] active:border-b-2"
-            >
-              تدريب ذكي
-            </button>
-          </div>
         </div>
+        {due === 0 && current.stats.total > 0 && (
+          <div className="relative mt-3 h-2.5 overflow-hidden rounded-full bg-white/20" aria-hidden="true">
+            <div className="h-full rounded-full bg-[#FFC800]" style={{ width: `${(current.stats.answered / current.stats.total) * 100}%` }} />
+          </div>
+        )}
+        <div className="relative mt-5 grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={hero.run}
+            className="min-h-[52px] rounded-2xl bg-white px-3 text-base font-bold text-[#0E5446] shadow-[0_4px_0_rgba(0,0,0,0.2)] transition active:translate-y-[4px] active:shadow-none"
+          >
+            {hero.cta}
+          </button>
+          <button
+            type="button"
+            onClick={startSmart}
+            className="min-h-[52px] rounded-2xl border-2 border-b-4 border-white/40 px-3 text-base font-bold text-white transition active:translate-y-[2px] active:border-b-2"
+          >
+            تدريب ذكي
+          </button>
+        </div>
+      </section>
+
+      {/* أبواب التطبيق */}
+      <section className="grid grid-cols-2 gap-3">
+        {doors.map((d) => (
+          <Door key={d.title} {...d} />
+        ))}
       </section>
 
       <PushInvite />
@@ -177,6 +215,34 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
 
       <DailyQuestion courseId={current.courseId} onOpenConcept={(id) => { ui.openConcept(id); onGoTab("learn"); }} />
     </div>
+  );
+}
+
+type DoorProps = { title: string; icon: React.ElementType; art: React.ElementType[]; tone: string; run: () => void };
+
+/** باب من أبواب التطبيق: رسم ملون في الأعلى، والعنوان وأيقونته في الأسفل */
+function Door({ title, icon: Icon, art, tone, run }: DoorProps) {
+  const [A, B] = art;
+  return (
+    <button
+      type="button"
+      onClick={run}
+      className="overflow-hidden rounded-3xl border-2 border-b-4 border-border bg-card text-right transition active:translate-y-[2px] active:border-b-2"
+    >
+      <span className="relative block h-24 overflow-hidden" style={{ background: `linear-gradient(135deg, color-mix(in srgb, ${tone} 22%, var(--card)), color-mix(in srgb, ${tone} 8%, var(--card)))` }} aria-hidden="true">
+        <span className="absolute -left-6 -top-6 h-20 w-20 rounded-full" style={{ background: `color-mix(in srgb, ${tone} 18%, transparent)` }} />
+        <span className="absolute bottom-2 left-4 h-8 w-8 rounded-full bg-[#E3A93B]/30" />
+        <A className="absolute left-5 top-4 h-9 w-9 opacity-40" style={{ color: tone }} strokeWidth={1.8} />
+        <B className="absolute bottom-3 left-14 h-6 w-6 opacity-30" style={{ color: tone }} strokeWidth={2} />
+        <span className="absolute right-4 top-1/2 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-2xl text-white shadow-md" style={{ background: tone }}>
+          <Icon className="h-7 w-7" strokeWidth={2} />
+        </span>
+      </span>
+      <span className="flex min-h-[56px] items-center gap-2 px-3 py-2">
+        <span className="min-w-0 flex-1 text-base font-bold leading-6">{title}</span>
+        <ChevronLeft className="h-5 w-5 shrink-0" style={{ color: tone }} />
+      </span>
+    </button>
   );
 }
 

@@ -243,7 +243,7 @@ export function ScreenShell({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
-      <header className="safe-top shrink-0 border-b-2 border-black/15 bg-[#0E7C86] text-white">
+      <header className="safe-top shrink-0 border-b-2 border-black/15 bg-[#136F5C] text-white">
         <div className={cn("mx-auto flex min-h-[60px] items-center gap-2 px-2", wide ? "max-w-5xl" : "max-w-3xl")}>
           {onBack ? (
             <button type="button" onClick={onBack} aria-label="رجوع" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[4px] text-white hover:bg-white/15">
