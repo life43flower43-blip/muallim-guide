@@ -126,7 +126,7 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
   return (
     <nav aria-label="التنقل الرئيسي" className="safe-bottom px-2 pb-2 pt-1 min-[380px]:px-3 lg:hidden">
       {/* شريط عائم بإطار ذهبي، والحبة الخضراء تنزلق بين التبويبات */}
-      <div className="nav-gold grid grid-cols-5 gap-0.5 rounded-[26px] p-1 min-[380px]:gap-1 min-[380px]:p-1.5 shadow-[0_6px_16px_-10px_rgba(16,64,52,0.3)]">
+      <div className="nav-gold grid grid-cols-5 gap-0.5 rounded-[26px] p-1 min-[380px]:gap-1 min-[380px]:p-1.5">
         {NAV.map((n) => {
           const active = tab === n.id;
           return (
@@ -141,7 +141,7 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
                 <motion.span
                   layoutId="nav-pill"
                   transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                  className="absolute inset-0 rounded-[20px] bg-gradient-to-b from-[#2C7D69] to-[#1C5E4F] shadow-[0_6px_14px_-6px_rgba(19,111,92,0.9),inset_0_1px_0_rgba(255,255,255,0.18)]"
+                  className="absolute inset-0 rounded-[20px] bg-gradient-to-b from-[#2C7D69] to-[#1C5E4F]"
                   aria-hidden="true"
                 />
               )}
@@ -187,11 +187,11 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
       <div className="green-bar flex items-center justify-between gap-2 px-2.5 py-2">
         <span className="flex min-w-0 items-center gap-2 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icons/logo-128.png" alt="" className="h-12 w-12 shrink-0 rounded-2xl bg-white object-contain p-1 shadow-sm ring-1 ring-[#F4C430]/70" />
+          <img src="/icons/logo-128.png" alt="" className="h-12 w-12 shrink-0 rounded-2xl bg-white object-contain p-1 ring-1 ring-[#F4C430]/70" />
           <span className="shrink-0 whitespace-nowrap font-display text-[clamp(20px,6.8vw,28px)] font-extrabold leading-9">تربوي</span>
         </span>
         <span className="flex shrink-0 items-center gap-1">
-          <span className="flex items-center gap-1 rounded-full bg-white p-1 max-[360px]:hidden text-base font-extrabold text-[#D19B00] shadow-sm dark:bg-card" aria-label={`هدف اليوم ${ad(Math.round(goal * 100))}٪`}>
+          <span className="flex items-center gap-1 rounded-full bg-white p-1 max-[360px]:hidden text-base font-extrabold text-[#D19B00] dark:bg-card" aria-label={`هدف اليوم ${ad(Math.round(goal * 100))}٪`}>
             {/* حلقة هدف اليوم تمتلئ بالذهبي حول الشعلة، وتتوهج عند اكتمالها */}
             <span className={cn("relative h-8 w-8 rounded-full", goal >= 1 && "ring-2 ring-[#FFE27A]")}>
               <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90" aria-hidden="true">
@@ -208,13 +208,13 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
             </span>
             
           </span>
-          <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#D9A400] shadow-sm dark:bg-card">
+          <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#D9A400] dark:bg-card">
             <Bell className="h-5 w-5" strokeWidth={2.2} />
             {due > 0 && (
               <span className="absolute -right-1 -top-1 min-w-[20px] rounded-full bg-destructive px-1 text-center text-[11px] font-bold leading-5 text-white">{ad(Math.min(due, 99))}</span>
             )}
           </button>
-          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#D9A400] shadow-sm dark:bg-card">
+          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#D9A400] dark:bg-card">
             <Settings className="h-5 w-5" strokeWidth={2.2} />
           </button>
         </span>
