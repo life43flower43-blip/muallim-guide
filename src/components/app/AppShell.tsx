@@ -160,7 +160,7 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
   };
   if (tab !== "today")
     return (
-      <header className="safe-top sticky top-0 z-30 border-b border-[#D5E6DD] bg-[#EAF4EF] text-[#174D41] lg:hidden dark:border-border dark:bg-background dark:text-foreground">
+      <header className="safe-top sticky top-0 z-30 border-b-2 border-[#E3A93B] bg-[#EAF4EF] text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
         <div className="relative flex h-14 items-center justify-center px-14">
           <h1 className="font-display text-xl font-extrabold">{NAV.find((n) => n.id === tab)?.label}</h1>
           {tab === "profile" && (
