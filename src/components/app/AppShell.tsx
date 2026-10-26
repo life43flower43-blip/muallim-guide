@@ -11,8 +11,8 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
-import { Flame, Gem, Settings, Zap, BookOpen, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff, X, Layers } from "lucide-react";
-import { useApp, useAppHydrated, xpToday, DAILY_GOAL_XP } from "@/lib/store";
+import { Settings, BookOpen, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff } from "lucide-react";
+import { useApp, useAppHydrated } from "@/lib/store";
 import { useUi, OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
 import { loadQbank } from "@/lib/qbank";
 import { readPeerHash } from "@/lib/peer";
@@ -124,8 +124,8 @@ function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: 
 
 function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
   return (
-    <nav aria-label="التنقل الرئيسي" className="safe-bottom border-t border-border bg-card lg:hidden">
-      <div className="grid grid-cols-6">
+    <nav aria-label="التنقل الرئيسي" className="safe-bottom rounded-t-[28px] bg-card px-2 pt-2 shadow-[0_-6px_20px_-12px_rgba(16,64,52,0.35)] lg:hidden">
+      <div className="grid grid-cols-6 gap-1">
         {NAV.map((n) => {
           const active = tab === n.id;
           return (
@@ -134,12 +134,10 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
               type="button"
               onClick={() => onTab(n.id)}
               aria-current={active ? "page" : undefined}
-              className="relative flex min-h-[56px] flex-col items-center justify-center gap-1 pt-1.5"
+              className={cn("relative flex min-h-[60px] flex-col items-center justify-center gap-1 rounded-2xl pb-1.5 pt-1.5 transition-colors", active && "bg-[#DCEFE5] dark:bg-accent")}
             >
-              <span className={cn("flex h-8 w-12 items-center justify-center rounded-full transition-colors", active && "bg-accent")}>
-                <n.icon className={cn("h-[22px] w-[22px]", active ? "text-primary" : "text-muted-foreground")} strokeWidth={active ? 2.2 : 1.8} />
-              </span>
-              <span className={cn("text-xs", active ? "font-semibold text-primary" : "text-muted-foreground")}>{n.label}</span>
+              <n.icon className={cn("h-6 w-6", active ? "text-[#136F5C] dark:text-primary" : "text-[#5D7A71]")} strokeWidth={active ? 2.4 : 1.8} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.15 : 0} />
+              <span className={cn("text-xs", active ? "font-bold text-[#136F5C] dark:text-primary" : "text-[#5D7A71]")}>{n.label}</span>
               {n.id === "mistakes" && due > 0 && (
                 <span className="absolute right-1/2 top-1 translate-x-5 rounded-full bg-destructive px-1.5 text-[10px] font-semibold leading-4 text-white">
                   {ad(Math.min(due, 99))}
@@ -153,30 +151,20 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
   );
 }
 
-// شريط علوي على نمط Duolingo بحواف حادة: إحصاءات موزعة بالتساوي بلا فقاعات، بلون شريط حالة الهاتف
-function TopStat({ label, value, children }: { label: string; value: string; children: React.ReactNode }) {
-  return (
-    <span className="flex items-center gap-1.5" aria-label={`${label}: ${value}`}>
-      {children}
-      <span className="text-lg font-extrabold tabular-nums">{value}</span>
-    </span>
-  );
-}
-
-
-
-function MobileTopBar({ tab }: { tab: Tab }) {
-  const { gems, streak } = useWallet();
-  const sessions = useApp((s) => s.sessions);
-  const xp = Math.min(xpToday(sessions), DAILY_GOAL_XP);
-  // كل وجهة تعرض اسمها، والرئيسية تعرض الإحصاءات
+// الشريط العلوي فاتح بلون خلفية التطبيق (ولون شريط حالة الهاتف): في الرئيسية الشعار والترحيب، وفي غيرها اسم الصفحة
+function MobileTopBar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
+  const { user } = useAccount();
+  const openSettings = () => {
+    onTab("profile");
+    setTimeout(() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT)), 50);
+  };
   if (tab !== "today")
     return (
-      <header className="safe-top sticky top-0 z-30 border-b-2 border-black/15 bg-[#0E7C86] text-white lg:hidden">
+      <header className="safe-top sticky top-0 z-30 border-b border-[#D5E6DD] bg-[#EAF4EF] text-[#174D41] lg:hidden dark:border-border dark:bg-background dark:text-foreground">
         <div className="relative flex h-14 items-center justify-center px-14">
-          <h1 className="font-display text-xl font-bold">{NAV.find((n) => n.id === tab)?.label}</h1>
+          <h1 className="font-display text-xl font-extrabold">{NAV.find((n) => n.id === tab)?.label}</h1>
           {tab === "profile" && (
-            <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="absolute left-2 flex h-11 w-11 items-center justify-center rounded-[4px] hover:bg-white/15">
+            <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="absolute left-2 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
               <Settings className="h-6 w-6" strokeWidth={2.2} />
             </button>
           )}
@@ -184,20 +172,27 @@ function MobileTopBar({ tab }: { tab: Tab }) {
       </header>
     );
   return (
-    <header className="safe-top sticky top-0 z-30 border-b-2 border-black/15 bg-[#0E7C86] text-white lg:hidden">
-      <div className="flex h-14 items-center justify-between px-4">
-        <span className="flex h-9 w-9 items-center justify-center rounded-[4px] overflow-hidden bg-white" aria-label="تربوي">
-<img src="/icons/logo-128.png" alt="" className="h-full w-full object-contain p-0.5" />
+    <header className="safe-top sticky top-0 z-30 bg-[#EAF4EF] text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
+      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 px-4 pb-3 pt-2">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/icons/logo-128.png" alt="" className="h-12 w-12 rounded-2xl bg-white object-contain p-1 shadow-sm" />
+        <span className="text-center">
+          <span className="block font-display text-[28px] font-extrabold leading-9">تربوي</span>
+          <span className="block truncate text-[13px] font-medium text-[#174D41]/75 dark:text-muted-foreground">معًا نحو التميّز في التدريس</span>
         </span>
-        <TopStat label="سلسلة الأيام" value={ad(streak)}>
-          <Flame className="h-6 w-6" fill="#FF9600" stroke="#FFC800" strokeWidth={1.5} />
-        </TopStat>
-        <TopStat label="الجواهر" value={ad(gems)}>
-          <Gem className="h-6 w-6" fill="#1CB0F6" stroke="#DDF4FF" strokeWidth={1.5} />
-        </TopStat>
-        <TopStat label="هدف اليوم" value={`${ad(xp)}/${ad(DAILY_GOAL_XP)}`}>
-          <Zap className="h-6 w-6" fill="#FFC800" stroke="#FFF4B8" strokeWidth={1.5} />
-        </TopStat>
+        <span className="flex items-center gap-0.5">
+          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-10 w-10 items-center justify-center rounded-full text-[#1F6F5C] hover:bg-black/5">
+            <Settings className="h-6 w-6" strokeWidth={2.2} />
+          </button>
+          <button type="button" onClick={() => onTab("profile")} aria-label="حسابي" className="h-12 w-12 overflow-hidden rounded-full border-2 border-[#1F6F5C] bg-white">
+            {user?.avatar ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={user.avatar} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+            ) : (
+              <CircleUser className="m-auto h-8 w-8 text-[#1F6F5C]" strokeWidth={1.8} />
+            )}
+          </button>
+        </span>
       </div>
     </header>
   );
@@ -341,7 +336,7 @@ export default function AppShell() {
     <div className="flex h-dvh bg-background">
       <SideNav tab={tab} onTab={go} due={due} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <MobileTopBar tab={tab} />
+        <MobileTopBar tab={tab} onTab={go} />
         {!isOnline && (
           <div role="status" className="flex items-center justify-center gap-2 border-b border-border bg-gem-soft px-4 py-1.5 text-xs font-medium text-gem">
             <WifiOff className="h-3.5 w-3.5 shrink-0" />

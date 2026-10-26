@@ -45,27 +45,27 @@
 :root {
   /* هوية «تربوي»: تركوازي هادئ مريح، رماديات مائلة إلى التركواز، وبرتقالي للجواهر وحدها */
   --radius: 0.75rem;
-  --background: #F5FAFA;
+  --background: #EEF5F1;
   --foreground: #12292D;
   --card: #ffffff;
   --card-foreground: #12292D;
   --popover: #ffffff;
   --popover-foreground: #12292D;
-  --primary: #0E7C86;
+  --primary: #136F5C;
   --primary-foreground: #ffffff;
-  --secondary: #EDF5F5;
+  --secondary: #ECF4EF;
   --secondary-foreground: #33494D;
-  --muted: #EAF3F3;
+  --muted: #E8F1EC;
   --muted-foreground: #4A6165;
-  --accent: #DDF3F3;
-  --accent-foreground: #0B6870;
+  --accent: #DCEFE5;
+  --accent-foreground: #0D5848;
   --destructive: #B42318;
-  --border: #DCEAEA;
-  --input: #C9DDDD;
-  --ring: #0E7C86;
+  --border: #D8E7DF;
+  --input: #C3D9CD;
+  --ring: #136F5C;
   --success: #067647;
   --warning: #B54708;
-  --teal: #0E7C86;
+  --teal: #136F5C;
   --amber: #B54708;
   --rose: #B42318;
   --violet: #5925DC;
@@ -269,23 +269,23 @@ body {
 /* تفعيله بصف .dark على الجذر من مفتاح «حسابي»، وتغير متغيرات الثيم كلها */
 
 .dark {
-  --background: #0B1719;
+  --background: #0A1613;
   --foreground: #E6EDEF;
   --card: #121D20;
   --card-foreground: #E6EDEF;
   --popover: #121D20;
   --popover-foreground: #E6EDEF;
-  --primary: #4FCFC8;
-  --primary-foreground: #04282A;
-  --secondary: #18262A;
+  --primary: #5CCFA6;
+  --primary-foreground: #03271E;
+  --secondary: #152622;
   --secondary-foreground: #C9D6DA;
-  --muted: #18262A;
+  --muted: #152622;
   --muted-foreground: #9AABB0;
-  --accent: #0F3436;
-  --accent-foreground: #A6EBE6;
-  --border: #22343A;
-  --input: #2C4148;
-  --ring: #4FCFC8;
+  --accent: #0E3329;
+  --accent-foreground: #A8EBD1;
+  --border: #20352F;
+  --input: #2A443C;
+  --ring: #5CCFA6;
   --success: #47CD89;
   --warning: #FDB022;
   --destructive: #F97066;
