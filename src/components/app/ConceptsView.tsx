@@ -430,7 +430,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
       onClose={onClose}
       actions={
         <>
-          <button type="button" onClick={share} aria-label="شارك المفهوم" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#174D41] hover:bg-black/5 dark:text-foreground">
+          <button type="button" onClick={share} aria-label="شارك المفهوم" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white hover:bg-white/10 dark:text-foreground">
             <Share2 className="h-5 w-5" />
           </button>
         </>

@@ -163,10 +163,10 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
   if (tab !== "today")
     return (
       <header className="safe-top sticky top-0 z-30 bg-[#EAF4EF] px-2 pb-3 pt-1.5 text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
-        <div className="gold-frame flex h-14 items-center justify-center px-14">
+        <div className="green-bar relative flex h-14 items-center justify-center px-14">
           <h1 className="font-display text-xl font-extrabold">{NAV.find((n) => n.id === tab)?.label}</h1>
           {tab === "profile" && (
-            <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="absolute left-1.5 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
+            <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="absolute left-1.5 flex h-11 w-11 items-center justify-center rounded-full hover:bg-white/10">
               <Settings className="h-6 w-6" strokeWidth={2.2} />
             </button>
           )}
@@ -175,7 +175,7 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
     );
   return (
     <header className="safe-top sticky top-0 z-30 bg-[#EAF4EF] px-2 pb-3 pt-1.5 text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
-      <div className="gold-frame flex items-center justify-between gap-2 px-2.5 py-2">
+      <div className="green-bar flex items-center justify-between gap-2 px-2.5 py-2">
         <span className="flex min-w-0 items-center gap-2 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/icons/logo-128.png" alt="" className="h-12 w-12 shrink-0 rounded-2xl bg-white object-contain p-1 shadow-[0_2px_10px_-2px_rgba(244,196,48,0.6)] ring-1 ring-[#F4C430]/70" />

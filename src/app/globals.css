@@ -524,3 +524,11 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .gold-frame { animation: none; }
 }
+
+/* شريط العنوان الأخضر: تدرّج الهوية، بحواف مستديرة وظل ناعم */
+.green-bar {
+  border-radius: 22px;
+  background: linear-gradient(270deg, #2C7D69, #1C5E4F);
+  box-shadow: 0 8px 22px -12px rgba(19, 111, 92, 0.75);
+  color: #fff;
+}
