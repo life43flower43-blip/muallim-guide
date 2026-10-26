@@ -178,7 +178,6 @@ function MobileTopBar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
         <img src="/icons/logo-128.png" alt="" className="h-12 w-12 rounded-2xl bg-white object-contain p-1 shadow-sm" />
         <span className="text-center">
           <span className="block font-display text-[28px] font-extrabold leading-9">تربوي</span>
-          <span className="block truncate text-[13px] font-medium text-[#174D41]/75 dark:text-muted-foreground">معًا نحو التميّز في التدريس</span>
         </span>
         <span className="flex items-center gap-0.5">
           <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-10 w-10 items-center justify-center rounded-full text-[#1F6F5C] hover:bg-black/5">

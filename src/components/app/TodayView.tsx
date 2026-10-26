@@ -36,12 +36,12 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         onClick={() => onGoTab("practice")}
         className="relative block w-full overflow-hidden rounded-[28px] bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] p-4 text-right text-white shadow-[0_8px_24px_-12px_rgba(19,111,92,0.7)]"
       >
-        <span className="flex items-center gap-3">
-          <span className="min-w-0 flex-1">
-            <span className="flex items-center gap-1.5 text-lg font-bold leading-7">
-              <Star className="h-5 w-5 shrink-0" fill="#F5C451" stroke="#F5C451" /> مستوى الاستعداد
-            </span>
-            <span className="block text-sm text-white/80">للتدريس</span>
+        <span className="flex items-center gap-1.5 text-lg font-bold leading-7">
+          <Star className="h-5 w-5 shrink-0" fill="#F5C451" stroke="#F5C451" /> مستوى الاستعداد للتدريس
+        </span>
+        <span className="mt-2 flex items-center gap-3">
+          <span className="block h-2.5 min-w-0 flex-1 overflow-hidden rounded-full bg-white/20">
+            <span className="block h-full rounded-full bg-[#9BE8CF]" style={{ width: `${readiness}%` }} />
           </span>
           <span className="relative h-16 w-16 shrink-0" aria-hidden="true">
             <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
@@ -51,10 +51,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             <span className="absolute inset-0 flex items-center justify-center text-sm font-extrabold">{ad(readiness)}٪</span>
           </span>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/home/ready.png" alt="" className="hidden h-16 w-20 shrink-0 rounded-2xl object-cover min-[380px]:block" />
-        </span>
-        <span className="mt-3 block h-2.5 overflow-hidden rounded-full bg-white/20">
-          <span className="block h-full rounded-full bg-[#9BE8CF]" style={{ width: `${readiness}%` }} />
+          <img src="/home/ready.png" alt="" className="h-16 w-20 shrink-0 rounded-2xl object-cover" />
         </span>
       </button>
 
