@@ -36,7 +36,7 @@ export default function FlashcardsView() {
   const safeIndex = Math.min(index, deck.length - 1);
   const card = deck[safeIndex];
   const course = COURSES.find((c) => c.id === card?.courseId);
-  const color = COURSE_COLOR[card?.courseId] ?? "#0E7C86";
+  const color = COURSE_COLOR[card?.courseId] ?? "#136F5C";
   const isRead = card ? !!conceptReads[card.id] : false;
 
   const go = (dir: 1 | -1) => {

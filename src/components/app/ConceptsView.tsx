@@ -488,7 +488,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
           </header>
 
           {c.rule && (
-            <p className="rounded-2xl border-2 border-b-4 border-[#FFC800] bg-[#FFF8D6] p-4 text-lg font-bold leading-9 dark:bg-[#FFC800]/10">
+            <p className="rounded-2xl border-2 border-b-4 border-[#E3A93B] bg-[#FFF8D6] p-4 text-lg font-bold leading-9 dark:bg-[#E3A93B]/10">
               {c.rule}
             </p>
           )}

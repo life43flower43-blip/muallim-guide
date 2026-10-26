@@ -13,7 +13,7 @@ import { ad } from "@/lib/arabic";
 import type { Tab } from "./AppShell";
 import { FitText } from "./FitText";
 
-type Door = { title: string; img: string; icon: React.ElementType; tint: string; ink: string; run: () => void };
+type Door = { title: string; img: string; icon: React.ElementType; run: () => void };
 
 export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const attempts = useApp((s) => s.attempts);
@@ -21,16 +21,16 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const readiness = useMemo(() => Math.round(overallReadiness(attempts) * 100), [attempts]);
 
   const doors: Door[] = [
-    { title: "المفاهيم التربوية", img: "/home/concepts.jpg", icon: Brain, tint: "#D9EFE4", ink: "#1F6F5C", run: ui.startLearn },
-    { title: "مهارات التدريس", img: "/home/skills.jpg", icon: Presentation, tint: "#E2E3F4", ink: "#3B4A8C", run: ui.startLab },
-    { title: "طرائق التدريس", img: "/home/methods.jpg", icon: Network, tint: "#F6E9CF", ink: "#9A6A12", run: () => ui.openCourseTab("M5") },
-    { title: "المواقف الصفية", img: "/home/situations.jpg", icon: Users, tint: "#D9EFE4", ink: "#1F6F5C", run: ui.startSim },
-    { title: "اختبر نفسك", img: "/home/test.jpg", icon: ClipboardList, tint: "#E2E3F4", ink: "#3B4A8C", run: () => onGoTab("practice") },
-    { title: "خطة الدرس", img: "/home/plan.jpg", icon: CalendarDays, tint: "#D9EFE4", ink: "#1F6F5C", run: ui.startStudio },
+    { title: "المفاهيم التربوية", img: "/home/concepts.jpg", icon: Brain, run: ui.startLearn },
+    { title: "مهارات التدريس", img: "/home/skills.jpg", icon: Presentation, run: ui.startLab },
+    { title: "طرائق التدريس", img: "/home/methods.jpg", icon: Network, run: () => ui.openCourseTab("M5") },
+    { title: "المواقف الصفية", img: "/home/situations.jpg", icon: Users, run: ui.startSim },
+    { title: "اختبر نفسك", img: "/home/test.jpg", icon: ClipboardList, run: () => onGoTab("practice") },
+    { title: "خطة الدرس", img: "/home/plan.jpg", icon: CalendarDays, run: ui.startStudio },
   ];
 
   return (
-    <div className="mx-auto max-w-2xl space-y-5">
+    <div className="mx-auto max-w-2xl space-y-3">
       {/* مستوى الاستعداد */}
       <button
         type="button"
@@ -55,11 +55,11 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         {doors.map((d) => (
           <button key={d.title} type="button" onClick={d.run} className="overflow-hidden rounded-[26px] bg-white pb-1.5 text-right shadow-[0_8px_22px_-14px_rgba(16,64,52,0.5)] transition active:scale-[0.97] dark:bg-card">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={d.img} alt="" className="h-[130px] w-full object-cover" />
+            <img src={d.img} alt="" className="h-[clamp(64px,calc((100dvh-440px)/3),130px)] w-full object-cover" />
             {/* لوحة العنوان طافية فوق الصورة، والأيقونة على حافتها، فيأخذ العنوان العرض كله */}
             <span className="relative mx-1 -mt-7 flex min-h-[50px] items-center rounded-[20px] bg-white py-2 pl-[46px] pr-3 shadow-[0_2px_10px_-4px_rgba(16,64,52,0.35)] dark:bg-card">
-              <span className="absolute left-1.5 top-1/2 flex h-[34px] w-[34px] -translate-y-1/2 items-center justify-center rounded-full border-[3px] border-white shadow-sm dark:border-card" style={{ background: d.tint, color: d.ink }}>
-                <d.icon className="h-[18px] w-[18px]" strokeWidth={2.2} />
+              <span className="absolute left-2 top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-[10px] bg-[#FBF1DC] text-[#B9821F] dark:bg-[#E3A93B]/15 dark:text-[#F5C451]">
+                <d.icon className="h-[17px] w-[17px]" strokeWidth={2} />
               </span>
               <FitText max={15} min={8} className="flex-1 font-extrabold text-[#174D41] dark:text-foreground">{d.title}</FitText>
             </span>

@@ -548,9 +548,9 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
 
   const optClass = (o: { text: string; isCorrect: boolean }) => {
     const isSel = selected === o.text;
-    if (showFeedback && o.isCorrect) return "border-[#58CC02] bg-[#D7FFB8] text-[#3C7A00] dark:bg-[#58CC02]/15 dark:text-[#9BE15D]";
+    if (showFeedback && o.isCorrect) return "border-[#1F8A6E] bg-[#DCEFE5] text-[#0D5848] dark:bg-[#1F8A6E]/15 dark:text-[#7FD1B4]";
     if (showFeedback && isSel) return "border-[#FF4B4B] bg-[#FFDFE0] text-[#B3261E] dark:bg-[#FF4B4B]/15 dark:text-[#FF8A8A]";
-    if (isSel) return "border-[#1CB0F6] bg-[#DDF4FF] text-[#1478A8] dark:bg-[#1CB0F6]/15 dark:text-[#7DD3FC]";
+    if (isSel) return "border-[#136F5C] bg-[#DCEFE5] text-[#0D5848] dark:bg-[#136F5C]/15 dark:text-[#7DD3FC]";
     return "border-border bg-card text-foreground hover:bg-muted/60";
   };
 
@@ -563,7 +563,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
             <X className="h-7 w-7" strokeWidth={2.5} />
           </button>
           <div className="flex h-4 flex-1 justify-start overflow-hidden rounded-full bg-muted" role="progressbar" aria-valuenow={Math.round(progress)} aria-valuemin={0} aria-valuemax={100}>
-            <motion.div className="relative h-full rounded-full bg-[#58CC02]" animate={{ width: `${Math.max(progress, 3)}%` }} transition={{ type: "spring", stiffness: 120, damping: 20 }}>
+            <motion.div className="relative h-full rounded-full bg-[#1F8A6E]" animate={{ width: `${Math.max(progress, 3)}%` }} transition={{ type: "spring", stiffness: 120, damping: 20 }}>
               <span className="absolute inset-x-2 top-1 h-1 rounded-full bg-white/35" />
             </motion.div>
           </div>
@@ -588,7 +588,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               className={`mx-auto w-full max-w-[640px] px-4 pb-8 pt-6 ${wrongShake && instantFeedback ? "shake" : ""}`}
             >
               {combo >= 3 && !answered && (
-                <p className="mb-3 text-base font-bold text-[#FF9600]">{ad(combo)} إجابات صحيحة متتالية!</p>
+                <p className="mb-3 text-base font-bold text-[#E3A93B]">{ad(combo)} إجابات صحيحة متتالية!</p>
               )}
               {concept && <p className="text-sm font-bold text-[#CE82FF]">{concept.title}</p>}
               <h2 className="mt-2 font-display text-2xl font-bold leading-[1.75]">{q.question}</h2>
@@ -615,17 +615,17 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
         {/* الشريط السفلي: «تحقّق» ثم لوحة النتيجة */}
         <footer
           className={`safe-bottom border-t-2 transition-colors ${
-            !showFeedback ? "border-border bg-background" : graded ? "border-transparent bg-[#D7FFB8] dark:bg-[#1F3A12]" : "border-transparent bg-[#FFDFE0] dark:bg-[#3D1517]"
+            !showFeedback ? "border-border bg-background" : graded ? "border-transparent bg-[#DCEFE5] dark:bg-[#1F3A12]" : "border-transparent bg-[#FFDFE0] dark:bg-[#3D1517]"
           }`}
         >
           <div className="mx-auto w-full max-w-[640px] px-4 py-4">
             {showFeedback && (
               <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
                 <div className="flex items-center gap-3">
-                  <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white dark:bg-black/20 ${graded ? "text-[#58CC02]" : "text-[#FF4B4B]"}`}>
+                  <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white dark:bg-black/20 ${graded ? "text-[#1F8A6E]" : "text-[#FF4B4B]"}`}>
                     {graded ? <Check className="h-8 w-8" strokeWidth={3.5} /> : <X className="h-8 w-8" strokeWidth={3.5} />}
                   </span>
-                  <p className={`flex-1 font-display text-2xl font-bold ${graded ? "text-[#3C7A00] dark:text-[#9BE15D]" : "text-[#B3261E] dark:text-[#FF8A8A]"}`}>
+                  <p className={`flex-1 font-display text-2xl font-bold ${graded ? "text-[#0D5848] dark:text-[#7FD1B4]" : "text-[#B3261E] dark:text-[#FF8A8A]"}`}>
                     {graded ? PRAISE[idx % PRAISE.length] : "الإجابة الصحيحة:"}
                   </p>
                   <button type="button" onClick={handleReport} disabled={reported} aria-label="أبلغ عن خطأ في السؤال" className="flex h-10 w-10 items-center justify-center rounded-full opacity-60 hover:opacity-100 disabled:opacity-30">
@@ -660,7 +660,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   type="button"
                   disabled={selected === null}
                   onClick={grade}
-                  className="min-h-[52px] flex-[2] rounded-2xl bg-[#58CC02] text-lg font-bold text-white shadow-[0_4px_0_#58A700] transition active:translate-y-[4px] active:shadow-none disabled:bg-muted disabled:text-muted-foreground disabled:shadow-none"
+                  className="min-h-[52px] flex-[2] rounded-2xl bg-[#1F8A6E] text-lg font-bold text-white shadow-[0_4px_0_#136F5C] transition active:translate-y-[4px] active:shadow-none disabled:bg-muted disabled:text-muted-foreground disabled:shadow-none"
                 >
                   {instantFeedback ? "تحقّق" : "تأكيد"}
                 </button>
@@ -669,7 +669,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   type="button"
                   onClick={next}
                   className={`min-h-[52px] flex-[2] rounded-2xl text-lg font-bold text-white transition active:translate-y-[4px] active:shadow-none ${
-                    !showFeedback || graded ? "bg-[#58CC02] shadow-[0_4px_0_#58A700]" : "bg-[#FF4B4B] shadow-[0_4px_0_#EA2B2B]"
+                    !showFeedback || graded ? "bg-[#1F8A6E] shadow-[0_4px_0_#136F5C]" : "bg-[#FF4B4B] shadow-[0_4px_0_#EA2B2B]"
                   }`}
                 >
                   {idx + 1 >= questions.length ? "النتيجة" : "متابعة"}
