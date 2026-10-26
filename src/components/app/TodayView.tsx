@@ -6,7 +6,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Brain, CalendarDays, ClipboardList, Network, Presentation, Users } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { CONCEPTS, conceptsOfCourse } from "@/lib/qbank";
@@ -15,7 +14,7 @@ import { ad } from "@/lib/arabic";
 import type { Tab } from "./AppShell";
 import { FitText } from "./FitText";
 
-type Door = { title: string; img: string; icon: React.ElementType; progress: number; run: () => void };
+type Door = { title: string; img: string; progress: number; run: () => void };
 
 const frac = (n: number, of: number) => (of > 0 ? Math.min(1, n / of) : 0);
 
@@ -62,12 +61,12 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   }, [conceptReads]);
 
   const doors: Door[] = [
-    { title: "المفاهيم التربوية", img: "/home/concepts-v2.jpg", icon: Brain, progress: prog.concepts, run: ui.startLearn },
-    { title: "مهارات التدريس", img: "/home/skills-v2.jpg", icon: Presentation, progress: frac(labCount, 20), run: ui.startLab },
-    { title: "طرائق التدريس", img: "/home/methods-v2.jpg", icon: Network, progress: prog.methods, run: () => ui.openCourseTab("M5") },
-    { title: "المواقف الصفية", img: "/home/situations-v2.jpg", icon: Users, progress: frac(simCount, 20), run: ui.startSim },
-    { title: "اختبر نفسك", img: "/home/test-v2.jpg", icon: ClipboardList, progress: readiness / 100, run: () => onGoTab("practice") },
-    { title: "خطة الدرس", img: "/home/plan-v2.jpg", icon: CalendarDays, progress: frac(planCount, 5), run: ui.startStudio },
+    { title: "المفاهيم التربوية", img: "/home/concepts-v2.jpg", progress: prog.concepts, run: ui.startLearn },
+    { title: "مهارات التدريس", img: "/home/skills-v2.jpg", progress: frac(labCount, 20), run: ui.startLab },
+    { title: "طرائق التدريس", img: "/home/methods-v2.jpg", progress: prog.methods, run: () => ui.openCourseTab("M5") },
+    { title: "المواقف الصفية", img: "/home/situations-v2.jpg", progress: frac(simCount, 20), run: ui.startSim },
+    { title: "اختبر نفسك", img: "/home/test-v2.jpg", progress: readiness / 100, run: () => onGoTab("practice") },
+    { title: "خطة الدرس", img: "/home/plan-v2.jpg", progress: frac(planCount, 5), run: ui.startStudio },
   ];
 
   return (
@@ -113,11 +112,8 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             {/* الصورة تملأ البطاقة، ولوحة العنوان نصف شفافة تطفو فوق أسفلها */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={d.img} alt="" className="block h-[calc(clamp(64px,calc((100dvh-440px)/3),130px)+34px)] w-full object-cover" style={cardH ? { height: cardH } : undefined} />
-            <span className="absolute inset-x-1.5 bottom-1.5 flex min-h-[48px] flex-col justify-center overflow-hidden rounded-[20px] bg-white/80 py-2 pl-[44px] pr-3 backdrop-blur-md dark:bg-card/80">
-              <span className="absolute left-2 top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#FFE27A] to-[#E0B12E] text-white">
-                <d.icon className="h-[17px] w-[17px]" strokeWidth={2.3} />
-              </span>
-              <FitText max={15} min={8} className="font-extrabold text-[#174D41] dark:text-foreground">{d.title}</FitText>
+            <span className="absolute inset-x-1.5 bottom-1.5 flex min-h-[48px] flex-col justify-center overflow-hidden rounded-[20px] bg-white/80 px-3 py-2 backdrop-blur-md dark:bg-card/80">
+              <FitText max={16} min={8} className="text-center font-extrabold text-[#174D41] dark:text-foreground">{d.title}</FitText>
               {/* خط التقدّم الذهبي */}
               <span className="absolute inset-x-3 bottom-[5px] h-[3px] overflow-hidden rounded-full bg-[#F3E7CB]/70" aria-hidden="true">
                 <span className="block h-full rounded-full bg-gradient-to-l from-[#F4C430] to-[#FFE27A] transition-[width] duration-700" style={{ width: `${Math.round(d.progress * 100)}%` }} />
