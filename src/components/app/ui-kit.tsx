@@ -459,17 +459,17 @@ export function HeaderArt() {
     <svg className="head-art pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 400 130" preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <linearGradient id="ha1" x1="0" y1="0" x2="1" y2="0.5">
-          <stop offset="0" stopColor="#1F6B57" stopOpacity="0.85" />
-          <stop offset="0.6" stopColor="#4FA187" stopOpacity="0.35" />
-          <stop offset="1" stopColor="#9FD6C0" stopOpacity="0" />
+          <stop offset="0" stopColor="#136F5C" stopOpacity="0.95" />
+          <stop offset="0.6" stopColor="#1C5E4F" stopOpacity="0.35" />
+          <stop offset="1" stopColor="#2C7D69" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="ha2" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#8FCFB6" stopOpacity="0.8" />
-          <stop offset="1" stopColor="#DFF1E8" stopOpacity="0" />
+          <stop offset="0" stopColor="#2C7D69" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#DCEFE5" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="ha3" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#CDEBDD" />
-          <stop offset="1" stopColor="#E6F4EC" stopOpacity="0.3" />
+          <stop offset="0" stopColor="#B9DCCB" />
+          <stop offset="1" stopColor="#DCEFE5" stopOpacity="0.3" />
         </linearGradient>
         <linearGradient id="hag" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#F4C430" stopOpacity="0.2" />
