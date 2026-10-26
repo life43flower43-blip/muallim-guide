@@ -11,7 +11,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
-import { Flame, Gem, Settings, Zap, BookOpen, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff, X, Layers, GraduationCap } from "lucide-react";
+import { Flame, Gem, Settings, Zap, BookOpen, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff, X, Layers } from "lucide-react";
 import { useApp, useAppHydrated, xpToday, DAILY_GOAL_XP } from "@/lib/store";
 import { useUi, OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
 import { loadQbank } from "@/lib/qbank";
@@ -76,8 +76,8 @@ function subscribeScheme(cb: () => void) {
 function Logo() {
   return (
     <span className="flex items-center gap-2.5">
-      <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-primary text-primary-foreground">
-        <GraduationCap className="h-5 w-5" strokeWidth={2} />
+      <span className="flex h-9 w-9 items-center justify-center rounded-[10px] overflow-hidden bg-white">
+<img src="/icons/logo-128.png" alt="" className="h-full w-full object-contain p-0.5" />
       </span>
       <span className="font-display text-xl font-bold text-primary">تربوي</span>
     </span>
@@ -186,8 +186,8 @@ function MobileTopBar({ tab }: { tab: Tab }) {
   return (
     <header className="safe-top sticky top-0 z-30 border-b-2 border-black/15 bg-[#0E7C86] text-white lg:hidden">
       <div className="flex h-14 items-center justify-between px-4">
-        <span className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-white text-[#0E7C86]" aria-label="تربوي">
-          <GraduationCap className="h-6 w-6" strokeWidth={2.2} />
+        <span className="flex h-9 w-9 items-center justify-center rounded-[4px] overflow-hidden bg-white" aria-label="تربوي">
+<img src="/icons/logo-128.png" alt="" className="h-full w-full object-contain p-0.5" />
         </span>
         <TopStat label="سلسلة الأيام" value={ad(streak)}>
           <Flame className="h-6 w-6" fill="#FF9600" stroke="#FFC800" strokeWidth={1.5} />
@@ -228,6 +228,8 @@ export default function AppShell() {
   const [tab, setTab] = useState<Tab>(() => {
     if (typeof window === "undefined") return "today";
     const q = new URLSearchParams(window.location.search);
+    const asked = q.get("tab");
+    if (asked && NAV.some((n) => n.id === asked)) return asked as Tab;
     return q.has("login") ? "profile" : q.has("concept") ? "learn" : "today";
   });
 

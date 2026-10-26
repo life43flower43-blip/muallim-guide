@@ -111,3 +111,20 @@ model UserProgress {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+// اشتراك جهاز في الإشعارات: التذكير اليومي بالدراسة وبالأخطاء المستحقة.
+// يُحفظ للضيف أيضًا (بلا مستخدم)، ويُعرف يوم دراسته من الجهاز نفسه.
+model PushSubscription {
+  id           String   @id @default(cuid())
+  endpoint     String   @unique
+  p256dh       String
+  auth         String
+  userId       String?
+  tzOffset     Int      @default(0) // دقائق فرق التوقيت كما يعطيها getTimezoneOffset
+  lastStudyDay String? // آخر يوم درس فيه بتوقيت الجهاز YYYY-MM-DD
+  lastSentDay  String? // آخر يوم أُرسل فيه تذكير، لئلا يتكرر في اليوم نفسه
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+}

@@ -25,6 +25,7 @@ import {
 import type { Question } from "@/lib/types";
 import { recordMistake, recordReviewResult, MISTAKES_QUERY_KEY } from "@/lib/mistakes-client";
 import { completeSession, USER_QUERY_KEY } from "@/lib/account-client";
+import { pingStudied } from "@/lib/push-client";
 
 // ---------- مكونات صغيرة ----------
 
@@ -200,6 +201,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
       const correctCount = review.filter((r) => r.ok).length;
       const durationSec = Math.round((Date.now() - startedAt.current) / 1000);
       finishSession({ mode: config.mode, label: config.label, total: questions.length, correctCount, xp: sessionXp, durationSec });
+      pingStudied();
       clearSnapshot();
       if (config.topicKey && questions.length > 0) recordBest(config.topicKey, (correctCount / questions.length) * 100);
       const answers = review.filter((r) => r.answer !== undefined).map((r) => ({ qid: r.qid, answer: r.answer as string }));
