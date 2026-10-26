@@ -62,10 +62,10 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   }, [conceptReads]);
 
   const doors: Door[] = [
-    { title: "المفاهيم التربوية", img: "/home/concepts.jpg", icon: Brain, progress: prog.concepts, run: ui.startLearn },
-    { title: "مهارات التدريس", img: "/home/skills.jpg", icon: Presentation, progress: frac(labCount, 20), run: ui.startLab },
-    { title: "طرائق التدريس", img: "/home/methods.jpg", icon: Network, progress: prog.methods, run: () => ui.openCourseTab("M5") },
-    { title: "المواقف الصفية", img: "/home/situations.jpg", icon: Users, progress: frac(simCount, 20), run: ui.startSim },
+    { title: "المفاهيم التربوية", img: "/home/concepts-v2.jpg", icon: Brain, progress: prog.concepts, run: ui.startLearn },
+    { title: "مهارات التدريس", img: "/home/skills-v2.jpg", icon: Presentation, progress: frac(labCount, 20), run: ui.startLab },
+    { title: "طرائق التدريس", img: "/home/methods-v2.jpg", icon: Network, progress: prog.methods, run: () => ui.openCourseTab("M5") },
+    { title: "المواقف الصفية", img: "/home/situations-v2.jpg", icon: Users, progress: frac(simCount, 20), run: ui.startSim },
     { title: "اختبر نفسك", img: "/home/test.jpg", icon: ClipboardList, progress: readiness / 100, run: () => onGoTab("practice") },
     { title: "خطة الدرس", img: "/home/plan.jpg", icon: CalendarDays, progress: frac(planCount, 5), run: ui.startStudio },
   ];
