@@ -113,8 +113,15 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           {/* العنوان في منتصف الحلقة رأسيًّا، والنسبة داخل الحلقة */}
           <FitText max={16} className="flex-1 font-bold leading-6">مستوى استعدادك للتدريس</FitText>
           <span className="relative h-[40px] w-[40px] shrink-0" aria-hidden="true">
-            <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
-              <circle cx="18" cy="18" r="15.5" fill="none" stroke="#DCEFE5" strokeWidth="3.5" />
+            {/* طاقة حيّة: موجات خضراء تخرج من الحلقة ببطء، وهالة متموّجة تدور حولها */}
+            <span className="energy-ring" />
+            <span className="energy-ring" style={{ animationDelay: "1.3s" }} />
+            <span className="energy-ring" style={{ animationDelay: "2.6s" }} />
+            <svg viewBox="0 0 50 50" className="energy-aura pointer-events-none absolute -inset-[8px] h-[56px] w-[56px]">
+              <path d="M46.00 25.00 L46.79 26.52 L47.22 28.12 L47.10 29.70 L46.40 31.14 L45.25 32.37 L43.88 33.41 L42.56 34.34 L41.49 35.31 L40.76 36.45 L40.30 37.84 L39.95 39.43 L39.49 41.09 L38.75 42.59 L37.64 43.74 L36.19 44.39 L34.54 44.55 L32.82 44.37 L31.20 44.08 L29.72 43.94 L28.37 44.13 L27.07 44.70 L25.72 45.55 L24.25 46.43 L22.68 47.07 L21.08 47.23 L19.56 46.82 L18.22 45.87 L17.09 44.57 L16.12 43.20 L15.19 41.99 L14.15 41.08 L12.89 40.50 L11.38 40.12 L9.73 39.74 L8.13 39.16 L6.78 38.24 L5.87 36.95 L5.48 35.38 L5.51 33.68 L5.78 32.00 L6.03 30.44 L6.02 29.04 L5.63 27.72 L4.90 26.41 L4.00 25.00 L3.21 23.48 L2.78 21.88 L2.90 20.30 L3.60 18.86 L4.75 17.63 L6.12 16.59 L7.44 15.66 L8.51 14.69 L9.24 13.55 L9.70 12.16 L10.05 10.57 L10.51 8.91 L11.25 7.41 L12.36 6.26 L13.81 5.61 L15.46 5.45 L17.18 5.63 L18.80 5.92 L20.28 6.06 L21.63 5.87 L22.93 5.30 L24.28 4.45 L25.75 3.57 L27.32 2.93 L28.92 2.77 L30.44 3.18 L31.78 4.13 L32.91 5.43 L33.88 6.80 L34.81 8.01 L35.85 8.92 L37.11 9.50 L38.62 9.88 L40.27 10.26 L41.87 10.84 L43.22 11.76 L44.13 13.05 L44.52 14.62 L44.49 16.32 L44.22 18.00 L43.97 19.56 L43.98 20.96 L44.37 22.28 L45.10 23.59 L46.00 25.00Z" fill="none" stroke="#2C7D69" strokeOpacity="0.45" strokeWidth="1.2" />
+            </svg>
+            <svg viewBox="0 0 36 36" className="relative h-full w-full -rotate-90">
+              <circle cx="18" cy="18" r="15.5" fill="none" stroke="#CFE6DA" strokeWidth="3.5" />
               <motion.circle
                 cx="18"
                 cy="18"
@@ -128,7 +135,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 transition={{ delay: 0.3, duration: 1, ease: "easeOut" }}
               />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-xs font-extrabold">{ad(readiness)}٪</span>
+            <span className="absolute inset-[5px] flex items-center justify-center rounded-full bg-white/80 text-xs font-extrabold dark:bg-card/70">{ad(readiness)}٪</span>
           </span>
         </span>
       </motion.button>
