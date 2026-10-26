@@ -113,7 +113,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={d.img} alt="" className="block h-[calc(clamp(64px,calc((100dvh-440px)/3),130px)+34px)] w-full object-cover" style={cardH ? { height: cardH } : undefined} />
             <span className="absolute inset-x-1.5 bottom-1.5 flex min-h-[48px] flex-col justify-center overflow-hidden rounded-[20px] bg-white/80 px-3 py-2 backdrop-blur-md dark:bg-card/80">
-              <FitText max={16} min={8} className="text-center font-extrabold text-[#174D41] dark:text-foreground">{d.title}</FitText>
+              <FitText max={16} min={8} group="doors" className="text-center font-extrabold text-[#174D41] dark:text-foreground">{d.title}</FitText>
               {/* خط التقدّم الذهبي */}
               <span className="absolute inset-x-3 bottom-[5px] h-[3px] overflow-hidden rounded-full bg-[#F3E7CB]/70" aria-hidden="true">
                 <span className="block h-full rounded-full bg-gradient-to-l from-[#F4C430] to-[#FFE27A] transition-[width] duration-700" style={{ width: `${Math.round(d.progress * 100)}%` }} />

@@ -456,7 +456,7 @@ export function MasteryDot({ level, size = 14 }: { level: 0 | 1 | 2 | 3; size?: 
 export function HeaderArt() {
   const star = "M0 -6 C0.8 -1.2 1.2 -0.8 6 0 C1.2 0.8 0.8 1.2 0 6 C-0.8 1.2 -1.2 0.8 -6 0 C-1.2 -0.8 -0.8 -1.2 0 -6Z";
   return (
-    <svg className="head-art pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 400 130" preserveAspectRatio="none" aria-hidden="true">
+    <svg className="head-art pointer-events-none absolute inset-0 h-full w-full -scale-x-100" viewBox="0 0 400 130" preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <linearGradient id="ha1" x1="0" y1="0" x2="1" y2="0.5">
           <stop offset="0" stopColor="#136F5C" stopOpacity="0.95" />
