@@ -241,11 +241,8 @@ export default function SimLabView() {
       <ScreenShell title="مختبر محاكاة الصفوف" sub="كل قرار يغيّر الموقف، ثم يُحلَّل" onClose={clearSim}>
         <div className="space-y-6">
           <div>
-            <p className="text-base leading-7 text-secondary-foreground">
-              تقرأ مشهدًا من حصة حقيقية، وتختار قرارك، فيتطور الموقف بحسبه. في النهاية ترى كفاءاتك في إدارة الصف والتواصل وفهم المتعلم واتخاذ القرار والتقويم، مع تمرين لأضعفها.
-            </p>
-            <div className="mt-3 flex items-center gap-3">
-              <ProgressBar value={(doneCount / Math.max(1, SIM_SCENARIOS.length)) * 100} className="flex-1" />
+            <div className="flex items-center gap-3">
+              <ProgressBar color="#E3B23C" value={(doneCount / Math.max(1, SIM_SCENARIOS.length)) * 100} className="flex-1" />
               <span className="shrink-0 text-sm text-muted-foreground">
                 {ad(doneCount)} من {ad(SIM_SCENARIOS.length)} مواقف
               </span>

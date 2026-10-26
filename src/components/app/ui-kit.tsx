@@ -7,6 +7,7 @@
 // وأهداف لمس لا تقل عن ٤٤ بكسل. كل الصفحات تُبنى منها كي تبقى متسقة.
 // ============================================================================
 
+import { FitText } from "./FitText";
 import { ArrowRight, ChevronLeft, EyeOff, Flame, Gem, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ad } from "@/lib/arabic";
@@ -256,7 +257,9 @@ export function ScreenShell({
             </button>
           ) : null}
           <div className="min-w-0 flex-1 px-1">
-            <h1 className="truncate text-center font-display text-xl font-extrabold leading-8">{title}</h1>
+            <h1 className="text-center font-display font-extrabold leading-8">
+              <FitText max={20} min={13} className="text-center">{title}</FitText>
+            </h1>
           </div>
           {actions}
           {/* موازنة زر الرجوع ليبقى العنوان في الوسط */}

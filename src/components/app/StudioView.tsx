@@ -5,6 +5,7 @@
 // خطوات بخمس مراحل، أسئلة، واجب، فروق فردية) + تقييم قواعدي للخطة + «خططي» بعرض وتعديل ومشاركة.
 // قواعد صارمة: صفر أرقام ولا لاتيني ولا إيموجي في النصوص المعروضة، والتنصيص ب«».
 
+import { FitText } from "./FitText";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -318,25 +319,25 @@ export default function StudioView() {
   }
 
   const tabs = (
-    <div role="tablist" aria-label="أقسام الاستوديو" className="mb-6 grid grid-cols-3 rounded-xl bg-muted p-1">
+    <div role="tablist" aria-label="أقسام الاستوديو" className="mb-5 grid grid-cols-3 gap-1 rounded-[22px] border border-[#E3D3A0] bg-white p-1 dark:bg-card">
       {(
         [
           ["new", editingId ? "تعديل الخطة" : "خطة جديدة", NotebookPen],
           ["templates", "قوالب", LayoutTemplate],
           ["mine", `خططي${lessonPlans.length ? ` (${ad(lessonPlans.length)})` : ""}`, FolderOpen],
         ] as const
-      ).map(([id, lbl, Icon]) => (
+      ).map(([id, lbl]) => (
         <button
           key={id}
           type="button"
           role="tab"
           aria-selected={tab === id}
           onClick={() => setTab(id)}
-          className={`flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg text-sm transition-colors ${
-            tab === id ? "bg-card font-medium text-foreground shadow-sm" : "text-muted-foreground"
+          className={`flex min-h-[42px] min-w-0 items-center justify-center rounded-[18px] px-1 font-bold transition-colors ${
+            tab === id ? "bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] text-white" : "text-[#5D7A71]"
           }`}
         >
-          <Icon className="h-4 w-4" /> {lbl}
+          <FitText max={15} min={10} group="studio-tabs" className="text-center">{lbl}</FitText>
         </button>
       ))}
     </div>
