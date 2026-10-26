@@ -124,8 +124,9 @@ function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: 
 
 function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
   return (
-    <nav aria-label="التنقل الرئيسي" className="safe-bottom rounded-t-[28px] bg-card px-2 pt-2 shadow-[0_-6px_20px_-12px_rgba(16,64,52,0.35)] lg:hidden">
-      <div className="grid grid-cols-5 gap-1">
+    <nav aria-label="التنقل الرئيسي" className="safe-bottom px-2 pb-2 pt-1 min-[380px]:px-3 lg:hidden">
+      {/* شريط عائم بإطار ذهبي، والحبة الخضراء تنزلق بين التبويبات */}
+      <div className="nav-gold grid grid-cols-5 gap-0.5 rounded-[26px] p-1 min-[380px]:gap-1 min-[380px]:p-1.5 shadow-[0_12px_30px_-12px_rgba(16,64,52,0.5)]">
         {NAV.map((n) => {
           const active = tab === n.id;
           return (
@@ -134,12 +135,20 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
               type="button"
               onClick={() => onTab(n.id)}
               aria-current={active ? "page" : undefined}
-              className={cn("relative flex min-h-[60px] flex-col items-center justify-center gap-1 rounded-2xl pb-1.5 pt-1.5 transition-colors", active && "bg-[#DCEFE5] dark:bg-accent")}
+              className="relative flex min-h-[58px] flex-col items-center justify-center gap-1 rounded-[20px] py-1.5 transition-transform active:scale-95"
             >
-              <n.icon className={cn("h-6 w-6", active ? "text-[#136F5C] dark:text-primary" : "text-[#5D7A71]")} strokeWidth={active ? 2.4 : 1.8} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.15 : 0} />
-              <span className={cn("text-xs", active ? "font-bold text-[#136F5C] dark:text-primary" : "text-[#5D7A71]")}>{n.label}</span>
+              {active && (
+                <motion.span
+                  layoutId="nav-pill"
+                  transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                  className="absolute inset-0 rounded-[20px] bg-gradient-to-b from-[#2C7D69] to-[#1C5E4F] shadow-[0_6px_14px_-6px_rgba(19,111,92,0.9),inset_0_1px_0_rgba(255,255,255,0.18)]"
+                  aria-hidden="true"
+                />
+              )}
+              <n.icon className={cn("relative h-6 w-6 transition-colors", active ? "text-[#FFD95A] drop-shadow-[0_0_5px_rgba(255,215,0,0.6)]" : "text-[#2F7F6A] dark:text-primary")} strokeWidth={active ? 2.4 : 1.9} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.2 : 0} />
+              <span className={cn("relative whitespace-nowrap text-[clamp(10px,3.1vw,13px)] transition-colors", active ? "font-bold text-white" : "font-medium text-[#2F7F6A] dark:text-primary")}>{n.label}</span>
               {n.id === "mistakes" && due > 0 && (
-                <span className="absolute right-1/2 top-1 translate-x-5 rounded-full bg-destructive px-1.5 text-[10px] font-semibold leading-4 text-white">
+                <span className="absolute right-1/2 top-0.5 translate-x-5 rounded-full bg-destructive px-1.5 text-[10px] font-semibold leading-4 text-white ring-2 ring-white">
                   {ad(Math.min(due, 99))}
                 </span>
               )}
