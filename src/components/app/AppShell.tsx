@@ -173,17 +173,15 @@ function MobileTopBar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
     );
   return (
     <header className="safe-top sticky top-0 z-30 bg-[#EAF4EF] text-[#174D41] lg:hidden dark:bg-background dark:text-foreground">
-      <div className="flex items-center justify-between gap-3 px-4 pb-3 pt-2">
-        <span className="flex min-w-0 items-center gap-2.5">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icons/logo-128.png" alt="" className="h-14 w-14 shrink-0 object-contain" />
-          <span className="min-w-0">
-            <span className="block font-display text-[28px] font-extrabold leading-9">تربوي</span>
-            <span className="block truncate text-sm font-medium text-[#174D41]/75 dark:text-muted-foreground">معًا نحو التميّز في التدريس</span>
-          </span>
+      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 px-4 pb-3 pt-2">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/icons/logo-128.png" alt="" className="h-12 w-12 rounded-2xl bg-white object-contain p-1 shadow-sm" />
+        <span className="text-center">
+          <span className="block font-display text-[28px] font-extrabold leading-9">تربوي</span>
+          <span className="block truncate text-[13px] font-medium text-[#174D41]/75 dark:text-muted-foreground">معًا نحو التميّز في التدريس</span>
         </span>
-        <span className="flex shrink-0 items-center gap-1">
-          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-11 w-11 items-center justify-center rounded-full text-[#1F6F5C] hover:bg-black/5">
+        <span className="flex items-center gap-0.5">
+          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-10 w-10 items-center justify-center rounded-full text-[#1F6F5C] hover:bg-black/5">
             <Settings className="h-6 w-6" strokeWidth={2.2} />
           </button>
           <button type="button" onClick={() => onTab("profile")} aria-label="حسابي" className="h-12 w-12 overflow-hidden rounded-full border-2 border-[#1F6F5C] bg-white">

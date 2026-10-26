@@ -57,17 +57,18 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       </button>
 
       {/* أبواب التطبيق */}
-      <div className="grid grid-cols-2 gap-3.5">
+      <div className="-mx-1 grid grid-cols-2 gap-2.5">
         {doors.map((d) => (
-          <button key={d.title} type="button" onClick={d.run} className="group overflow-hidden rounded-[28px] bg-[#FBF9F3] text-right shadow-[0_6px_18px_-10px_rgba(16,64,52,0.35)] transition active:scale-[0.98] dark:bg-card">
+          <button key={d.title} type="button" onClick={d.run} className="overflow-hidden rounded-[26px] bg-white pb-1.5 text-right shadow-[0_8px_22px_-14px_rgba(16,64,52,0.5)] transition active:scale-[0.97] dark:bg-card">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={d.img} alt="" className="h-[104px] w-full object-cover" />
-            <span className="relative -mt-6 flex min-h-[78px] items-center gap-2 rounded-t-[24px] bg-[#FBF9F3] px-2.5 py-2 dark:bg-card">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full" style={{ background: d.tint, color: d.ink }}>
-                <d.icon className="h-6 w-6" strokeWidth={2} />
+            <img src={d.img} alt="" className="h-[130px] w-full object-cover" />
+            {/* لوحة العنوان طافية فوق الصورة */}
+            <span className="relative mx-1 -mt-7 flex min-h-[52px] items-center gap-1 rounded-[20px] bg-white px-1.5 shadow-[0_2px_10px_-4px_rgba(16,64,52,0.35)] dark:bg-card">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full" style={{ background: d.tint, color: d.ink }}>
+                <d.icon className="h-[18px] w-[18px]" strokeWidth={2.2} />
               </span>
-              <span className="min-w-0 flex-1 text-[17px] font-bold leading-6 text-[#174D41] dark:text-foreground">{d.title}</span>
-              <ChevronLeft className="h-4 w-4 shrink-0 text-[#174D41]/60" />
+              <span className="min-w-0 flex-1 whitespace-nowrap text-[14px] font-extrabold text-[#174D41] dark:text-foreground">{d.title}</span>
+              <ChevronLeft className="h-3.5 w-3.5 shrink-0 text-[#174D41]/60" strokeWidth={3} />
             </span>
           </button>
         ))}
