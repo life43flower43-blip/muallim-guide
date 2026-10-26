@@ -11,7 +11,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
-import { Settings, BookOpen, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff } from "lucide-react";
+import { Bell, Flame, Settings, BookOpen, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff } from "lucide-react";
 import { useApp, useAppHydrated } from "@/lib/store";
 import { useUi, OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
 import { loadQbank } from "@/lib/qbank";
@@ -152,12 +152,12 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
 }
 
 // الشريط العلوي فاتح بلون خلفية التطبيق (ولون شريط حالة الهاتف): في الرئيسية الشعار والترحيب، وفي غيرها اسم الصفحة
-function MobileTopBar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
+function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
   const { user } = useAccount();
-  const openSettings = () => {
-    onTab("profile");
-    setTimeout(() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT)), 50);
-  };
+  const { streak } = useWallet();
+  const first = user?.name?.trim().split(/\s+/)[0];
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "صباح الخير" : "مساء الخير";
   if (tab !== "today")
     return (
       <header className="safe-top sticky top-0 z-30 border-b border-[#D5E6DD] bg-[#EAF4EF] text-[#174D41] lg:hidden dark:border-border dark:bg-background dark:text-foreground">
@@ -176,19 +176,27 @@ function MobileTopBar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
       <div className="grid grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-2 px-4 pb-3 pt-2">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/icons/logo-128.png" alt="" className="h-12 w-12 rounded-2xl bg-white object-contain p-1 shadow-sm" />
-        <span className="text-center">
-          <span className="block font-display text-[28px] font-extrabold leading-9">تربوي</span>
+        <span className="min-w-0 text-center">
+          <span className="block whitespace-nowrap font-display text-[clamp(15px,5.2vw,22px)] font-extrabold leading-8">{greeting}</span>
+          {first && <span className="block truncate text-base font-bold text-[#1F6F5C] dark:text-primary">{first}</span>}
         </span>
-        <span className="flex items-center gap-0.5">
-          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-10 w-10 items-center justify-center rounded-full text-[#1F6F5C] hover:bg-black/5">
-            <Settings className="h-6 w-6" strokeWidth={2.2} />
+        <span className="flex items-center gap-1">
+          <span className="flex items-center gap-0.5 rounded-full bg-white px-2 py-1.5 text-base font-extrabold text-[#E8590C] shadow-sm dark:bg-card" aria-label={`سلسلة ${ad(streak)} يوم`}>
+            <Flame className="h-5 w-5" fill="#FF9600" stroke="#E8590C" strokeWidth={1.5} />
+            {ad(streak)}
+          </span>
+          <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#1F6F5C] shadow-sm dark:bg-card">
+            <Bell className="h-5 w-5" strokeWidth={2.2} />
+            {due > 0 && (
+              <span className="absolute -right-1 -top-1 min-w-[20px] rounded-full bg-destructive px-1 text-center text-[11px] font-bold leading-5 text-white">{ad(Math.min(due, 99))}</span>
+            )}
           </button>
-          <button type="button" onClick={() => onTab("profile")} aria-label="حسابي" className="h-12 w-12 overflow-hidden rounded-full border-2 border-[#1F6F5C] bg-white">
+          <button type="button" onClick={() => onTab("profile")} aria-label="حسابي" className="h-11 w-11 overflow-hidden rounded-full border-2 border-[#1F6F5C] bg-white">
             {user?.avatar ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={user.avatar} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
             ) : (
-              <CircleUser className="m-auto h-8 w-8 text-[#1F6F5C]" strokeWidth={1.8} />
+              <CircleUser className="m-auto h-7 w-7 text-[#1F6F5C]" strokeWidth={1.8} />
             )}
           </button>
         </span>
@@ -335,7 +343,7 @@ export default function AppShell() {
     <div className="flex h-dvh bg-background">
       <SideNav tab={tab} onTab={go} due={due} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <MobileTopBar tab={tab} onTab={go} />
+        <MobileTopBar tab={tab} onTab={go} due={due} />
         {!isOnline && (
           <div role="status" className="flex items-center justify-center gap-2 border-b border-border bg-gem-soft px-4 py-1.5 text-xs font-medium text-gem">
             <WifiOff className="h-3.5 w-3.5 shrink-0" />
