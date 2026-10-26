@@ -126,7 +126,7 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
   return (
     <nav aria-label="التنقل الرئيسي" className="safe-bottom px-2 pb-2 pt-1 min-[380px]:px-3 lg:hidden">
       {/* شريط عائم بإطار ذهبي، والحبة الخضراء تنزلق بين التبويبات */}
-      <div className="nav-gold grid grid-cols-5 gap-0.5 rounded-[26px] p-1 min-[380px]:gap-1 min-[380px]:p-1.5 shadow-[0_12px_30px_-12px_rgba(16,64,52,0.5)]">
+      <div className="nav-gold grid grid-cols-5 gap-0.5 rounded-[26px] p-1 min-[380px]:gap-1 min-[380px]:p-1.5 shadow-[0_6px_16px_-10px_rgba(16,64,52,0.3)]">
         {NAV.map((n) => {
           const active = tab === n.id;
           return (
@@ -145,7 +145,7 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
                   aria-hidden="true"
                 />
               )}
-              <n.icon className={cn("relative h-6 w-6 transition-colors", active ? "text-[#FFD95A] drop-shadow-[0_0_5px_rgba(255,215,0,0.6)]" : "text-[#2F7F6A] dark:text-primary")} strokeWidth={active ? 2.4 : 1.9} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.2 : 0} />
+              <n.icon className={cn("relative h-6 w-6 transition-colors", active ? "text-[#FFD95A]" : "text-[#2F7F6A] dark:text-primary")} strokeWidth={active ? 2.4 : 1.9} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.2 : 0} />
               <span className={cn("relative whitespace-nowrap text-[clamp(10px,3.1vw,13px)] transition-colors", active ? "font-bold text-white" : "font-medium text-[#2F7F6A] dark:text-primary")}>{n.label}</span>
               {n.id === "mistakes" && due > 0 && (
                 <span className="absolute right-1/2 top-0.5 translate-x-5 rounded-full bg-destructive px-1.5 text-[10px] font-semibold leading-4 text-white ring-2 ring-white">
@@ -187,13 +187,13 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
       <div className="green-bar flex items-center justify-between gap-2 px-2.5 py-2">
         <span className="flex min-w-0 items-center gap-2 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icons/logo-128.png" alt="" className="h-12 w-12 shrink-0 rounded-2xl bg-white object-contain p-1 shadow-[0_2px_10px_-2px_rgba(244,196,48,0.6)] ring-1 ring-[#F4C430]/70" />
+          <img src="/icons/logo-128.png" alt="" className="h-12 w-12 shrink-0 rounded-2xl bg-white object-contain p-1 shadow-sm ring-1 ring-[#F4C430]/70" />
           <span className="shrink-0 whitespace-nowrap font-display text-[clamp(20px,6.8vw,28px)] font-extrabold leading-9">تربوي</span>
         </span>
         <span className="flex shrink-0 items-center gap-1">
           <span className="flex items-center gap-1 rounded-full bg-white p-1 max-[360px]:hidden text-base font-extrabold text-[#D19B00] shadow-sm dark:bg-card" aria-label={`هدف اليوم ${ad(Math.round(goal * 100))}٪`}>
             {/* حلقة هدف اليوم تمتلئ بالذهبي حول الشعلة، وتتوهج عند اكتمالها */}
-            <span className={cn("relative h-8 w-8 rounded-full", goal >= 1 && "shadow-[0_0_10px_2px_rgba(245,196,81,0.7)]")}>
+            <span className={cn("relative h-8 w-8 rounded-full", goal >= 1 && "ring-2 ring-[#FFE27A]")}>
               <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90" aria-hidden="true">
                 <defs>
                   <linearGradient id="goalGold" x1="0" y1="0" x2="1" y2="1">
