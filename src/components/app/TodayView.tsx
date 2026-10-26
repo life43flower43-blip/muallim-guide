@@ -35,15 +35,15 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       <button
         type="button"
         onClick={() => onGoTab("practice")}
-        className="relative block w-full overflow-hidden rounded-[24px] bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] px-4 py-3 text-right text-white shadow-[0_8px_24px_-12px_rgba(19,111,92,0.7)]"
+        className="relative block w-full overflow-hidden gold-frame !rounded-[24px] px-4 py-3 text-right text-[#174D41] dark:text-foreground"
       >
         <span className="flex items-center gap-4">
           {/* العنوان في منتصف الحلقة رأسيًّا، والنسبة داخل الحلقة */}
           <FitText max={17} className="flex-1 font-bold leading-6">مستوى الاستعداد للتدريس</FitText>
           <span className="relative h-12 w-12 shrink-0" aria-hidden="true">
             <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
-              <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(255,255,255,.18)" strokeWidth="3.5" />
-              <circle cx="18" cy="18" r="15.5" fill="none" stroke="#9BE8CF" strokeWidth="3.5" strokeLinecap="round" strokeDasharray={`${(readiness / 100) * 97.4} 97.4`} />
+              <circle cx="18" cy="18" r="15.5" fill="none" stroke="#DCEFE5" strokeWidth="3.5" />
+              <circle cx="18" cy="18" r="15.5" fill="none" stroke="#136F5C" strokeWidth="3.5" strokeLinecap="round" strokeDasharray={`${(readiness / 100) * 97.4} 97.4`} />
             </svg>
             <span className="absolute inset-0 flex items-center justify-center text-xs font-extrabold">{ad(readiness)}٪</span>
           </span>

@@ -244,13 +244,13 @@ export function ScreenShell({
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
       <header className="safe-top shrink-0 bg-[#EAF4EF] px-2 pb-3 pt-1.5 text-[#174D41] dark:bg-background dark:text-foreground">
-        <div className={cn("gold-frame mx-auto flex min-h-[56px] items-center gap-2 px-1", wide ? "max-w-5xl" : "max-w-3xl")}>
+        <div className={cn("green-bar mx-auto flex min-h-[56px] items-center gap-2 px-1", wide ? "max-w-5xl" : "max-w-3xl")}>
           {onBack ? (
-            <button type="button" onClick={onBack} aria-label="رجوع" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#174D41] hover:bg-black/5 dark:text-foreground">
+            <button type="button" onClick={onBack} aria-label="رجوع" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white hover:bg-white/10 dark:text-foreground">
               <ArrowRight className="h-6 w-6" strokeWidth={2.5} />
             </button>
           ) : onClose ? (
-            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#174D41] hover:bg-black/5 dark:text-foreground">
+            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white hover:bg-white/10 dark:text-foreground">
               <X className="h-6 w-6" strokeWidth={2.5} />
             </button>
           ) : null}
@@ -261,7 +261,7 @@ export function ScreenShell({
           {/* موازنة زر الرجوع ليبقى العنوان في الوسط */}
           {!actions && !(onBack && onClose) && (onBack || onClose) && <span className="w-11 shrink-0" aria-hidden="true" />}
           {onBack && onClose && (
-            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#174D41]/70 hover:bg-black/5 dark:text-muted-foreground">
+            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white/80 hover:bg-white/10 dark:text-muted-foreground">
               <X className="h-6 w-6" strokeWidth={2.5} />
             </button>
           )}
