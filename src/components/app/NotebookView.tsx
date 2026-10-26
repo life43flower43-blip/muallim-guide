@@ -7,7 +7,7 @@
 import { useMemo, useState } from "react";
 import { ArrowDown, ChevronDown, ChevronLeft, ChevronRight, StickyNote } from "lucide-react";
 import { useApp } from "@/lib/store";
-import { CHAPTER_MAPS, COURSES, COURSE_COLOR, COURSE_SHORT, conceptById, conceptsOfCourse, type ChapterMap } from "@/lib/qbank";
+import { CHAPTER_MAPS, COURSES, COURSE_SHORT, conceptById, conceptsOfCourse, type ChapterMap } from "@/lib/qbank";
 import { cn } from "@/lib/utils";
 import type { Concept } from "@/lib/types";
 import { EmptyState, PageTitle, SecondaryButton } from "./ui-kit";
@@ -19,7 +19,7 @@ const PARTS: { id: Part; label: string }[] = [
   { id: "notes", label: "ملاحظاتي" },
 ];
 
-const BRANCH_COLORS = ["#E8467C", "#1CB0F6", "#58CC02", "#FF9600", "#A560E8", "#14B8A6", "#F43F5E", "#6366F1"];
+const BRANCH_COLORS = ["#1F7A63", "#C98A1E", "#3A8F7A", "#B2683A", "#2E6F8E", "#7A8F3A", "#1F7A63", "#C98A1E"];
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
 
 /** خريطة الفصل: كل سلسلة خطوات متتابعة، وبين كل خطوتين رابطها */
@@ -88,7 +88,7 @@ export default function NotebookView() {
     }
     return out;
   }, [courseId]);
-  const color = COURSE_COLOR[courseId] ?? "var(--primary)";
+  const color = "#136F5C";
   const current = chapters[Math.min(chIndex, chapters.length - 1)];
 
   const myNotes = useMemo(
@@ -114,7 +114,7 @@ export default function NotebookView() {
             onClick={() => setPart(p.id)}
             className={cn(
               "min-h-[48px] rounded-2xl border-2 border-b-4 text-base font-bold transition active:translate-y-[2px] active:border-b-2",
-              part === p.id ? "border-[#1CB0F6] bg-[#DDF4FF] text-[#1478A8] dark:bg-[#1CB0F6]/15 dark:text-[#7DD3FC]" : "border-border bg-card text-secondary-foreground"
+              part === p.id ? "border-[#136F5C] bg-[#DCEFE5] text-[#0D5848] dark:bg-accent dark:text-accent-foreground" : "border-border bg-card text-secondary-foreground"
             )}
           >
             {p.label}
@@ -133,7 +133,7 @@ export default function NotebookView() {
                 setChIndex(0);
               }}
               className={cn("min-h-[40px] shrink-0 rounded-full border-2 px-4 text-sm font-bold transition-colors", courseId === c.id ? "text-white" : "border-border bg-card text-secondary-foreground")}
-              style={courseId === c.id ? { background: COURSE_COLOR[c.id], borderColor: COURSE_COLOR[c.id] } : undefined}
+              style={courseId === c.id ? { background: "#136F5C", borderColor: "#136F5C" } : undefined}
             >
               {COURSE_SHORT[c.id] ?? c.name}
             </button>

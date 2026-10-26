@@ -36,12 +36,13 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         onClick={() => onGoTab("practice")}
         className="relative block w-full overflow-hidden rounded-[28px] bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] p-4 text-right text-white shadow-[0_8px_24px_-12px_rgba(19,111,92,0.7)]"
       >
-        <span className="flex items-center gap-1.5 text-lg font-bold leading-7">
-          مستوى الاستعداد للتدريس
-        </span>
-        <span className="mt-2 flex items-center gap-3">
-          <span className="block h-2.5 min-w-0 flex-1 overflow-hidden rounded-full bg-white/20">
-            <span className="block h-full rounded-full bg-[#9BE8CF]" style={{ width: `${readiness}%` }} />
+        <span className="flex items-center gap-4">
+          {/* العنوان وتحته الشريط مباشرة، والحلقة بجانبهما في الوسط */}
+          <span className="min-w-0 flex-1">
+            <span className="block text-lg font-bold leading-7">مستوى الاستعداد للتدريس</span>
+            <span className="mt-2.5 block h-2.5 overflow-hidden rounded-full bg-white/20">
+              <span className="block h-full rounded-full bg-[#9BE8CF]" style={{ width: `${readiness}%` }} />
+            </span>
           </span>
           <span className="relative h-16 w-16 shrink-0" aria-hidden="true">
             <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
@@ -59,12 +60,12 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           <button key={d.title} type="button" onClick={d.run} className="overflow-hidden rounded-[26px] bg-white pb-1.5 text-right shadow-[0_8px_22px_-14px_rgba(16,64,52,0.5)] transition active:scale-[0.97] dark:bg-card">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={d.img} alt="" className="h-[130px] w-full object-cover" />
-            {/* لوحة العنوان طافية فوق الصورة */}
-            <span className="relative mx-1 -mt-7 flex min-h-[52px] items-center gap-1 rounded-[20px] bg-white px-1.5 shadow-[0_2px_10px_-4px_rgba(16,64,52,0.35)] dark:bg-card">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full" style={{ background: d.tint, color: d.ink }}>
-                <d.icon className="h-[18px] w-[18px]" strokeWidth={2.2} />
+            {/* لوحة العنوان طافية فوق الصورة، والأيقونة على حافتها، فيأخذ العنوان العرض كله */}
+            <span className="relative mx-1 -mt-7 flex min-h-[50px] items-center rounded-[20px] bg-white px-3 pt-2 shadow-[0_2px_10px_-4px_rgba(16,64,52,0.35)] dark:bg-card">
+              <span className="absolute -top-5 left-3 flex h-10 w-10 items-center justify-center rounded-full border-[3px] border-white shadow-sm dark:border-card" style={{ background: d.tint, color: d.ink }}>
+                <d.icon className="h-5 w-5" strokeWidth={2.2} />
               </span>
-              <span className="min-w-0 flex-1 text-[15px] font-extrabold leading-5 text-[#174D41] dark:text-foreground">{d.title}</span>
+              <span className="min-w-0 flex-1 whitespace-nowrap text-[15px] font-extrabold text-[#174D41] dark:text-foreground">{d.title}</span>
             </span>
           </button>
         ))}

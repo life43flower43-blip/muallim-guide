@@ -174,13 +174,13 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
   return (
     <header className="safe-top sticky top-0 z-30 border-b border-[#D5E6DD] bg-[#EAF4EF] text-[#174D41] lg:hidden dark:border-border dark:bg-background dark:text-foreground">
       <div className="flex items-center justify-between gap-2 px-4 pb-3 pt-2">
-        <span className="flex min-w-0 items-center gap-2">
+        <span className="flex min-w-0 items-center gap-2 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/icons/logo-128.png" alt="" className="h-12 w-12 shrink-0 rounded-2xl bg-white object-contain p-1 shadow-sm" />
           <span className="whitespace-nowrap font-display text-[clamp(20px,6.8vw,28px)] font-extrabold leading-9">تربوي</span>
         </span>
-        <span className="flex shrink-0 items-center gap-1.5">
-          <span className="flex items-center gap-0.5 rounded-full bg-white px-2 py-1.5 text-base font-extrabold text-[#E8590C] shadow-sm dark:bg-card" aria-label={`سلسلة ${ad(streak)} يوم`}>
+        <span className="flex shrink-0 items-center gap-1">
+          <span className="flex items-center gap-0.5 rounded-full bg-white px-2 py-1.5 text-base font-extrabold text-[#E8590C] max-[380px]:hidden shadow-sm dark:bg-card" aria-label={`سلسلة ${ad(streak)} يوم`}>
             <Flame className="h-5 w-5" fill="#FF9600" stroke="#E8590C" strokeWidth={1.5} />
             {ad(streak)}
           </span>
