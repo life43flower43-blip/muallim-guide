@@ -10,65 +10,57 @@ import { useApp } from "@/lib/store";
 import { CHAPTER_MAPS, COURSES, COURSE_SHORT, conceptById, conceptsOfCourse, type ChapterMap } from "@/lib/qbank";
 import { cn } from "@/lib/utils";
 import type { Concept } from "@/lib/types";
-import { EmptyState, PageTitle, SecondaryButton } from "./ui-kit";
+import { EmptyState, PageTitle } from "./ui-kit";
 import { FitText } from "./FitText";
 
 type Part = "maps" | "rules" | "notes";
 const PARTS: { id: Part; label: string }[] = [
-  { id: "maps", label: "خرائط ذهنية" },
+  { id: "maps", label: "الخرائط" },
   { id: "rules", label: "القواعد" },
   { id: "notes", label: "ملاحظاتي" },
 ];
 
-const BRANCH_COLORS = ["var(--t700)", "#C98A1E", "#3A8F7A", "#B9821F", "var(--t700)", "#5E9C86", "var(--t700)", "#C98A1E"];
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
 
-/** خريطة الفصل: كل سلسلة خطوات متتابعة، وبين كل خطوتين رابطها */
-function CausalMap({ map, color }: { map: ChapterMap; color: string }) {
+/** خريطة الفصل: كل سلسلة خط عمودي تتتابع عليه الخطوات، والرابط بينها شارة ذهبية صغيرة على الخط */
+function CausalMap({ map }: { map: ChapterMap }) {
   return (
-    <div className="space-y-4">
-      {map.chains.map((ch, i) => {
-        const bc = BRANCH_COLORS[i % BRANCH_COLORS.length];
-        return (
-          <ol key={i} className="rounded-2xl p-3" style={{ background: `color-mix(in srgb, ${bc} 7%, var(--card))` }}>
-            {ch.steps.map((st, k) => (
-              <li key={k}>
-                <p
-                  className="rounded-[18px] border-[1.5px] bg-white px-3 py-2.5 text-center text-base font-bold leading-7 dark:bg-card"
-                  style={{ borderColor: k === 0 ? color : bc }}
-                >
-                  {st}
-                </p>
-                {k < ch.links.length && (
-                  <p className="flex flex-col items-center py-1 text-sm font-bold" style={{ color: bc }}>
-                    <span>{ch.links[k]}</span>
-                    <ArrowDown className="h-4 w-4" strokeWidth={3} />
-                  </p>
-                )}
-              </li>
-            ))}
-          </ol>
-        );
-      })}
+    <div className="space-y-3">
+      {map.chains.map((ch, i) => (
+        <ol key={i} className="rounded-[22px] border border-[var(--t075)] bg-white px-4 py-3 dark:border-border dark:bg-card">
+          {ch.steps.map((st, k) => (
+            <li key={k} className="relative pr-6">
+              {/* الخط العمودي والنقطة */}
+              {k < ch.steps.length - 1 && <span className="absolute bottom-0 right-[7px] top-4 w-[2px] bg-[var(--t150)]" aria-hidden="true" />}
+              <span
+                className={cn("absolute right-0 top-[9px] h-4 w-4 rounded-full border-[3px] border-white dark:border-card", k === 0 ? "bg-[var(--t800)]" : k === ch.steps.length - 1 ? "bg-[#E3B23C]" : "bg-[var(--t300)]")}
+                aria-hidden="true"
+              />
+              <p className={cn("text-base leading-8", k === 0 || k === ch.steps.length - 1 ? "font-extrabold text-[var(--t900)] dark:text-foreground" : "font-bold")}>{st}</p>
+              {k < ch.links.length && (
+                <span className="my-1 inline-flex items-center gap-1 rounded-full bg-[#FBF1D6] px-2.5 text-xs font-bold leading-6 text-[#9A6A12]">
+                  <ArrowDown className="h-3 w-3" strokeWidth={3} />
+                  {ch.links[k]}
+                </span>
+              )}
+            </li>
+          ))}
+        </ol>
+      ))}
     </div>
   );
 }
 
-function Rules({ concepts, color }: { concepts: Concept[]; color: string }) {
+function Rules({ concepts }: { concepts: Concept[] }) {
   return (
-    <ol className="space-y-3">
-      {concepts.map((c, i) => (
-        <li key={c.id}>
-          <div className="flex w-full gap-3 rounded-[22px] border border-[var(--t075)] bg-white p-4 dark:border-border dark:bg-card">
-            <span className="mt-2.5 h-3 w-3 shrink-0 rounded-full" style={{ background: color }} aria-hidden="true" />
-            <span className="min-w-0 flex-1">
-              <span className="block text-base font-bold leading-7">{c.title}</span>
-              <span className="mt-1 block text-base leading-8 text-secondary-foreground">{c.rule}</span>
-            </span>
-          </div>
+    <ul className="divide-y divide-[var(--t075)] overflow-hidden rounded-[22px] border border-[var(--t075)] bg-white dark:divide-border dark:border-border dark:bg-card">
+      {concepts.map((c) => (
+        <li key={c.id} className="border-r-[3px] border-r-[#E3B23C] px-4 py-3">
+          <p className="font-extrabold leading-7 text-[var(--t900)] dark:text-foreground">{c.title}</p>
+          <p className="mt-0.5 leading-8 text-secondary-foreground">{c.rule}</p>
         </li>
       ))}
-    </ol>
+    </ul>
   );
 }
 
@@ -89,7 +81,6 @@ export default function NotebookView() {
     }
     return out;
   }, [courseId]);
-  const color = "var(--t800)";
   const current = chapters[Math.min(chIndex, chapters.length - 1)];
 
   const myNotes = useMemo(
@@ -123,33 +114,16 @@ export default function NotebookView() {
         ))}
       </div>
 
-      {part !== "notes" && (
-        <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
-          {COURSES.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => {
-                setCourseId(c.id);
-                setChIndex(0);
-              }}
-              className={cn("min-h-[38px] shrink-0 whitespace-nowrap rounded-full border px-4 text-sm font-bold transition-colors", courseId === c.id ? "border-transparent bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "border-[#E3D3A0] bg-white text-[var(--t500)] dark:bg-card")}
-            >
-              {COURSE_SHORT[c.id] ?? c.name}
-            </button>
-          ))}
-        </div>
-      )}
 
       {part === "notes" ? (
         myNotes.length === 0 ? (
-          <EmptyState icon={StickyNote} title="لا ملاحظات بعد" sub="اكتب ملاحظتك أسفل أي مفهوم في «التعلّم»، وستجدها هنا." />
+          <EmptyState icon={StickyNote} title="لا ملاحظات بعد" sub="اكتب ملاحظتك أسفل أي مفهوم في «المفاهيم التربوية»، وستجدها هنا." />
         ) : (
           <ul className="space-y-3">
             {myNotes.map((n) => (
               <li key={n.id}>
-                <div className="w-full rounded-2xl border-2 border-[#E3A93B] bg-[#FFF8D6] p-4 dark:bg-[#E3A93B]/10">
-                  <span className="block text-sm font-bold text-[#946200] dark:text-[#F5C451]">{n.concept!.title}</span>
+                <div className="w-full rounded-[22px] border border-[#E3D3A0] border-r-[3px] border-r-[#E3B23C] bg-white p-4 dark:bg-card">
+                  <span className="block text-sm font-bold text-[#B8860B] dark:text-[#F5C451]">{n.concept!.title}</span>
                   <span className="mt-1 block whitespace-pre-line text-base leading-8">{n.text}</span>
                 </div>
               </li>
@@ -158,40 +132,51 @@ export default function NotebookView() {
         )
       ) : current ? (
         <div className="space-y-4">
-          {/* الفصل الحالي: يُختار من قائمة، ويظهر محتواه مباشرة */}
-          <button
-            type="button"
-            onClick={() => setPicking(true)}
-            className="flex min-h-[56px] w-full items-center gap-3 rounded-[22px] border border-[var(--t075)] bg-white px-4 text-right transition active:scale-[0.98] dark:bg-card"
-          >
-            <FitText max={18} min={11} className="flex-1 font-bold">{chapterLabel(current.chapter)}</FitText>
-            <ChevronDown className="h-5 w-5 shrink-0" style={{ color }} />
-          </button>
+          {/* المحور والفصل في محدِّد واحد، وسهمان صغيران للتنقل بين الفصول */}
+          <div className="flex items-center gap-1 rounded-[20px] border border-[var(--t075)] bg-white p-1.5 dark:border-border dark:bg-card">
+            <button type="button" aria-label="الفصل السابق" disabled={chIndex <= 0} onClick={() => setChIndex(chIndex - 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#C99A06] disabled:opacity-25">
+              <ChevronRight className="h-5 w-5" strokeWidth={2.5} />
+            </button>
+            <button type="button" onClick={() => setPicking(true)} className="min-w-0 flex-1 rounded-[14px] px-1 py-1 text-center transition active:scale-[0.98]">
+              <FitText max={14} min={11} className="text-center font-bold leading-6 text-[#B8860B]">{`${COURSE_SHORT[courseId] ?? ""} ▾`}</FitText>
+              <FitText max={20} min={12} className="text-center font-extrabold leading-7 text-[var(--t900)] dark:text-foreground">{chapterLabel(current.chapter)}</FitText>
+            </button>
+            <button type="button" aria-label="الفصل التالي" disabled={chIndex >= chapters.length - 1} onClick={() => setChIndex(chIndex + 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#C99A06] disabled:opacity-25">
+              <ChevronLeft className="h-5 w-5" strokeWidth={2.5} />
+            </button>
+          </div>
 
           {part === "maps" ? (
             CHAPTER_MAPS[`${courseId}::${current.chapter}`] ? (
-              <CausalMap map={CHAPTER_MAPS[`${courseId}::${current.chapter}`]} color={color} />
+              <CausalMap map={CHAPTER_MAPS[`${courseId}::${current.chapter}`]} />
             ) : (
               <p className="p-3 text-center text-sm text-muted-foreground">خريطة هذا الفصل قيد الإعداد</p>
             )
           ) : (
-            <Rules concepts={current.concepts} color={color} />
+            <Rules concepts={current.concepts} />
           )}
 
-          <div className="grid grid-cols-2 gap-3">
-            <SecondaryButton disabled={chIndex <= 0} onClick={() => setChIndex(chIndex - 1)}>
-              <ChevronRight className="h-5 w-5" /> السابق
-            </SecondaryButton>
-            <SecondaryButton disabled={chIndex >= chapters.length - 1} onClick={() => setChIndex(chIndex + 1)}>
-              التالي <ChevronLeft className="h-5 w-5" />
-            </SecondaryButton>
-          </div>
 
           {picking && (
             <div className="fixed inset-0 z-50 flex items-end bg-black/40" onClick={() => setPicking(false)}>
-              <div className="safe-bottom max-h-[75dvh] w-full overflow-y-auto rounded-t-3xl bg-card p-4" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="اختر الفصل">
+              <div className="safe-bottom max-h-[75dvh] w-full overflow-y-auto rounded-t-3xl bg-card p-4" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="اختر المحور والفصل">
                 <span className="mx-auto mb-3 block h-1.5 w-12 rounded-full bg-border" aria-hidden="true" />
-                <ul className="space-y-2">
+                <div className="no-scrollbar -mx-4 mb-3 flex gap-2 overflow-x-auto px-4 pb-1">
+                  {COURSES.map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => {
+                        setCourseId(c.id);
+                        setChIndex(0);
+                      }}
+                      className={cn("min-h-[36px] shrink-0 whitespace-nowrap rounded-full border px-3.5 text-sm font-bold", courseId === c.id ? "border-transparent bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "border-[#E3D3A0] bg-white text-[var(--t500)] dark:bg-card")}
+                    >
+                      {COURSE_SHORT[c.id] ?? c.name}
+                    </button>
+                  ))}
+                </div>
+                <ul className="space-y-1.5">
                   {chapters.map(({ chapter }, i) => (
                     <li key={chapter}>
                       <button
@@ -200,8 +185,7 @@ export default function NotebookView() {
                           setChIndex(i);
                           setPicking(false);
                         }}
-                        className={cn("min-h-[52px] w-full rounded-2xl border-2 px-4 text-right text-base font-bold", i === chIndex ? "text-white" : "border-border")}
-                        style={i === chIndex ? { background: color, borderColor: color } : undefined}
+                        className={cn("min-h-[48px] w-full rounded-[16px] px-4 text-right text-base font-bold", i === chIndex ? "bg-[var(--t100)] text-[var(--t900)]" : "hover:bg-muted")}
                       >
                         {chapterLabel(chapter)}
                       </button>
