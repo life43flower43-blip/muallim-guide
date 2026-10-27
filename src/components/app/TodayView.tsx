@@ -85,7 +85,6 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const planCount = useApp((s) => s.lessonPlans.length);
   const [pressed, setPressed] = useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
-  const weekRef = useRef<HTMLButtonElement>(null);
   const [cardH, setCardH] = useState<number | null>(null);
   const [tileH, setTileH] = useState<number | null>(null);
 
@@ -98,11 +97,10 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         setTileH(null);
         return setCardH(null);
       }
-      const weekH = (weekRef.current?.offsetHeight ?? 0) + 12;
-      const avail = nav.getBoundingClientRect().top - g.getBoundingClientRect().top - weekH - 10;
+      const avail = nav.getBoundingClientRect().top - g.getBoundingClientRect().top - 12;
       setCardH(Math.max(48, Math.min(210, (avail - 2 * 10) / 3)));
-      // مربعات الرموز: صفّان، كلٌّ بعنوان تحته، فتصغر حتى تتسع الشاشة
-      setTileH(Math.max(64, (avail - 16 - 2 * 32) / 2));
+      // ثلاثة صفوف، كلٌّ بعنوان تحته، فتصغر الصور حتى تتسع الشاشة
+      setTileH(Math.max(56, Math.min(130, (avail - 2 * 24 - 3 * 40) / 3)));
     };
     fit();
     const t = setTimeout(fit, 350);
@@ -259,8 +257,31 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
 
       {/* أبواب التطبيق */}
       {homeStyle === "icons" ? (
-        // نمط الرموز: ثلاثة أعمدة، مربع ناعم ملوّن برمز خطّي، والعنوان تحته
-        <div ref={gridRef} className="grid grid-cols-3 gap-x-3 gap-y-4 pt-1">
+        // الصف الأول: «ابدأ اختبار المحاكاة» مستطيل عريض يمينًا وبجانبه بطاقة، ثم بطاقتان، ثم ثلاث بطاقات
+        <div ref={gridRef} className="grid grid-cols-6 gap-x-3 gap-y-3.5 pt-1">
+          <motion.button
+            {...rise(1)}
+            type="button"
+            whileTap={{ scale: 0.97 }}
+            onClick={() => {
+              tick();
+              ui.startExamsim();
+            }}
+            className="col-span-4 flex min-w-0 flex-col gap-2"
+          >
+            <span className="exam-cta relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-[26px] bg-gradient-to-l from-[var(--t850)] via-[var(--t900)] to-[var(--t950)] px-3 text-white" style={{ height: tileH ?? 120 }}>
+              <span className="relative flex h-[46px] w-[46px] shrink-0 items-center justify-center" aria-hidden="true">
+                <span className="gold-wave" />
+                <span className="gold-wave" style={{ animationDelay: "1.1s" }} />
+                <span className="gold-wave" style={{ animationDelay: "2.2s" }} />
+                <span className="exam-pulse relative flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-[#FFE27A] via-[#F4C430] to-[#C99A06]">
+                  <span className="text-[14px] font-extrabold text-[var(--t900)]">ابدأ</span>
+                </span>
+              </span>
+              <FitText max={18} min={12} className="min-w-0 font-extrabold">اختبار المحاكاة</FitText>
+            </span>
+            <span className="text-center text-[15px] font-bold leading-[22px] text-transparent" aria-hidden="true">.</span>
+          </motion.button>
           {doors.map((d, i) => (
             <motion.button
               key={d.title}
@@ -276,18 +297,17 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                   d.run();
                 }, 160);
               }}
-              className="flex min-w-0 flex-col items-center gap-2"
+              className={cn("flex min-w-0 flex-col items-center gap-2", i === 1 || i === 2 ? "col-span-3" : "col-span-2")}
             >
-              {/* المربع بصورة القسم بدل الرمز، بإطار ذهبي رفيع */}
-              <span className="relative mx-auto flex aspect-square w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)] ring-1 ring-[#E3D3A0]" style={tileH ? { maxWidth: tileH } : undefined}>
+              {/* صورة القسم بإطار ذهبي رفيع، وخط التقدّم الذهبي أسفلها */}
+              <span className="relative flex w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)] ring-1 ring-[#E3D3A0]" style={{ height: tileH ?? 120 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={d.img} alt="" className="absolute inset-0 h-full w-full object-cover" />
-                {/* خط التقدّم الذهبي أسفل المربع */}
                 <span className="absolute inset-x-4 bottom-2.5 h-[3px] overflow-hidden rounded-full bg-white/80" aria-hidden="true">
                   <span className="block h-full rounded-full bg-gradient-to-l from-[#F4C430] to-[#E3B23C]" style={{ width: `${Math.round(d.progress * 100)}%` }} />
                 </span>
               </span>
-              <FitText max={15} min={10} group="door-icons" className="w-full text-center font-bold text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
+              <FitText max={15} min={10} group="door-icons" className="w-full text-center font-bold leading-[22px] text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
             </motion.button>
           ))}
         </div>
@@ -326,28 +346,6 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       </div>
       )}
 
-      {/* اختبار المحاكاة: دائرة ذهبية بساعة تدق، تتدفق منها موجات ذهبية للخارج */}
-      <motion.button
-        ref={weekRef}
-        {...rise(8)}
-        type="button"
-        whileTap={{ scale: 0.94 }}
-        onClick={() => {
-          tick();
-          ui.startExamsim();
-        }}
-        className="flex items-center gap-4 py-3 pr-3 text-[var(--t900)] dark:text-foreground"
-      >
-        <span className="relative flex h-[52px] w-[52px] shrink-0 items-center justify-center" aria-hidden="true">
-          <span className="gold-wave" />
-          <span className="gold-wave" style={{ animationDelay: "1.1s" }} />
-          <span className="gold-wave" style={{ animationDelay: "2.2s" }} />
-          <span className="exam-pulse relative flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-[#FFE27A] via-[#F4C430] to-[#C99A06] ring-2 ring-white">
-                <span className="text-[15px] font-extrabold text-[var(--t900)]">ابدأ</span>
-              </span>
-        </span>
-        <span className="relative whitespace-nowrap text-lg font-extrabold leading-none">اختبار محاكاة</span>
-      </motion.button>
     </div>
   );
 }
