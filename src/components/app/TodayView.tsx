@@ -31,9 +31,9 @@ const tick = () => {
   if (typeof navigator !== "undefined" && "vibrate" in navigator && useApp.getState().haptics) navigator.vibrate(8);
 };
 
-/** خريطة نشاط مصغّرة: آخر ١٢ أسبوعًا، كل مربع يوم، ويغمق كلما زادت الأسئلة */
+/** خريطة نشاط مصغّرة: آخر ٨ أسابيع، كل مربع يوم، ويغمق كلما زادت الأسئلة */
 function MiniActivity({ sessions }: { sessions: { ts: number; total: number }[] }) {
-  const WEEKS = 12;
+  const WEEKS = 8;
   const cols = useMemo(() => {
     const per = new Map<string, number>();
     for (const x of sessions) per.set(dayStr(new Date(x.ts)), (per.get(dayStr(new Date(x.ts))) ?? 0) + x.total);
@@ -53,14 +53,14 @@ function MiniActivity({ sessions }: { sessions: { ts: number; total: number }[] 
   const level = (n: number) => (n === 0 ? 0 : n < 10 ? 1 : n < 25 ? 2 : 3);
   const shade = ["var(--t075)", "color-mix(in srgb, var(--t800) 35%, white)", "color-mix(in srgb, var(--t800) 65%, white)", "var(--t800)"];
   return (
-    <div className="flex flex-col items-center gap-1.5" aria-label="نشاطك في آخر ١٢ أسبوعًا">
-      <div className="flex gap-[2px]" dir="ltr">
+    <div className="flex flex-col items-center gap-1.5" aria-label="نشاطك في آخر ٨ أسابيع">
+      <div className="flex gap-[3px] rounded-[10px] bg-white p-1.5 ring-1 ring-[var(--t075)] dark:bg-card" dir="ltr">
         {cols.map((col, w) => (
-          <div key={w} className="flex flex-col gap-[2px]">
+          <div key={w} className="flex flex-col gap-[3px]">
             {col.map((c, d) => (
               <span
                 key={d}
-                className={cn("h-[6px] w-[6px] rounded-[1.5px]", c.today && "ring-1 ring-[#E3B23C]")}
+                className={cn("h-[5px] w-[5px] rounded-full", c.today && "ring-[1.5px] ring-[#E3B23C]")}
                 style={{ background: c.future ? "transparent" : shade[level(c.n)] }}
               />
             ))}
@@ -276,8 +276,8 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             ))}
           </div>
         </div>
-        {/* خريطة النشاط المصغّرة يمينًا، ومستوى الاستعداد يسارًا، فوق غصن الأيام */}
-        <div className="flex items-end justify-between gap-3 px-3">
+        {/* مستوى الاستعداد وبجانبه خريطة النشاط المصغّرة، يسارًا فوق غصن الأيام */}
+        <div className="flex items-end justify-end gap-5 px-3">
           <MiniActivity sessions={sessions} />
           {/* مستوى الاستعداد: الحلقة وتحتها جملة قصيرة، على اليسار بجانب غصن الأيام */}
           <motion.button
