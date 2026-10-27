@@ -100,17 +100,28 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       }
       const avail = nav.getBoundingClientRect().top - g.getBoundingClientRect().top - (statsRef.current?.offsetHeight ?? 0) - 24;
       setCardH(Math.max(48, Math.min(210, (avail - 2 * 10) / 3)));
-      // ثلاثة صفوف، كلٌّ بعنوان تحته، فتصغر الصور حتى تتسع الشاشة
-      setTileH(Math.max(56, Math.min(170, (avail - 2 * 14 - 3 * 30 - 30) / 3)));
+      // ثلاثة صفوف بعناوينها: تقدير أول، ثم ضبط دقيق بعد الرسم حتى تستقر الأوراق فوق الشريط مباشرة
+      setTileH(Math.max(56, Math.min(190, (avail - 2 * 14 - 3 * 30 - 30) / 3)));
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          const st = statsRef.current;
+          if (!st) return;
+          const gap = nav.getBoundingClientRect().top - st.getBoundingClientRect().bottom - 6;
+          if (Math.abs(gap) > 2) setTileH((h) => (h === null ? h : Math.max(56, Math.min(190, h + gap / 3))));
+        })
+      );
     };
     fit();
+    // يُعاد الضبط بعد انتهاء حركة الدخول، لأن الحركة تزيح العناصر مؤقتًا فتخدع القياس
     const t = setTimeout(fit, 350);
+    const t2 = setTimeout(fit, 1300);
     const ro = new ResizeObserver(fit);
     const main = document.getElementById("main-scroll");
     if (main) ro.observe(main);
     document.fonts?.ready.then(fit);
     return () => {
       clearTimeout(t);
+      clearTimeout(t2);
       ro.disconnect();
     };
   }, []);
