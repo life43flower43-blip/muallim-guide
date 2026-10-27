@@ -32,32 +32,44 @@ const tick = () => {
   if (typeof navigator !== "undefined" && "vibrate" in navigator && useApp.getState().haptics) navigator.vibrate(8);
 };
 
-/** دائرة إحصاء موحّدة: حلقة تمتلئ بالنسبة (أو مقسّمة إلى أجزاء)، والقيمة في الوسط، والاسم تحتها */
-function StatCircle({ label, value, frac, color, segments, onClick }: { label: string; value: string; frac: number; color: string; segments?: number; onClick: () => void }) {
-  const C = 2 * Math.PI * 15.5;
-  const seg = segments ? C / segments : 0;
+/** خريطة نشاط مصغّرة: آخر ٨ أسابيع، كل مربع يوم، ويغمق كلما زادت الأسئلة */
+function MiniActivity({ sessions }: { sessions: { ts: number; total: number }[] }) {
+  const WEEKS = 8;
+  const cols = useMemo(() => {
+    const per = new Map<string, number>();
+    for (const x of sessions) per.set(dayStr(new Date(x.ts)), (per.get(dayStr(new Date(x.ts))) ?? 0) + x.total);
+    const today = new Date();
+    const start = new Date(today);
+    start.setDate(today.getDate() - ((today.getDay() + 1) % 7) - (WEEKS - 1) * 7);
+    const todayKey = dayStr(today);
+    return Array.from({ length: WEEKS }, (_, w) =>
+      Array.from({ length: 7 }, (_, d) => {
+        const dt = new Date(start);
+        dt.setDate(start.getDate() + w * 7 + d);
+        const k = dayStr(dt);
+        return { n: per.get(k) ?? 0, future: k > todayKey, today: k === todayKey };
+      })
+    );
+  }, [sessions]);
+  const level = (n: number) => (n === 0 ? 0 : n < 10 ? 1 : n < 25 ? 2 : 3);
+  const shade = ["var(--t075)", "color-mix(in srgb, var(--t800) 35%, white)", "color-mix(in srgb, var(--t800) 65%, white)", "var(--t800)"];
   return (
-    <motion.button type="button" whileTap={{ scale: 0.94 }} onClick={onClick} className="flex w-[64px] shrink-0 flex-col items-center gap-1.5 text-[var(--t900)] dark:text-foreground">
-      <span className="relative h-[50px] w-[50px]" aria-hidden="true">
-        <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
-          <circle cx="18" cy="18" r="15.5" fill="white" stroke="var(--t100)" strokeWidth="3" strokeDasharray={segments ? `${seg - 2.2} 2.2` : undefined} />
-          <motion.circle
-            cx="18"
-            cy="18"
-            r="15.5"
-            fill="none"
-            stroke={color}
-            strokeWidth="3"
-            strokeLinecap={segments ? "butt" : "round"}
-            initial={{ strokeDasharray: `0 ${C}` }}
-            animate={{ strokeDasharray: segments ? Array.from({ length: segments }, (_, i) => (i < Math.round(frac * segments) ? `${seg - 2.2} 2.2` : `0 ${seg}`)).join(" ") : `${frac * C} ${C}` }}
-            transition={{ delay: 0.3, duration: 1, ease: "easeOut" }}
-          />
-        </svg>
-        <span className="absolute inset-0 flex items-center justify-center text-[13px] font-extrabold" style={{ color }}>{value}</span>
-      </span>
-      <span className="whitespace-nowrap text-[11px] font-bold leading-none min-[380px]:text-[12px]">{label}</span>
-    </motion.button>
+    <div className="flex flex-col items-center gap-1.5" aria-label="نشاطك في آخر ٨ أسابيع">
+      <div className="flex gap-[3px] rounded-[10px] bg-white p-1.5 ring-1 ring-[var(--t075)] dark:bg-card" dir="ltr">
+        {cols.map((col, w) => (
+          <div key={w} className="flex flex-col gap-[3px]">
+            {col.map((c, d) => (
+              <span
+                key={d}
+                className={cn("h-[5px] w-[5px] rounded-full", c.today && "ring-[1.5px] ring-[#E3B23C]")}
+                style={{ background: c.future ? "transparent" : shade[level(c.n)] }}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+      <span className="whitespace-nowrap text-[11px] font-bold leading-none text-[var(--t900)] min-[380px]:text-[12px] dark:text-foreground">نشاطك</span>
+    </div>
   );
 }
 
@@ -128,8 +140,6 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       return { label, done: dayXpOf(sessions, key) > 0, today: key === today, future: key > today };
     });
   }, [sessions]);
-
-  const weekDone = week.filter((d) => d.done).length;
 
   const doors: Door[] = [
     { title: "المفاهيم التربوية", img: "/home/concepts-v2.jpg", progress: prog.concepts, run: ui.startLearn },
@@ -269,11 +279,66 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             ))}
           </div>
         </div>
-        {/* ثلاث دوائر بشكل واحد: حلقة حولها، والقيمة في وسطها، والاسم تحتها */}
-        <div className="flex items-start justify-end gap-5 px-3">
-          <StatCircle label="للمراجعة" value={ad(due)} frac={due > 0 ? 1 : 0} color={due > 0 ? "#C0392B" : "var(--t800)"} onClick={() => { tick(); onGoTab("mistakes"); }} />
-          <StatCircle label="نشاطك" value={`${ad(weekDone)}/٧`} frac={weekDone / 7} color="#E3B23C" segments={7} onClick={() => { tick(); onGoTab("profile"); }} />
-          <StatCircle label="مستوى استعدادك" value={`${ad(readiness)}٪`} frac={readiness / 100} color="var(--t800)" onClick={() => { tick(); onGoTab("practice"); }} />
+        {/* مستوى الاستعداد وبجانبه خريطة النشاط المصغّرة، يسارًا فوق غصن الأيام */}
+        <div className="flex items-end justify-around px-2">
+          <MiniActivity sessions={sessions} />
+          {/* مستوى الاستعداد: الحلقة وتحتها جملة قصيرة، على اليسار بجانب غصن الأيام */}
+          <motion.button
+            type="button"
+            onClick={() => {
+              tick();
+              onGoTab("practice");
+            }}
+            className="flex shrink-0 flex-col items-center gap-1.5 text-[var(--t900)] dark:text-foreground"
+          >
+            <span className="relative h-[44px] w-[44px] shrink-0" aria-hidden="true">
+              {/* هالة متموّجة تدور حول الحلقة */}
+              <svg viewBox="0 0 50 50" className="energy-aura pointer-events-none absolute -inset-[8px] h-[60px] w-[60px]">
+                <path d="M46.00 25.00 L46.79 26.52 L47.22 28.12 L47.10 29.70 L46.40 31.14 L45.25 32.37 L43.88 33.41 L42.56 34.34 L41.49 35.31 L40.76 36.45 L40.30 37.84 L39.95 39.43 L39.49 41.09 L38.75 42.59 L37.64 43.74 L36.19 44.39 L34.54 44.55 L32.82 44.37 L31.20 44.08 L29.72 43.94 L28.37 44.13 L27.07 44.70 L25.72 45.55 L24.25 46.43 L22.68 47.07 L21.08 47.23 L19.56 46.82 L18.22 45.87 L17.09 44.57 L16.12 43.20 L15.19 41.99 L14.15 41.08 L12.89 40.50 L11.38 40.12 L9.73 39.74 L8.13 39.16 L6.78 38.24 L5.87 36.95 L5.48 35.38 L5.51 33.68 L5.78 32.00 L6.03 30.44 L6.02 29.04 L5.63 27.72 L4.90 26.41 L4.00 25.00 L3.21 23.48 L2.78 21.88 L2.90 20.30 L3.60 18.86 L4.75 17.63 L6.12 16.59 L7.44 15.66 L8.51 14.69 L9.24 13.55 L9.70 12.16 L10.05 10.57 L10.51 8.91 L11.25 7.41 L12.36 6.26 L13.81 5.61 L15.46 5.45 L17.18 5.63 L18.80 5.92 L20.28 6.06 L21.63 5.87 L22.93 5.30 L24.28 4.45 L25.75 3.57 L27.32 2.93 L28.92 2.77 L30.44 3.18 L31.78 4.13 L32.91 5.43 L33.88 6.80 L34.81 8.01 L35.85 8.92 L37.11 9.50 L38.62 9.88 L40.27 10.26 L41.87 10.84 L43.22 11.76 L44.13 13.05 L44.52 14.62 L44.49 16.32 L44.22 18.00 L43.97 19.56 L43.98 20.96 L44.37 22.28 L45.10 23.59 L46.00 25.00Z" fill="none" stroke="var(--t600)" strokeOpacity="0.45" strokeWidth="1.2" />
+              </svg>
+              <svg viewBox="0 0 36 36" className="relative h-full w-full -rotate-90">
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--t150)" strokeWidth="3.5" />
+                <motion.circle
+                  cx="18"
+                  cy="18"
+                  r="15.5"
+                  fill="none"
+                  stroke="var(--t800)"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  initial={{ strokeDasharray: "0 97.4" }}
+                  animate={{ strokeDasharray: `${(readiness / 100) * 97.4} 97.4` }}
+                  transition={{ delay: 0.3, duration: 1, ease: "easeOut" }}
+                />
+              </svg>
+              <span className="absolute inset-[5px] flex items-center justify-center rounded-full bg-white/80 text-xs font-extrabold dark:bg-card/70">{ad(readiness)}٪</span>
+            </span>
+            <span className="whitespace-nowrap text-[11px] font-bold leading-none min-[380px]:text-[12px]">مستوى استعدادك</span>
+          </motion.button>
+          {/* أخطاء للمراجعة: عدد ما ينتظر الطالبة، ويفتح «أخطائي» */}
+          <button
+            type="button"
+            onClick={() => {
+              tick();
+              onGoTab("mistakes");
+            }}
+            className="flex shrink-0 flex-col items-center gap-1.5 text-[var(--t900)] dark:text-foreground"
+          >
+            {/* بطاقتان مكدّستان كبطاقات المراجعة، والعليا تحمل العدد، وسهما مراجعة يدوران حولهما ببطء */}
+            <span className="relative flex h-[44px] w-[44px] items-center justify-center" aria-hidden="true">
+              <svg viewBox="0 0 48 48" className="review-spin absolute -inset-[6px] h-[56px] w-[56px]">
+                <path d="M24 4a20 20 0 0 1 18.3 12" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" />
+                <path d="M43.6 10.5l-1.3 5.6-5.5-1.6" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M24 44A20 20 0 0 1 5.7 32" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" />
+                <path d="M4.4 37.5l1.3-5.6 5.5 1.6" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span className="absolute h-[30px] w-[24px] translate-x-[3px] rotate-[10deg] rounded-[7px] bg-[var(--t150)]" />
+              <span className={cn("relative flex h-[30px] w-[24px] -rotate-[6deg] items-center justify-center rounded-[7px] text-[13px] font-extrabold text-white", due > 0 ? "bg-gradient-to-b from-[#E05A4C] to-[#B42318]" : "bg-gradient-to-b from-[var(--t600)] to-[var(--t850)]")}>
+                {ad(due)}
+              </span>
+            </span>
+            <span className="whitespace-nowrap text-[11px] font-bold leading-none min-[380px]:text-[12px]">راجع أخطاءك</span>
+          </button>
         </div>
       </motion.div>
     </div>
