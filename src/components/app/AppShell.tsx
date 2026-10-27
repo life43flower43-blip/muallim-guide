@@ -11,7 +11,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
-import { Bell, Flame, Settings, NotebookPen, House, CircleUser, PencilLine, Target, WifiOff } from "lucide-react";
+import { Bell, Flame, Settings, House, CircleUser, PencilLine, Target, WifiOff, Compass } from "lucide-react";
 import { useApp, useAppHydrated, xpToday, DAILY_GOAL_XP } from "@/lib/store";
 import { useUi, OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
 import { loadQbank } from "@/lib/qbank";
@@ -53,7 +53,7 @@ export type Tab = "today" | "notebook" | "practice" | "mistakes" | "profile";
 
 const NAV: { id: Tab; label: string; icon: React.ElementType }[] = [
   { id: "today", label: "الرئيسية", icon: House },
-  { id: "notebook", label: "دفتري", icon: NotebookPen },
+  { id: "notebook", label: "البوصلة", icon: Compass },
   { id: "practice", label: "التدريب", icon: PencilLine },
   { id: "mistakes", label: "أخطائي", icon: Target },
   { id: "profile", label: "حسابي", icon: CircleUser },

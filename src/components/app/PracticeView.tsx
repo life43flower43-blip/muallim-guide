@@ -13,6 +13,7 @@ import { FitText } from "./FitText";
 import { useMemo, useState } from "react";
 import {
   ChevronDown,
+  ChevronLeft,
   ClipboardCheck,
   FlaskConical,
   Gauge,
@@ -32,11 +33,10 @@ import {
 } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { COURSES, COURSE_COLOR, QUESTIONS, chaptersOfCourse, questionsOfCourse } from "@/lib/qbank";
+import { COURSES, COURSE_COLOR, QUESTIONS, chaptersOfCourse } from "@/lib/qbank";
 import {
   EXAM_SECONDS,
   chapterSession,
-  chapterStats,
   courseExam,
   courseMix,
   examKey,
@@ -47,7 +47,7 @@ import {
   weakChapters,
 } from "@/lib/practice-bank";
 import { useMistakes } from "@/lib/mistakes-client";
-import { ad, arCount, CHAPTER_FORMS, QUESTION_FORMS } from "@/lib/arabic";
+import { ad } from "@/lib/arabic";
 import { cn } from "@/lib/utils";
 import type { Tab } from "./AppShell";
 import TestBuilder from "./TestBuilder";
@@ -62,7 +62,7 @@ function ActionCard({ icon, title, sub, onClick, primary }: { icon: React.Elemen
       type="button"
       onClick={onClick}
       className={cn(
-        "flex min-h-[58px] items-center gap-3 rounded-[22px] border px-3 py-2 text-right transition active:scale-[0.98]",
+        "flex min-h-[58px] w-full items-center gap-3 rounded-[22px] border px-3 py-2 text-right transition active:scale-[0.98]",
         primary ? "border-transparent bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "border-[var(--t075)] bg-white text-[var(--t900)] dark:border-border dark:bg-card dark:text-foreground"
       )}
     >
@@ -76,6 +76,37 @@ function ActionCard({ icon, title, sub, onClick, primary }: { icon: React.Elemen
   );
 }
 
+/** مربع إجراء موحّد: رمز ذهبي في دائرة، والعنوان تحته في سطر واحد */
+function Tile({ icon: Icon, title, meta, small, onClick }: { icon: React.ElementType; title: string; meta?: string; small?: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "relative flex min-w-0 flex-col items-center justify-center gap-2 rounded-[22px] border border-[var(--t075)] bg-white text-[var(--t900)] transition active:scale-[0.97] dark:border-border dark:bg-card dark:text-foreground",
+        small ? "min-h-[92px] px-1.5 py-3" : "min-h-[96px] px-2 py-3"
+      )}
+    >
+      <span className={cn("flex shrink-0 items-center justify-center rounded-full bg-[#FBF1D6] text-[#B8860B]", small ? "h-10 w-10" : "h-11 w-11")}>
+        <Icon className={small ? "h-5 w-5" : "h-[22px] w-[22px]"} strokeWidth={2} />
+      </span>
+      <FitText max={small ? 13 : 15} min={9} group={small ? "tile-sm" : "tile"} className="w-full text-center font-bold">{title}</FitText>
+      {meta && <span className="absolute left-2 top-2 rounded-full bg-[var(--t100)] px-1.5 text-[10px] font-bold leading-4 text-[var(--t800)]">{meta}</span>}
+    </button>
+  );
+}
+
+/** زر صغير داخل المحور */
+function MiniBtn({ icon: Icon, title, onClick }: { icon: React.ElementType; title: string; onClick: () => void }) {
+  return (
+    <button type="button" onClick={onClick} className="flex min-h-[42px] items-center justify-center gap-1.5 rounded-[14px] border border-[#E3D3A0] bg-white text-sm font-bold text-[var(--t900)] transition active:scale-[0.97] dark:bg-card dark:text-foreground">
+      <Icon className="h-4 w-4 text-[#C99A06]" />
+      {title}
+    </button>
+  );
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const attempts = useApp((s) => s.attempts);
   const best = useApp((s) => s.best);
@@ -102,7 +133,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
 
   return (
     <div className="space-y-5">
-      <PageTitle title="التدريب" sub="تدرّب على ما درسته، وقِس نفسك باختبارات بمستوى الاختبار الحقيقي" />
+      <PageTitle title="التدريب" />
 
       {/* لوحة الأداء: مضغوطة، أرقام صغيرة في صف، وشريط البنك، وأضعف فصل في سطر واحد */}
       <Card className="space-y-2.5 px-4 py-3">
@@ -129,110 +160,84 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
         )}
       </Card>
 
-      {/* الإجراءات */}
-      <section className="grid gap-3 sm:grid-cols-2">
-        <ActionCard primary icon={Sparkles} title="تدريب ذكي" sub="عشرة أسئلة تبدأ بأضعف فصولك" onClick={() => startSmart()} />
-        <ActionCard icon={SlidersHorizontal} title="أنشئ اختبارك" sub="اختر المحاور والعدد والنمط" onClick={() => setBuilder(true)} />
-        <ActionCard
-          icon={Timer}
-          title="اختبار شامل"
-          sub={best["ALL::exam"] !== undefined ? `ستون سؤالًا، وأفضل نتيجة ${pct(best["ALL::exam"])}` : "ستون سؤالًا في ساعة"}
-          onClick={() => ui.startQuiz({ mode: "exam", label: "اختبار تجريبي شامل", qids: fullMockExam(), timeLimitSec: EXAM_SECONDS * 2, topicKey: "ALL::exam" })}
-        />
-        <ActionCard icon={Award} title="الاختبار الرسمي" sub="محاكاة اختبارات التوظيف العربية" onClick={ui.startExamsim} />
+      {/* ابدأ: تدريب ذكي بارز، وتحته أربعة اختبارات في مربعات متساوية */}
+      <section className="space-y-3">
+        <ActionCard primary icon={Sparkles} title="تدريب ذكي" sub="" onClick={() => startSmart()} />
+        <div className="grid grid-cols-2 gap-3">
+          <Tile icon={SlidersHorizontal} title="أنشئ اختبارك" onClick={() => setBuilder(true)} />
+          <Tile icon={Timer} title="اختبار شامل" meta={best["ALL::exam"] !== undefined ? pct(best["ALL::exam"]) : undefined} onClick={() => ui.startQuiz({ mode: "exam", label: "اختبار تجريبي شامل", qids: fullMockExam(), timeLimitSec: EXAM_SECONDS * 2, topicKey: "ALL::exam" })} />
+          <Tile icon={Award} title="الاختبار الرسمي" onClick={ui.startExamsim} />
+          <Tile icon={Gauge} title="تحديد المستوى" onClick={ui.startPlacement} />
+        </div>
       </section>
 
-      {/* حسب المحور */}
+      {/* حسب المحور: كل محور يُفتح على فصوله */}
       <section>
-        <SectionHeader title="حسب المحور" sub="افتح محورًا لتتدرب على فصوله" />
-        <div className="space-y-3">
+        <SectionHeader title="حسب المحور" />
+        <Divided>
           {COURSES.map((c) => {
             const isOpen = open === c.id;
             const chapters = chaptersOfCourse(c.id);
             const stars = chapters.reduce((n, ch) => n + starsFor(best[topicKey(c.id, ch)]), 0);
             const color = COURSE_COLOR[c.id] ?? "var(--primary)";
             return (
-              <Card key={c.id} className="overflow-hidden">
-                <button type="button" onClick={() => setOpen(isOpen ? null : c.id)} aria-expanded={isOpen} className="flex min-h-[72px] w-full items-center gap-3 px-4 py-3 text-right">
-                  <span className="h-10 w-1.5 shrink-0 rounded-full" style={{ background: color }} aria-hidden="true" />
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-base font-semibold">{c.name}</span>
-                    <span className="mt-0.5 block text-sm text-muted-foreground">
-                      {arCount(chapters.length, CHAPTER_FORMS)}، {arCount(questionsOfCourse(c.id).length, QUESTION_FORMS)}
-                    </span>
-                  </span>
-                  <span className="text-sm text-gem">★ {ad(stars)}</span>
-                  <ChevronDown className={cn("h-5 w-5 text-muted-foreground transition-transform", isOpen && "rotate-180")} />
+              <div key={c.id}>
+                <button type="button" onClick={() => setOpen(isOpen ? null : c.id)} aria-expanded={isOpen} className="flex min-h-[58px] w-full min-w-0 items-center gap-3 px-4 py-2.5 text-right">
+                  <span className="h-8 w-1.5 shrink-0 rounded-full" style={{ background: color }} aria-hidden="true" />
+                  <FitText max={16} min={11} className="flex-1 font-bold leading-7">{c.name}</FitText>
+                  {stars > 0 && <span className="shrink-0 text-sm font-bold text-[#B8860B]">★ {ad(stars)}</span>}
+                  <ChevronDown className={cn("h-5 w-5 shrink-0 text-[#C99A06] transition-transform", isOpen && "rotate-180")} />
                 </button>
                 {isOpen && (
-                  <div className="divide-y divide-border border-t border-border">
-                    <ListRow icon={Sparkles} title="تدريب ذكي في المحور" sub="يبدأ بأضعف فصوله" onClick={() => startSmart(c.id, `تدريب ذكي: ${c.name}`)} />
-                    <ListRow icon={Shuffle} title="مزيج من الفصول" sub="سؤالان من كل فصل من ثمانية" onClick={() => ui.startQuiz({ mode: "training", label: `مزيج: ${c.name}`, qids: courseMix(c.id) })} />
-                    <ListRow
-                      icon={ClipboardCheck}
-                      title="اختبار المحور"
-                      sub="ثلاثون سؤالًا متوسطًا وصعبًا في ثلاثين دقيقة"
-                      meta={best[examKey(c.id)] !== undefined ? pct(best[examKey(c.id)]) : undefined}
-                      onClick={() => ui.startQuiz({ mode: "exam", label: `اختبار: ${c.name}`, qids: courseExam(c.id), timeLimitSec: EXAM_SECONDS, topicKey: examKey(c.id) })}
-                    />
-                    {chapters.map((ch) => {
-                      const st = chapterStats(c.id, ch, attempts);
-                      const b = best[topicKey(c.id, ch)];
-                      return (
-                        <ListRow
-                          key={ch}
-                          title={chapterLabel(ch)}
-                          sub={`${arCount(st.total, QUESTION_FORMS)}${st.answered ? `، أجبت عن ${ad(st.answered)} بدقة ${pct((st.accuracy ?? 0) * 100)}` : ""}`}
-                          meta={b !== undefined ? <Stars count={starsFor(b)} /> : undefined}
-                          onClick={() => startChapter(c.id, ch)}
-                        />
-                      );
-                    })}
+                  <div className="space-y-2 bg-[var(--t025)] px-3 pb-3 pt-1 dark:bg-background">
+                    <div className="grid grid-cols-3 gap-2">
+                      <MiniBtn icon={Sparkles} title="ذكي" onClick={() => startSmart(c.id, `تدريب ذكي: ${c.name}`)} />
+                      <MiniBtn icon={Shuffle} title="مزيج" onClick={() => ui.startQuiz({ mode: "training", label: `مزيج: ${c.name}`, qids: courseMix(c.id) })} />
+                      <MiniBtn
+                        icon={ClipboardCheck}
+                        title="اختبار"
+                        onClick={() => ui.startQuiz({ mode: "exam", label: `اختبار: ${c.name}`, qids: courseExam(c.id), timeLimitSec: EXAM_SECONDS, topicKey: examKey(c.id) })}
+                      />
+                    </div>
+                    <div className="divide-y divide-[var(--t075)] overflow-hidden rounded-[18px] bg-white dark:divide-border dark:bg-card">
+                      {chapters.map((ch) => {
+                        const b = best[topicKey(c.id, ch)];
+                        return (
+                          <button key={ch} type="button" onClick={() => startChapter(c.id, ch)} className="flex min-h-[48px] w-full min-w-0 items-center gap-2 px-3 text-right">
+                            <FitText max={15} min={11} className="flex-1 font-medium">{chapterLabel(ch)}</FitText>
+                            {b !== undefined && <Stars count={starsFor(b)} />}
+                            <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" />
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
-              </Card>
+              </div>
             );
           })}
-        </div>
-      </section>
-
-      {/* أنشطة تطبيقية */}
-      <section>
-        <SectionHeader title="تطبيق في مواقف حقيقية" sub="من المعرفة إلى القرار داخل الصف" />
-        <div className="grid gap-3 lg:grid-cols-2">
-          <Divided>
-            <ListRow icon={MessagesSquare} title="مختبر محاكاة الصفوف" sub="كل قرار يغيّر الموقف" onClick={ui.startSim} />
-            <ListRow icon={FlaskConical} title="مختبر المعلّم" sub="قرار متفرع، ثم تحليل وتأمل" onClick={ui.startLab} />
-            <ListRow icon={Users} title="مواقف صفية سريعة" sub="ماذا تفعل لو…؟" onClick={ui.startScenarios} />
-            <ListRow icon={Puzzle} title="التحديات الذكية" sub="ترتيب وإكمال وإنتاج كتابي" onClick={ui.startChallenges} />
-          </Divided>
-          <Divided>
-            <ListRow icon={NotebookPen} title="استوديو خطط الدروس" sub="خطة درس كاملة مع تقييمها" onClick={ui.startStudio} />
-            <ListRow icon={MapPin} title="سجل التدريب الميداني" sub="زيارات المشاهدة والتنفيذ" onClick={ui.startField} />
-            <ListRow icon={Ruler} title="أدوات القياس والتقويم" sub="حاسبات إحصائية تربوية" onClick={ui.startMeasure} />
-            <ListRow icon={Heart} title="قلب الصف" sub="مشاعر الطلاب خلف تصرفاتهم" onClick={ui.startHeart} />
-          </Divided>
-        </div>
-      </section>
-
-      {/* مراجعة سريعة */}
-      <section>
-        <SectionHeader title="مراجعة سريعة" />
-        <Divided>
-          <ListRow icon={Layers} title="بطاقات المفاهيم" sub="بطاقة تنقلب لتعرض الشرح والمثال" onClick={ui.startFlash} />
-          <ListRow icon={Gauge} title="اختبار تحديد المستوى" sub="اثنا عشر سؤالًا من كل المحاور" onClick={ui.startPlacement} />
-          <ListRow icon={Users} title="تحدّي زميل" sub="أرسل رابط تحدٍّ بالأسئلة نفسها" onClick={ui.startPeer} />
         </Divided>
       </section>
 
-      {due === 0 && (mistakes?.stats.open ?? 0) > 0 && (
-        <p className="text-center text-sm text-muted-foreground">
-          لا أخطاء مستحقة الآن.{" "}
-          <button type="button" onClick={() => onGoTab("mistakes")} className="font-medium text-primary">
-            عرض أخطائي
-          </button>
-        </p>
-      )}
+      {/* تطبيق عملي: مربعات متساوية بثلاثة أعمدة */}
+      <section>
+        <SectionHeader title="تطبيق عملي" />
+        <div className="grid grid-cols-3 gap-2.5">
+          <Tile small icon={MessagesSquare} title="محاكاة الصفوف" onClick={ui.startSim} />
+          <Tile small icon={FlaskConical} title="مختبر المعلّم" onClick={ui.startLab} />
+          <Tile small icon={Users} title="مواقف سريعة" onClick={ui.startScenarios} />
+          <Tile small icon={Puzzle} title="التحديات" onClick={ui.startChallenges} />
+          <Tile small icon={NotebookPen} title="خطط الدروس" onClick={ui.startStudio} />
+          <Tile small icon={MapPin} title="التدريب الميداني" onClick={ui.startField} />
+          <Tile small icon={Ruler} title="أدوات القياس" onClick={ui.startMeasure} />
+          <Tile small icon={Heart} title="قلب الصف" onClick={ui.startHeart} />
+          <Tile small icon={Layers} title="بطاقات المفاهيم" onClick={ui.startFlash} />
+        </div>
+      </section>
+
+      <Divided>
+        <ListRow icon={Users} title="تحدّي زميل" onClick={ui.startPeer} />
+      </Divided>
 
       {builder && <TestBuilder onClose={() => setBuilder(false)} />}
     </div>
