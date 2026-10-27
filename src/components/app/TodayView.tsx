@@ -55,9 +55,10 @@ function MiniActivity({ sessions }: { sessions: { ts: number; total: number }[] 
   const shade = ["var(--t075)", "color-mix(in srgb, var(--t800) 35%, white)", "color-mix(in srgb, var(--t800) 65%, white)", "var(--t800)"];
   return (
     <div className="flex flex-col items-center gap-1.5" aria-label="نشاطك في آخر ٨ أسابيع">
-      <div className="flex gap-[3px] rounded-[10px] bg-white p-1.5 ring-1 ring-[var(--t075)] dark:bg-card" dir="ltr">
+      <span className="flex h-[60px] items-center">
+      <div className="flex gap-[2.5px] rounded-[10px] bg-white p-[5px] ring-1 ring-[var(--t075)] dark:bg-card" dir="ltr">
         {cols.map((col, w) => (
-          <div key={w} className="flex flex-col gap-[3px]">
+          <div key={w} className="flex flex-col gap-[2.5px]">
             {col.map((c, d) => (
               <span
                 key={d}
@@ -68,7 +69,8 @@ function MiniActivity({ sessions }: { sessions: { ts: number; total: number }[] 
           </div>
         ))}
       </div>
-      <span className="whitespace-nowrap text-[11px] font-bold leading-none text-[var(--t900)] min-[380px]:text-[12px] dark:text-foreground">نشاطك</span>
+      </span>
+      <span className="whitespace-nowrap text-[12px] font-bold leading-4 text-[var(--t900)] dark:text-foreground">نشاطك</span>
     </div>
   );
 }
@@ -189,7 +191,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           </div>
         </div>
         {/* مستوى الاستعداد وبجانبه خريطة النشاط المصغّرة، يسارًا فوق غصن الأيام */}
-        <div className="flex items-end justify-around px-2">
+        <div className="flex items-start justify-around px-2">
           <MiniActivity sessions={sessions} />
           {/* مستوى الاستعداد: الحلقة وتحتها جملة قصيرة، على اليسار بجانب غصن الأيام */}
           <motion.button
@@ -200,6 +202,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             }}
             className="flex shrink-0 flex-col items-center gap-1.5 text-[var(--t900)] dark:text-foreground"
           >
+            <span className="flex h-[60px] items-center">
             <span className="relative h-[44px] w-[44px] shrink-0" aria-hidden="true">
               {/* هالة متموّجة تدور حول الحلقة */}
               <svg viewBox="0 0 50 50" className="energy-aura pointer-events-none absolute -inset-[8px] h-[60px] w-[60px]">
@@ -222,7 +225,8 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               </svg>
               <span className="absolute inset-[5px] flex items-center justify-center rounded-full bg-white/80 text-xs font-extrabold dark:bg-card/70">{ad(readiness)}٪</span>
             </span>
-            <span className="whitespace-nowrap text-[11px] font-bold leading-none min-[380px]:text-[12px]">مستوى استعدادك</span>
+            </span>
+            <span className="whitespace-nowrap text-[12px] font-bold leading-4 text-[var(--t900)] dark:text-foreground">مستوى استعدادك</span>
           </motion.button>
           {/* أخطاء للمراجعة: عدد ما ينتظر الطالبة، ويفتح «أخطائي» */}
           <button
@@ -234,6 +238,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             className="flex shrink-0 flex-col items-center gap-1.5 text-[var(--t900)] dark:text-foreground"
           >
             {/* بطاقتان مكدّستان كبطاقات المراجعة، والعليا تحمل العدد، وسهما مراجعة يدوران حولهما ببطء */}
+            <span className="flex h-[60px] items-center">
             <span className="relative flex h-[44px] w-[44px] items-center justify-center" aria-hidden="true">
               <svg viewBox="0 0 48 48" className="review-spin absolute -inset-[6px] h-[56px] w-[56px]">
                 <path d="M24 4a20 20 0 0 1 18.3 12" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" />
@@ -246,7 +251,8 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 {ad(due)}
               </span>
             </span>
-            <span className="whitespace-nowrap text-[11px] font-bold leading-none min-[380px]:text-[12px]">راجع أخطاءك</span>
+            </span>
+            <span className="whitespace-nowrap text-[12px] font-bold leading-4 text-[var(--t900)] dark:text-foreground">راجع أخطاءك</span>
           </button>
         </div>
       </motion.div>
