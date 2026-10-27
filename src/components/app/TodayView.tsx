@@ -109,7 +109,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           tick();
           onGoTab("practice");
         }}
-        className="relative z-10 block w-full gold-frame !rounded-[20px] px-4 py-[6px] text-right text-[#174D41] dark:text-foreground"
+        className="relative z-10 block w-full gold-frame !rounded-[20px] px-4 py-[6px] text-right text-[var(--t900)] dark:text-foreground"
       >
         {/* طاقة حيّة: موجات خضراء تخرج من حواف البطاقة كلها وتتلاشى ببطء */}
         <span className="card-wave" aria-hidden="true" />
@@ -121,16 +121,16 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           <span className="relative h-[40px] w-[40px] shrink-0" aria-hidden="true">
             {/* هالة متموّجة تدور حول الحلقة */}
             <svg viewBox="0 0 50 50" className="energy-aura pointer-events-none absolute -inset-[8px] h-[56px] w-[56px]">
-              <path d="M46.00 25.00 L46.79 26.52 L47.22 28.12 L47.10 29.70 L46.40 31.14 L45.25 32.37 L43.88 33.41 L42.56 34.34 L41.49 35.31 L40.76 36.45 L40.30 37.84 L39.95 39.43 L39.49 41.09 L38.75 42.59 L37.64 43.74 L36.19 44.39 L34.54 44.55 L32.82 44.37 L31.20 44.08 L29.72 43.94 L28.37 44.13 L27.07 44.70 L25.72 45.55 L24.25 46.43 L22.68 47.07 L21.08 47.23 L19.56 46.82 L18.22 45.87 L17.09 44.57 L16.12 43.20 L15.19 41.99 L14.15 41.08 L12.89 40.50 L11.38 40.12 L9.73 39.74 L8.13 39.16 L6.78 38.24 L5.87 36.95 L5.48 35.38 L5.51 33.68 L5.78 32.00 L6.03 30.44 L6.02 29.04 L5.63 27.72 L4.90 26.41 L4.00 25.00 L3.21 23.48 L2.78 21.88 L2.90 20.30 L3.60 18.86 L4.75 17.63 L6.12 16.59 L7.44 15.66 L8.51 14.69 L9.24 13.55 L9.70 12.16 L10.05 10.57 L10.51 8.91 L11.25 7.41 L12.36 6.26 L13.81 5.61 L15.46 5.45 L17.18 5.63 L18.80 5.92 L20.28 6.06 L21.63 5.87 L22.93 5.30 L24.28 4.45 L25.75 3.57 L27.32 2.93 L28.92 2.77 L30.44 3.18 L31.78 4.13 L32.91 5.43 L33.88 6.80 L34.81 8.01 L35.85 8.92 L37.11 9.50 L38.62 9.88 L40.27 10.26 L41.87 10.84 L43.22 11.76 L44.13 13.05 L44.52 14.62 L44.49 16.32 L44.22 18.00 L43.97 19.56 L43.98 20.96 L44.37 22.28 L45.10 23.59 L46.00 25.00Z" fill="none" stroke="#2C7D69" strokeOpacity="0.45" strokeWidth="1.2" />
+              <path d="M46.00 25.00 L46.79 26.52 L47.22 28.12 L47.10 29.70 L46.40 31.14 L45.25 32.37 L43.88 33.41 L42.56 34.34 L41.49 35.31 L40.76 36.45 L40.30 37.84 L39.95 39.43 L39.49 41.09 L38.75 42.59 L37.64 43.74 L36.19 44.39 L34.54 44.55 L32.82 44.37 L31.20 44.08 L29.72 43.94 L28.37 44.13 L27.07 44.70 L25.72 45.55 L24.25 46.43 L22.68 47.07 L21.08 47.23 L19.56 46.82 L18.22 45.87 L17.09 44.57 L16.12 43.20 L15.19 41.99 L14.15 41.08 L12.89 40.50 L11.38 40.12 L9.73 39.74 L8.13 39.16 L6.78 38.24 L5.87 36.95 L5.48 35.38 L5.51 33.68 L5.78 32.00 L6.03 30.44 L6.02 29.04 L5.63 27.72 L4.90 26.41 L4.00 25.00 L3.21 23.48 L2.78 21.88 L2.90 20.30 L3.60 18.86 L4.75 17.63 L6.12 16.59 L7.44 15.66 L8.51 14.69 L9.24 13.55 L9.70 12.16 L10.05 10.57 L10.51 8.91 L11.25 7.41 L12.36 6.26 L13.81 5.61 L15.46 5.45 L17.18 5.63 L18.80 5.92 L20.28 6.06 L21.63 5.87 L22.93 5.30 L24.28 4.45 L25.75 3.57 L27.32 2.93 L28.92 2.77 L30.44 3.18 L31.78 4.13 L32.91 5.43 L33.88 6.80 L34.81 8.01 L35.85 8.92 L37.11 9.50 L38.62 9.88 L40.27 10.26 L41.87 10.84 L43.22 11.76 L44.13 13.05 L44.52 14.62 L44.49 16.32 L44.22 18.00 L43.97 19.56 L43.98 20.96 L44.37 22.28 L45.10 23.59 L46.00 25.00Z" fill="none" stroke="var(--t600)" strokeOpacity="0.45" strokeWidth="1.2" />
             </svg>
             <svg viewBox="0 0 36 36" className="relative h-full w-full -rotate-90">
-              <circle cx="18" cy="18" r="15.5" fill="none" stroke="#CFE6DA" strokeWidth="3.5" />
+              <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--t150)" strokeWidth="3.5" />
               <motion.circle
                 cx="18"
                 cy="18"
                 r="15.5"
                 fill="none"
-                stroke="#136F5C"
+                stroke="var(--t800)"
                 strokeWidth="3.5"
                 strokeLinecap="round"
                 initial={{ strokeDasharray: "0 97.4" }}
@@ -152,17 +152,17 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           tick();
           ui.startExamsim();
         }}
-        className="exam-cta relative flex w-full items-center gap-3 overflow-hidden rounded-[22px] bg-gradient-to-l from-[#1C5E4F] via-[#174D41] to-[#0F3D33] py-1.5 pl-1.5 pr-2 text-right text-white"
+        className="exam-cta relative flex w-full items-center gap-3 overflow-hidden rounded-[22px] bg-gradient-to-l from-[var(--t850)] via-[var(--t900)] to-[#0F3D33] py-1.5 pl-1.5 pr-2 text-right text-white"
       >
         <span className="relative flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#FFE27A] to-[#C99A06]" aria-hidden="true">
           <svg viewBox="0 0 24 24" className="h-5 w-5">
-            <circle cx="12" cy="13" r="8" fill="none" stroke="#174D41" strokeWidth="2" />
-            <path d="M10 2.5h4M12 2.5V5" stroke="#174D41" strokeWidth="2" strokeLinecap="round" />
-            <path className="exam-hand" d="M12 13V8.5" stroke="#174D41" strokeWidth="2" strokeLinecap="round" />
+            <circle cx="12" cy="13" r="8" fill="none" stroke="var(--t900)" strokeWidth="2" />
+            <path d="M10 2.5h4M12 2.5V5" stroke="var(--t900)" strokeWidth="2" strokeLinecap="round" />
+            <path className="exam-hand" d="M12 13V8.5" stroke="var(--t900)" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </span>
         <FitText max={17} min={12} className="flex-1 font-extrabold leading-6">اختبار محاكاة</FitText>
-        <span className="shrink-0 rounded-full bg-gradient-to-l from-[#FFE27A] to-[#E3B23C] px-3.5 py-1 text-[13px] font-extrabold leading-5 text-[#174D41]">ابدأ</span>
+        <span className="shrink-0 rounded-full bg-gradient-to-l from-[#FFE27A] to-[#E3B23C] px-3.5 py-1 text-[13px] font-extrabold leading-5 text-[var(--t900)]">ابدأ</span>
       </motion.button>
 
       {/* أبواب التطبيق */}
@@ -183,13 +183,13 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 d.run();
               }, 160);
             }}
-            className="relative block overflow-hidden rounded-[26px] bg-[#DCEFE5] text-right"
+            className="relative block overflow-hidden rounded-[26px] bg-[var(--t100)] text-right"
           >
             {/* الصورة تملأ البطاقة، ولوحة العنوان نصف شفافة تطفو فوق أسفلها */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={d.img} alt="" className="block h-[calc(clamp(64px,calc((100dvh-440px)/3),130px)+34px)] w-full object-cover" style={cardH ? { height: cardH } : undefined} />
             <span className="absolute inset-x-1.5 bottom-1.5 flex min-h-[48px] flex-col justify-center overflow-hidden rounded-[20px] bg-white/80 px-3 py-2 backdrop-blur-md dark:bg-card/80">
-              <FitText max={16} min={8} group="doors" className="text-center font-extrabold text-[#174D41] dark:text-foreground">{d.title}</FitText>
+              <FitText max={16} min={8} group="doors" className="text-center font-extrabold text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
               {/* خط التقدّم الذهبي */}
               <span className="absolute inset-x-3 bottom-[5px] h-[3px] overflow-hidden rounded-full bg-[#F3E7CB]/70" aria-hidden="true">
                 <span className="block h-full rounded-full bg-gradient-to-l from-[#F4C430] to-[#FFE27A] transition-[width] duration-700" style={{ width: `${Math.round(d.progress * 100)}%` }} />
@@ -202,7 +202,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       {/* شريط الأسبوع: غصن بسبع أوراق، تصير الورقة ذهبية في كل يوم درست فيه الطالبة */}
       <motion.div ref={weekRef} {...rise(9)} className="relative px-2" aria-label="أيام دراستك هذا الأسبوع">
         <svg className="absolute inset-x-6 top-[13px] h-[6px] w-[calc(100%-48px)]" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0 3C12 0 20 6 33 3S54 0 66 3 88 6 100 3" stroke="#A9CDBB" strokeWidth="1.2" fill="none" vectorEffect="non-scaling-stroke" />
+          <path d="M0 3C12 0 20 6 33 3S54 0 66 3 88 6 100 3" stroke="var(--t300)" strokeWidth="1.2" fill="none" vectorEffect="non-scaling-stroke" />
         </svg>
         <div className="relative flex items-start justify-between">
           {week.map((d, i) => (
@@ -221,14 +221,14 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 </defs>
                 <path
                   d="M12 2C6.5 6 4.5 11.5 6 17c1.2 3.2 4 5 6 5s4.8-1.8 6-5c1.5-5.5-.5-11-6-15Z"
-                  fill={d.done ? `url(#leafGold${i})` : d.today ? "#DCEFE5" : d.future ? "none" : "#EEF5F1"}
-                  stroke={d.done ? "#C99A06" : d.today ? "#136F5C" : "#A9CDBB"}
+                  fill={d.done ? `url(#leafGold${i})` : d.today ? "var(--t100)" : d.future ? "none" : "var(--t050)"}
+                  stroke={d.done ? "#C99A06" : d.today ? "var(--t800)" : "var(--t300)"}
                   strokeWidth={d.today ? 1.8 : 1.3}
                   strokeDasharray={d.future ? "2.5 2" : undefined}
                 />
-                <path d="M12 6v14M12 11l-3-2.5M12 15l3-2.5" stroke={d.done ? "#FFF6D5" : d.today ? "#136F5C" : "#A9CDBB"} strokeWidth="1.1" strokeLinecap="round" fill="none" />
+                <path d="M12 6v14M12 11l-3-2.5M12 15l3-2.5" stroke={d.done ? "#FFF6D5" : d.today ? "var(--t800)" : "var(--t300)"} strokeWidth="1.1" strokeLinecap="round" fill="none" />
               </svg>
-              <span className={cn("text-[12px] leading-none", d.today ? "font-extrabold text-[#136F5C]" : d.done ? "font-bold text-[#B8860B]" : "font-bold text-[#7E978E]")}>{d.label}</span>
+              <span className={cn("text-[12px] leading-none", d.today ? "font-extrabold text-[var(--t800)]" : d.done ? "font-bold text-[#B8860B]" : "font-bold text-[var(--t450)]")}>{d.label}</span>
             </span>
           ))}
         </div>

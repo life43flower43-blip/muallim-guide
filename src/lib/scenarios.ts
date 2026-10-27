@@ -527,7 +527,7 @@ export const SCENARIO_CATEGORIES: string[] = Array.from(
 export const bestIndexOf = (s: Scenario) => s.options.findIndex((o) => o.score === "best");
 
 export const scoreColor = (score: ScenarioScore) =>
-  score === "best" ? "#136F5C" : score === "ok" ? "#C99A06" : "#DC2626";
+  score === "best" ? "var(--t800)" : score === "ok" ? "#C99A06" : "#DC2626";
 
 export const scoreLabel = (score: ScenarioScore) =>
   score === "best" ? "قرار ممتاز" : score === "ok" ? "قرار مقبول" : "قرار فيه مخاطرة";

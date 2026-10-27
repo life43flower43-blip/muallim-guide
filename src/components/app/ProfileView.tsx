@@ -33,7 +33,7 @@ import {
   ChevronLeft,
   UserRound,
 } from "lucide-react";
-import { useApp, type LearnerGoal } from "@/lib/store";
+import { useApp, type LearnerGoal, THEMES } from "@/lib/store";
 import { COURSES, LEVEL_XP, chaptersOfCourse, levelFromXp, levelTitle, xpInLevel } from "@/lib/qbank";
 import { chapterStats, overallReadiness } from "@/lib/practice-bank";
 import { useMistakes } from "@/lib/mistakes-client";
@@ -321,7 +321,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
       ) : (
         <Card className="p-5">
           <div className="flex items-center gap-4">
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#DCEFE5] text-[#136F5C] ring-2 ring-[#F4D27A]">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[var(--t100)] text-[var(--t800)] ring-2 ring-[#F4D27A]">
               <UserRound className="h-7 w-7" />
             </span>
             <div className="min-w-0 flex-1">
@@ -518,6 +518,27 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             onChange={st.setDarkMode}
             options={[["light", "فاتح", Sun], ["auto", "تلقائي", Monitor], ["dark", "ليلي", Moon]] as const}
           />
+          <p className="text-sm font-medium text-secondary-foreground">لون التطبيق</p>
+          <div className="grid grid-cols-4 gap-2" role="radiogroup" aria-label="لون التطبيق">
+            {THEMES.map((th) => (
+              <button
+                key={th.id}
+                type="button"
+                role="radio"
+                aria-checked={(st.theme ?? "emerald") === th.id}
+                onClick={() => st.setTheme(th.id)}
+                className={cn(
+                  "flex flex-col items-center gap-1.5 rounded-[18px] border bg-white py-2.5 text-sm font-bold transition dark:bg-card",
+                  (st.theme ?? "emerald") === th.id ? "border-[#E3B23C] ring-2 ring-[#F4D27A]" : "border-border"
+                )}
+              >
+                <span className="relative h-8 w-8 rounded-full" style={{ background: th.color }}>
+                  <span className="absolute -bottom-0.5 -left-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-[#E3B23C]" aria-hidden="true" />
+                </span>
+                {th.label}
+              </button>
+            ))}
+          </div>
           <p className="text-sm font-medium text-secondary-foreground">حجم الخط</p>
           <Segmented label="حجم الخط" value={st.fontScale} onChange={st.setFontScale} options={[["normal", "عادي"], ["large", "كبير"], ["bigger", "أكبر"]] as const} />
           <button

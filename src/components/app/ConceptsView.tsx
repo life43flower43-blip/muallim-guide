@@ -431,7 +431,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
       onClose={onClose}
       actions={
         <>
-          <button type="button" onClick={share} aria-label="شارك المفهوم" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#174D41] hover:bg-black/5 dark:text-foreground">
+          <button type="button" onClick={share} aria-label="شارك المفهوم" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[var(--t900)] hover:bg-black/5 dark:text-foreground">
             <Share2 className="h-5 w-5" />
           </button>
         </>
@@ -920,7 +920,7 @@ export default function ConceptsView() {
                       setOpenCourseId(course.id);
                       setOpenChapter(null);
                     }}
-                    className="flex min-w-0 items-center gap-3 rounded-[24px] border border-[#E2ECE7] bg-white p-3.5 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
+                    className="flex min-w-0 items-center gap-3 rounded-[24px] border border-[var(--t075)] bg-white p-3.5 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
                   >
                     <CourseBadge id={course.id} size={48} />
                     <span className="min-w-0 flex-1">

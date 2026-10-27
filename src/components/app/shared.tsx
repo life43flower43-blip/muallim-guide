@@ -9,8 +9,8 @@ export function RingProgress({
   value,
   size = 64,
   stroke = 7,
-  color = "#136F5C",
-  track = "#DCEFE5",
+  color = "var(--t800)",
+  track = "var(--t100)",
   children,
 }: {
   value: number;
@@ -59,7 +59,7 @@ export function StatCard({
   icon,
   value,
   label,
-  color = "#136F5C",
+  color = "var(--t800)",
 }: {
   icon: string;
   value: string | number;
@@ -173,7 +173,7 @@ export function ToolRow({
         className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-white ${
           tone === "amber"
             ? "bg-gradient-to-br from-amber-500 to-orange-500"
-            : "bg-gradient-to-br from-[#2C7D69] to-[#1C5E4F]"
+            : "bg-gradient-to-br from-[var(--t600)] to-[var(--t850)]"
         }`}
       >
         <Icon className="h-5 w-5" />

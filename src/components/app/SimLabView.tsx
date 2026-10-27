@@ -3,6 +3,7 @@
 // مختبر محاكاة الصفوف — الجيل الجديد: كل قرار يغيّر الموقف، والتحليل متعدد الكفاءات
 // السلسلة: الموقف ← قرار ← عاقبة وتحليل (لماذا، المخاطر، الأدلة) ← تطور الموقف ← تقرير كفاءات ← تمرين مستهدف
 // القواعد الصارمة: واجهة عربية خالصة، أرقام مشرقية، تنصيص «» — بلا لاتيني ولا CJK
+import { FitText } from "./FitText";
 import { useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -273,29 +274,25 @@ export default function SimLabView() {
           <section>
             <SectionHeader title="المواقف" sub="اختر موقفًا لتبدأ" />
             <Divided>
-              {SIM_SCENARIOS.map((s, idx) => {
+              {SIM_SCENARIOS.map((s) => {
                 const st = lastStatusOf(s.id);
                 return (
                   <button
                     key={s.id}
                     type="button"
                     onClick={() => startScenario(s)}
-                    className="flex w-full items-start gap-3 px-4 py-4 text-right transition-colors hover:bg-muted/60"
+                    className="flex w-full min-w-0 items-center gap-3 px-4 py-3.5 text-right transition-colors hover:bg-muted/60"
                   >
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent text-sm font-semibold text-accent-foreground">
-                      {ad(idx + 1)}
-                    </span>
+                    <IconTile icon={Users} />
                     <span className="min-w-0 flex-1">
-                      <span className="block text-base font-medium leading-6">{s.title}</span>
-                      <span className="mt-0.5 block text-sm text-muted-foreground">{s.stage}</span>
-                      <span className="mt-2 flex flex-wrap gap-1.5">
-                        {s.skills.map((k) => (
-                          <Chip key={k}>{k}</Chip>
-                        ))}
-                        {st && <Chip tone="primary">{st}</Chip>}
+                      <FitText max={17} min={12} className="font-bold leading-7">{s.title}</FitText>
+                      {/* تفاصيل الموقف كلها في قالب واحد على سطر واحد */}
+                      <span className="mt-1.5 flex min-w-0 items-start gap-1.5 rounded-[12px] bg-[var(--t050)] px-2.5 py-1 text-[var(--t500)]">
+                        <span className="flex-1 text-[13px] font-medium leading-5">{[s.stage, ...s.skills].join(" · ")}</span>
+                        {st && <span className="shrink-0 rounded-full bg-[var(--t100)] px-2 text-[11px] font-bold leading-5 text-[var(--t800)]">{st}</span>}
                       </span>
                     </span>
-                    <ChevronLeft className="mt-2 h-4 w-4 shrink-0 text-muted-foreground/60" />
+                    <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" />
                   </button>
                 );
               })}

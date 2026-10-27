@@ -22,13 +22,13 @@ export default function BootBank({
   useEffect(markBootShown, []);
   return (
     // بنفس هيئة شاشة الترحيب، فيبدو الفتح شاشة واحدة متصلة
-    <div className="flex h-dvh flex-col items-center justify-center gap-4 bg-gradient-to-b from-[#F3F9F6] to-[#E3F1EA] px-8 text-center">
+    <div className="flex h-dvh flex-col items-center justify-center gap-4 bg-gradient-to-b from-[var(--t050)] to-[var(--t060)] px-8 text-center">
       <div className="h-28 w-28 overflow-hidden rounded-[30px] bg-white p-2 ring-1 ring-[#F4C430]/70">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/icons/logo-128.png" alt="" className="h-full w-full object-contain" />
       </div>
       <div className="space-y-2">
-        <h1 className="font-display text-3xl font-extrabold text-[#174D41]">تربوي</h1>
+        <h1 className="font-display text-3xl font-extrabold text-[var(--t900)]">تربوي</h1>
         {failed ? (
           <>
             <p className="text-sm font-medium leading-6 text-foreground">
@@ -48,7 +48,7 @@ export default function BootBank({
           </>
         ) : (
           <>
-            <div className="mx-auto mt-4 h-1 w-40 overflow-hidden rounded-full bg-[#DCEFE5]" role="progressbar" aria-valuenow={pct} aria-label={`جارٍ التجهيز ${east(pct)}٪`}>
+            <div className="mx-auto mt-4 h-1 w-40 overflow-hidden rounded-full bg-[var(--t100)]" role="progressbar" aria-valuenow={pct} aria-label={`جارٍ التجهيز ${east(pct)}٪`}>
               <div
                 className="h-full rounded-full bg-gradient-to-l from-[#F4C430] to-[#C99A06] transition-[width] duration-300"
                 style={{ width: `${Math.max(4, pct)}%` }}

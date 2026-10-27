@@ -20,7 +20,7 @@ const PARTS: { id: Part; label: string }[] = [
   { id: "notes", label: "ملاحظاتي" },
 ];
 
-const BRANCH_COLORS = ["#1F7A63", "#C98A1E", "#3A8F7A", "#B9821F", "#2F7F6A", "#5E9C86", "#1F7A63", "#C98A1E"];
+const BRANCH_COLORS = ["var(--t700)", "#C98A1E", "#3A8F7A", "#B9821F", "var(--t700)", "#5E9C86", "var(--t700)", "#C98A1E"];
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
 
 /** خريطة الفصل: كل سلسلة خطوات متتابعة، وبين كل خطوتين رابطها */
@@ -59,7 +59,7 @@ function Rules({ concepts, color }: { concepts: Concept[]; color: string }) {
     <ol className="space-y-3">
       {concepts.map((c, i) => (
         <li key={c.id}>
-          <div className="flex w-full gap-3 rounded-[22px] border border-[#E2ECE7] bg-white p-4 dark:border-border dark:bg-card">
+          <div className="flex w-full gap-3 rounded-[22px] border border-[var(--t075)] bg-white p-4 dark:border-border dark:bg-card">
             <span className="mt-2.5 h-3 w-3 shrink-0 rounded-full" style={{ background: color }} aria-hidden="true" />
             <span className="min-w-0 flex-1">
               <span className="block text-base font-bold leading-7">{c.title}</span>
@@ -89,7 +89,7 @@ export default function NotebookView() {
     }
     return out;
   }, [courseId]);
-  const color = "#136F5C";
+  const color = "var(--t800)";
   const current = chapters[Math.min(chIndex, chapters.length - 1)];
 
   const myNotes = useMemo(
@@ -115,7 +115,7 @@ export default function NotebookView() {
             onClick={() => setPart(p.id)}
             className={cn(
               "min-h-[44px] min-w-0 rounded-[18px] px-1 font-bold transition active:scale-[0.98]",
-              part === p.id ? "bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] text-white" : "text-[#5D7A71]"
+              part === p.id ? "bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "text-[var(--t500)]"
             )}
           >
             <FitText max={16} min={10} group="nb-tabs" className="text-center">{p.label}</FitText>
@@ -133,7 +133,7 @@ export default function NotebookView() {
                 setCourseId(c.id);
                 setChIndex(0);
               }}
-              className={cn("min-h-[38px] shrink-0 whitespace-nowrap rounded-full border px-4 text-sm font-bold transition-colors", courseId === c.id ? "border-transparent bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] text-white" : "border-[#E3D3A0] bg-white text-[#5D7A71] dark:bg-card")}
+              className={cn("min-h-[38px] shrink-0 whitespace-nowrap rounded-full border px-4 text-sm font-bold transition-colors", courseId === c.id ? "border-transparent bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "border-[#E3D3A0] bg-white text-[var(--t500)] dark:bg-card")}
             >
               {COURSE_SHORT[c.id] ?? c.name}
             </button>
@@ -162,7 +162,7 @@ export default function NotebookView() {
           <button
             type="button"
             onClick={() => setPicking(true)}
-            className="flex min-h-[56px] w-full items-center gap-3 rounded-[22px] border border-[#E2ECE7] bg-white px-4 text-right transition active:scale-[0.98] dark:bg-card"
+            className="flex min-h-[56px] w-full items-center gap-3 rounded-[22px] border border-[var(--t075)] bg-white px-4 text-right transition active:scale-[0.98] dark:bg-card"
           >
             <FitText max={18} min={11} className="flex-1 font-bold">{chapterLabel(current.chapter)}</FitText>
             <ChevronDown className="h-5 w-5 shrink-0" style={{ color }} />

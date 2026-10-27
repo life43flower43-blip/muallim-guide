@@ -143,12 +143,12 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
                 <motion.span
                   layoutId="nav-pill"
                   transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                  className="absolute inset-0 rounded-[20px] bg-gradient-to-b from-[#2C7D69] to-[#1C5E4F]"
+                  className="absolute inset-0 rounded-[20px] bg-gradient-to-b from-[var(--t600)] to-[var(--t850)]"
                   aria-hidden="true"
                 />
               )}
-              <n.icon className={cn("relative h-6 w-6 transition-colors", active ? "text-[#FFD95A]" : "text-[#2F7F6A] dark:text-primary")} strokeWidth={active ? 2.4 : 1.9} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.2 : 0} />
-              <span className={cn("relative whitespace-nowrap text-[clamp(10px,3.1vw,13px)] transition-colors", active ? "font-bold text-white" : "font-medium text-[#2F7F6A] dark:text-primary")}>{n.label}</span>
+              <n.icon className={cn("relative h-6 w-6 transition-colors", active ? "text-[#FFD95A]" : "text-[var(--t700)] dark:text-primary")} strokeWidth={active ? 2.4 : 1.9} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.2 : 0} />
+              <span className={cn("relative whitespace-nowrap text-[clamp(10px,3.1vw,13px)] transition-colors", active ? "font-bold text-white" : "font-medium text-[var(--t700)] dark:text-primary")}>{n.label}</span>
               {n.id === "mistakes" && due > 0 && (
                 <span className="absolute right-1/2 top-0.5 translate-x-5 rounded-full bg-destructive px-1.5 text-[10px] font-semibold leading-4 text-white ring-2 ring-white">
                   {ad(Math.min(due, 99))}
@@ -243,7 +243,7 @@ function ShellSkeleton() {
 
 export default function AppShell() {
   const hydrated = useAppHydrated();
-  const { onboarded, darkMode, fontScale } = useApp();
+  const { onboarded, darkMode, fontScale, theme } = useApp();
   const ui = useUi();
   const queryClient = useQueryClient();
   const { user } = useAccount();
@@ -276,6 +276,14 @@ export default function AppShell() {
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
   }, [dark]);
+  // لون التطبيق المختار، ولون شريط حالة الهاتف معه
+  useEffect(() => {
+    const t = theme ?? "emerald";
+    if (t === "emerald") delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = t;
+    const bg = getComputedStyle(document.documentElement).getPropertyValue("--t025").trim();
+    document.querySelectorAll('meta[name="theme-color"]').forEach((m) => bg && m.setAttribute("content", bg));
+  }, [theme, dark]);
   useEffect(() => {
     document.documentElement.style.fontSize = fontScale === "large" ? "20px" : fontScale === "bigger" ? "22px" : "";
   }, [fontScale]);

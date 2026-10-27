@@ -69,7 +69,7 @@ function ActionCard({ icon, title, sub, onClick, primary }: { icon: React.Elemen
       onClick={onClick}
       className={cn(
         "flex min-h-[72px] items-center gap-3 rounded-[24px] border p-3.5 text-right transition active:scale-[0.98]",
-        primary ? "border-transparent bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] text-white" : "border-[#E2ECE7] bg-white text-[#174D41] dark:border-border dark:bg-card dark:text-foreground"
+        primary ? "border-transparent bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "border-[var(--t075)] bg-white text-[var(--t900)] dark:border-border dark:bg-card dark:text-foreground"
       )}
     >
       <span className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px]", primary ? "bg-white/15 text-[#FFE27A]" : "bg-[#FFF5D6] text-[#C99A06]")}>
@@ -118,16 +118,16 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
         <div className="flex flex-wrap items-center gap-5">
           <div className="grid min-w-[220px] flex-1 grid-cols-3 divide-x divide-[#EADFBE] text-center">
             <div>
-              <p className="font-display text-2xl font-extrabold text-[#136F5C]">{ad(summary.answered)}</p>
-              <p className="whitespace-nowrap text-sm font-bold text-[#7E978E]">أجبت</p>
+              <p className="font-display text-2xl font-extrabold text-[var(--t800)]">{ad(summary.answered)}</p>
+              <p className="whitespace-nowrap text-sm font-bold text-[var(--t450)]">أجبت</p>
             </div>
             <div>
-              <p className="font-display text-2xl font-extrabold text-[#136F5C]">{summary.accuracy === null ? "—" : pct(summary.accuracy)}</p>
-              <p className="whitespace-nowrap text-sm font-bold text-[#7E978E]">الدقة</p>
+              <p className="font-display text-2xl font-extrabold text-[var(--t800)]">{summary.accuracy === null ? "—" : pct(summary.accuracy)}</p>
+              <p className="whitespace-nowrap text-sm font-bold text-[var(--t450)]">الدقة</p>
             </div>
             <div>
-              <p className={cn("font-display text-2xl font-extrabold text-[#136F5C]", due > 0 && "text-destructive")}>{ad(due)}</p>
-              <p className="whitespace-nowrap text-sm font-bold text-[#7E978E]">للمراجعة</p>
+              <p className={cn("font-display text-2xl font-extrabold text-[var(--t800)]", due > 0 && "text-destructive")}>{ad(due)}</p>
+              <p className="whitespace-nowrap text-sm font-bold text-[var(--t450)]">للمراجعة</p>
             </div>
           </div>
         </div>

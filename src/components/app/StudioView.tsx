@@ -333,7 +333,7 @@ export default function StudioView() {
           aria-selected={tab === id}
           onClick={() => setTab(id)}
           className={`flex min-h-[42px] min-w-0 items-center justify-center rounded-[18px] px-1 font-bold transition-colors ${
-            tab === id ? "bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] text-white" : "text-[#5D7A71]"
+            tab === id ? "bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "text-[var(--t500)]"
           }`}
         >
           <FitText max={15} min={10} group="studio-tabs" className="text-center">{lbl}</FitText>
