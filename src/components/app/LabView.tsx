@@ -476,7 +476,6 @@ function ListRowCard({ onClick }: { onClick: () => void }) {
         <IconTile icon={Sparkles} color="var(--gem)" />
         <span className="min-w-0 flex-1">
           <span className="block text-base font-medium">مواقف سريعة</span>
-          <span className="mt-0.5 block text-sm text-muted-foreground">قرار واحد مع تفسيره التربوي</span>
         </span>
         <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground/60" />
       </button>

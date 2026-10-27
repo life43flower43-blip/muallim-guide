@@ -250,13 +250,10 @@ export default function SimLabView() {
           </div>
 
           <Card className="p-5">
-            <div className="flex items-start gap-4">
+            <div className="flex items-center gap-4">
               <IconTile icon={Play} size={48} />
               <div className="min-w-0 flex-1">
                 <h2 className="font-display text-base font-semibold">جلسة متتابعة</h2>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                  {ad(SIM_SESSION_SIZE)} مواقف لم تجربها بعد، وراء بعضها، ثم خلاصة واحدة لكفاءات الجلسة.
-                </p>
               </div>
             </div>
             <PrimaryButton onClick={startSession} className="mt-4 w-full sm:w-auto">

@@ -6,6 +6,12 @@ import { AnimatePresence, motion } from "framer-motion";
 
 const KEY = "turbawy-splash-seen";
 
+/** تُضبط حين تظهر شاشة التجهيز، فتكمل شاشة الترحيب منها دون أن يقفز الشعار مرة ثانية */
+let booted = false;
+export const markBootShown = () => {
+  booted = true;
+};
+
 export function Splash() {
   // تُرسم من الخادم أيضًا فتغطي لحظة تحميل التطبيق، ثم تختفي فورًا إن سبق عرضها في هذه الجلسة
   const [show, setShow] = useState(true);
@@ -29,7 +35,7 @@ export function Splash() {
         >
           <motion.div
             className="relative h-28 w-28 overflow-hidden rounded-[30px] bg-white p-2 ring-1 ring-[#F4C430]/70"
-            initial={{ scale: 0.6, opacity: 0 }}
+            initial={booted ? false : { scale: 0.6, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 240, damping: 18 }}
           >
@@ -45,7 +51,7 @@ export function Splash() {
           </motion.div>
           <motion.span
             className="font-display text-3xl font-extrabold text-[#174D41]"
-            initial={{ opacity: 0, y: 8 }}
+            initial={booted ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
