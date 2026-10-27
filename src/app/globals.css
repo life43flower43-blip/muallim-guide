@@ -776,3 +776,15 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .gold-wave { display: none; }
 }
+
+/* دائرة «ابدأ» تكبر ثم تعود ببطء لتلفت الانتباه */
+.exam-pulse {
+  animation: exam-pulse 2.2s ease-in-out infinite;
+}
+@keyframes exam-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.14); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .exam-pulse { animation: none; }
+}

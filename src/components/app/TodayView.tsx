@@ -117,13 +117,9 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           <span className="gold-wave" />
           <span className="gold-wave" style={{ animationDelay: "1.1s" }} />
           <span className="gold-wave" style={{ animationDelay: "2.2s" }} />
-          <span className="relative flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-[#FFE27A] via-[#F4C430] to-[#C99A06] ring-2 ring-white">
-            <svg viewBox="0 0 24 24" className="h-7 w-7">
-              <circle cx="12" cy="13" r="8" fill="none" stroke="var(--t900)" strokeWidth="2" />
-              <path d="M10 2.5h4M12 2.5V5" stroke="var(--t900)" strokeWidth="2" strokeLinecap="round" />
-              <path className="exam-hand" d="M12 13V8.5" stroke="var(--t900)" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          </span>
+          <span className="exam-pulse relative flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-[#FFE27A] via-[#F4C430] to-[#C99A06] ring-2 ring-white">
+                <span className="text-[15px] font-extrabold text-[var(--t900)]">ابدأ</span>
+              </span>
         </span>
         <span className="relative whitespace-nowrap text-lg font-extrabold leading-none">اختبار محاكاة</span>
       </motion.button>
