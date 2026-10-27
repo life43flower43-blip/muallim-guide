@@ -16,7 +16,7 @@ import { ad } from "@/lib/arabic";
 import type { Tab } from "./AppShell";
 import { FitText } from "./FitText";
 
-type Door = { title: string; img: string; progress: number; run: () => void };
+type Door = { title: string; img: string; pos?: string; progress: number; run: () => void };
 
 const frac = (n: number, of: number) => (of > 0 ? Math.min(1, n / of) : 0);
 
@@ -101,7 +101,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       const avail = nav.getBoundingClientRect().top - g.getBoundingClientRect().top - (statsRef.current?.offsetHeight ?? 0) - 24;
       setCardH(Math.max(48, Math.min(210, (avail - 2 * 10) / 3)));
       // ثلاثة صفوف، كلٌّ بعنوان تحته، فتصغر الصور حتى تتسع الشاشة
-      setTileH(Math.max(56, Math.min(130, (avail - 2 * 24 - 3 * 40) / 3)));
+      setTileH(Math.max(56, Math.min(170, (avail - 2 * 14 - 3 * 30 - 30) / 3)));
     };
     fit();
     const t = setTimeout(fit, 350);
@@ -143,13 +143,16 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   }, [sessions]);
 
   const doors: Door[] = [
-    { title: "المفاهيم التربوية", img: "/home/concepts-v2.jpg", progress: prog.concepts, run: ui.startLearn },
-    { title: "مهارات التدريس", img: "/home/skills-v2.jpg", progress: frac(labCount, 20), run: ui.startLab },
-    { title: "طرائق التدريس", img: "/home/methods-v2.jpg", progress: prog.methods, run: () => ui.openCourseTab("M5") },
-    { title: "المواقف الصفية", img: "/home/situations-v2.jpg", progress: frac(simCount, 20), run: ui.startSim },
-    { title: "اختبر نفسك", img: "/home/test-v2.jpg", progress: readiness / 100, run: () => onGoTab("practice") },
-    { title: "خطة الدرس", img: "/home/plan-v2.jpg", progress: frac(planCount, 5), run: ui.startStudio },
+    { title: "المفاهيم التربوية", pos: "60% 55%", img: "/home/concepts-v2.jpg", progress: prog.concepts, run: ui.startLearn },
+    { title: "مهارات التدريس", pos: "50% 22%", img: "/home/skills-v2.jpg", progress: frac(labCount, 20), run: ui.startLab },
+    { title: "طرائق التدريس", pos: "40% 55%", img: "/home/methods-v2.jpg", progress: prog.methods, run: () => ui.openCourseTab("M5") },
+    { title: "المواقف الصفية", pos: "55% 50%", img: "/home/situations-v2.jpg", progress: frac(simCount, 20), run: ui.startSim },
+    { title: "اختبر نفسك", pos: "65% 55%", img: "/home/test-v2.jpg", progress: readiness / 100, run: () => onGoTab("practice") },
+    { title: "خطة الدرس", pos: "50% 50%", img: "/home/plan-v2.jpg", progress: frac(planCount, 5), run: ui.startStudio },
   ];
+  // ترتيب شبكة الرئيسية: «اختبر نفسك» بجانب المحاكاة، والعناوين الطويلة في البطاقات العريضة
+  const byTitle = (t: string) => doors.find((d) => d.title === t)!;
+  const gridDoors = ["اختبر نفسك", "المفاهيم التربوية", "المواقف الصفية", "مهارات التدريس", "طرائق التدريس", "خطة الدرس"].map(byTitle);
 
   return (
     <div className="mx-auto -mt-1 max-w-2xl space-y-3 lg:mt-0">
@@ -180,7 +183,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             </span>
             <span className="text-center text-[15px] font-bold leading-[22px] text-transparent" aria-hidden="true">.</span>
           </motion.button>
-          {doors.map((d, i) => (
+          {gridDoors.map((d, i) => (
             <motion.button
               key={d.title}
               type="button"
@@ -200,12 +203,12 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               {/* صورة القسم بإطار ذهبي رفيع، وخط التقدّم الذهبي أسفلها */}
               <span className="relative flex w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)] ring-1 ring-[#E3D3A0]" style={{ height: tileH ?? 120 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={d.img} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                <img src={d.img} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: d.pos }} />
                 <span className="absolute inset-x-4 bottom-2.5 h-[3px] overflow-hidden rounded-full bg-white/80" aria-hidden="true">
                   <span className="block h-full rounded-full bg-gradient-to-l from-[#F4C430] to-[#E3B23C]" style={{ width: `${Math.round(d.progress * 100)}%` }} />
                 </span>
               </span>
-              <FitText max={15} min={10} group="door-icons" className="w-full text-center font-bold leading-[22px] text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
+              <FitText max={i === 1 || i === 2 ? 17 : 14} min={10} group={i === 1 || i === 2 ? "door-wide" : "door-small"} className="w-full text-center font-bold leading-[22px] text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
             </motion.button>
           ))}
         </div>
