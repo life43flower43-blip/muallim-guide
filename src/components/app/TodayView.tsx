@@ -6,6 +6,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { Brain, CalendarDays, ClipboardList, Network, Presentation, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { dayStr, dayXpOf, useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
@@ -15,7 +16,7 @@ import { ad } from "@/lib/arabic";
 import type { Tab } from "./AppShell";
 import { FitText } from "./FitText";
 
-type Door = { title: string; img: string; progress: number; run: () => void };
+type Door = { title: string; img: string; icon: React.ElementType; progress: number; run: () => void };
 
 const frac = (n: number, of: number) => (of > 0 ? Math.min(1, n / of) : 0);
 
@@ -77,6 +78,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
 
   // أيام الأسبوع من السبت إلى الجمعة: يمتلئ بالذهبي كل يوم درست فيه الطالبة
   const sessions = useApp((s) => s.sessions);
+  const homeStyle = useApp((s) => s.homeStyle ?? "icons");
   const week = useMemo(() => {
     const now = new Date();
     const start = new Date(now);
@@ -91,12 +93,12 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   }, [sessions]);
 
   const doors: Door[] = [
-    { title: "المفاهيم التربوية", img: "/home/concepts-v2.jpg", progress: prog.concepts, run: ui.startLearn },
-    { title: "مهارات التدريس", img: "/home/skills-v2.jpg", progress: frac(labCount, 20), run: ui.startLab },
-    { title: "طرائق التدريس", img: "/home/methods-v2.jpg", progress: prog.methods, run: () => ui.openCourseTab("M5") },
-    { title: "المواقف الصفية", img: "/home/situations-v2.jpg", progress: frac(simCount, 20), run: ui.startSim },
-    { title: "اختبر نفسك", img: "/home/test-v2.jpg", progress: readiness / 100, run: () => onGoTab("practice") },
-    { title: "خطة الدرس", img: "/home/plan-v2.jpg", progress: frac(planCount, 5), run: ui.startStudio },
+    { title: "المفاهيم التربوية", img: "/home/concepts-v2.jpg", icon: Brain, progress: prog.concepts, run: ui.startLearn },
+    { title: "مهارات التدريس", img: "/home/skills-v2.jpg", icon: Presentation, progress: frac(labCount, 20), run: ui.startLab },
+    { title: "طرائق التدريس", img: "/home/methods-v2.jpg", icon: Network, progress: prog.methods, run: () => ui.openCourseTab("M5") },
+    { title: "المواقف الصفية", img: "/home/situations-v2.jpg", icon: Users, progress: frac(simCount, 20), run: ui.startSim },
+    { title: "اختبر نفسك", img: "/home/test-v2.jpg", icon: ClipboardList, progress: readiness / 100, run: () => onGoTab("practice") },
+    { title: "خطة الدرس", img: "/home/plan-v2.jpg", icon: CalendarDays, progress: frac(planCount, 5), run: ui.startStudio },
   ];
 
   return (
@@ -166,6 +168,43 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       </motion.button>
 
       {/* أبواب التطبيق */}
+      {homeStyle === "icons" ? (
+        // نمط الرموز: ثلاثة أعمدة، مربع ناعم ملوّن برمز خطّي، والعنوان تحته
+        <div className="grid grid-cols-3 gap-x-3 gap-y-4 pt-1">
+          {doors.map((d, i) => (
+            <motion.button
+              key={d.title}
+              type="button"
+              {...rise(2 + i)}
+              whileTap={{ scale: 0.94 }}
+              onClick={() => {
+                if (pressed) return;
+                tick();
+                setPressed(d.title);
+                setTimeout(() => {
+                  setPressed(null);
+                  d.run();
+                }, 160);
+              }}
+              className="flex min-w-0 flex-col items-center gap-2"
+            >
+              <span
+                className={cn(
+                  "relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[26px]",
+                  i % 2 ? "bg-[#FBF1D6] text-[#B8860B]" : "bg-[var(--t100)] text-[var(--t800)]"
+                )}
+              >
+                <d.icon className="h-[42%] w-[42%]" strokeWidth={1.5} />
+                {/* خط التقدّم الذهبي أسفل المربع */}
+                <span className="absolute inset-x-4 bottom-2.5 h-[3px] overflow-hidden rounded-full bg-white/70" aria-hidden="true">
+                  <span className="block h-full rounded-full bg-gradient-to-l from-[#F4C430] to-[#E3B23C]" style={{ width: `${Math.round(d.progress * 100)}%` }} />
+                </span>
+              </span>
+              <FitText max={15} min={10} group="door-icons" className="w-full text-center font-bold text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
+            </motion.button>
+          ))}
+        </div>
+      ) : (
       <div ref={gridRef} className="-mx-1 grid grid-cols-2 gap-2.5">
         {doors.map((d, i) => (
           <motion.button
@@ -198,6 +237,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           </motion.button>
         ))}
       </div>
+      )}
 
       {/* شريط الأسبوع: غصن بسبع أوراق، تصير الورقة ذهبية في كل يوم درست فيه الطالبة */}
       <motion.div ref={weekRef} {...rise(9)} className="relative px-2" aria-label="أيام دراستك هذا الأسبوع">

@@ -160,14 +160,6 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
         <ActionCard icon={Award} title="الاختبار الرسمي" sub="محاكاة اختبارات التوظيف العربية" onClick={ui.startExamsim} />
       </section>
 
-      {due > 0 && mistakes && (
-        <Card className="flex flex-wrap items-center gap-3 p-4">
-          <RotateCcw className="h-5 w-5 shrink-0 text-destructive" />
-          <p className="min-w-0 flex-1 text-sm">لديك {arCount(due, ERROR_DUE_FORMS)} للمراجعة، والمراجعة في موعدها تثبّت ما تعلمته.</p>
-          <SecondaryButton onClick={() => ui.startQuiz({ mode: "review", label: "مراجعة الأخطاء", qids: buildReviewQids(mistakes) })}>راجع الآن</SecondaryButton>
-        </Card>
-      )}
-
       {/* الاختبارات السابقة */}
       {tests.length > 0 && (
         <section>
