@@ -404,7 +404,7 @@ export default function AppShell() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="mx-auto w-full max-w-5xl px-4 pb-10 pt-5 lg:px-8 lg:pt-8"
+              className={cn("mx-auto w-full max-w-5xl px-4 pt-5 lg:px-8 lg:pt-8", tab === "today" ? "pb-2 lg:pb-10" : "pb-10")}
             >
               {tab === "today" && <TodayView onGoTab={go} />}
               {tab === "notebook" && <NotebookView />}
