@@ -227,7 +227,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     if (!q || selected === null || graded !== null) return;
     const ok = selected === q.correct;
     setGraded(ok);
-    if (!ok) setShowWhy(true); // الخطأ يبقى أمام الطالب مع شرحه
+    // الخطأ يبقى أمام الطالب، والشرح بضغطة واحدة فلا تزدحم الشاشة
     try {
       if ("vibrate" in navigator && useApp.getState().haptics) navigator.vibrate(ok ? 35 : [60, 40, 60]);
     } catch {}
@@ -549,7 +549,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
   const optClass = (o: { text: string; isCorrect: boolean }) => {
     const isSel = selected === o.text;
     if (showFeedback && o.isCorrect) return "border-[var(--t700)] bg-[var(--t100)] text-[var(--t950)] dark:bg-[var(--t700)]/15 dark:text-[var(--t300)]";
-    if (showFeedback && isSel) return "border-[#E5484D] bg-[#FDECEC] text-[#B3261E] dark:bg-[#FF4B4B]/15 dark:text-[#FF8A8A]";
+    if (showFeedback && isSel) return "border-[#F0B4B4] bg-[#FFF6F6] text-foreground dark:bg-[#FF4B4B]/10";
     if (isSel) return "border-[var(--t700)] bg-[var(--t050)] text-[var(--t950)] ring-2 ring-[var(--t150)] dark:bg-[var(--t800)]/15 dark:text-foreground";
     return "border-[var(--t075)] bg-white text-foreground dark:border-border dark:bg-card";
   };
@@ -606,7 +606,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                       // دائرة الاختيار: تمتلئ بالأخضر عند الاختيار، وتظهر علامة صح أو خطأ بعد التحقق
                       <span
                         className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${
-                          showFeedback && o.isCorrect ? "border-[var(--t700)] bg-[var(--t700)] text-white" : showFeedback && selected === o.text ? "border-[#E5484D] bg-[#E5484D] text-white" : selected === o.text ? "border-[var(--t700)] bg-[var(--t700)]" : "border-[var(--t150)]"
+                          showFeedback && o.isCorrect ? "border-[var(--t700)] bg-[var(--t700)] text-white" : showFeedback && selected === o.text ? "border-[#E58A8A] bg-[#E58A8A] text-white" : selected === o.text ? "border-[var(--t700)] bg-[var(--t700)]" : "border-[var(--t150)]"
                         }`}
                         aria-hidden="true"
                       >
@@ -621,33 +621,29 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
           </AnimatePresence>
         </main>
 
-        {/* الشريط السفلي: «تحقّق» ثم لوحة النتيجة */}
-        <footer
-          className={`safe-bottom border-t-2 transition-colors ${
-            !showFeedback ? "border-transparent bg-background" : graded ? "border-transparent bg-[var(--t100)] dark:bg-[#1F3A12]" : "border-transparent bg-[#FDECEC] dark:bg-[#3D1517]"
-          }`}
-        >
-          <div className="mx-auto w-full max-w-[640px] px-4 py-4">
+        {/* الشريط السفلي: «تحقّق» ثم لوحة نتيجة هادئة بيضاء */}
+        <footer className={`safe-bottom border-t bg-white transition-colors dark:bg-card ${showFeedback ? (graded ? "border-[var(--t150)]" : "border-[#F3C9C9]") : "border-transparent"}`}>
+          <div className="mx-auto w-full max-w-[640px] px-4 py-3">
             {showFeedback && (
-              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
-                <div className="flex items-center gap-3">
-                  <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white dark:bg-black/20 ${graded ? "text-[var(--t700)]" : "text-[#FF4B4B]"}`}>
-                    {graded ? <Check className="h-8 w-8" strokeWidth={3.5} /> : <X className="h-8 w-8" strokeWidth={3.5} />}
+              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-3">
+                <div className="flex items-start gap-2.5">
+                  <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${graded ? "bg-[var(--t100)] text-[var(--t700)]" : "bg-[#FDECEC] text-[#D64545]"}`}>
+                    {graded ? <Check className="h-4 w-4" strokeWidth={3} /> : <X className="h-4 w-4" strokeWidth={3} />}
                   </span>
-                  <p className={`flex-1 font-display text-xl font-extrabold ${graded ? "text-[var(--t950)] dark:text-[var(--t300)]" : "text-[#B3261E] dark:text-[#FF8A8A]"}`}>
-                    {graded ? PRAISE[idx % PRAISE.length] : "الإجابة الصحيحة:"}
-                  </p>
-                  <button type="button" onClick={handleReport} disabled={reported} aria-label="أبلغ عن خطأ في السؤال" className="flex h-10 w-10 items-center justify-center rounded-full opacity-60 hover:opacity-100 disabled:opacity-30">
-                    <Flag className="h-5 w-5" />
+                  <div className="min-w-0 flex-1">
+                    <p className={`text-base font-extrabold leading-7 ${graded ? "text-[var(--t800)]" : "text-[#C0392B]"}`}>{graded ? PRAISE[idx % PRAISE.length] : "الإجابة الصحيحة"}</p>
+                    {!graded && <p className="text-[15px] font-semibold leading-7 text-foreground">{q.correct}</p>}
+                  </div>
+                  <button type="button" onClick={handleReport} disabled={reported} aria-label="أبلغ عن خطأ في السؤال" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground/60 disabled:opacity-30">
+                    <Flag className="h-4 w-4" />
                   </button>
                 </div>
-                {!graded && <p className="mt-2 text-lg font-medium leading-8 text-[#B3261E] dark:text-[#FF8A8A]">{q.correct}</p>}
                 {showWhy && (
-                  <div className="no-scrollbar mt-3 max-h-[38vh] overflow-y-auto rounded-2xl bg-white/70 p-4 dark:bg-black/20">
+                  <div className="no-scrollbar mt-3 max-h-[34vh] overflow-y-auto rounded-[18px] bg-[var(--t025)] p-3.5 dark:bg-background">
                     <AcademicReason reason={q.reason} />
                     {concept && (
-                      <button type="button" onClick={() => setReaderId(concept.id)} className="mt-3 flex min-h-[40px] items-center gap-1.5 text-sm font-bold text-primary">
-                        <BookOpen className="h-4 w-4" /> اقرأ المفهوم وأمثلته
+                      <button type="button" onClick={() => setReaderId(concept.id)} className="mt-2 flex min-h-[36px] items-center gap-1.5 text-sm font-bold text-[#B8860B]">
+                        <BookOpen className="h-4 w-4" /> اقرأ المفهوم
                       </button>
                     )}
                   </div>
@@ -659,7 +655,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                 <button
                   type="button"
                   onClick={() => setShowWhy(true)}
-                  className="min-h-[52px] flex-1 rounded-[20px] border border-black/10 bg-white text-base font-bold text-foreground active:scale-[0.98] dark:bg-black/20"
+                  className="min-h-[50px] flex-1 rounded-[20px] border border-[#E3D3A0] bg-white text-base font-bold text-[#9A6A12] active:scale-[0.98] dark:bg-card"
                 >
                   الشرح
                 </button>
@@ -678,7 +674,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   type="button"
                   onClick={next}
                   className={`min-h-[52px] flex-[2] rounded-[20px] text-lg font-bold text-white transition active:scale-[0.98] ${
-                    !showFeedback || graded ? "bg-gradient-to-l from-[var(--t600)] to-[var(--t850)]" : "bg-[#E5484D]"
+                    "bg-gradient-to-l from-[var(--t600)] to-[var(--t850)]"
                   }`}
                 >
                   {idx + 1 >= questions.length ? "النتيجة" : "متابعة"}
