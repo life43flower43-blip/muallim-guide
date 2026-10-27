@@ -12,7 +12,6 @@
 import { FitText } from "./FitText";
 import { useMemo, useState } from "react";
 import {
-  ChevronDown,
   ChevronLeft,
   ClipboardCheck,
   Gauge,
@@ -20,7 +19,6 @@ import {
   SlidersHorizontal,
   Sparkles,
   Timer,
-  Award,
   Users,
 } from "lucide-react";
 import { useApp } from "@/lib/store";
@@ -36,37 +34,14 @@ import {
   smartSession,
   starsFor,
   topicKey,
-  weakChapters,
 } from "@/lib/practice-bank";
-import { useMistakes } from "@/lib/mistakes-client";
 import { ad } from "@/lib/arabic";
 import { cn } from "@/lib/utils";
 import type { Tab } from "./AppShell";
 import TestBuilder from "./TestBuilder";
-import { Card, Divided, ListRow, PageTitle, ProgressBar, SectionHeader, Stars, pct } from "./ui-kit";
+import { Divided, PageTitle, Stars, pct } from "./ui-kit";
 
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
-
-function ActionCard({ icon, title, sub, onClick, primary }: { icon: React.ElementType; title: string; sub: string; onClick: () => void; primary?: boolean }) {
-  const Icon = icon;
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "flex min-h-[58px] w-full items-center gap-3 rounded-[22px] border px-3 py-2 text-right transition active:scale-[0.98]",
-        primary ? "border-transparent bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "border-[var(--t075)] bg-white text-[var(--t900)] dark:border-border dark:bg-card dark:text-foreground"
-      )}
-    >
-      <span className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px]", primary ? "bg-white/15 text-[#FFE27A]" : "bg-[#FFF5D6] text-[#C99A06]")}>
-        <Icon className="h-6 w-6" strokeWidth={2.2} />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block text-base font-bold">{title}</span>
-      </span>
-    </button>
-  );
-}
 
 /** مربع إجراء موحّد: رمز ذهبي في دائرة، والعنوان تحته في سطر واحد */
 function Tile({ icon: Icon, title, meta, small, onClick }: { icon: React.ElementType; title: string; meta?: string; small?: boolean; onClick: () => void }) {
@@ -104,18 +79,17 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
   const best = useApp((s) => s.best);
   const setLastStudy = useApp((s) => s.setLastStudy);
   const ui = useUi();
-  const { data: mistakes } = useMistakes();
   const [open, setOpen] = useState<string | null>(null);
   const [builder, setBuilder] = useState(false);
+  const [view, setView] = useState<"tests" | "courses">("tests");
 
-  const due = mistakes?.stats.due ?? 0;
-  const weak = useMemo(() => weakChapters(attempts, undefined, 3), [attempts]);
   const summary = useMemo(() => {
     const all = Object.values(attempts);
     const correct = all.filter((a) => a.correct).length;
     return { answered: all.length, accuracy: all.length ? (correct / all.length) * 100 : null };
   }, [attempts]);
   const bank = QUESTIONS.length;
+  const openCourse = COURSES.find((c) => c.id === open);
 
   const startSmart = (courseId?: string, label = "تدريب ذكي") => ui.startQuiz({ mode: "training", label, qids: smartSession(attempts, courseId) });
   const startChapter = (courseId: string, chapter: string) => {
@@ -127,93 +101,100 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
     <div className="space-y-5">
       <PageTitle title="التدريب" />
 
-      {/* لوحة الأداء: مضغوطة، أرقام صغيرة في صف، وشريط البنك، وأضعف فصل في سطر واحد */}
-      <Card className="space-y-2.5 px-4 py-3">
-        <div className="grid grid-cols-3 divide-x divide-[#EADFBE] text-center">
-          {[
-            [ad(summary.answered), "أجبت", false],
-            [summary.accuracy === null ? "—" : pct(summary.accuracy), "الدقة", false],
-            [ad(due), "للمراجعة", due > 0],
-          ].map(([v, l, warn]) => (
-            <div key={l as string} className="flex items-baseline justify-center gap-1.5">
-              <span className={cn("font-display text-lg font-extrabold", warn ? "text-destructive" : "text-[var(--t800)]")}>{v}</span>
-              <span className="whitespace-nowrap text-xs font-bold text-[var(--t450)]">{l}</span>
-            </div>
-          ))}
-        </div>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <ProgressBar value={bank ? (summary.answered / bank) * 100 : 0} color="#E3B23C" height={5} className="flex-1" />
-          <span className="shrink-0 whitespace-nowrap">
-            {ad(summary.answered)} من {ad(bank)}
+      {/* البطاقة الرئيسية: تدريب ذكي، ومعه أرقامك في سطر واحد */}
+      <button
+        type="button"
+        onClick={() => startSmart()}
+        className="relative block w-full overflow-hidden rounded-[26px] bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] p-4 text-right text-white transition active:scale-[0.98]"
+      >
+        <span className="flex items-center gap-3">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 text-[#FFE27A]">
+            <Sparkles className="h-6 w-6" />
           </span>
-        </div>
-        {weak.length > 0 && (
-          <FitText max={13} min={10} className="text-muted-foreground">{`الأضعف: ${weak.map((w) => `${chapterLabel(w.chapter)} (${pct(w.accuracy * 100)})`).join("، ")}`}</FitText>
-        )}
-      </Card>
+          <span className="min-w-0 flex-1">
+            <span className="block text-xl font-extrabold leading-8">تدريب ذكي</span>
+            <span className="block whitespace-nowrap text-sm font-medium text-white/80">
+              {summary.answered ? `أجبت ${ad(summary.answered)} · الدقة ${summary.accuracy === null ? "—" : pct(summary.accuracy)}` : "ابدأ بعشرة أسئلة"}
+            </span>
+          </span>
+          <ChevronLeft className="h-6 w-6 shrink-0 text-[#FFE27A]" />
+        </span>
+        <span className="mt-3 block h-1.5 overflow-hidden rounded-full bg-white/20" aria-hidden="true">
+          <span className="block h-full rounded-full bg-gradient-to-l from-[#FFE27A] to-[#E3B23C]" style={{ width: `${bank ? Math.max(2, (summary.answered / bank) * 100) : 0}%` }} />
+        </span>
+      </button>
 
-      {/* ابدأ: تدريب ذكي بارز، وتحته أربعة اختبارات في مربعات متساوية */}
-      <section className="space-y-3">
-        <ActionCard primary icon={Sparkles} title="تدريب ذكي" sub="" onClick={() => startSmart()} />
+      {/* قسمان فقط، يظهر واحد منهما في كل مرة */}
+      <div role="tablist" aria-label="أقسام التدريب" className="grid grid-cols-2 gap-1 rounded-[22px] border border-[#E3D3A0] bg-white p-1 dark:bg-card">
+        {(
+          [
+            ["tests", "اختبارات"],
+            ["courses", "حسب المحور"],
+          ] as const
+        ).map(([id, lbl]) => (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            aria-selected={view === id}
+            onClick={() => setView(id)}
+            className={cn("min-h-[42px] rounded-[18px] text-base font-bold transition", view === id ? "bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "text-[var(--t500)]")}
+          >
+            {lbl}
+          </button>
+        ))}
+      </div>
+
+      {view === "tests" ? (
         <div className="grid grid-cols-2 gap-3">
           <Tile icon={SlidersHorizontal} title="أنشئ اختبارك" onClick={() => setBuilder(true)} />
           <Tile icon={Timer} title="اختبار شامل" meta={best["ALL::exam"] !== undefined ? pct(best["ALL::exam"]) : undefined} onClick={() => ui.startQuiz({ mode: "exam", label: "اختبار تجريبي شامل", qids: fullMockExam(), timeLimitSec: EXAM_SECONDS * 2, topicKey: "ALL::exam" })} />
-          <Tile icon={Award} title="الاختبار الرسمي" onClick={ui.startExamsim} />
           <Tile icon={Gauge} title="تحديد المستوى" onClick={ui.startPlacement} />
+          <Tile icon={Users} title="تحدّي زميل" onClick={ui.startPeer} />
         </div>
-      </section>
-
-      {/* حسب المحور: كل محور يُفتح على فصوله */}
-      <section>
-        <SectionHeader title="حسب المحور" />
+      ) : (
         <Divided>
           {COURSES.map((c) => {
-            const isOpen = open === c.id;
             const chapters = chaptersOfCourse(c.id);
             const stars = chapters.reduce((n, ch) => n + starsFor(best[topicKey(c.id, ch)]), 0);
-            const color = COURSE_COLOR[c.id] ?? "var(--primary)";
             return (
-              <div key={c.id}>
-                <button type="button" onClick={() => setOpen(isOpen ? null : c.id)} aria-expanded={isOpen} className="flex min-h-[58px] w-full min-w-0 items-center gap-3 px-4 py-2.5 text-right">
-                  <span className="h-8 w-1.5 shrink-0 rounded-full" style={{ background: color }} aria-hidden="true" />
-                  <FitText max={16} min={11} className="flex-1 font-bold leading-7">{c.name}</FitText>
-                  {stars > 0 && <span className="shrink-0 text-sm font-bold text-[#B8860B]">★ {ad(stars)}</span>}
-                  <ChevronDown className={cn("h-5 w-5 shrink-0 text-[#C99A06] transition-transform", isOpen && "rotate-180")} />
-                </button>
-                {isOpen && (
-                  <div className="space-y-2 bg-[var(--t025)] px-3 pb-3 pt-1 dark:bg-background">
-                    <div className="grid grid-cols-3 gap-2">
-                      <MiniBtn icon={Sparkles} title="ذكي" onClick={() => startSmart(c.id, `تدريب ذكي: ${c.name}`)} />
-                      <MiniBtn icon={Shuffle} title="مزيج" onClick={() => ui.startQuiz({ mode: "training", label: `مزيج: ${c.name}`, qids: courseMix(c.id) })} />
-                      <MiniBtn
-                        icon={ClipboardCheck}
-                        title="اختبار"
-                        onClick={() => ui.startQuiz({ mode: "exam", label: `اختبار: ${c.name}`, qids: courseExam(c.id), timeLimitSec: EXAM_SECONDS, topicKey: examKey(c.id) })}
-                      />
-                    </div>
-                    <div className="divide-y divide-[var(--t075)] overflow-hidden rounded-[18px] bg-white dark:divide-border dark:bg-card">
-                      {chapters.map((ch) => {
-                        const b = best[topicKey(c.id, ch)];
-                        return (
-                          <button key={ch} type="button" onClick={() => startChapter(c.id, ch)} className="flex min-h-[48px] w-full min-w-0 items-center gap-2 px-3 text-right">
-                            <FitText max={15} min={11} className="flex-1 font-medium">{chapterLabel(ch)}</FitText>
-                            {b !== undefined && <Stars count={starsFor(b)} />}
-                            <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" />
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
+              <button key={c.id} type="button" onClick={() => setOpen(c.id)} className="flex min-h-[56px] w-full min-w-0 items-center gap-3 px-4 py-2.5 text-right">
+                <span className="h-7 w-1.5 shrink-0 rounded-full" style={{ background: COURSE_COLOR[c.id] ?? "var(--primary)" }} aria-hidden="true" />
+                <FitText max={16} min={11} className="flex-1 font-bold leading-7">{c.name}</FitText>
+                {stars > 0 && <span className="shrink-0 text-sm font-bold text-[#B8860B]">★ {ad(stars)}</span>}
+                <ChevronLeft className="h-5 w-5 shrink-0 text-[#C99A06]" />
+              </button>
             );
           })}
         </Divided>
-      </section>
+      )}
 
-      <Divided>
-        <ListRow icon={Users} title="تحدّي زميل" onClick={ui.startPeer} />
-      </Divided>
+      {/* المحور المختار في ورقة من الأسفل: ثلاثة أزرار ثم فصوله */}
+      {openCourse && (
+        <div className="fixed inset-0 z-50 flex items-end bg-black/40" onClick={() => setOpen(null)}>
+          <div className="safe-bottom max-h-[80dvh] w-full overflow-y-auto rounded-t-[28px] bg-white p-4 dark:bg-card" onClick={(e) => e.stopPropagation()} role="dialog" aria-label={openCourse.name}>
+            <span className="mx-auto mb-3 block h-1.5 w-12 rounded-full bg-border" aria-hidden="true" />
+            <FitText max={18} min={12} className="mb-3 text-center font-extrabold">{openCourse.name}</FitText>
+            <div className="mb-3 grid grid-cols-3 gap-2">
+              <MiniBtn icon={Sparkles} title="ذكي" onClick={() => { setOpen(null); startSmart(openCourse.id, `تدريب ذكي: ${openCourse.name}`); }} />
+              <MiniBtn icon={Shuffle} title="مزيج" onClick={() => { setOpen(null); ui.startQuiz({ mode: "training", label: `مزيج: ${openCourse.name}`, qids: courseMix(openCourse.id) }); }} />
+              <MiniBtn icon={ClipboardCheck} title="اختبار" onClick={() => { setOpen(null); ui.startQuiz({ mode: "exam", label: `اختبار: ${openCourse.name}`, qids: courseExam(openCourse.id), timeLimitSec: EXAM_SECONDS, topicKey: examKey(openCourse.id) }); }} />
+            </div>
+            <div className="divide-y divide-[var(--t075)] overflow-hidden rounded-[18px] border border-[var(--t075)] dark:divide-border dark:border-border">
+              {chaptersOfCourse(openCourse.id).map((ch) => {
+                const b = best[topicKey(openCourse.id, ch)];
+                return (
+                  <button key={ch} type="button" onClick={() => { setOpen(null); startChapter(openCourse.id, ch); }} className="flex min-h-[48px] w-full min-w-0 items-center gap-2 px-3 text-right">
+                    <FitText max={15} min={11} className="flex-1 font-medium">{chapterLabel(ch)}</FitText>
+                    {b !== undefined && <Stars count={starsFor(b)} />}
+                    <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {builder && <TestBuilder onClose={() => setBuilder(false)} />}
     </div>
