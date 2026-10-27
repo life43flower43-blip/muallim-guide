@@ -85,6 +85,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const planCount = useApp((s) => s.lessonPlans.length);
   const [pressed, setPressed] = useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
   const [cardH, setCardH] = useState<number | null>(null);
   const [tileH, setTileH] = useState<number | null>(null);
 
@@ -97,7 +98,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         setTileH(null);
         return setCardH(null);
       }
-      const avail = nav.getBoundingClientRect().top - g.getBoundingClientRect().top - 12;
+      const avail = nav.getBoundingClientRect().top - g.getBoundingClientRect().top - (statsRef.current?.offsetHeight ?? 0) - 24;
       setCardH(Math.max(48, Math.min(210, (avail - 2 * 10) / 3)));
       // ثلاثة صفوف، كلٌّ بعنوان تحته، فتصغر الصور حتى تتسع الشاشة
       setTileH(Math.max(56, Math.min(130, (avail - 2 * 24 - 3 * 40) / 3)));
@@ -152,8 +153,99 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
 
   return (
     <div className="mx-auto -mt-1 max-w-2xl space-y-3 lg:mt-0">
+      {/* أبواب التطبيق */}
+      {homeStyle === "icons" ? (
+        // الصف الأول: «ابدأ اختبار المحاكاة» مستطيل عريض يمينًا وبجانبه بطاقة، ثم بطاقتان، ثم ثلاث بطاقات
+        <div ref={gridRef} className="grid grid-cols-6 gap-x-3 gap-y-3.5 pt-1">
+          <motion.button
+            {...rise(1)}
+            type="button"
+            whileTap={{ scale: 0.97 }}
+            onClick={() => {
+              tick();
+              ui.startExamsim();
+            }}
+            className="col-span-4 flex min-w-0 flex-col gap-2"
+          >
+            <span className="exam-cta relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-[26px] bg-gradient-to-l from-[#FFF8E1] via-[#FDF0CC] to-[#F8E3A8] px-3 text-[var(--t900)]" style={{ height: tileH ?? 120 }}>
+              <span className="relative flex h-[46px] w-[46px] shrink-0 items-center justify-center" aria-hidden="true">
+                <span className="gold-wave" />
+                <span className="gold-wave" style={{ animationDelay: "1.1s" }} />
+                <span className="gold-wave" style={{ animationDelay: "2.2s" }} />
+                <span className="exam-pulse relative flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-[#FFE27A] via-[#F4C430] to-[#C99A06]">
+                  <span className="text-[14px] font-extrabold text-[var(--t900)]">ابدأ</span>
+                </span>
+              </span>
+              <FitText max={18} min={12} className="min-w-0 font-extrabold">اختبار المحاكاة</FitText>
+            </span>
+            <span className="text-center text-[15px] font-bold leading-[22px] text-transparent" aria-hidden="true">.</span>
+          </motion.button>
+          {doors.map((d, i) => (
+            <motion.button
+              key={d.title}
+              type="button"
+              {...rise(2 + i)}
+              whileTap={{ scale: 0.94 }}
+              onClick={() => {
+                if (pressed) return;
+                tick();
+                setPressed(d.title);
+                setTimeout(() => {
+                  setPressed(null);
+                  d.run();
+                }, 160);
+              }}
+              className={cn("flex min-w-0 flex-col items-center gap-2", i === 1 || i === 2 ? "col-span-3" : "col-span-2")}
+            >
+              {/* صورة القسم بإطار ذهبي رفيع، وخط التقدّم الذهبي أسفلها */}
+              <span className="relative flex w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)] ring-1 ring-[#E3D3A0]" style={{ height: tileH ?? 120 }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={d.img} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                <span className="absolute inset-x-4 bottom-2.5 h-[3px] overflow-hidden rounded-full bg-white/80" aria-hidden="true">
+                  <span className="block h-full rounded-full bg-gradient-to-l from-[#F4C430] to-[#E3B23C]" style={{ width: `${Math.round(d.progress * 100)}%` }} />
+                </span>
+              </span>
+              <FitText max={15} min={10} group="door-icons" className="w-full text-center font-bold leading-[22px] text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
+            </motion.button>
+          ))}
+        </div>
+      ) : (
+      <div ref={gridRef} className="-mx-1 grid grid-cols-2 gap-2.5">
+        {doors.map((d, i) => (
+          <motion.button
+            key={d.title}
+            type="button"
+            {...rise(2 + i)}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              if (pressed) return;
+              tick();
+              setPressed(d.title);
+              // انكماش قصير ثم يفتح القسم
+              setTimeout(() => {
+                setPressed(null);
+                d.run();
+              }, 160);
+            }}
+            className="relative block overflow-hidden rounded-[26px] bg-[var(--t100)] text-right"
+          >
+            {/* الصورة تملأ البطاقة، ولوحة العنوان نصف شفافة تطفو فوق أسفلها */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={d.img} alt="" className="block h-[calc(clamp(64px,calc((100dvh-440px)/3),130px)+34px)] w-full object-cover" style={cardH ? { height: cardH } : undefined} />
+            <span className="absolute inset-x-1.5 bottom-1.5 flex min-h-[48px] flex-col justify-center overflow-hidden rounded-[20px] bg-white/80 px-3 py-2 backdrop-blur-md dark:bg-card/80">
+              <FitText max={16} min={8} group="doors" className="text-center font-extrabold text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
+              {/* خط التقدّم الذهبي */}
+              <span className="absolute inset-x-3 bottom-[5px] h-[3px] overflow-hidden rounded-full bg-[#F3E7CB]/70" aria-hidden="true">
+                <span className="block h-full rounded-full bg-gradient-to-l from-[#F4C430] to-[#FFE27A] transition-[width] duration-700" style={{ width: `${Math.round(d.progress * 100)}%` }} />
+              </span>
+            </span>
+          </motion.button>
+        ))}
+      </div>
+      )}
+
       {/* مستوى الاستعداد فوق غصن الأيام، على اليسار */}
-      <motion.div {...rise(0)} className="flex flex-col-reverse gap-2">
+      <motion.div ref={statsRef} {...rise(9)} className="flex flex-col-reverse gap-2">
         {/* شريط الأسبوع: غصن بسبع أوراق، تصير الورقة ذهبية في كل يوم درست فيه الطالبة */}
         <div className="relative min-w-0 px-2" aria-label="أيام دراستك هذا الأسبوع">
           <svg className="absolute inset-x-6 top-[13px] h-[6px] w-[calc(100%-48px)]" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
@@ -254,98 +346,6 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           </button>
         </div>
       </motion.div>
-
-      {/* أبواب التطبيق */}
-      {homeStyle === "icons" ? (
-        // الصف الأول: «ابدأ اختبار المحاكاة» مستطيل عريض يمينًا وبجانبه بطاقة، ثم بطاقتان، ثم ثلاث بطاقات
-        <div ref={gridRef} className="grid grid-cols-6 gap-x-3 gap-y-3.5 pt-1">
-          <motion.button
-            {...rise(1)}
-            type="button"
-            whileTap={{ scale: 0.97 }}
-            onClick={() => {
-              tick();
-              ui.startExamsim();
-            }}
-            className="col-span-4 flex min-w-0 flex-col gap-2"
-          >
-            <span className="exam-cta relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-[26px] bg-gradient-to-l from-[var(--t850)] via-[var(--t900)] to-[var(--t950)] px-3 text-white" style={{ height: tileH ?? 120 }}>
-              <span className="relative flex h-[46px] w-[46px] shrink-0 items-center justify-center" aria-hidden="true">
-                <span className="gold-wave" />
-                <span className="gold-wave" style={{ animationDelay: "1.1s" }} />
-                <span className="gold-wave" style={{ animationDelay: "2.2s" }} />
-                <span className="exam-pulse relative flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-[#FFE27A] via-[#F4C430] to-[#C99A06]">
-                  <span className="text-[14px] font-extrabold text-[var(--t900)]">ابدأ</span>
-                </span>
-              </span>
-              <FitText max={18} min={12} className="min-w-0 font-extrabold">اختبار المحاكاة</FitText>
-            </span>
-            <span className="text-center text-[15px] font-bold leading-[22px] text-transparent" aria-hidden="true">.</span>
-          </motion.button>
-          {doors.map((d, i) => (
-            <motion.button
-              key={d.title}
-              type="button"
-              {...rise(2 + i)}
-              whileTap={{ scale: 0.94 }}
-              onClick={() => {
-                if (pressed) return;
-                tick();
-                setPressed(d.title);
-                setTimeout(() => {
-                  setPressed(null);
-                  d.run();
-                }, 160);
-              }}
-              className={cn("flex min-w-0 flex-col items-center gap-2", i === 1 || i === 2 ? "col-span-3" : "col-span-2")}
-            >
-              {/* صورة القسم بإطار ذهبي رفيع، وخط التقدّم الذهبي أسفلها */}
-              <span className="relative flex w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)] ring-1 ring-[#E3D3A0]" style={{ height: tileH ?? 120 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={d.img} alt="" className="absolute inset-0 h-full w-full object-cover" />
-                <span className="absolute inset-x-4 bottom-2.5 h-[3px] overflow-hidden rounded-full bg-white/80" aria-hidden="true">
-                  <span className="block h-full rounded-full bg-gradient-to-l from-[#F4C430] to-[#E3B23C]" style={{ width: `${Math.round(d.progress * 100)}%` }} />
-                </span>
-              </span>
-              <FitText max={15} min={10} group="door-icons" className="w-full text-center font-bold leading-[22px] text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
-            </motion.button>
-          ))}
-        </div>
-      ) : (
-      <div ref={gridRef} className="-mx-1 grid grid-cols-2 gap-2.5">
-        {doors.map((d, i) => (
-          <motion.button
-            key={d.title}
-            type="button"
-            {...rise(2 + i)}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              if (pressed) return;
-              tick();
-              setPressed(d.title);
-              // انكماش قصير ثم يفتح القسم
-              setTimeout(() => {
-                setPressed(null);
-                d.run();
-              }, 160);
-            }}
-            className="relative block overflow-hidden rounded-[26px] bg-[var(--t100)] text-right"
-          >
-            {/* الصورة تملأ البطاقة، ولوحة العنوان نصف شفافة تطفو فوق أسفلها */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={d.img} alt="" className="block h-[calc(clamp(64px,calc((100dvh-440px)/3),130px)+34px)] w-full object-cover" style={cardH ? { height: cardH } : undefined} />
-            <span className="absolute inset-x-1.5 bottom-1.5 flex min-h-[48px] flex-col justify-center overflow-hidden rounded-[20px] bg-white/80 px-3 py-2 backdrop-blur-md dark:bg-card/80">
-              <FitText max={16} min={8} group="doors" className="text-center font-extrabold text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
-              {/* خط التقدّم الذهبي */}
-              <span className="absolute inset-x-3 bottom-[5px] h-[3px] overflow-hidden rounded-full bg-[#F3E7CB]/70" aria-hidden="true">
-                <span className="block h-full rounded-full bg-gradient-to-l from-[#F4C430] to-[#FFE27A] transition-[width] duration-700" style={{ width: `${Math.round(d.progress * 100)}%` }} />
-              </span>
-            </span>
-          </motion.button>
-        ))}
-      </div>
-      )}
-
     </div>
   );
 }
