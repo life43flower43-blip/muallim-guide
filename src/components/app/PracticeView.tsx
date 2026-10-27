@@ -9,6 +9,7 @@
 // ٥) التطبيق في مواقف حقيقية، والمراجعة السريعة.
 // ============================================================================
 
+import { FitText } from "./FitText";
 import { useMemo, useState } from "react";
 import {
   ChevronDown,
@@ -61,15 +62,15 @@ function ActionCard({ icon, title, sub, onClick, primary }: { icon: React.Elemen
       type="button"
       onClick={onClick}
       className={cn(
-        "flex min-h-[72px] items-center gap-3 rounded-[24px] border p-3.5 text-right transition active:scale-[0.98]",
+        "flex min-h-[58px] items-center gap-3 rounded-[22px] border px-3 py-2 text-right transition active:scale-[0.98]",
         primary ? "border-transparent bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "border-[var(--t075)] bg-white text-[var(--t900)] dark:border-border dark:bg-card dark:text-foreground"
       )}
     >
-      <span className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px]", primary ? "bg-white/15 text-[#FFE27A]" : "bg-[#FFF5D6] text-[#C99A06]")}>
+      <span className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px]", primary ? "bg-white/15 text-[#FFE27A]" : "bg-[#FFF5D6] text-[#C99A06]")}>
         <Icon className="h-6 w-6" strokeWidth={2.2} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-lg font-bold">{title}</span>
+        <span className="block text-base font-bold">{title}</span>
       </span>
     </button>
   );
@@ -103,37 +104,28 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
     <div className="space-y-5">
       <PageTitle title="التدريب" sub="تدرّب على ما درسته، وقِس نفسك باختبارات بمستوى الاختبار الحقيقي" />
 
-      {/* لوحة الأداء */}
-      <Card className="p-5 lg:p-6">
-        <div className="flex flex-wrap items-center gap-5">
-          <div className="grid min-w-[220px] flex-1 grid-cols-3 divide-x divide-[#EADFBE] text-center">
-            <div>
-              <p className="font-display text-2xl font-extrabold text-[var(--t800)]">{ad(summary.answered)}</p>
-              <p className="whitespace-nowrap text-sm font-bold text-[var(--t450)]">أجبت</p>
+      {/* لوحة الأداء: مضغوطة، أرقام صغيرة في صف، وشريط البنك، وأضعف فصل في سطر واحد */}
+      <Card className="space-y-2.5 px-4 py-3">
+        <div className="grid grid-cols-3 divide-x divide-[#EADFBE] text-center">
+          {[
+            [ad(summary.answered), "أجبت", false],
+            [summary.accuracy === null ? "—" : pct(summary.accuracy), "الدقة", false],
+            [ad(due), "للمراجعة", due > 0],
+          ].map(([v, l, warn]) => (
+            <div key={l as string} className="flex items-baseline justify-center gap-1.5">
+              <span className={cn("font-display text-lg font-extrabold", warn ? "text-destructive" : "text-[var(--t800)]")}>{v}</span>
+              <span className="whitespace-nowrap text-xs font-bold text-[var(--t450)]">{l}</span>
             </div>
-            <div>
-              <p className="font-display text-2xl font-extrabold text-[var(--t800)]">{summary.accuracy === null ? "—" : pct(summary.accuracy)}</p>
-              <p className="whitespace-nowrap text-sm font-bold text-[var(--t450)]">الدقة</p>
-            </div>
-            <div>
-              <p className={cn("font-display text-2xl font-extrabold text-[var(--t800)]", due > 0 && "text-destructive")}>{ad(due)}</p>
-              <p className="whitespace-nowrap text-sm font-bold text-[var(--t450)]">للمراجعة</p>
-            </div>
-          </div>
+          ))}
         </div>
-        <div className="mt-5">
-          <div className="mb-1.5 flex justify-between text-sm text-muted-foreground">
-            <span className="whitespace-nowrap">ما استخدمته من بنك الأسئلة</span>
-            <span>
-              {ad(summary.answered)} من {ad(bank)}
-            </span>
-          </div>
-          <ProgressBar value={bank ? (summary.answered / bank) * 100 : 0} color="#E3B23C" />
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <ProgressBar value={bank ? (summary.answered / bank) * 100 : 0} color="#E3B23C" height={5} className="flex-1" />
+          <span className="shrink-0 whitespace-nowrap">
+            {ad(summary.answered)} من {ad(bank)}
+          </span>
         </div>
         {weak.length > 0 && (
-          <p className="mt-4 text-sm leading-6 text-muted-foreground">
-            أضعف فصولك الآن: <span className="text-foreground">{weak.map((w) => `${chapterLabel(w.chapter)} (${pct(w.accuracy * 100)})`).join("، ")}</span>
-          </p>
+          <FitText max={13} min={10} className="text-muted-foreground">{`الأضعف: ${weak.map((w) => `${chapterLabel(w.chapter)} (${pct(w.accuracy * 100)})`).join("، ")}`}</FitText>
         )}
       </Card>
 
