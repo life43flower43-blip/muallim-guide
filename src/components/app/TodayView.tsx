@@ -290,8 +290,18 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             }}
             className="flex shrink-0 flex-col items-center gap-1.5 text-[var(--t900)] dark:text-foreground"
           >
-            <span className={cn("relative flex h-[44px] w-[44px] items-center justify-center rounded-full ring-[3px]", due > 0 ? "bg-[#FDF0EE] text-destructive ring-[#F5C8C2]" : "bg-[var(--t050)] text-[var(--t800)] ring-[var(--t150)]")}>
-              <span className="text-base font-extrabold">{ad(due)}</span>
+            {/* بطاقتان مكدّستان كبطاقات المراجعة، والعليا تحمل العدد، وسهما مراجعة يدوران حولهما ببطء */}
+            <span className="relative flex h-[44px] w-[44px] items-center justify-center" aria-hidden="true">
+              <svg viewBox="0 0 48 48" className="review-spin absolute -inset-[6px] h-[56px] w-[56px]">
+                <path d="M24 4a20 20 0 0 1 18.3 12" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" />
+                <path d="M43.6 10.5l-1.3 5.6-5.5-1.6" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M24 44A20 20 0 0 1 5.7 32" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" />
+                <path d="M4.4 37.5l1.3-5.6 5.5 1.6" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span className="absolute h-[30px] w-[24px] translate-x-[3px] rotate-[10deg] rounded-[7px] bg-[var(--t150)]" />
+              <span className={cn("relative flex h-[30px] w-[24px] -rotate-[6deg] items-center justify-center rounded-[7px] text-[13px] font-extrabold text-white", due > 0 ? "bg-gradient-to-b from-[#E05A4C] to-[#B42318]" : "bg-gradient-to-b from-[var(--t600)] to-[var(--t850)]")}>
+                {ad(due)}
+              </span>
             </span>
             <span className="whitespace-nowrap text-[11px] font-bold leading-none min-[380px]:text-[12px]">للمراجعة</span>
           </button>
