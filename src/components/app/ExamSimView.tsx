@@ -198,7 +198,7 @@ export default function ExamSimView() {
                     <Chip>النجاح {ad(b.passPct)}٪</Chip>
                   </span>
                 </span>
-                <ChevronLeft className="mt-2 h-4 w-4 shrink-0 text-muted-foreground/60" />
+                <ChevronLeft className="mt-2 h-4 w-4 shrink-0 text-[#C99A06]" />
               </button>
             ))}
           </Divided>

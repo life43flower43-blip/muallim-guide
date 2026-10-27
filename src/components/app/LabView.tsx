@@ -476,7 +476,7 @@ function ListRowCard({ onClick }: { onClick: () => void }) {
         <span className="min-w-0 flex-1">
           <span className="block text-base font-medium">مواقف سريعة</span>
         </span>
-        <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground/60" />
+        <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" />
       </button>
     </Card>
   );

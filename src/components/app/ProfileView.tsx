@@ -365,7 +365,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
               موعد اختبارك {dateFmt.format(new Date(st.examDate))}
               {daysLeft !== null && daysLeft >= 0 && <span className="text-muted-foreground">، بعد {arCount(daysLeft, DAY_FORMS)}</span>}
             </span>
-            <ChevronLeft className="h-4 w-4 text-muted-foreground" />
+            <ChevronLeft className="h-4 w-4 text-[#C99A06]" />
           </button>
         )}
       </Card>

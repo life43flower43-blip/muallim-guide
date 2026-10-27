@@ -118,7 +118,7 @@ function CourseBadge({ id, size = 44 }: { id: string; size?: number }) {
   const color = COURSE_COLOR[id] ?? "var(--primary)";
   return (
     <span
-      className="flex shrink-0 items-center justify-center rounded-xl"
+      className="flex shrink-0 items-center justify-center rounded-[14px]"
       style={{ width: size, height: size, background: `color-mix(in srgb, ${color} 12%, transparent)`, color }}
     >
       <CourseIcon id={id} className={size >= 44 ? "h-5 w-5" : "h-4 w-4"} />
@@ -548,7 +548,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
                 <span className="block text-base font-medium">تدرّب على هذا المفهوم</span>
                 <span className="text-sm text-muted-foreground">{arCount(qs.length, QUESTION_FORMS)} بشرح كامل</span>
               </span>
-              <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground/60" />
+              <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" />
             </button>
             <Disclosure icon={StickyNote} title="ملاحظاتي" count={(notes[c.id] ?? []).length}>
               <MyNotes conceptId={c.id} />
@@ -664,7 +664,7 @@ function ChapterPage({ courseId, chapter, onBack, onOpen }: { courseId: string; 
                       </span>
                     )}
                   </span>
-                  <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground/60" />
+                  <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" />
                 </button>
               );
             })}
@@ -752,17 +752,14 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
                   onClick={() => onChapter(ch)}
                   className="flex min-h-[72px] w-full items-center gap-3 px-4 py-3.5 text-right transition-colors hover:bg-muted/60"
                 >
-                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${done ? "bg-success-soft text-success" : "bg-muted text-secondary-foreground"}`}>
-                    {done ? <CheckCircle2 className="h-5 w-5" /> : ad(i + 1)}
+                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${done ? "bg-gradient-to-br from-[#FFE27A] to-[#C99A06] text-white" : "bg-[var(--t100)] text-[var(--t800)]"}`}>
+                    {done ? <CheckCircle2 className="h-5 w-5" /> : <BookOpen className="h-4 w-4" />}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-base font-medium leading-6">{chapterLabel(ch)}</span>
-                    <span className="mt-0.5 block text-sm text-muted-foreground">
-                      {arCount(cs.length, CONCEPT_FORMS)}
-                    </span>
-                    <MasteryBar counts={m} height={5} className="mt-2 max-w-[220px]" />
+                    <FitText max={18} min={12} className="font-bold leading-7">{chapterLabel(ch)}</FitText>
+                    <MasteryBar counts={m} height={5} className="mt-1.5 max-w-[220px]" />
                   </span>
-                  <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground/60" />
+                  <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" />
                 </button>
               );
             })}

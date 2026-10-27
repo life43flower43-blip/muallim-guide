@@ -22,9 +22,11 @@ export function Card({ className, children, ...rest }: React.HTMLAttributes<HTML
 
 export function SectionHeader({ title, action }: { title: string; sub?: string; action?: React.ReactNode }) {
   return (
-    <div className="mb-3 flex items-end justify-between gap-3">
-      <div className="min-w-0">
-        <h2 className="font-display text-base font-semibold text-foreground">{title}</h2>
+    <div className="mb-3 flex items-center justify-between gap-3">
+      {/* عنوان قسم بشَرطة ذهبية قصيرة قبله */}
+      <div className="flex min-w-0 items-center gap-2">
+        <span className="h-5 w-[4px] shrink-0 rounded-full bg-gradient-to-b from-[#F4C430] to-[#C99A06]" aria-hidden="true" />
+        <h2 className="truncate font-display text-lg font-extrabold text-[var(--t900)] dark:text-foreground">{title}</h2>
       </div>
       {action}
     </div>
@@ -110,10 +112,10 @@ export function StreakBadge({ value, className }: { value: number; className?: s
 }
 
 /** مربع أيقونة ملوّن بخفة */
-export function IconTile({ icon: Icon, color = "var(--primary)", size = 40 }: { icon: React.ElementType; color?: string; size?: number }) {
+export function IconTile({ icon: Icon, color = "var(--t800)", size = 42 }: { icon: React.ElementType; color?: string; size?: number }) {
   return (
     <span
-      className="inline-flex shrink-0 items-center justify-center rounded-xl"
+      className="inline-flex shrink-0 items-center justify-center rounded-[14px]"
       style={{ width: size, height: size, background: `color-mix(in srgb, ${color} 12%, transparent)`, color }}
     >
       <Icon className="h-5 w-5" strokeWidth={1.9} />
@@ -152,7 +154,7 @@ export function ListRow({
     >
       {icon && <IconTile icon={icon} color={color} />}
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-base font-medium text-foreground">{title}</span>
+        <span className="block truncate text-base font-bold text-foreground">{title}</span>
         {sub && <span className="mt-0.5 block truncate text-sm text-muted-foreground">{sub}</span>}
         {children}
       </span>
@@ -160,7 +162,7 @@ export function ListRow({
         <span className="rounded-full bg-danger-soft px-2 py-0.5 text-xs font-semibold text-destructive">{ad(badge)}</span>
       )}
       {meta && <span className="shrink-0 text-sm text-muted-foreground">{meta}</span>}
-      {!disabled && <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground/60" aria-hidden="true" />}
+      {!disabled && <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" aria-hidden="true" />}
     </button>
   );
 }

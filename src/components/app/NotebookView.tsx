@@ -38,8 +38,8 @@ function CausalMap({ map }: { map: ChapterMap }) {
               />
               <p className={cn("text-base leading-8", k === 0 || k === ch.steps.length - 1 ? "font-extrabold text-[var(--t900)] dark:text-foreground" : "font-bold")}>{st}</p>
               {k < ch.links.length && (
-                <span className="my-1 inline-flex items-center gap-1 rounded-full bg-[#FBF1D6] px-2.5 text-xs font-bold leading-6 text-[#9A6A12]">
-                  <ArrowDown className="h-3 w-3" strokeWidth={3} />
+                <span className="my-0.5 inline-flex items-center gap-0.5 rounded-full bg-[#FBF1D6] px-1.5 text-[11px] font-bold leading-[18px] text-[#9A6A12]">
+                  <ArrowDown className="h-2.5 w-2.5" strokeWidth={3} />
                   {ch.links[k]}
                 </span>
               )}
