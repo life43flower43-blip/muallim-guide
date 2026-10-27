@@ -5,7 +5,6 @@
 // ============================================================================
 // ١) لوحة أداء: الجاهزية، وما استخدمته من البنك، والدقة، والأخطاء المستحقة.
 // ٢) أربعة إجراءات: تدريب ذكي، وأنشئ اختبارك، واختبار شامل، ومحاكي الاختبار الرسمي.
-// ٣) اختباراتك السابقة بنتائجها.
 // ٤) حسب المحور: فصوله بنجوم أفضل نتيجة ودقة كل فصل.
 // ٥) التطبيق في مواقف حقيقية، والمراجعة السريعة.
 // ============================================================================
@@ -19,12 +18,10 @@ import {
   Gauge,
   Heart,
   Layers,
-  ListChecks,
   MapPin,
   MessagesSquare,
   NotebookPen,
   Puzzle,
-  RotateCcw,
   Ruler,
   Shuffle,
   SlidersHorizontal,
@@ -49,17 +46,14 @@ import {
   topicKey,
   weakChapters,
 } from "@/lib/practice-bank";
-import { useMistakes, buildReviewQids } from "@/lib/mistakes-client";
-import { ad, arCount, CHAPTER_FORMS, ERROR_DUE_FORMS, QUESTION_FORMS } from "@/lib/arabic";
+import { useMistakes } from "@/lib/mistakes-client";
+import { ad, arCount, CHAPTER_FORMS, QUESTION_FORMS } from "@/lib/arabic";
 import { cn } from "@/lib/utils";
 import type { Tab } from "./AppShell";
 import TestBuilder from "./TestBuilder";
-import { Card, Divided, ListRow, PageTitle, ProgressBar, SecondaryButton, SectionHeader, Stars, pct } from "./ui-kit";
+import { Card, Divided, ListRow, PageTitle, ProgressBar, SectionHeader, Stars, pct } from "./ui-kit";
 
-const TEST_MODES = new Set(["training", "exam", "review", "redo", "proficiency", "quick", "intensive"]);
-const dateFmt = new Intl.DateTimeFormat("ar-u-nu-arab", { day: "numeric", month: "short" });
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
-const fmtDur = (s: number) => (s < 60 ? `${ad(s)} ث` : `${ad(Math.round(s / 60))} د`);
 
 function ActionCard({ icon, title, sub, onClick, primary }: { icon: React.ElementType; title: string; sub: string; onClick: () => void; primary?: boolean }) {
   const Icon = icon;
@@ -85,13 +79,11 @@ function ActionCard({ icon, title, sub, onClick, primary }: { icon: React.Elemen
 export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const attempts = useApp((s) => s.attempts);
   const best = useApp((s) => s.best);
-  const sessions = useApp((s) => s.sessions);
   const setLastStudy = useApp((s) => s.setLastStudy);
   const ui = useUi();
   const { data: mistakes } = useMistakes();
   const [open, setOpen] = useState<string | null>(null);
   const [builder, setBuilder] = useState(false);
-  const [showAllTests, setShowAllTests] = useState(false);
 
   const due = mistakes?.stats.due ?? 0;
   const weak = useMemo(() => weakChapters(attempts, undefined, 3), [attempts]);
@@ -101,7 +93,6 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
     return { answered: all.length, accuracy: all.length ? (correct / all.length) * 100 : null };
   }, [attempts]);
   const bank = QUESTIONS.length;
-  const tests = useMemo(() => [...sessions].filter((s) => TEST_MODES.has(s.mode) && s.total > 0).sort((a, b) => b.ts - a.ts), [sessions]);
 
   const startSmart = (courseId?: string, label = "تدريب ذكي") => ui.startQuiz({ mode: "training", label, qids: smartSession(attempts, courseId) });
   const startChapter = (courseId: string, chapter: string) => {
@@ -159,39 +150,6 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
         />
         <ActionCard icon={Award} title="الاختبار الرسمي" sub="محاكاة اختبارات التوظيف العربية" onClick={ui.startExamsim} />
       </section>
-
-      {/* الاختبارات السابقة */}
-      {tests.length > 0 && (
-        <section>
-          <SectionHeader
-            title="اختباراتك السابقة"
-            action={
-              tests.length > 5 && (
-                <button type="button" onClick={() => setShowAllTests((v) => !v)} className="min-h-[36px] text-sm font-medium text-primary">
-                  {showAllTests ? "أقل" : `عرض الكل (${ad(tests.length)})`}
-                </button>
-              )
-            }
-          />
-          <Divided>
-            {(showAllTests ? tests.slice(0, 30) : tests.slice(0, 5)).map((t) => {
-              const v = (t.correctCount / t.total) * 100;
-              return (
-                <div key={t.id} className="flex min-h-[60px] items-center gap-3 px-4 py-3">
-                  <ListChecks className="h-5 w-5 shrink-0 text-muted-foreground" />
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-base font-medium">{t.label}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {dateFmt.format(new Date(t.ts))}، {arCount(t.total, QUESTION_FORMS)}، {fmtDur(t.durationSec)}
-                    </p>
-                  </div>
-                  <span className={cn("rounded-md px-2 py-1 text-sm font-semibold", v >= 70 ? "bg-success-soft text-success" : v >= 50 ? "bg-gem-soft text-gem" : "bg-danger-soft text-destructive")}>{pct(v)}</span>
-                </div>
-              );
-            })}
-          </Divided>
-        </section>
-      )}
 
       {/* حسب المحور */}
       <section>
