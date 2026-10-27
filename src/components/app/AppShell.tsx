@@ -11,7 +11,7 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
-import { Bell, Flame, Settings, House, CircleUser, PencilLine, Target, WifiOff, Compass } from "lucide-react";
+import { Bell, Flame, Settings, House, CircleUser, PencilLine, Target, WifiOff, Compass, ArrowRight } from "lucide-react";
 import { useApp, useAppHydrated, xpToday, DAILY_GOAL_XP } from "@/lib/store";
 import { useUi, OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
 import { loadQbank } from "@/lib/qbank";
@@ -175,6 +175,10 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
       <header className="green-head safe-top sticky top-0 z-30 px-2 pb-2 lg:hidden">
         <HeaderArt />
         <div className="relative flex h-14 items-center justify-center px-14">
+          {/* رجوع إلى الرئيسية */}
+          <button type="button" onClick={() => onTab("today")} aria-label="رجوع" className="absolute right-1.5 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
+            <ArrowRight className="h-6 w-6" strokeWidth={2.5} />
+          </button>
           <h1 className="font-display text-xl font-extrabold">{NAV.find((n) => n.id === tab)?.label}</h1>
           {tab === "profile" && (
             <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="absolute left-1.5 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
@@ -269,6 +273,15 @@ export default function AppShell() {
     startBankLoad();
   }, []);
 
+  // زر الرجوع في الهاتف: يعود إلى الرئيسية
+  useEffect(() => {
+    const onPop = () => {
+      ui.closeOverlays();
+      setTab("today");
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [ui]);
   const isOnline = useSyncExternalStore(subscribeOnline, () => navigator.onLine, () => true);
   const sysDark = useSyncExternalStore(subscribeScheme, () => window.matchMedia("(prefers-color-scheme: dark)").matches, () => false);
   const dark = darkMode === "dark" || (darkMode === "auto" && sysDark);
@@ -365,6 +378,8 @@ export default function AppShell() {
   const due = mistakes?.stats.due ?? 0;
   const go = (t: Tab) => {
     ui.closeOverlays();
+    // زر الرجوع في الهاتف يعيد إلى الرئيسية من أي تبويب بدل إغلاق التطبيق
+    if (t !== "today" && tab === "today") window.history.pushState({ turbawyTab: t }, "");
     setTab(t);
     document.getElementById("main-scroll")?.scrollTo({ top: 0 });
   };

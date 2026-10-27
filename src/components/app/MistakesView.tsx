@@ -10,7 +10,7 @@
 // ============================================================================
 
 import { useMemo, useState } from "react";
-import { AlertCircle, BookOpen, CalendarClock, CheckCircle2, Dumbbell, Eye, PartyPopper, RotateCcw } from "lucide-react";
+import { AlertCircle, BookOpen, CheckCircle2, Dumbbell, Eye, PartyPopper, RotateCcw } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { COURSE_COLOR, COURSE_SHORT, questionsOfConcept, shuffle } from "@/lib/qbank";
 import { useMistakes, buildReviewQids, REVIEW_SESSION_SIZE, type MistakeItem } from "@/lib/mistakes-client";
@@ -18,14 +18,10 @@ import { ad, arCount, ERROR_OBJ_FORMS, splitReason } from "@/lib/arabic";
 import { cn } from "@/lib/utils";
 import type { Tab } from "./AppShell";
 import { ConceptReader } from "./ConceptsView";
-import AuthPanel from "./AuthPanel";
-import { Card, Chip, EmptyState, PageTitle, PrimaryButton, ProgressBar, SecondaryButton, SectionHeader } from "./ui-kit";
+import { Card, Chip, EmptyState, PageTitle, PrimaryButton, SectionHeader } from "./ui-kit";
 
 const TIMES = { one: "مرة واحدة", two: "مرتين", few: "مرات", many: "مرة" };
-const dayFmt = new Intl.DateTimeFormat("ar-u-nu-arab", { weekday: "short" });
 const dateFmt = new Intl.DateTimeFormat("ar-u-nu-arab", { day: "numeric", month: "short" });
-const DAY_MS = 86400000;
-const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
 
 function MistakeCard({ item, onConcept }: { item: MistakeItem; onConcept: () => void }) {
   const [revealed, setRevealed] = useState(false);
@@ -80,20 +76,6 @@ export default function MistakesView({ onGoTab }: { onGoTab: (t: Tab) => void })
   const items = useMemo(() => (data?.items ?? []).filter((i) => (!course || i.courseId === course) && (status === "all" || i.due)), [data, course, status]);
   const sorted = useMemo(() => [...items].sort((a, b) => Number(b.due) - Number(a.due) || b.mistakeCount - a.mistakeCount).slice(0, 30), [items]);
 
-  // جدول المراجعة: ما يعود في كل يوم من الأيام السبعة القادمة (المتأخر يُحسب اليوم)
-  const forecast = useMemo(() => {
-    const today = startOfDay(new Date());
-    const days = Array.from({ length: 7 }, (_, i) => ({ ts: today + i * DAY_MS, count: 0 }));
-    let later = 0;
-    for (const it of data?.items ?? []) {
-      const t = it.due || !it.nextReview ? today : startOfDay(new Date(it.nextReview));
-      const i = Math.max(0, Math.round((t - today) / DAY_MS));
-      if (i < 7) days[i].count++;
-      else later++;
-    }
-    return { days, later, max: Math.max(1, ...days.map((d) => d.count)) };
-  }, [data]);
-
   // المفاهيم الأضعف: أين تتجمع الأخطاء المفتوحة
   const weakConcepts = useMemo(() => {
     const m = new Map<string, { concept: NonNullable<MistakeItem["concept"]>; count: number; total: number }>();
@@ -139,75 +121,14 @@ export default function MistakesView({ onGoTab }: { onGoTab: (t: Tab) => void })
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <PageTitle title="أخطائي" sub="كل خطأ يعود إليك في موعده حتى تجيبه صحيحًا مرتين متباعدتين" />
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
-        {/* الإجراء الرئيسي */}
-        <Card className="p-5">
-          <div className="grid grid-cols-3 gap-3 text-center">
-            {[
-              { label: "مستحقة الآن", value: due, cls: due > 0 ? "text-destructive" : "" },
-              { label: "مفتوحة", value: open, cls: "" },
-              { label: "أصلحتها", value: mastered, cls: "text-success" },
-            ].map((s) => (
-              <div key={s.label}>
-                <p className={cn("font-display text-2xl font-bold", s.cls)}>{s.value === null ? "—" : ad(s.value)}</p>
-                <p className="mt-0.5 text-xs text-muted-foreground">{s.label}</p>
-              </div>
-            ))}
-          </div>
-          {mastered !== null && mastered + open > 0 && (
-            <div className="mt-5">
-              <div className="mb-1.5 flex justify-between text-sm text-muted-foreground">
-                <span>تقدم الإصلاح</span>
-                <span>
-                  {ad(mastered)} من {ad(mastered + open)}
-                </span>
-              </div>
-              <ProgressBar value={(mastered / (mastered + open)) * 100} color="var(--success)" />
-            </div>
-          )}
-          <PrimaryButton onClick={() => review(null)} className="mt-5 w-full">
-            <RotateCcw className="h-4 w-4" />
-            {due > 0 ? `راجع ${arCount(Math.min(due, REVIEW_SESSION_SIZE), ERROR_OBJ_FORMS)}` : "تدرّب عليها قبل موعدها"}
-          </PrimaryButton>
-          <p className="mt-3 text-center text-sm text-muted-foreground">
-            {due > 0 ? "قرابة سبع دقائق، وتكسب بها جواهر" : "لا مراجعة مستحقة الآن"}
-            {data.refresh.length > 0 && `، ومعها ${arCount(data.refresh.length, ERROR_OBJ_FORMS)} للتثبيت`}
-          </p>
-        </Card>
-
-        {/* جدول المراجعة */}
-        <Card className="p-5">
-          <p className="flex items-center gap-2 text-sm font-semibold">
-            <CalendarClock className="h-4 w-4 text-primary" /> جدول المراجعة
-          </p>
-          <p className="mt-0.5 text-sm text-muted-foreground">ما يعود إليك في الأيام السبعة القادمة</p>
-          <div className="mt-4 flex h-[112px] items-end gap-2" role="img" aria-label="عدد الأخطاء المستحقة في كل يوم">
-            {forecast.days.map((d, i) => (
-              <div key={d.ts} className="flex flex-1 flex-col items-center gap-1.5">
-                <span className="text-xs font-medium">{d.count > 0 ? ad(d.count) : ""}</span>
-                <span
-                  className={cn("w-full rounded-md", i === 0 ? "bg-primary" : "bg-primary/35", d.count === 0 && "bg-muted")}
-                  style={{ height: `${d.count === 0 ? 4 : Math.max(8, (d.count / forecast.max) * 64)}px` }}
-                />
-                <span className={cn("text-xs", i === 0 ? "font-medium text-foreground" : "text-muted-foreground")}>{i === 0 ? "اليوم" : dayFmt.format(new Date(d.ts))}</span>
-              </div>
-            ))}
-          </div>
-          {forecast.later > 0 && <p className="mt-3 text-sm text-muted-foreground">وبعد ذلك {arCount(forecast.later, ERROR_OBJ_FORMS)}</p>}
-        </Card>
-      </div>
-
-      {data.isGuest && (
-        <Card className="flex flex-wrap items-center gap-3 p-4">
-          <p className="min-w-0 flex-1 text-sm leading-6 text-muted-foreground">أخطاؤك محفوظة على هذا الجهاز فقط. ادخل بحساب Google لتحفظها وتراها على أي جهاز.</p>
-          <div className="w-full sm:w-auto">
-            <AuthPanel label="الدخول بحساب Google" />
-          </div>
-        </Card>
-      )}
+      {/* زر المراجعة وحده */}
+      <PrimaryButton onClick={() => review(null)} className="w-full">
+        <RotateCcw className="h-4 w-4" />
+        {due > 0 ? `راجع ${arCount(Math.min(due, REVIEW_SESSION_SIZE), ERROR_OBJ_FORMS)}` : "تدرّب عليها قبل موعدها"}
+      </PrimaryButton>
 
       {/* المفاهيم الأضعف */}
       {weakConcepts.length > 0 && (
