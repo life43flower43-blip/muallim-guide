@@ -58,6 +58,7 @@ import type { Tab } from "./AppShell";
 import { OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
 import { disablePush, enablePush, usePushState } from "@/lib/push-client";
 import AuthPanel from "./AuthPanel";
+import PastTests from "./PastTests";
 import { Card, IconTile, PageTitle, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, pct } from "./ui-kit";
 
 interface InstallPromptEvent extends Event {
@@ -375,6 +376,8 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
         <SectionHeader title="نشاطك" sub={`آخر ${ad(WEEKS)} أسبوعًا`} />
         <ActivityMap sessions={st.sessions} />
       </section>
+
+      <PastTests />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 [&>*]:min-w-0">
         {/* الجواهر */}
