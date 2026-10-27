@@ -31,6 +31,47 @@ const tick = () => {
   if (typeof navigator !== "undefined" && "vibrate" in navigator && useApp.getState().haptics) navigator.vibrate(8);
 };
 
+/** خريطة نشاط مصغّرة: آخر ١٢ أسبوعًا، كل مربع يوم، ويغمق كلما زادت الأسئلة */
+function MiniActivity({ sessions }: { sessions: { ts: number; total: number }[] }) {
+  const WEEKS = 12;
+  const cols = useMemo(() => {
+    const per = new Map<string, number>();
+    for (const x of sessions) per.set(dayStr(new Date(x.ts)), (per.get(dayStr(new Date(x.ts))) ?? 0) + x.total);
+    const today = new Date();
+    const start = new Date(today);
+    start.setDate(today.getDate() - ((today.getDay() + 1) % 7) - (WEEKS - 1) * 7);
+    const todayKey = dayStr(today);
+    return Array.from({ length: WEEKS }, (_, w) =>
+      Array.from({ length: 7 }, (_, d) => {
+        const dt = new Date(start);
+        dt.setDate(start.getDate() + w * 7 + d);
+        const k = dayStr(dt);
+        return { n: per.get(k) ?? 0, future: k > todayKey, today: k === todayKey };
+      })
+    );
+  }, [sessions]);
+  const level = (n: number) => (n === 0 ? 0 : n < 10 ? 1 : n < 25 ? 2 : 3);
+  const shade = ["var(--t075)", "color-mix(in srgb, var(--t800) 35%, white)", "color-mix(in srgb, var(--t800) 65%, white)", "var(--t800)"];
+  return (
+    <div className="flex flex-col items-center gap-1.5" aria-label="نشاطك في آخر ١٢ أسبوعًا">
+      <div className="flex gap-[2px]" dir="ltr">
+        {cols.map((col, w) => (
+          <div key={w} className="flex flex-col gap-[2px]">
+            {col.map((c, d) => (
+              <span
+                key={d}
+                className={cn("h-[6px] w-[6px] rounded-[1.5px]", c.today && "ring-1 ring-[#E3B23C]")}
+                style={{ background: c.future ? "transparent" : shade[level(c.n)] }}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+      <span className="whitespace-nowrap text-[11px] font-bold leading-none text-[var(--t900)] min-[380px]:text-[12px] dark:text-foreground">نشاطك</span>
+    </div>
+  );
+}
+
 export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const attempts = useApp((s) => s.attempts);
   const ui = useUi();
@@ -43,16 +84,22 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const gridRef = useRef<HTMLDivElement>(null);
   const weekRef = useRef<HTMLDivElement>(null);
   const [cardH, setCardH] = useState<number | null>(null);
+  const [tileH, setTileH] = useState<number | null>(null);
 
   // تمتد البطاقات لتملأ الشاشة حتى تستقر فوق الشريط السفلي مباشرة
   useEffect(() => {
     const fit = () => {
       const g = gridRef.current;
       const nav = document.getElementById("bottom-nav");
-      if (!g || !nav || window.innerWidth >= 1024) return setCardH(null);
+      if (!g || !nav || window.innerWidth >= 1024) {
+        setTileH(null);
+        return setCardH(null);
+      }
       const weekH = (weekRef.current?.offsetHeight ?? 0) + 12;
       const avail = nav.getBoundingClientRect().top - g.getBoundingClientRect().top - weekH - 10;
-      setCardH(Math.max(60, Math.min(210, (avail - 2 * 10) / 3)));
+      setCardH(Math.max(48, Math.min(210, (avail - 2 * 10) / 3)));
+      // مربعات الرموز: صفّان، كلٌّ بعنوان تحته، فتصغر حتى تتسع الشاشة
+      setTileH(Math.max(64, (avail - 16 - 2 * 32) / 2));
     };
     fit();
     const t = setTimeout(fit, 350);
@@ -127,7 +174,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       {/* أبواب التطبيق */}
       {homeStyle === "icons" ? (
         // نمط الرموز: ثلاثة أعمدة، مربع ناعم ملوّن برمز خطّي، والعنوان تحته
-        <div className="grid grid-cols-3 gap-x-3 gap-y-4 pt-1">
+        <div ref={gridRef} className="grid grid-cols-3 gap-x-3 gap-y-4 pt-1">
           {doors.map((d, i) => (
             <motion.button
               key={d.title}
@@ -146,7 +193,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               className="flex min-w-0 flex-col items-center gap-2"
             >
               {/* المربع بصورة القسم بدل الرمز، بإطار ذهبي رفيع */}
-              <span className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)] ring-1 ring-[#E3D3A0]">
+              <span className="relative mx-auto flex aspect-square w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)] ring-1 ring-[#E3D3A0]" style={tileH ? { maxWidth: tileH } : undefined}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={d.img} alt="" className="absolute inset-0 h-full w-full object-cover" />
                 {/* خط التقدّم الذهبي أسفل المربع */}
@@ -229,8 +276,9 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             ))}
           </div>
         </div>
-        {/* مستوى الاستعداد يسارًا فوق غصن الأيام */}
-        <div className="flex items-end justify-end px-3">
+        {/* خريطة النشاط المصغّرة يمينًا، ومستوى الاستعداد يسارًا، فوق غصن الأيام */}
+        <div className="flex items-end justify-between gap-3 px-3">
+          <MiniActivity sessions={sessions} />
           {/* مستوى الاستعداد: الحلقة وتحتها جملة قصيرة، على اليسار بجانب غصن الأيام */}
           <motion.button
             type="button"
