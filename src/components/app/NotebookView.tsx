@@ -1,23 +1,23 @@
 "use client";
 
 // ============================================================================
-// دفتري: خريطة ذهنية لكل فصل، وقواعده في جمل قصيرة، وملاحظاتي على المفاهيم
+// دفتري: خريطة ذهنية لكل فصل، وقواعده في جمل قصيرة، وأمثلة واقعية من الصف
 // ============================================================================
 
 import { useMemo, useState } from "react";
-import { ArrowDown, ChevronDown, ChevronLeft, ChevronRight, StickyNote } from "lucide-react";
+import { ArrowDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { useApp } from "@/lib/store";
-import { CHAPTER_MAPS, COURSES, COURSE_SHORT, conceptById, conceptsOfCourse, type ChapterMap } from "@/lib/qbank";
+import { CHAPTER_MAPS, COURSES, COURSE_SHORT, conceptsOfCourse, type ChapterMap } from "@/lib/qbank";
 import { cn } from "@/lib/utils";
 import type { Concept } from "@/lib/types";
-import { EmptyState, PageTitle } from "./ui-kit";
+import { PageTitle } from "./ui-kit";
 import { FitText } from "./FitText";
 
-type Part = "maps" | "rules" | "notes";
+type Part = "maps" | "rules" | "examples";
 const PARTS: { id: Part; label: string }[] = [
   { id: "maps", label: "الخرائط" },
   { id: "rules", label: "القواعد" },
-  { id: "notes", label: "ملاحظاتي" },
+  { id: "examples", label: "أمثلة" },
 ];
 
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
@@ -51,6 +51,24 @@ function CausalMap({ map }: { map: ChapterMap }) {
   );
 }
 
+/** أمثلة واقعية من الصف لكل مفهوم في الفصل: المفهوم بالذهبي، والموقف تحته */
+function Examples({ concepts }: { concepts: Concept[] }) {
+  return (
+    <ul className="space-y-3">
+      {concepts.map((c) => {
+        const ex = c.examples?.[0] ?? c.example;
+        if (!ex) return null;
+        return (
+          <li key={c.id} className="rounded-[22px] border border-[var(--t075)] bg-white p-4 dark:border-border dark:bg-card">
+            <p className="inline-flex rounded-full bg-[#FBF1D6] px-3 text-sm font-bold leading-7 text-[#9A6A12]">{c.title}</p>
+            <p className="mt-2 leading-8">{ex}</p>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 function Rules({ concepts }: { concepts: Concept[] }) {
   return (
     <ul className="divide-y divide-[var(--t075)] overflow-hidden rounded-[22px] border border-[var(--t075)] bg-white dark:divide-border dark:border-border dark:bg-card">
@@ -66,7 +84,6 @@ function Rules({ concepts }: { concepts: Concept[] }) {
 
 export default function NotebookView() {
   const lastStudy = useApp((s) => s.lastStudy);
-  const notes = useApp((s) => s.notes);
   const [courseId, setCourseId] = useState(lastStudy?.courseId ?? COURSES[0]?.id ?? "M1");
   const [part, setPart] = useState<Part>("maps");
   const [chIndex, setChIndex] = useState(0);
@@ -82,15 +99,6 @@ export default function NotebookView() {
     return out;
   }, [courseId]);
   const current = chapters[Math.min(chIndex, chapters.length - 1)];
-
-  const myNotes = useMemo(
-    () =>
-      Object.entries(notes)
-        .flatMap(([cid, list]) => list.map((n) => ({ ...n, concept: conceptById(cid) })))
-        .filter((n) => n.concept)
-        .sort((a, b) => b.ts - a.ts),
-    [notes]
-  );
 
   return (
     <div className="mx-auto max-w-2xl space-y-5">
@@ -115,22 +123,7 @@ export default function NotebookView() {
       </div>
 
 
-      {part === "notes" ? (
-        myNotes.length === 0 ? (
-          <EmptyState icon={StickyNote} title="لا ملاحظات بعد" sub="اكتب ملاحظتك أسفل أي مفهوم في «المفاهيم التربوية»، وستجدها هنا." />
-        ) : (
-          <ul className="space-y-3">
-            {myNotes.map((n) => (
-              <li key={n.id}>
-                <div className="w-full rounded-[22px] border border-[#E3D3A0] border-r-[3px] border-r-[#E3B23C] bg-white p-4 dark:bg-card">
-                  <span className="block text-sm font-bold text-[#B8860B] dark:text-[#F5C451]">{n.concept!.title}</span>
-                  <span className="mt-1 block whitespace-pre-line text-base leading-8">{n.text}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )
-      ) : current ? (
+      {current ? (
         <div className="space-y-4">
           {/* المحور والفصل في محدِّد واحد، وسهمان صغيران للتنقل بين الفصول */}
           <div className="flex items-center gap-1 rounded-[20px] border border-[var(--t075)] bg-white p-1.5 dark:border-border dark:bg-card">
@@ -152,8 +145,10 @@ export default function NotebookView() {
             ) : (
               <p className="p-3 text-center text-sm text-muted-foreground">خريطة هذا الفصل قيد الإعداد</p>
             )
-          ) : (
+          ) : part === "rules" ? (
             <Rules concepts={current.concepts} />
+          ) : (
+            <Examples concepts={current.concepts} />
           )}
 
 
