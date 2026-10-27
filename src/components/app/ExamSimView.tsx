@@ -3,6 +3,7 @@
 // محاكي الرخصة والمسابقات — ميزة مقتبسة من تطبيقات المحاكاة الرسمية:
 // بلاتنات بأقسام ووقت ومحك نجاح، لوحة تنقل بالأسئلة، علامة مراجعة،
 // تسليم تلقائي عند انتهاء الوقت، وبطاقة نتيجة بدرجة وتحليل الأقسام والأخطاء.
+import { FitText } from "./FitText";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -187,11 +188,10 @@ export default function ExamSimView() {
         <div className="space-y-6">
           <Divided>
             {BLUEPRINTS.map((b) => (
-              <button key={b.id} type="button" onClick={() => startExam(b)} className="flex w-full items-start gap-3 px-4 py-4 text-right transition-colors hover:bg-muted/60">
+              <button key={b.id} type="button" onClick={() => startExam(b)} className="flex w-full min-w-0 items-center gap-3 px-4 py-3.5 text-right transition-colors hover:bg-muted/60">
                 <IconTile icon={Award} />
                 <span className="min-w-0 flex-1">
-                  <span className="block text-base font-semibold">{b.name}</span>
-                  <span className="mt-1 block text-sm leading-6 text-muted-foreground">{b.desc}</span>
+                  <FitText max={17} min={12} className="font-bold leading-7">{b.name}</FitText>
                   <span className="mt-2 flex flex-wrap gap-1.5">
                     <Chip>{arCount(b.total, QUESTION_FORMS)}</Chip>
                     <Chip>{ad(b.minutes)} دقيقة</Chip>

@@ -108,7 +108,6 @@ function SectionCard({
         <IconTile icon={Icon} />
         <div className="min-w-0">
           <h3 className="font-display text-base font-semibold leading-7">{title}</h3>
-          {guide && <p className="text-sm leading-6 text-muted-foreground">{guide}</p>}
         </div>
       </div>
       {children}
