@@ -41,7 +41,6 @@ import PeerChallenge from "./PeerChallenge";
 import HeartOfClass from "./HeartOfClass";
 import ExamSimView from "./ExamSimView";
 import PlacementView from "./PlacementView";
-import MatchGameView from "./MatchGameView";
 import FlashcardsView from "./FlashcardsView";
 import AiAssistantView from "./AiAssistantView";
 import BootBank from "./BootBank";
@@ -410,7 +409,6 @@ export default function AppShell() {
       <AnimatePresence>{ui.scenariosOpen && <ScenariosView key="scenarios" />}</AnimatePresence>
       <AnimatePresence>{ui.examsimOpen && <ExamSimView key="examsim" />}</AnimatePresence>
       <AnimatePresence>{ui.placementOpen && <PlacementView key="placement" />}</AnimatePresence>
-      <AnimatePresence>{ui.matchOpen && <MatchGameView key="match" />}</AnimatePresence>
       {ui.learnOpen && (
         <ScreenShell title="المفاهيم التربوية" onClose={ui.clearLearn}>
           <ConceptsView />
