@@ -193,19 +193,19 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       </div>
       )}
 
-      {/* غصن الأيام على اليمين، ومستوى الاستعداد على اليسار */}
-      <motion.div ref={weekRef} {...rise(8)} className="flex items-center gap-3">
+      {/* مستوى الاستعداد فوق غصن الأيام، على اليسار */}
+      <motion.div ref={weekRef} {...rise(8)} className="flex flex-col-reverse gap-2">
         {/* شريط الأسبوع: غصن بسبع أوراق، تصير الورقة ذهبية في كل يوم درست فيه الطالبة */}
-        <div className="relative min-w-0 flex-1 px-1" aria-label="أيام دراستك هذا الأسبوع">
+        <div className="relative min-w-0 px-2" aria-label="أيام دراستك هذا الأسبوع">
           <svg className="absolute inset-x-6 top-[13px] h-[6px] w-[calc(100%-48px)]" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
             <path d="M0 3C12 0 20 6 33 3S54 0 66 3 88 6 100 3" stroke="var(--t300)" strokeWidth="1.2" fill="none" vectorEffect="non-scaling-stroke" />
           </svg>
           <div className="relative flex items-start justify-between">
             {week.map((d, i) => (
-              <span key={d.label} className="flex w-7 flex-col items-center gap-1 min-[380px]:w-8">
+              <span key={d.label} className="flex w-9 flex-col items-center gap-1">
                 <svg
                   viewBox="0 0 24 24"
-                  className={cn("h-[26px] w-[26px] transition-transform min-[380px]:h-[28px] min-[380px]:w-[28px]", d.today && "scale-110")}
+                  className={cn("h-[30px] w-[30px] transition-transform", d.today && "scale-110")}
                   style={{ transform: `rotate(${i % 2 ? 28 : -28}deg)` }}
                   aria-hidden="true"
                 >
@@ -236,7 +236,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             tick();
             onGoTab("practice");
           }}
-          className="flex shrink-0 flex-col items-center gap-1.5 text-[var(--t900)] dark:text-foreground"
+          className="flex shrink-0 flex-col items-center gap-1.5 self-end text-[var(--t900)] dark:text-foreground"
         >
           <span className="relative h-[44px] w-[44px] shrink-0" aria-hidden="true">
             {/* هالة متموّجة تدور حول الحلقة */}
