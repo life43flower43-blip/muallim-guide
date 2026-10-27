@@ -15,15 +15,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ClipboardCheck,
-  FlaskConical,
   Gauge,
-  Heart,
-  Layers,
-  MapPin,
-  MessagesSquare,
-  NotebookPen,
-  Puzzle,
-  Ruler,
   Shuffle,
   SlidersHorizontal,
   Sparkles,
@@ -217,22 +209,6 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
             );
           })}
         </Divided>
-      </section>
-
-      {/* تطبيق عملي: مربعات متساوية بثلاثة أعمدة */}
-      <section>
-        <SectionHeader title="تطبيق عملي" />
-        <div className="grid grid-cols-3 gap-2.5">
-          <Tile small icon={MessagesSquare} title="محاكاة الصفوف" onClick={ui.startSim} />
-          <Tile small icon={FlaskConical} title="مختبر المعلّم" onClick={ui.startLab} />
-          <Tile small icon={Users} title="مواقف سريعة" onClick={ui.startScenarios} />
-          <Tile small icon={Puzzle} title="التحديات" onClick={ui.startChallenges} />
-          <Tile small icon={NotebookPen} title="خطط الدروس" onClick={ui.startStudio} />
-          <Tile small icon={MapPin} title="التدريب الميداني" onClick={ui.startField} />
-          <Tile small icon={Ruler} title="أدوات القياس" onClick={ui.startMeasure} />
-          <Tile small icon={Heart} title="قلب الصف" onClick={ui.startHeart} />
-          <Tile small icon={Layers} title="بطاقات المفاهيم" onClick={ui.startFlash} />
-        </div>
       </section>
 
       <Divided>

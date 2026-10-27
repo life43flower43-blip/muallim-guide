@@ -494,3 +494,24 @@ export function HeaderArt() {
     </svg>
   );
 }
+
+/** أدوات مرتبطة داخل القسم: مربعات صغيرة متساوية برمز ذهبي واسم في سطر واحد */
+export function ToolTiles({ items }: { items: { icon: React.ElementType; title: string; onClick: () => void }[] }) {
+  return (
+    <div className={cn("grid gap-2.5", items.length === 3 ? "grid-cols-3" : "grid-cols-2")}>
+      {items.map((t) => (
+        <button
+          key={t.title}
+          type="button"
+          onClick={t.onClick}
+          className="flex min-h-[64px] min-w-0 items-center gap-2.5 rounded-[20px] border border-[var(--t075)] bg-white px-3 text-right transition active:scale-[0.97] dark:border-border dark:bg-card"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FBF1D6] text-[#B8860B]">
+            <t.icon className="h-[18px] w-[18px]" strokeWidth={2} />
+          </span>
+          <FitText max={15} min={10} className="flex-1 font-bold">{t.title}</FitText>
+        </button>
+      ))}
+    </div>
+  );
+}

@@ -6,26 +6,7 @@
 import { FitText } from "./FitText";
 import { useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import {
-  X,
-  BookOpen,
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle2,
-  CircleAlert,
-  MinusCircle,
-  Sparkles,
-  Quote,
-  Compass,
-  Users,
-  Target,
-  RotateCcw,
-  FlaskConical,
-  Gauge,
-  Eye,
-  Play,
-  ChevronLeft,
-} from "lucide-react";
+import { X, BookOpen, ArrowLeft, ArrowRight, CheckCircle2, CircleAlert, MinusCircle, Sparkles, Quote, Compass, Users, Target, RotateCcw, FlaskConical, Gauge, Eye, Play, ChevronLeft, Zap, Heart } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { useApp } from "@/lib/store";
 import { ad } from "@/lib/arabic";
@@ -46,7 +27,7 @@ import {
   type SimSkillScore,
 } from "@/lib/sim";
 import { LAB_ALL, isExamScenario } from "@/lib/lab";
-import { Callout, Card, Chip, Divided, IconTile, OptionButton, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, SkillBar } from "./ui-kit";
+import { Callout, Card, Chip, Divided, IconTile, OptionButton, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, SkillBar, ToolTiles } from "./ui-kit";
 import { conceptById, OPTION_LETTERS } from "@/lib/qbank";
 
 const ratingIcon: Record<SimRating, typeof CheckCircle2> = {
@@ -249,6 +230,13 @@ export default function SimLabView() {
               </span>
             </div>
           </div>
+
+          <ToolTiles
+            items={[
+              { icon: Zap, title: "مواقف سريعة", onClick: () => { clearSim(); useUi.getState().startScenarios(); } },
+              { icon: Heart, title: "قلب الصف", onClick: () => { clearSim(); useUi.getState().startHeart(); } },
+            ]}
+          />
 
           <Card className="p-5">
             <div className="flex items-center gap-4">

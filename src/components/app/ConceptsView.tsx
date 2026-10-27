@@ -14,35 +14,7 @@ import { FitText } from "./FitText";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import {
-  BookOpen,
-  CheckCircle2,
-  XCircle,
-  Dumbbell,
-  Lightbulb,
-  X,
-  Search,
-  Dna,
-  Brain,
-  Heart,
-  ClipboardList,
-  School,
-  Library,
-  Bot,
-  Plus,
-  Trash2,
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-  Share2,
-  StickyNote,
-  GraduationCap,
-  ClipboardCheck,
-  Play,
-  HelpCircle,
-  HandHeart,
-  Landmark,
-} from "lucide-react";
+import { BookOpen, CheckCircle2, XCircle, Dumbbell, Lightbulb, X, Search, Dna, Brain, Heart, ClipboardList, School, Library, Bot, Plus, Trash2, ChevronLeft, ChevronRight, ChevronDown, Share2, StickyNote, GraduationCap, ClipboardCheck, Play, HelpCircle, HandHeart, Landmark, Layers, Puzzle } from "lucide-react";
 import {
   COURSES,
   CONCEPTS,
@@ -80,23 +52,7 @@ import { ConceptDiagram } from "./Diagrams";
 import { referencesFor } from "@/lib/references";
 import { ad, arCount, CONCEPT_FORMS, CHAPTER_FORMS, QUESTION_FORMS, splitArParagraphs, splitReason, exampleContext } from "@/lib/arabic";
 import { toast } from "@/hooks/use-toast";
-import {
-  Card,
-  Chip,
-  Divided,
-  EmptyState,
-  MasteryBar,
-  MasteryDot,
-  MasteryLegend,
-  OptionButton,
-  PrimaryButton,
-  ProgressBar,
-  ScreenShell,
-  SecondaryButton,
-  SectionHeader,
-  Stars,
-  pct,
-} from "./ui-kit";
+import { Card, Chip, Divided, EmptyState, MasteryBar, MasteryDot, MasteryLegend, OptionButton, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, Stars, pct, ToolTiles } from "./ui-kit";
 
 // أيقونة كل محور
 const COURSE_ICONS: Record<string, React.ElementType> = {
@@ -904,6 +860,14 @@ export default function ConceptsView() {
           )}
 
           <section>
+            <div className="mb-5">
+              <ToolTiles
+                items={[
+                  { icon: Layers, title: "بطاقات المفاهيم", onClick: () => useUi.getState().startFlash() },
+                  { icon: Puzzle, title: "التحديات", onClick: () => useUi.getState().startChallenges() },
+                ]}
+              />
+            </div>
             <SectionHeader title="المحاور" />
             <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }} className="grid gap-3 sm:grid-cols-2">
               {COURSES.map((course) => {

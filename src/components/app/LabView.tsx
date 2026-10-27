@@ -5,23 +5,7 @@
 import { FitText } from "./FitText";
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import {
-  X,
-  FlaskConical,
-  Map as MapIcon,
-  Eye,
-  Dumbbell,
-  BookOpen,
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle2,
-  CircleAlert,
-  MinusCircle,
-  Sparkles,
-  ShieldCheck,
-  Quote,
-  ChevronLeft,
-} from "lucide-react";
+import { X, FlaskConical, Map as MapIcon, Eye, Dumbbell, BookOpen, ArrowLeft, ArrowRight, CheckCircle2, CircleAlert, MinusCircle, ShieldCheck, Quote, ChevronLeft, MapPin, Ruler } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
 import { useApp } from "@/lib/store";
 import {
@@ -41,7 +25,7 @@ import {
 } from "@/lib/lab";
 import { conceptById, questionById, OPTION_LETTERS } from "@/lib/qbank";
 import { ad } from "@/lib/arabic";
-import { Callout, Card, Chip, Divided, EmptyState, IconTile, OptionButton, PrimaryButton, ScreenShell, SectionHeader } from "./ui-kit";
+import { Callout, Card, Chip, Divided, EmptyState, IconTile, OptionButton, PrimaryButton, ScreenShell, SectionHeader, ToolTiles } from "./ui-kit";
 
 type LabTab = "list" | "exam" | "map" | "mirror";
 
@@ -53,7 +37,6 @@ const ratingIcon: Record<LabRating, typeof CheckCircle2> = {
 
 export default function LabView() {
   const clearLab = useUi((s) => s.clearLab);
-  const startScenarios = useUi((s) => s.startScenarios);
   const openConcept = useUi((s) => s.openConcept);
   const labAttempts = useApp((s) => s.labAttempts);
   const addLabAttempt = useApp((s) => s.addLabAttempt);
@@ -344,11 +327,11 @@ export default function LabView() {
 
       {tab === "list" && (
         <div className="space-y-5">
-          <ListRowCard
-            onClick={() => {
-              clearLab();
-              startScenarios();
-            }}
+          <ToolTiles
+            items={[
+              { icon: MapPin, title: "التدريب الميداني", onClick: () => { clearLab(); useUi.getState().startField(); } },
+              { icon: Ruler, title: "أدوات القياس", onClick: () => { clearLab(); useUi.getState().startMeasure(); } },
+            ]}
           />
           <Divided>{LAB_SCENARIOS.map((s) => scenarioRow(s, false))}</Divided>
         </div>
@@ -465,20 +448,6 @@ export default function LabView() {
           </div>
         ))}
     </ScreenShell>
-  );
-}
-
-function ListRowCard({ onClick }: { onClick: () => void }) {
-  return (
-    <Card className="overflow-hidden">
-      <button type="button" onClick={onClick} className="flex w-full items-center gap-3 px-4 py-4 text-right transition-colors hover:bg-muted/60">
-        <IconTile icon={Sparkles} color="#C99A06" />
-        <span className="min-w-0 flex-1">
-          <span className="block text-base font-bold">مواقف سريعة</span>
-        </span>
-        <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" />
-      </button>
-    </Card>
   );
 }
 
