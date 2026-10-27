@@ -788,3 +788,14 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .exam-pulse { animation: none; }
 }
+
+/* سهما المراجعة يدوران ببطء حول بطاقات الأخطاء */
+.review-spin {
+  animation: review-spin 9s linear infinite;
+}
+@keyframes review-spin {
+  to { transform: rotate(-360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .review-spin { animation: none; }
+}
