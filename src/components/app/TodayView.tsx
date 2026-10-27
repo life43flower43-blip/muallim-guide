@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { dayStr, dayXpOf, useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
+import { useMistakes } from "@/lib/mistakes-client";
 import { CONCEPTS, conceptsOfCourse } from "@/lib/qbank";
 import { overallReadiness } from "@/lib/practice-bank";
 import { ad } from "@/lib/arabic";
@@ -124,6 +125,8 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
 
   // أيام الأسبوع من السبت إلى الجمعة: يمتلئ بالذهبي كل يوم درست فيه الطالبة
   const sessions = useApp((s) => s.sessions);
+  const { data: mistakes } = useMistakes();
+  const due = mistakes?.stats.due ?? 0;
   const homeStyle = useApp((s) => s.homeStyle ?? "icons");
   const week = useMemo(() => {
     const now = new Date();
@@ -277,7 +280,21 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           </div>
         </div>
         {/* مستوى الاستعداد وبجانبه خريطة النشاط المصغّرة، يسارًا فوق غصن الأيام */}
-        <div className="flex items-end justify-end gap-5 px-3">
+        <div className="flex items-end justify-end gap-4 px-3">
+          {/* أخطاء للمراجعة: عدد ما ينتظر الطالبة، ويفتح «أخطائي» */}
+          <button
+            type="button"
+            onClick={() => {
+              tick();
+              onGoTab("mistakes");
+            }}
+            className="flex shrink-0 flex-col items-center gap-1.5 text-[var(--t900)] dark:text-foreground"
+          >
+            <span className={cn("relative flex h-[44px] w-[44px] items-center justify-center rounded-full ring-[3px]", due > 0 ? "bg-[#FDF0EE] text-destructive ring-[#F5C8C2]" : "bg-[var(--t050)] text-[var(--t800)] ring-[var(--t150)]")}>
+              <span className="text-base font-extrabold">{ad(due)}</span>
+            </span>
+            <span className="whitespace-nowrap text-[11px] font-bold leading-none min-[380px]:text-[12px]">للمراجعة</span>
+          </button>
           <MiniActivity sessions={sessions} />
           {/* مستوى الاستعداد: الحلقة وتحتها جملة قصيرة، على اليسار بجانب غصن الأيام */}
           <motion.button
