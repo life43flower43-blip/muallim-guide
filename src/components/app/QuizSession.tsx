@@ -549,29 +549,27 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
   const optClass = (o: { text: string; isCorrect: boolean }) => {
     const isSel = selected === o.text;
     if (showFeedback && o.isCorrect) return "border-[var(--t700)] bg-[var(--t100)] text-[var(--t950)] dark:bg-[var(--t700)]/15 dark:text-[var(--t300)]";
-    if (showFeedback && isSel) return "border-[#FF4B4B] bg-[#FFDFE0] text-[#B3261E] dark:bg-[#FF4B4B]/15 dark:text-[#FF8A8A]";
-    if (isSel) return "border-[var(--t800)] bg-[var(--t100)] text-[var(--t950)] dark:bg-[var(--t800)]/15 dark:text-[#7DD3FC]";
-    return "border-border bg-card text-foreground hover:bg-muted/60";
+    if (showFeedback && isSel) return "border-[#E5484D] bg-[#FDECEC] text-[#B3261E] dark:bg-[#FF4B4B]/15 dark:text-[#FF8A8A]";
+    if (isSel) return "border-[var(--t700)] bg-[var(--t050)] text-[var(--t950)] ring-2 ring-[var(--t150)] dark:bg-[var(--t800)]/15 dark:text-foreground";
+    return "border-[var(--t075)] bg-white text-foreground dark:border-border dark:bg-card";
   };
 
   return (
     <>
       <div className="fixed inset-0 z-40 flex flex-col bg-background">
         {/* الرأس: إغلاق وشريط تقدم سميك */}
-        <header className="safe-top mx-auto flex w-full max-w-[720px] items-center gap-3 px-4 pb-2 pt-4">
-          <button type="button" onClick={exit} aria-label="إغلاق" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted">
-            <X className="h-7 w-7" strokeWidth={2.5} />
+        <header className="safe-top mx-auto flex w-full max-w-[720px] items-center gap-3 px-4 pb-1 pt-3">
+          <button type="button" onClick={exit} aria-label="إغلاق" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--t050)] text-[var(--t700)]">
+            <X className="h-5 w-5" strokeWidth={2.5} />
           </button>
-          <div className="flex h-4 flex-1 justify-start overflow-hidden rounded-full bg-muted" role="progressbar" aria-valuenow={Math.round(progress)} aria-valuemin={0} aria-valuemax={100}>
-            <motion.div className="relative h-full rounded-full bg-[var(--t700)]" animate={{ width: `${Math.max(progress, 3)}%` }} transition={{ type: "spring", stiffness: 120, damping: 20 }}>
-              <span className="absolute inset-x-2 top-1 h-1 rounded-full bg-white/35" />
-            </motion.div>
+          <div className="flex h-2.5 flex-1 justify-start overflow-hidden rounded-full bg-[var(--t075)]" role="progressbar" aria-valuenow={Math.round(progress)} aria-valuemin={0} aria-valuemax={100}>
+            <motion.div className="h-full rounded-full bg-gradient-to-l from-[#F4C430] to-[var(--t700)]" animate={{ width: `${Math.max(progress, 3)}%` }} transition={{ type: "spring", stiffness: 120, damping: 20 }} />
           </div>
           {config.timeLimitSec ? (
             <Timer seconds={config.timeLimitSec} onTimeout={() => setFinished(true)} />
           ) : (
-            <span className="min-w-[2.5rem] text-center text-base font-bold text-muted-foreground">
-              {ad(idx + 1)}/{ad(questions.length)}
+            <span className="shrink-0 whitespace-nowrap text-sm font-bold text-[var(--t500)]">
+              {ad(idx + 1)} من {ad(questions.length)}
             </span>
           )}
         </header>
@@ -585,25 +583,36 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 24 }}
               transition={{ duration: 0.2 }}
-              className={`mx-auto w-full max-w-[640px] px-4 pb-8 pt-6 ${wrongShake && instantFeedback ? "shake" : ""}`}
+              className={`mx-auto w-full max-w-[640px] px-4 pb-6 pt-4 ${wrongShake && instantFeedback ? "shake" : ""}`}
             >
               {combo >= 3 && !answered && (
                 <p className="mb-3 text-base font-bold text-[#E3A93B]">{ad(combo)} إجابات صحيحة متتالية!</p>
               )}
-              {concept && <p className="text-sm font-bold text-[#B8860B]">{concept.title}</p>}
-              <h2 className="mt-2 font-display text-2xl font-bold leading-[1.75]">{q.question}</h2>
+              {concept && <p className="inline-flex max-w-full rounded-full bg-[#FBF1D6] px-3 text-[13px] font-bold leading-7 text-[#9A6A12]"><span className="truncate">{concept.title}</span></p>}
+              <h2 className="mt-3 font-display text-lg font-extrabold leading-8 text-foreground">{q.question}</h2>
 
-              <div className={q.type === "tf" ? "mt-8 grid grid-cols-2 gap-3" : "mt-8 space-y-3"}>
+              <div className={q.type === "tf" ? "mt-6 grid grid-cols-2 gap-3" : "mt-6 space-y-2.5"}>
                 {opts.map((o, i) => (
                   <button
                     key={i}
                     type="button"
                     disabled={answered}
                     onClick={() => choose(o.text)}
-                    className={`flex min-h-[64px] w-full items-center gap-3 rounded-2xl border-2 border-b-4 px-4 py-3 text-right text-lg font-medium leading-8 transition-colors active:translate-y-[2px] active:border-b-2 disabled:active:translate-y-0 ${optClass(o)} ${
+                    className={`flex min-h-[54px] w-full items-center gap-3 rounded-[18px] border-[1.5px] px-3.5 py-3 text-right text-base font-semibold leading-7 transition active:scale-[0.99] ${optClass(o)} ${
                       q.type === "tf" ? "justify-center text-center font-bold" : ""
                     }`}
                   >
+                    {q.type === "mcq" && (
+                      // دائرة الاختيار: تمتلئ بالأخضر عند الاختيار، وتظهر علامة صح أو خطأ بعد التحقق
+                      <span
+                        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${
+                          showFeedback && o.isCorrect ? "border-[var(--t700)] bg-[var(--t700)] text-white" : showFeedback && selected === o.text ? "border-[#E5484D] bg-[#E5484D] text-white" : selected === o.text ? "border-[var(--t700)] bg-[var(--t700)]" : "border-[var(--t150)]"
+                        }`}
+                        aria-hidden="true"
+                      >
+                        {showFeedback && o.isCorrect ? <Check className="h-3.5 w-3.5" strokeWidth={3.5} /> : showFeedback && selected === o.text ? <X className="h-3.5 w-3.5" strokeWidth={3.5} /> : selected === o.text ? <span className="h-2 w-2 rounded-full bg-white" /> : null}
+                      </span>
+                    )}
                     <span className={q.type === "mcq" ? "min-w-0 flex-1" : ""}>{o.text}</span>
                   </button>
                 ))}
@@ -615,7 +624,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
         {/* الشريط السفلي: «تحقّق» ثم لوحة النتيجة */}
         <footer
           className={`safe-bottom border-t-2 transition-colors ${
-            !showFeedback ? "border-border bg-background" : graded ? "border-transparent bg-[var(--t100)] dark:bg-[#1F3A12]" : "border-transparent bg-[#FFDFE0] dark:bg-[#3D1517]"
+            !showFeedback ? "border-transparent bg-background" : graded ? "border-transparent bg-[var(--t100)] dark:bg-[#1F3A12]" : "border-transparent bg-[#FDECEC] dark:bg-[#3D1517]"
           }`}
         >
           <div className="mx-auto w-full max-w-[640px] px-4 py-4">
@@ -625,7 +634,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white dark:bg-black/20 ${graded ? "text-[var(--t700)]" : "text-[#FF4B4B]"}`}>
                     {graded ? <Check className="h-8 w-8" strokeWidth={3.5} /> : <X className="h-8 w-8" strokeWidth={3.5} />}
                   </span>
-                  <p className={`flex-1 font-display text-2xl font-bold ${graded ? "text-[var(--t950)] dark:text-[var(--t300)]" : "text-[#B3261E] dark:text-[#FF8A8A]"}`}>
+                  <p className={`flex-1 font-display text-xl font-extrabold ${graded ? "text-[var(--t950)] dark:text-[var(--t300)]" : "text-[#B3261E] dark:text-[#FF8A8A]"}`}>
                     {graded ? PRAISE[idx % PRAISE.length] : "الإجابة الصحيحة:"}
                   </p>
                   <button type="button" onClick={handleReport} disabled={reported} aria-label="أبلغ عن خطأ في السؤال" className="flex h-10 w-10 items-center justify-center rounded-full opacity-60 hover:opacity-100 disabled:opacity-30">
@@ -650,7 +659,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                 <button
                   type="button"
                   onClick={() => setShowWhy(true)}
-                  className="min-h-[52px] flex-1 rounded-2xl border-2 border-b-4 border-black/10 bg-white text-base font-bold text-foreground active:translate-y-[2px] active:border-b-2 dark:bg-black/20"
+                  className="min-h-[52px] flex-1 rounded-[20px] border border-black/10 bg-white text-base font-bold text-foreground active:scale-[0.98] dark:bg-black/20"
                 >
                   الشرح
                 </button>
@@ -660,7 +669,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   type="button"
                   disabled={selected === null}
                   onClick={grade}
-                  className="min-h-[52px] flex-[2] rounded-2xl bg-[var(--t700)] text-lg font-bold text-white shadow-[0_4px_0_var(--t800)] transition active:translate-y-[4px] active:shadow-none disabled:bg-muted disabled:text-muted-foreground disabled:shadow-none"
+                  className="min-h-[52px] flex-[2] rounded-[20px] bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-lg font-bold text-white transition active:scale-[0.98] disabled:from-[var(--t075)] disabled:to-[var(--t075)] disabled:text-[var(--t450)]"
                 >
                   {instantFeedback ? "تحقّق" : "تأكيد"}
                 </button>
@@ -668,8 +677,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                 <button
                   type="button"
                   onClick={next}
-                  className={`min-h-[52px] flex-[2] rounded-2xl text-lg font-bold text-white transition active:translate-y-[4px] active:shadow-none ${
-                    !showFeedback || graded ? "bg-[var(--t700)] shadow-[0_4px_0_var(--t800)]" : "bg-[#FF4B4B] shadow-[0_4px_0_#EA2B2B]"
+                  className={`min-h-[52px] flex-[2] rounded-[20px] text-lg font-bold text-white transition active:scale-[0.98] ${
+                    !showFeedback || graded ? "bg-gradient-to-l from-[var(--t600)] to-[var(--t850)]" : "bg-[#E5484D]"
                   }`}
                 >
                   {idx + 1 >= questions.length ? "النتيجة" : "متابعة"}
