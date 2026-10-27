@@ -85,7 +85,7 @@
   --t060: #E3F1EA;
   --t050: #EEF5F1;
   --t025: #F8FCFA;
-  --background: #EEF5F1;
+  --background: #FFFFFF;
   --primary: #136F5C;
   --ring: #136F5C;
   --teal: #136F5C;
@@ -112,7 +112,7 @@
   --t060: #E3EAF4;
   --t050: #EEF2F8;
   --t025: #F8FAFD;
-  --background: #EEF2F8;
+  --background: #FFFFFF;
   --primary: #1F3B63;
   --ring: #1F3B63;
   --teal: #1F3B63;
@@ -139,7 +139,7 @@
   --t060: #F3E4E9;
   --t050: #F8EEF1;
   --t025: #FCF8F9;
-  --background: #F8EEF1;
+  --background: #FFFFFF;
   --primary: #7A2140;
   --ring: #7A2140;
   --teal: #7A2140;
@@ -166,7 +166,7 @@
   --t060: #F0E7DF;
   --t050: #F7F1EB;
   --t025: #FCFAF7;
-  --background: #F7F1EB;
+  --background: #FFFFFF;
   --primary: #5C4033;
   --ring: #5C4033;
   --teal: #5C4033;
@@ -652,7 +652,7 @@ body {
 /* شريط العنوان متصل بأعلى الشاشة وجانبيها، بلون شريط حالة الهاتف نفسه، وحوافه السفلى مستديرة */
 .green-head {
   overflow: hidden;
-  background: linear-gradient(180deg, var(--t025), var(--t050));
+  background: #FFFFFF;
   color: var(--t900);
 }
 .dark .green-head {

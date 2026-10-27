@@ -280,7 +280,7 @@ export default function AppShell() {
     const t = theme ?? "emerald";
     if (t === "emerald") delete document.documentElement.dataset.theme;
     else document.documentElement.dataset.theme = t;
-    const bg = getComputedStyle(document.documentElement).getPropertyValue("--t025").trim();
+    const bg = getComputedStyle(document.documentElement).getPropertyValue("--background").trim();
     document.querySelectorAll('meta[name="theme-color"]').forEach((m) => bg && m.setAttribute("content", bg));
   }, [theme, dark]);
   useEffect(() => {
