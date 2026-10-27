@@ -1,9 +1,21 @@
 "use client";
 
+import { useEffect } from "react";
 import { RefreshCcw } from "lucide-react";
 
+// أخطاء تحميل أجزاء نسخة قديمة بعد تحديث التطبيق: تُعالج بإعادة تحميل تلقائية مرة واحدة
+const STALE = /ChunkLoadError|Loading chunk|dynamically imported module|Importing a module script failed|Failed to fetch/i;
+
 /** شبّاك أمان التطبيق — يظهر عند أي خطأ غير متوقع بدل الشاشة الفارغة */
-export default function Error({ reset }: { error: Error; reset: () => void }) {
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  useEffect(() => {
+    if (!STALE.test(`${error?.name} ${error?.message}`)) return;
+    try {
+      if (sessionStorage.getItem("turbawy-auto-reload")) return;
+      sessionStorage.setItem("turbawy-auto-reload", "1");
+    } catch {}
+    window.location.reload();
+  }, [error]);
   return (
     <div className="mx-auto flex h-dvh max-w-[480px] flex-col items-center justify-center gap-5 bg-background px-8 text-center shadow-xl">
       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/15 text-3xl">
@@ -33,6 +45,8 @@ export default function Error({ reset }: { error: Error; reset: () => void }) {
           تحديث الصفحة
         </button>
       </div>
+      {/* نص الخطأ صغيرًا للتشخيص */}
+      <p dir="ltr" className="max-w-full break-words text-[10px] leading-4 text-muted-foreground/70">{`${error?.name ?? ""}: ${error?.message ?? ""}`.slice(0, 200)}</p>
     </div>
   );
 }

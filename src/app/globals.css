@@ -6,9 +6,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Tajawal", "Segoe UI", Tahoma, system-ui, sans-serif;
-  --font-display: "Tajawal", system-ui, sans-serif;
-  --font-mono: "Tajawal", monospace;
+  --font-sans: var(--font-tajawal), "Tajawal", "Segoe UI", Tahoma, system-ui, sans-serif;
+  --font-display: var(--font-tajawal), "Tajawal", system-ui, sans-serif;
+  --font-mono: var(--font-tajawal), "Tajawal", monospace;
   --color-gem: var(--gem);
   --color-gem-soft: var(--gem-soft);
   --color-success-soft: var(--success-soft);
@@ -196,7 +196,7 @@ body {
 
 body {
   @apply bg-background text-foreground;
-  font-family: "Tajawal", "Segoe UI", Tahoma, system-ui, sans-serif;
+  font-family: var(--font-tajawal), "Tajawal", "Segoe UI", Tahoma, system-ui, sans-serif;
   -webkit-tap-highlight-color: transparent;
   text-rendering: optimizeLegibility;
 }
