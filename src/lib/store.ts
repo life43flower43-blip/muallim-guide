@@ -43,6 +43,15 @@ export interface SpeechRecord {
   score: number; // متوسط التقييم الذاتي من خمسة
 }
 
+/** أنماط ألوان التطبيق: لكل نمط لون أساسي ودرجاته، مع الذهبي في الجميع */
+export type AppTheme = "emerald" | "navy" | "burgundy" | "coffee";
+export const THEMES: { id: AppTheme; label: string; color: string }[] = [
+  { id: "emerald", label: "زمردي", color: "#136F5C" },
+  { id: "navy", label: "كحلي", color: "#1F3B63" },
+  { id: "burgundy", label: "عنابي", color: "#7A2140" },
+  { id: "coffee", label: "بني", color: "#5C4033" },
+];
+
 export type LearnerGoal = "job" | "university" | "teacher";
 
 interface AppState {
@@ -78,6 +87,7 @@ interface AppState {
   // وضع العرض — فاتح / يتبع النظام / ليلي (ترقية عن dark المنطقي القديم عبر migrate)
   darkMode: "light" | "auto" | "dark";
   fontScale: "normal" | "large" | "bigger"; // حجم خط القراءة — تفضيل عرض كالوضع الليلي
+  theme: AppTheme; // لون التطبيق الأساسي — يختاره المستخدم من الإعدادات، والذهبي ثابت
   haptics: boolean; // الاهتزاز اللطيف عند الإجابة — تفضيل عرض
 
   setName: (n: string) => void;
@@ -112,6 +122,7 @@ interface AppState {
   addStudyLesson: (lessonId: string) => void;
   toggleFirstday: (itemId: string) => void;
   setDarkMode: (v: "light" | "auto" | "dark") => void;
+  setTheme: (v: AppTheme) => void;
   setFontScale: (v: "normal" | "large" | "bigger") => void;
   setHaptics: (v: boolean) => void;
   resetAll: () => void;
@@ -199,6 +210,7 @@ export const useApp = create<AppState>()(
       lastConcept: null,
       darkMode: "light",
       fontScale: "normal",
+      theme: "emerald",
       haptics: true,
 
       setName: (n) => set({ name: n }),
@@ -366,6 +378,7 @@ export const useApp = create<AppState>()(
 
       // وضع العرض وحجم الخط والاهتزاز — تفضيلات عرض لا تُمسّ عند تصفير التقدم
       setDarkMode: (v) => set({ darkMode: v }),
+      setTheme: (v) => set({ theme: v }),
       setFontScale: (v) => set({ fontScale: v }),
       setHaptics: (v) => set({ haptics: v }),
 

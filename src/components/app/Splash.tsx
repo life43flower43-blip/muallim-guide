@@ -28,7 +28,7 @@ export function Splash() {
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-gradient-to-b from-[#F3F9F6] to-[#E3F1EA]"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-gradient-to-b from-[var(--t050)] to-[var(--t060)]"
           exit={{ opacity: 0 }}
           transition={{ duration: 0.35 }}
           aria-hidden="true"
@@ -50,7 +50,7 @@ export function Splash() {
             />
           </motion.div>
           <motion.span
-            className="font-display text-3xl font-extrabold text-[#174D41]"
+            className="font-display text-3xl font-extrabold text-[var(--t900)]"
             initial={booted ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}

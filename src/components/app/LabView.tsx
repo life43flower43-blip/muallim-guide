@@ -305,7 +305,7 @@ export default function LabView() {
           aria-selected={tab === id}
           onClick={() => setTab(id)}
           className={`flex min-h-[42px] min-w-0 items-center justify-center rounded-[18px] px-1 font-bold transition-colors ${
-            tab === id ? "bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] text-white" : "text-[#5D7A71]"
+            tab === id ? "bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "text-[var(--t500)]"
           }`}
         >
           <FitText max={15} min={10} group="lab-tabs" className="text-center">{lbl}</FitText>
@@ -326,10 +326,9 @@ export default function LabView() {
         <IconTile icon={asExam ? ShieldCheck : FlaskConical} />
         <span className="min-w-0 flex-1">
           <FitText max={17} min={12} className="font-bold leading-7">{s.title}</FitText>
-          <span className="mt-2 flex flex-wrap gap-1.5">
-            {!asExam && <Chip tone="primary">{s.skill}</Chip>}
-            <Chip>{s.stage}</Chip>
-            {st && <Chip>{st}</Chip>}
+          <span className="mt-1.5 flex min-w-0 items-start gap-1.5 rounded-[12px] bg-[var(--t050)] px-2.5 py-1 text-[var(--t500)]">
+            <span className="flex-1 text-[13px] font-medium leading-5">{(asExam ? [s.stage] : [s.skill, s.stage]).join(" · ")}</span>
+            {st && <span className="shrink-0 rounded-full bg-[var(--t100)] px-2 text-[11px] font-bold leading-5 text-[var(--t800)]">{st}</span>}
           </span>
         </span>
         <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" />

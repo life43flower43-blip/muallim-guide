@@ -45,27 +45,18 @@
 :root {
   /* هوية «تربوي»: تركوازي هادئ مريح، رماديات مائلة إلى التركواز، وبرتقالي للجواهر وحدها */
   --radius: 0.75rem;
-  --background: #EEF5F1;
   --foreground: #12292D;
   --card: #ffffff;
   --card-foreground: #12292D;
   --popover: #ffffff;
   --popover-foreground: #12292D;
-  --primary: #136F5C;
   --primary-foreground: #ffffff;
-  --secondary: #ECF4EF;
   --secondary-foreground: #33494D;
-  --muted: #E8F1EC;
   --muted-foreground: #4A6165;
-  --accent: #DCEFE5;
-  --accent-foreground: #0D5848;
   --destructive: #B42318;
-  --border: #D8E7DF;
   --input: #C3D9CD;
-  --ring: #136F5C;
   --success: #067647;
   --warning: #B54708;
-  --teal: #136F5C;
   --amber: #B54708;
   --rose: #B42318;
   --violet: #1F7A63;
@@ -75,6 +66,117 @@
   --success-soft: #ECFDF3;
   --danger-soft: #FEF3F2;
 }
+
+/* ألوان التطبيق: درجات اللون الأساسي تتغير بحسب النمط المختار من الإعدادات، والذهبي ثابت في كل الأنماط */
+:root {
+  --t950: #0D5848;
+  --t900: #174D41;
+  --t850: #1C5E4F;
+  --t800: #136F5C;
+  --t700: #1F7A63;
+  --t600: #2C7D69;
+  --t500: #5D7A71;
+  --t450: #7E978E;
+  --t300: #A9CDBB;
+  --t200: #C9DDD3;
+  --t150: #CFE6DA;
+  --t100: #DCEFE5;
+  --t075: #E2ECE7;
+  --t060: #E3F1EA;
+  --t050: #EEF5F1;
+  --t025: #F8FCFA;
+  --background: #EEF5F1;
+  --primary: #136F5C;
+  --ring: #136F5C;
+  --teal: #136F5C;
+  --accent: #DCEFE5;
+  --accent-foreground: #0D5848;
+  --border: #D8E7DF;
+  --muted: #E8F1EC;
+  --secondary: #ECF4EF;
+}
+:root[data-theme="navy"]:not(.dark) {
+  --t950: #0F2440;
+  --t900: #16263F;
+  --t850: #1A2F50;
+  --t800: #1F3B63;
+  --t700: #2A4D7D;
+  --t600: #335A8E;
+  --t500: #5E6E85;
+  --t450: #7D8BA0;
+  --t300: #A9BBD3;
+  --t200: #C8D3E2;
+  --t150: #CFDAE9;
+  --t100: #DCE5F1;
+  --t075: #E1E7EF;
+  --t060: #E3EAF4;
+  --t050: #EEF2F8;
+  --t025: #F8FAFD;
+  --background: #EEF2F8;
+  --primary: #1F3B63;
+  --ring: #1F3B63;
+  --teal: #1F3B63;
+  --accent: #DCE5F1;
+  --accent-foreground: #0F2440;
+  --border: #D6DFEB;
+  --muted: #E7ECF3;
+  --secondary: #ECF0F6;
+}
+:root[data-theme="burgundy"]:not(.dark) {
+  --t950: #4A1225;
+  --t900: #4E1528;
+  --t850: #5E1A31;
+  --t800: #7A2140;
+  --t700: #8A2C4C;
+  --t600: #9A3355;
+  --t500: #82646D;
+  --t450: #9C8189;
+  --t300: #D3A9B6;
+  --t200: #E2CAD2;
+  --t150: #E9D3DA;
+  --t100: #F2DDE4;
+  --t075: #EFE2E6;
+  --t060: #F3E4E9;
+  --t050: #F8EEF1;
+  --t025: #FCF8F9;
+  --background: #F8EEF1;
+  --primary: #7A2140;
+  --ring: #7A2140;
+  --teal: #7A2140;
+  --accent: #F2DDE4;
+  --accent-foreground: #4A1225;
+  --border: #EAD8DE;
+  --muted: #F2E7EA;
+  --secondary: #F5ECEF;
+}
+:root[data-theme="coffee"]:not(.dark) {
+  --t950: #3E2A1E;
+  --t900: #3B2A20;
+  --t850: #4A3426;
+  --t800: #5C4033;
+  --t700: #6E4E3D;
+  --t600: #7F5C47;
+  --t500: #7E6B60;
+  --t450: #9A877B;
+  --t300: #CDB7A6;
+  --t200: #DCCBBE;
+  --t150: #E3D4C8;
+  --t100: #EFE3D8;
+  --t075: #EAE1D9;
+  --t060: #F0E7DF;
+  --t050: #F7F1EB;
+  --t025: #FCFAF7;
+  --background: #F7F1EB;
+  --primary: #5C4033;
+  --ring: #5C4033;
+  --teal: #5C4033;
+  --accent: #EFE3D8;
+  --accent-foreground: #3E2A1E;
+  --border: #E6DACF;
+  --muted: #F0E8E0;
+  --secondary: #F3ECE5;
+}
+
 
 @layer base {
   * {
@@ -511,7 +613,7 @@ body {
   border: 2.5px solid transparent;
   border-radius: 22px;
   background:
-    linear-gradient(#F8FCFA, #F8FCFA) padding-box,
+    linear-gradient(var(--t025), var(--t025)) padding-box,
     conic-gradient(from var(--gold-angle), #D4AF37, #F4C430 16%, #FFFFFF 25%, #FFF3B0 29%, #F4C430 36%, #C9A227 55%, #F4C430 75%, #D4AF37) border-box;
   animation: gold-spin 4s linear infinite;
 }
@@ -530,7 +632,7 @@ body {
 /* شريط العنوان الأخضر: تدرّج الهوية، بحواف مستديرة وظل ناعم */
 .green-bar {
   border-radius: 22px;
-  background: linear-gradient(270deg, #2C7D69, #1C5E4F);
+  background: linear-gradient(270deg, var(--t600), var(--t850));
   color: #fff;
 }
 
@@ -550,8 +652,8 @@ body {
 /* شريط العنوان متصل بأعلى الشاشة وجانبيها، بلون شريط حالة الهاتف نفسه، وحوافه السفلى مستديرة */
 .green-head {
   overflow: hidden;
-  background: linear-gradient(180deg, #F3F9F6, #EAF4EF);
-  color: #174D41;
+  background: linear-gradient(180deg, var(--t025), var(--t050));
+  color: var(--t900);
 }
 .dark .green-head {
   background: var(--background);
@@ -587,8 +689,8 @@ body {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  background: radial-gradient(circle, rgba(44, 125, 105, 0) 52%, rgba(44, 125, 105, 0.35) 70%, rgba(19, 111, 92, 0) 72%);
-  border: 1.5px solid rgba(19, 111, 92, 0.45);
+  background: radial-gradient(circle, transparent 52%, color-mix(in srgb, var(--t800) 35%, transparent) 70%, transparent 72%);
+  border: 1.5px solid color-mix(in srgb, var(--t800) 45%, transparent);
   animation: energy-out 4.5s ease-out infinite;
   pointer-events: none;
 }
@@ -617,7 +719,7 @@ body {
   position: absolute;
   inset: -3px;
   border-radius: 22px;
-  border: 1.5px solid rgba(19, 111, 92, 0.5);
+  border: 1.5px solid color-mix(in srgb, var(--t800) 50%, transparent);
   pointer-events: none;
   animation: card-wave 4.5s ease-out infinite;
 }

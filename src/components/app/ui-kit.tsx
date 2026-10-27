@@ -14,7 +14,7 @@ import { ad } from "@/lib/arabic";
 
 export function Card({ className, children, ...rest }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("rounded-[24px] border border-[#E2ECE7] bg-white dark:border-border dark:bg-card", className)} {...rest}>
+    <div className={cn("rounded-[24px] border border-[var(--t075)] bg-white dark:border-border dark:bg-card", className)} {...rest}>
       {children}
     </div>
   );
@@ -174,7 +174,7 @@ export function PrimaryButton({ className, ...rest }: React.ButtonHTMLAttributes
     <button
       type="button"
       className={cn(
-        "inline-flex min-h-[50px] items-center justify-center gap-2 whitespace-nowrap rounded-[20px] bg-gradient-to-l from-[#2C7D69] to-[#1C5E4F] px-5 text-base font-bold text-white transition active:scale-[0.97] hover:brightness-105 disabled:from-muted disabled:to-muted disabled:text-muted-foreground",
+        "inline-flex min-h-[50px] items-center justify-center gap-2 whitespace-nowrap rounded-[20px] bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] px-5 text-base font-bold text-white transition active:scale-[0.97] hover:brightness-105 disabled:from-muted disabled:to-muted disabled:text-muted-foreground",
         className
       )}
       {...rest}
@@ -187,7 +187,7 @@ export function SecondaryButton({ className, ...rest }: React.ButtonHTMLAttribut
     <button
       type="button"
       className={cn(
-        "inline-flex min-h-[50px] items-center justify-center gap-2 whitespace-nowrap rounded-[20px] border border-[#E3D3A0] bg-white px-5 text-base font-bold text-[#174D41] transition active:scale-[0.97] hover:bg-[#FBF7EA] disabled:opacity-50 dark:bg-card dark:text-foreground",
+        "inline-flex min-h-[50px] items-center justify-center gap-2 whitespace-nowrap rounded-[20px] border border-[#E3D3A0] bg-white px-5 text-base font-bold text-[var(--t900)] transition active:scale-[0.97] hover:bg-[#FBF7EA] disabled:opacity-50 dark:bg-card dark:text-foreground",
         className
       )}
       {...rest}
@@ -248,11 +248,11 @@ export function ScreenShell({
         <HeaderArt />
         <div className={cn("mx-auto flex min-h-[56px] items-center gap-2 px-1", wide ? "max-w-5xl" : "max-w-3xl")}>
           {onBack ? (
-            <button type="button" onClick={onBack} aria-label="رجوع" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#174D41] hover:bg-black/5 dark:text-foreground">
+            <button type="button" onClick={onBack} aria-label="رجوع" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[var(--t900)] hover:bg-black/5 dark:text-foreground">
               <ArrowRight className="h-6 w-6" strokeWidth={2.5} />
             </button>
           ) : onClose ? (
-            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#174D41] hover:bg-black/5 dark:text-foreground">
+            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[var(--t900)] hover:bg-black/5 dark:text-foreground">
               <X className="h-6 w-6" strokeWidth={2.5} />
             </button>
           ) : null}
@@ -265,7 +265,7 @@ export function ScreenShell({
           {/* موازنة زر الرجوع ليبقى العنوان في الوسط */}
           {!actions && !(onBack && onClose) && (onBack || onClose) && <span className="w-11 shrink-0" aria-hidden="true" />}
           {onBack && onClose && (
-            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#174D41]/70 hover:bg-black/5 dark:text-muted-foreground">
+            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[var(--t900)]/70 hover:bg-black/5 dark:text-muted-foreground">
               <X className="h-6 w-6" strokeWidth={2.5} />
             </button>
           )}
@@ -462,17 +462,17 @@ export function HeaderArt() {
     <svg className="head-art pointer-events-none absolute inset-0 h-full w-full -scale-y-100" viewBox="0 0 400 130" preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <linearGradient id="ha1" x1="0" y1="0" x2="1" y2="0.5">
-          <stop offset="0" stopColor="#136F5C" stopOpacity="0.95" />
-          <stop offset="0.6" stopColor="#1C5E4F" stopOpacity="0.35" />
-          <stop offset="1" stopColor="#2C7D69" stopOpacity="0" />
+          <stop offset="0" stopColor="var(--t800)" stopOpacity="0.95" />
+          <stop offset="0.6" stopColor="var(--t850)" stopOpacity="0.35" />
+          <stop offset="1" stopColor="var(--t600)" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="ha2" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#2C7D69" stopOpacity="0.55" />
-          <stop offset="1" stopColor="#DCEFE5" stopOpacity="0" />
+          <stop offset="0" stopColor="var(--t600)" stopOpacity="0.55" />
+          <stop offset="1" stopColor="var(--t100)" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="ha3" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#B9DCCB" />
-          <stop offset="1" stopColor="#DCEFE5" stopOpacity="0.3" />
+          <stop offset="0" stopColor="var(--t200)" />
+          <stop offset="1" stopColor="var(--t100)" stopOpacity="0.3" />
         </linearGradient>
         <linearGradient id="hag" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#F4C430" stopOpacity="0.2" />

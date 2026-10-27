@@ -36,7 +36,7 @@ export const BLUEPRINTS: ExamBlueprint[] = [
       { courseId: "M3", quota: 13 },
       { courseId: "M4", quota: 12 },
     ],
-    color: "#136F5C",
+    color: "var(--t800)",
   },
   {
     id: "specialty",
@@ -66,7 +66,7 @@ export const BLUEPRINTS: ExamBlueprint[] = [
       { courseId: "F1", quota: 10 },
       { courseId: "SE1", quota: 8 },
     ],
-    color: "#0D5848",
+    color: "var(--t950)",
   },
 ];
 
@@ -201,11 +201,11 @@ export const PLACEMENT_LEVELS: Record<
   growing: {
     title: "نامٍ ومتقدم",
     desc: "أساسك موجود وتتوزع فجواتك في محاور بعينها — التركيز عليها سيرفعك سريعًا",
-    color: "#136F5C",
+    color: "var(--t800)",
   },
   ready: {
     title: "جاهز للاحتراف",
     desc: "مستواك القاعدي ممتاز — انقل جهدك إلى المحاكاة الموقوتة ودفتر الأخطاء لصقل الأداء تحت الضغط",
-    color: "#0D5848",
+    color: "var(--t950)",
   },
 };
