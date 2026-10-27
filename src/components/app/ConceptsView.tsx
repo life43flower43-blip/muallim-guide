@@ -692,7 +692,7 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
 
   return (
     <ScreenShell wide title={course.name} sub={COURSE_SUBTITLE[courseId]} onBack={onBack}>
-      <div className="grid gap-6 lg:grid-cols-[1fr_320px] lg:items-start">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px] lg:items-start [&>*]:min-w-0">
         {/* ملخص المحور: أولًا على الجوال، وجانبًا على الحاسوب */}
         <aside className="space-y-4 lg:sticky lg:top-0 lg:order-2">
           <Card className="p-5">
@@ -750,7 +750,7 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
                   key={ch}
                   type="button"
                   onClick={() => onChapter(ch)}
-                  className="flex min-h-[72px] w-full items-center gap-3 px-4 py-3.5 text-right transition-colors hover:bg-muted/60"
+                  className="flex min-h-[64px] w-full min-w-0 items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
                 >
                   <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${done ? "bg-gradient-to-br from-[#FFE27A] to-[#C99A06] text-white" : "bg-[var(--t100)] text-[var(--t800)]"}`}>
                     {done ? <CheckCircle2 className="h-5 w-5" /> : <BookOpen className="h-4 w-4" />}

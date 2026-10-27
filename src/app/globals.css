@@ -56,13 +56,13 @@
   --destructive: #B42318;
   --input: #C3D9CD;
   --success: #067647;
-  --warning: #B54708;
-  --amber: #B54708;
+  --warning: #A67C00;
+  --amber: #A67C00;
   --rose: #B42318;
   --violet: #1F7A63;
   --mint: #067647;
-  --gem: #B54708;
-  --gem-soft: #FEF6E7;
+  --gem: #B8860B;
+  --gem-soft: #FBF1D6;
   --success-soft: #ECFDF3;
   --danger-soft: #FEF3F2;
 }

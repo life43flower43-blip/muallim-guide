@@ -1,6 +1,6 @@
 // عامل خدمة: شبكة أولاً للتنقل والأصول، كاش أولاً لبنك البيانات الكبير
 // v32 — الواجهة الجديدة: الحسابات والجواهر والتدريب والأخطاء منقولة من أوريندو
-const CACHE = "turbawy-v114";
+const CACHE = "turbawy-v115";
 const SHELL = ["/", "/manifest.json", "/icons/icon-192-v3.png", "/icons/icon-512-v3.png"];
 
 self.addEventListener("install", (e) => {
