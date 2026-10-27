@@ -29,7 +29,6 @@ interface UiState {
   peerIncoming: PeerPayload | null; // تحدٍّ وصل عبر رابط مفتوح — يُلتقط من معرف الرابط
   examsimOpen: boolean; // محاكي الرخصة والمسابقات — بلاتنات موقوتة بأقسام ومحك
   placementOpen: boolean; // اختبار تحديد المستوى — تشخيص ثلاثي المستويات
-  matchOpen: boolean; // لعبة المطابقة — مصطلح مقابل شرحه المصغّر
   flashOpen: boolean; // بطاقات المفاهيم — وضع بطاقات القلب
   learnOpen: boolean; // شاشة المفاهيم التربوية (المحاور والفصول والمفاهيم)
   aiOpen: boolean; // المساعد الذكي — إجابات تربوية فورية من المحرك المحلي
@@ -62,8 +61,6 @@ interface UiState {
   clearExamsim: () => void;
   startPlacement: () => void;
   clearPlacement: () => void;
-  startMatch: () => void;
-  clearMatch: () => void;
   startFlash: () => void;
   clearFlash: () => void;
   startAi: () => void;
@@ -90,7 +87,6 @@ export const useUi = create<UiState>((set) => ({
   peerIncoming: null,
   examsimOpen: false,
   placementOpen: false,
-  matchOpen: false,
   flashOpen: false,
   aiOpen: false,
   learnOpen: false,
@@ -123,8 +119,6 @@ export const useUi = create<UiState>((set) => ({
   clearExamsim: () => set({ examsimOpen: false }),
   startPlacement: () => set({ placementOpen: true }),
   clearPlacement: () => set({ placementOpen: false }),
-  startMatch: () => set({ matchOpen: true }),
-  clearMatch: () => set({ matchOpen: false }),
   startFlash: () => set({ flashOpen: true }),
   clearFlash: () => set({ flashOpen: false }),
   startAi: () => set({ aiOpen: true }),
@@ -144,7 +138,6 @@ export const useUi = create<UiState>((set) => ({
       peerOpen: false,
       examsimOpen: false,
       placementOpen: false,
-      matchOpen: false,
       flashOpen: false,
       aiOpen: false,
       learnOpen: false,

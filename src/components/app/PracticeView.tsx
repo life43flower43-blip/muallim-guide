@@ -11,7 +11,6 @@
 
 import { useMemo, useState } from "react";
 import {
-  Brain,
   ChevronDown,
   ClipboardCheck,
   FlaskConical,
@@ -229,7 +228,6 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
         <SectionHeader title="مراجعة سريعة" />
         <Divided>
           <ListRow icon={Layers} title="بطاقات المفاهيم" sub="بطاقة تنقلب لتعرض الشرح والمثال" onClick={ui.startFlash} />
-          <ListRow icon={Brain} title="لعبة المطابقة" sub="مصطلح مقابل شرحه" onClick={ui.startMatch} />
           <ListRow icon={Gauge} title="اختبار تحديد المستوى" sub="اثنا عشر سؤالًا من كل المحاور" onClick={ui.startPlacement} />
           <ListRow icon={Users} title="تحدّي زميل" sub="أرسل رابط تحدٍّ بالأسئلة نفسها" onClick={ui.startPeer} />
         </Divided>
