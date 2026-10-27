@@ -42,12 +42,15 @@ export function applyQbank(raw: QbankRaw) {
   done?.();
 }
 
+/** إصدار البنك: يتغيّر فقط حين يتغيّر محتواه، فيُحمَّل مرة واحدة ويبقى محفوظًا عبر تحديثات الواجهة */
+export const QBANK_VERSION = "844d9523";
+
 /** المحمّل: جلب البنك مع مؤشر تقدم ومحاولة إعادة واحدة عند الفشل */
 export async function loadQbank(
   onProgress?: (p: number) => void
 ): Promise<void> {
   const attempt = async () => {
-    const res = await fetch("/data/qbank.json");
+    const res = await fetch(`/data/qbank.json?v=${QBANK_VERSION}`);
     if (!res.ok) throw new Error(`فشل تحميل البنك (${res.status})`);
     const total = Number(res.headers.get("Content-Length") || 0);
     if (res.body && total > 0) {

@@ -1,6 +1,8 @@
 // عامل خدمة: شبكة أولاً للتنقل والأصول، كاش أولاً لبنك البيانات الكبير
 // v32 — الواجهة الجديدة: الحسابات والجواهر والتدريب والأخطاء منقولة من أوريندو
-const CACHE = "turbawy-v139";
+const CACHE = "turbawy-v142";
+// كاش مستقل لبنك البيانات: لا يُحذف عند تحديث الواجهة، فلا يُعاد تنزيل البنك الكبير مع كل تحديث
+const DATA_CACHE = "turbawy-data";
 const SHELL = ["/", "/manifest.json", "/icons/icon-192-v3.png", "/icons/icon-512-v3.png"];
 
 self.addEventListener("install", (e) => {
@@ -12,7 +14,7 @@ self.addEventListener("install", (e) => {
 self.addEventListener("activate", (e) => {
   e.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
+      Promise.all(keys.filter((k) => k !== CACHE && k !== DATA_CACHE).map((k) => caches.delete(k)))
     ).then(() => self.clients.claim())
   );
 });
@@ -36,22 +38,23 @@ self.addEventListener("fetch", (e) => {
     return;
   }
 
-  // ٢) بنك البيانات الكبير: كاش أولاً — يُحمَّل مرة واحدة ثم يعمل فوريًّا ودون اتصال،
-  //    مع تحديث صامت في الخلفية ليصل أثر التوسعات في الزيارة التالية
+  // ٢) بنك البيانات الكبير: كاش أولًا بلا تنزيل متكرر — رابطه يحمل رقم إصداره،
+  //    فإذا تغيّر المحتوى تغيّر الرابط فنُزّل مرة واحدة وحُذفت النسخ القديمة
   if (url.pathname.startsWith("/data/")) {
     e.respondWith(
-      caches.match(e.request).then((hit) => {
-        const refresh = fetch(e.request)
-          .then((res) => {
-            if (res && res.ok && res.type === "basic") {
-              const copy = res.clone();
-              caches.open(CACHE).then((c) => c.put(e.request, copy));
-            }
-            return res;
-          })
-          .catch(() => null);
-        return hit || refresh.then((res) => res || Response.error());
-      })
+      caches.open(DATA_CACHE).then((c) =>
+        c.match(e.request).then(
+          (hit) =>
+            hit ||
+            fetch(e.request).then((res) => {
+              if (res && res.ok && res.type === "basic") {
+                const copy = res.clone();
+                c.keys().then((ks) => Promise.all(ks.filter((k) => new URL(k.url).pathname === url.pathname).map((k) => c.delete(k)))).then(() => c.put(e.request, copy));
+              }
+              return res;
+            })
+        )
+      )
     );
     return;
   }

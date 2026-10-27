@@ -6,9 +6,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Tajawal", "Segoe UI", Tahoma, system-ui, sans-serif;
-  --font-display: "Tajawal", system-ui, sans-serif;
-  --font-mono: "Tajawal", monospace;
+  --font-sans: var(--font-tajawal), "Tajawal", "Segoe UI", Tahoma, system-ui, sans-serif;
+  --font-display: var(--font-tajawal), "Tajawal", system-ui, sans-serif;
+  --font-mono: var(--font-tajawal), "Tajawal", monospace;
   --color-gem: var(--gem);
   --color-gem-soft: var(--gem-soft);
   --color-success-soft: var(--success-soft);
@@ -196,7 +196,7 @@ body {
 
 body {
   @apply bg-background text-foreground;
-  font-family: "Tajawal", "Segoe UI", Tahoma, system-ui, sans-serif;
+  font-family: var(--font-tajawal), "Tajawal", "Segoe UI", Tahoma, system-ui, sans-serif;
   -webkit-tap-highlight-color: transparent;
   text-rendering: optimizeLegibility;
 }
@@ -764,7 +764,7 @@ body {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  border: 2.5px solid rgba(244, 196, 48, 0.9);
+  border: 2.5px solid rgba(201, 154, 6, 0.85);
   background: radial-gradient(circle, transparent 55%, rgba(255, 226, 122, 0.35) 75%, transparent 76%);
   animation: gold-wave 3.3s ease-out infinite;
   pointer-events: none;
