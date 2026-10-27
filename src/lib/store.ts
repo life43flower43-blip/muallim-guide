@@ -87,6 +87,7 @@ interface AppState {
   // وضع العرض — فاتح / يتبع النظام / ليلي (ترقية عن dark المنطقي القديم عبر migrate)
   darkMode: "light" | "auto" | "dark";
   fontScale: "normal" | "large" | "bigger"; // حجم خط القراءة — تفضيل عرض كالوضع الليلي
+  homeStyle: "icons" | "photos"; // شكل بطاقات الرئيسية: رموز أو صور
   theme: AppTheme; // لون التطبيق الأساسي — يختاره المستخدم من الإعدادات، والذهبي ثابت
   haptics: boolean; // الاهتزاز اللطيف عند الإجابة — تفضيل عرض
 
@@ -123,6 +124,7 @@ interface AppState {
   toggleFirstday: (itemId: string) => void;
   setDarkMode: (v: "light" | "auto" | "dark") => void;
   setTheme: (v: AppTheme) => void;
+  setHomeStyle: (v: "icons" | "photos") => void;
   setFontScale: (v: "normal" | "large" | "bigger") => void;
   setHaptics: (v: boolean) => void;
   resetAll: () => void;
@@ -211,6 +213,7 @@ export const useApp = create<AppState>()(
       darkMode: "light",
       fontScale: "normal",
       theme: "emerald",
+      homeStyle: "icons",
       haptics: true,
 
       setName: (n) => set({ name: n }),
@@ -379,6 +382,7 @@ export const useApp = create<AppState>()(
       // وضع العرض وحجم الخط والاهتزاز — تفضيلات عرض لا تُمسّ عند تصفير التقدم
       setDarkMode: (v) => set({ darkMode: v }),
       setTheme: (v) => set({ theme: v }),
+      setHomeStyle: (v) => set({ homeStyle: v }),
       setFontScale: (v) => set({ fontScale: v }),
       setHaptics: (v) => set({ haptics: v }),
 

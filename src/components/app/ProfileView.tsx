@@ -539,6 +539,8 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
               </button>
             ))}
           </div>
+          <p className="text-sm font-medium text-secondary-foreground">شكل الرئيسية</p>
+          <Segmented label="شكل الرئيسية" value={st.homeStyle ?? "icons"} onChange={st.setHomeStyle} options={[["icons", "رموز"], ["photos", "صور"]] as const} />
           <p className="text-sm font-medium text-secondary-foreground">حجم الخط</p>
           <Segmented label="حجم الخط" value={st.fontScale} onChange={st.setFontScale} options={[["normal", "عادي"], ["large", "كبير"], ["bigger", "أكبر"]] as const} />
           <button
