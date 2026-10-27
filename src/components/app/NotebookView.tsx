@@ -17,7 +17,7 @@ type Part = "maps" | "rules" | "examples";
 const PARTS: { id: Part; label: string }[] = [
   { id: "maps", label: "الخرائط" },
   { id: "rules", label: "القواعد" },
-  { id: "examples", label: "أمثلة" },
+  { id: "examples", label: "مواقف" },
 ];
 
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
@@ -51,20 +51,24 @@ function CausalMap({ map }: { map: ChapterMap }) {
   );
 }
 
-/** أمثلة واقعية من الصف لكل مفهوم في الفصل: المفهوم بالذهبي، والموقف تحته */
+// المثال يُعرض فقط حين يكون موقفًا صفيًّا حقيقيًّا: فيه معلم، وطلاب أو صف أو حصة — والمفاهيم النظرية بلا مثال
+const TEACHER = /(معلم|معلمة|مدرس|مدرسة)/;
+const CLASSROOM = /(الصف|صفه|صفها|الحصة|حصة|الدرس|درس|طلاب|طالبات|تلاميذ|طالب|طالبة|تلميذ)/;
+const THEORY = /^(تعريف|مفهوم|نشأة|تاريخ|أنواع|مراحل|خصائص|أهمية|أهداف|مصادر|أسس|معنى|مجالات|نظرية|نظريات|العلاقة|الفرق|طبيعة)/;
+const classroomExample = (c: Concept) => (THEORY.test(c.title) ? undefined : (c.examples ?? []).find((e) => TEACHER.test(e) && CLASSROOM.test(e)));
+
+/** مواقف صفية واقعية من الفصل: المفهوم في شارة ذهبية، والموقف تحته */
 function Examples({ concepts }: { concepts: Concept[] }) {
+  const items = concepts.map((c) => ({ c, ex: classroomExample(c) })).filter((x) => x.ex);
+  if (items.length === 0) return <p className="p-3 text-center text-sm text-muted-foreground">لا مواقف صفية في هذا الفصل</p>;
   return (
     <ul className="space-y-3">
-      {concepts.map((c) => {
-        const ex = c.examples?.[0] ?? c.example;
-        if (!ex) return null;
-        return (
-          <li key={c.id} className="rounded-[22px] border border-[var(--t075)] bg-white p-4 dark:border-border dark:bg-card">
-            <p className="inline-flex rounded-full bg-[#FBF1D6] px-3 text-sm font-bold leading-7 text-[#9A6A12]">{c.title}</p>
-            <p className="mt-2 leading-8">{ex}</p>
-          </li>
-        );
-      })}
+      {items.map(({ c, ex }) => (
+        <li key={c.id} className="rounded-[22px] border border-[var(--t075)] bg-white p-4 dark:border-border dark:bg-card">
+          <p className="inline-flex rounded-full bg-[#FBF1D6] px-3 text-sm font-bold leading-7 text-[#9A6A12]">{c.title}</p>
+          <p className="mt-2 leading-8">{ex}</p>
+        </li>
+      ))}
     </ul>
   );
 }
