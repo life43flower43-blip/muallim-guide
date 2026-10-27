@@ -108,24 +108,6 @@ export default function NotebookView() {
     <div className="mx-auto max-w-2xl space-y-5">
       <PageTitle title="دفتري" />
 
-      <div role="tablist" aria-label="أقسام الدفتر" className="grid grid-cols-3 gap-1 rounded-[22px] border border-[#E3D3A0] bg-white p-1 dark:bg-card">
-        {PARTS.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            role="tab"
-            aria-selected={part === p.id}
-            onClick={() => setPart(p.id)}
-            className={cn(
-              "min-h-[44px] min-w-0 rounded-[18px] px-1 font-bold transition active:scale-[0.98]",
-              part === p.id ? "bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "text-[var(--t500)]"
-            )}
-          >
-            <FitText max={16} min={10} group="nb-tabs" className="text-center">{p.label}</FitText>
-          </button>
-        ))}
-      </div>
-
 
       {current ? (
         <div className="space-y-4">
@@ -143,6 +125,25 @@ export default function NotebookView() {
             </button>
           </div>
 
+          {/* أقسام الدفتر تحت محدد الفصل */}
+          <div role="tablist" aria-label="أقسام الدفتر" className="grid grid-cols-3 gap-1 rounded-[22px] border border-[#E3D3A0] bg-white p-1 dark:bg-card">
+            {PARTS.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                role="tab"
+                aria-selected={part === p.id}
+                onClick={() => setPart(p.id)}
+                className={cn(
+                  "min-h-[44px] min-w-0 rounded-[18px] px-1 font-bold transition active:scale-[0.98]",
+                  part === p.id ? "bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "text-[var(--t500)]"
+                )}
+              >
+                <FitText max={16} min={10} group="nb-tabs" className="text-center">{p.label}</FitText>
+              </button>
+            ))}
+          </div>
+
           {part === "maps" ? (
             CHAPTER_MAPS[`${courseId}::${current.chapter}`] ? (
               <CausalMap map={CHAPTER_MAPS[`${courseId}::${current.chapter}`]} />
@@ -154,7 +155,6 @@ export default function NotebookView() {
           ) : (
             <Examples concepts={current.concepts} />
           )}
-
 
           {picking && (
             <div className="fixed inset-0 z-50 flex items-end bg-black/40" onClick={() => setPicking(false)}>
