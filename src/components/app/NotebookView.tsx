@@ -36,7 +36,7 @@ function CausalMap({ map }: { map: ChapterMap }) {
                 className={cn("absolute right-0 top-[9px] h-4 w-4 rounded-full border-[3px] border-white dark:border-card", k === 0 ? "bg-[var(--t800)]" : k === ch.steps.length - 1 ? "bg-[#E3B23C]" : "bg-[var(--t300)]")}
                 aria-hidden="true"
               />
-              <p className={cn("text-base leading-8", k === 0 || k === ch.steps.length - 1 ? "font-extrabold text-[var(--t900)] dark:text-foreground" : "font-bold")}>{st}</p>
+              <p className="text-base font-bold leading-8 text-foreground">{st}</p>
               {k < ch.links.length && (
                 <span className="my-0.5 inline-flex items-center gap-0.5 rounded-full bg-[#FBF1D6] px-1.5 text-[11px] font-bold leading-[18px] text-[#9A6A12]">
                   <ArrowDown className="h-2.5 w-2.5" strokeWidth={3} />
@@ -78,8 +78,8 @@ function Rules({ concepts }: { concepts: Concept[] }) {
     <ul className="divide-y divide-[var(--t075)] overflow-hidden rounded-[22px] border border-[var(--t075)] bg-white dark:divide-border dark:border-border dark:bg-card">
       {concepts.map((c) => (
         <li key={c.id} className="border-r-[3px] border-r-[#E3B23C] px-4 py-3">
-          <p className="font-extrabold leading-7 text-[var(--t900)] dark:text-foreground">{c.title}</p>
-          <p className="mt-0.5 leading-8 text-secondary-foreground">{c.rule}</p>
+          <p className="font-extrabold leading-7 text-foreground">{c.title}</p>
+          <p className="mt-0.5 leading-8 text-foreground">{c.rule}</p>
         </li>
       ))}
     </ul>
@@ -118,7 +118,7 @@ export default function NotebookView() {
             </button>
             <button type="button" onClick={() => setPicking(true)} className="min-w-0 flex-1 rounded-[14px] px-1 py-1 text-center transition active:scale-[0.98]">
               <FitText max={14} min={11} className="text-center font-bold leading-6 text-[#B8860B]">{`${COURSE_SHORT[courseId] ?? ""} ▾`}</FitText>
-              <FitText max={20} min={12} className="text-center font-extrabold leading-7 text-[var(--t900)] dark:text-foreground">{chapterLabel(current.chapter)}</FitText>
+              <FitText max={20} min={12} className="text-center font-extrabold leading-7 text-foreground">{chapterLabel(current.chapter)}</FitText>
             </button>
             <button type="button" aria-label="الفصل التالي" disabled={chIndex >= chapters.length - 1} onClick={() => setChIndex(chIndex + 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#C99A06] disabled:opacity-25">
               <ChevronLeft className="h-5 w-5" strokeWidth={2.5} />
@@ -184,7 +184,7 @@ export default function NotebookView() {
                           setChIndex(i);
                           setPicking(false);
                         }}
-                        className={cn("min-h-[48px] w-full rounded-[16px] px-4 text-right text-base font-bold", i === chIndex ? "bg-[var(--t100)] text-[var(--t900)]" : "hover:bg-muted")}
+                        className={cn("min-h-[48px] w-full rounded-[16px] px-4 text-right text-base font-bold", i === chIndex ? "bg-[var(--t100)] text-foreground" : "text-foreground hover:bg-muted")}
                       >
                         {chapterLabel(chapter)}
                       </button>
