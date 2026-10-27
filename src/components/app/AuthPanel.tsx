@@ -7,6 +7,8 @@
 // ومعه جواهر الترحيب، وينقل تقدم الضيف من هذا الجهاز تلقائيًا.
 // ============================================================================
 
+import { FitText } from "./FitText";
+
 export function GoogleIcon({ className = "h-5 w-5" }: { className?: string }) {
   return (
     <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
@@ -27,8 +29,8 @@ export default function AuthPanel({ label = "المتابعة بحساب Google"
       onClick={() => onDone?.()}
       className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-[20px] border border-[#E3D3A0] bg-white px-4 text-base font-bold text-[var(--t900)] transition-colors hover:bg-[#FBF7EA] dark:bg-card dark:text-foreground"
     >
-      <GoogleIcon />
-      <span className="whitespace-nowrap">{label}</span>
+      <GoogleIcon className="h-5 w-5 shrink-0" />
+      <FitText max={16} min={11} className="shrink">{label}</FitText>
     </a>
   );
 }

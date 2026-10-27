@@ -24,8 +24,8 @@ export default function PastTests() {
         title="اختباراتك السابقة"
         action={
           tests.length > 5 && (
-            <button type="button" onClick={() => setShowAll((v) => !v)} className="min-h-[36px] text-sm font-bold text-[#B8860B]">
-              {showAll ? "أقل" : `عرض الكل (${ad(tests.length)})`}
+            <button type="button" onClick={() => setShowAll((v) => !v)} className="min-h-[36px] shrink-0 whitespace-nowrap text-sm font-bold text-[#B8860B]">
+              {showAll ? "أقل" : `الكل (${ad(tests.length)})`}
             </button>
           )
         }
