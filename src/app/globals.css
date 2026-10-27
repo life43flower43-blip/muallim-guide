@@ -629,6 +629,7 @@ body {
   .card-wave { animation: none; display: none; }
 }
 
+
 /* شريط اختبار المحاكاة: لمعة ذهبية تعبره كل بضع ثوانٍ، وعقرب الساعة يدور */
 .exam-cta {
   border: 1.5px solid #E3B23C;

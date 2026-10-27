@@ -41,6 +41,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const planCount = useApp((s) => s.lessonPlans.length);
   const [pressed, setPressed] = useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  const weekRef = useRef<HTMLDivElement>(null);
   const [cardH, setCardH] = useState<number | null>(null);
 
   // تمتد البطاقات لتملأ الشاشة حتى تستقر فوق الشريط السفلي مباشرة
@@ -49,8 +50,9 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       const g = gridRef.current;
       const nav = document.getElementById("bottom-nav");
       if (!g || !nav || window.innerWidth >= 1024) return setCardH(null);
-      const avail = nav.getBoundingClientRect().top - g.getBoundingClientRect().top - 10;
-      setCardH(Math.max(72, Math.min(210, (avail - 2 * 10) / 3)));
+      const weekH = (weekRef.current?.offsetHeight ?? 0) + 12;
+      const avail = nav.getBoundingClientRect().top - g.getBoundingClientRect().top - weekH - 10;
+      setCardH(Math.max(60, Math.min(210, (avail - 2 * 10) / 3)));
     };
     fit();
     const t = setTimeout(fit, 350);
@@ -141,32 +143,9 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         </span>
       </motion.button>
 
-      {/* شريط الأسبوع: كبسولة بسبع دوائر، يصل بينها خيط ذهبي في الأيام المتتالية التي درست فيها الطالبة */}
-      <motion.div {...rise(1)} className="flex items-center rounded-full border border-[#E3D3A0] bg-white px-2 py-1.5 dark:bg-card" aria-label="أيام دراستك هذا الأسبوع">
-        {week.map((d, i) => (
-          <span key={d.label} className="flex flex-1 items-center last:flex-none">
-            <motion.span
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2 + i * 0.05, type: "spring", stiffness: 420, damping: 18 }}
-              className={cn(
-                "flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-full text-[12px] font-extrabold",
-                d.done ? "bg-gradient-to-br from-[#FFE27A] to-[#C99A06] text-white" : d.future ? "border border-dashed border-[#C9DDD3] text-[#9DB5AB]" : "bg-[#EEF5F1] text-[#7E978E]",
-                d.today && "ring-2 ring-[#136F5C] ring-offset-1"
-              )}
-            >
-              {d.label}
-            </motion.span>
-            {i < week.length - 1 && (
-              <span className={cn("mx-0.5 h-[3px] flex-1 rounded-full", d.done && week[i + 1].done ? "bg-gradient-to-l from-[#F4C430] to-[#C99A06]" : "bg-[#E6EEEA]")} aria-hidden="true" />
-            )}
-          </span>
-        ))}
-      </motion.div>
-
       {/* اختبار المحاكاة: شريط أخضر داكن بساعة ذهبية تدق ولمعة تعبره، مختلف عن البطاقات المصوّرة */}
       <motion.button
-        {...rise(2)}
+        {...rise(1)}
         type="button"
         whileTap={{ scale: 0.97 }}
         onClick={() => {
@@ -192,7 +171,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           <motion.button
             key={d.title}
             type="button"
-            {...rise(3 + i)}
+            {...rise(2 + i)}
             whileTap={{ scale: 0.95 }}
             onClick={() => {
               if (pressed) return;
@@ -219,6 +198,41 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           </motion.button>
         ))}
       </div>
+
+      {/* شريط الأسبوع: غصن بسبع أوراق، تصير الورقة ذهبية في كل يوم درست فيه الطالبة */}
+      <motion.div ref={weekRef} {...rise(9)} className="relative px-2" aria-label="أيام دراستك هذا الأسبوع">
+        <svg className="absolute inset-x-6 top-[13px] h-[6px] w-[calc(100%-48px)]" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 3C12 0 20 6 33 3S54 0 66 3 88 6 100 3" stroke="#A9CDBB" strokeWidth="1.2" fill="none" vectorEffect="non-scaling-stroke" />
+        </svg>
+        <div className="relative flex items-start justify-between">
+          {week.map((d, i) => (
+            <span key={d.label} className="flex w-9 flex-col items-center gap-1">
+              <svg
+                viewBox="0 0 24 24"
+                className={cn("h-[30px] w-[30px] transition-transform", d.today && "scale-110")}
+                style={{ transform: `rotate(${i % 2 ? 28 : -28}deg)` }}
+                aria-hidden="true"
+              >
+                <defs>
+                  <linearGradient id={`leafGold${i}`} x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stopColor="#FFE27A" />
+                    <stop offset="1" stopColor="#C99A06" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M12 2C6.5 6 4.5 11.5 6 17c1.2 3.2 4 5 6 5s4.8-1.8 6-5c1.5-5.5-.5-11-6-15Z"
+                  fill={d.done ? `url(#leafGold${i})` : d.today ? "#DCEFE5" : d.future ? "none" : "#EEF5F1"}
+                  stroke={d.done ? "#C99A06" : d.today ? "#136F5C" : "#A9CDBB"}
+                  strokeWidth={d.today ? 1.8 : 1.3}
+                  strokeDasharray={d.future ? "2.5 2" : undefined}
+                />
+                <path d="M12 6v14M12 11l-3-2.5M12 15l3-2.5" stroke={d.done ? "#FFF6D5" : d.today ? "#136F5C" : "#A9CDBB"} strokeWidth="1.1" strokeLinecap="round" fill="none" />
+              </svg>
+              <span className={cn("text-[12px] leading-none", d.today ? "font-extrabold text-[#136F5C]" : d.done ? "font-bold text-[#B8860B]" : "font-bold text-[#7E978E]")}>{d.label}</span>
+            </span>
+          ))}
+        </div>
+      </motion.div>
     </div>
   );
 }
