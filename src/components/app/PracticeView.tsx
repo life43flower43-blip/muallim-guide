@@ -83,11 +83,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
   const [builder, setBuilder] = useState(false);
   const [view, setView] = useState<"tests" | "courses">("tests");
 
-  const summary = useMemo(() => {
-    const all = Object.values(attempts);
-    const correct = all.filter((a) => a.correct).length;
-    return { answered: all.length, accuracy: all.length ? (correct / all.length) * 100 : null };
-  }, [attempts]);
+  const answered = useMemo(() => Object.keys(attempts).length, [attempts]);
   const bank = QUESTIONS.length;
   const openCourse = COURSES.find((c) => c.id === open);
 
@@ -101,7 +97,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
     <div className="space-y-5">
       <PageTitle title="التدريب" />
 
-      {/* البطاقة الرئيسية: تدريب ذكي، ومعه أرقامك في سطر واحد */}
+      {/* البطاقة الرئيسية: تدريب ذكي، وشريط ما أنجزته من البنك (الأرقام في «حسابي») */}
       <button
         type="button"
         onClick={() => startSmart()}
@@ -112,15 +108,13 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
             <Sparkles className="h-6 w-6" />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block text-xl font-extrabold leading-8">تدريب ذكي</span>
-            <span className="block whitespace-nowrap text-sm font-medium text-white/80">
-              {summary.answered ? `أجبت ${ad(summary.answered)} · الدقة ${summary.accuracy === null ? "—" : pct(summary.accuracy)}` : "ابدأ بعشرة أسئلة"}
-            </span>
+            <FitText max={20} min={15} className="font-extrabold leading-8">تدريب ذكي</FitText>
+            <FitText max={14} min={10} className="font-medium text-white/80">عشرة أسئلة مختارة لك</FitText>
           </span>
           <ChevronLeft className="h-6 w-6 shrink-0 text-[#FFE27A]" />
         </span>
         <span className="mt-3 block h-1.5 overflow-hidden rounded-full bg-white/20" aria-hidden="true">
-          <span className="block h-full rounded-full bg-gradient-to-l from-[#FFE27A] to-[#E3B23C]" style={{ width: `${bank ? Math.max(2, (summary.answered / bank) * 100) : 0}%` }} />
+          <span className="block h-full rounded-full bg-gradient-to-l from-[#FFE27A] to-[#E3B23C]" style={{ width: `${bank ? Math.max(2, (answered / bank) * 100) : 0}%` }} />
         </span>
       </button>
 

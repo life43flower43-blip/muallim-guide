@@ -16,7 +16,7 @@ import { useApp, useAppHydrated, xpToday, DAILY_GOAL_XP } from "@/lib/store";
 import { useUi, OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
 import { loadQbank } from "@/lib/qbank";
 import { readPeerHash } from "@/lib/peer";
-import { useAccount, useWallet, afterSignIn } from "@/lib/account-client";
+import { useAccount, afterSignIn } from "@/lib/account-client";
 import { startProgressSync } from "@/lib/progress-sync";
 import { useMistakes } from "@/lib/mistakes-client";
 import { toast } from "@/hooks/use-toast";
@@ -47,7 +47,7 @@ import BootBank from "./BootBank";
 import { ScreenShell } from "./ui-kit";
 import { Splash } from "./Splash";
 import { GoalBurst } from "./GoalBurst";
-import { GemBadge, HeaderArt, StreakBadge } from "./ui-kit";
+import { HeaderArt } from "./ui-kit";
 
 export type Tab = "today" | "notebook" | "practice" | "mistakes" | "profile";
 
@@ -86,7 +86,6 @@ function Logo() {
 }
 
 function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
-  const { gems, streak } = useWallet();
   return (
     <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col gap-8 border-l border-border bg-card px-4 py-6 lg:flex">
       <div className="px-2">
@@ -115,10 +114,6 @@ function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: 
           );
         })}
       </nav>
-      <div className="mt-auto flex items-center gap-2 px-2">
-        <GemBadge value={gems} />
-        <StreakBadge value={streak} />
-      </div>
     </aside>
   );
 }
