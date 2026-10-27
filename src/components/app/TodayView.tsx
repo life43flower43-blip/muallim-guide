@@ -102,6 +102,32 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
 
   return (
     <div className="mx-auto -mt-1 max-w-2xl space-y-3 lg:mt-0">
+      {/* اختبار المحاكاة: دائرة ذهبية بساعة تدق، تتدفق منها موجات ذهبية للخارج */}
+      <motion.button
+        {...rise(0)}
+        type="button"
+        whileTap={{ scale: 0.94 }}
+        onClick={() => {
+          tick();
+          ui.startExamsim();
+        }}
+        className="flex items-center gap-4 py-3 pr-3 text-[var(--t900)] dark:text-foreground"
+      >
+        <span className="relative flex h-[52px] w-[52px] shrink-0 items-center justify-center" aria-hidden="true">
+          <span className="gold-wave" />
+          <span className="gold-wave" style={{ animationDelay: "1.1s" }} />
+          <span className="gold-wave" style={{ animationDelay: "2.2s" }} />
+          <span className="relative flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-[#FFE27A] via-[#F4C430] to-[#C99A06] ring-2 ring-white">
+            <svg viewBox="0 0 24 24" className="h-7 w-7">
+              <circle cx="12" cy="13" r="8" fill="none" stroke="var(--t900)" strokeWidth="2" />
+              <path d="M10 2.5h4M12 2.5V5" stroke="var(--t900)" strokeWidth="2" strokeLinecap="round" />
+              <path className="exam-hand" d="M12 13V8.5" stroke="var(--t900)" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </span>
+        </span>
+        <span className="relative whitespace-nowrap text-lg font-extrabold leading-none">اختبار محاكاة</span>
+      </motion.button>
+
       {/* أبواب التطبيق */}
       {homeStyle === "icons" ? (
         // نمط الرموز: ثلاثة أعمدة، مربع ناعم ملوّن برمز خطّي، والعنوان تحته
@@ -207,32 +233,8 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             ))}
           </div>
         </div>
-        {/* اختبار المحاكاة يمينًا، ومستوى الاستعداد يسارًا، فوق غصن الأيام */}
-        <div className="flex items-end justify-between px-3">
-          {/* اختبار المحاكاة: دائرة ذهبية بساعة تدق، تتدفق منها موجات ذهبية للخارج */}
-          <motion.button
-            type="button"
-            whileTap={{ scale: 0.94 }}
-            onClick={() => {
-              tick();
-              ui.startExamsim();
-            }}
-            className="flex shrink-0 flex-col items-center gap-1.5 text-[var(--t900)] dark:text-foreground"
-          >
-            <span className="relative flex h-[44px] w-[44px] items-center justify-center" aria-hidden="true">
-              <span className="gold-wave" />
-              <span className="gold-wave" style={{ animationDelay: "1.1s" }} />
-              <span className="gold-wave" style={{ animationDelay: "2.2s" }} />
-              <span className="relative flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-[#FFE27A] via-[#F4C430] to-[#C99A06] ring-2 ring-white">
-                <svg viewBox="0 0 24 24" className="h-6 w-6">
-                  <circle cx="12" cy="13" r="8" fill="none" stroke="var(--t900)" strokeWidth="2" />
-                  <path d="M10 2.5h4M12 2.5V5" stroke="var(--t900)" strokeWidth="2" strokeLinecap="round" />
-                  <path className="exam-hand" d="M12 13V8.5" stroke="var(--t900)" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-              </span>
-            </span>
-            <span className="whitespace-nowrap text-[11px] font-bold leading-none min-[380px]:text-[12px]">اختبار محاكاة</span>
-          </motion.button>
+        {/* مستوى الاستعداد يسارًا فوق غصن الأيام */}
+        <div className="flex items-end justify-end px-3">
           {/* مستوى الاستعداد: الحلقة وتحتها جملة قصيرة، على اليسار بجانب غصن الأيام */}
           <motion.button
             type="button"
