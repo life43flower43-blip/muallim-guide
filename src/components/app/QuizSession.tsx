@@ -382,7 +382,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
             </>
           }
         >
-          <div className="grid gap-6 lg:grid-cols-[340px_1fr] lg:items-start">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[340px_1fr] lg:items-start [&>*]:min-w-0">
             {/* الملخص */}
             <div className="space-y-4 lg:sticky lg:top-0">
               <Card className="flex flex-col items-center p-6 text-center">

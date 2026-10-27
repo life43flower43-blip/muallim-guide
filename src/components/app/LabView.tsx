@@ -472,9 +472,9 @@ function ListRowCard({ onClick }: { onClick: () => void }) {
   return (
     <Card className="overflow-hidden">
       <button type="button" onClick={onClick} className="flex w-full items-center gap-3 px-4 py-4 text-right transition-colors hover:bg-muted/60">
-        <IconTile icon={Sparkles} color="var(--gem)" />
+        <IconTile icon={Sparkles} color="#C99A06" />
         <span className="min-w-0 flex-1">
-          <span className="block text-base font-medium">مواقف سريعة</span>
+          <span className="block text-base font-bold">مواقف سريعة</span>
         </span>
         <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" />
       </button>
