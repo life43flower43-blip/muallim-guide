@@ -280,31 +280,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           </div>
         </div>
         {/* مستوى الاستعداد وبجانبه خريطة النشاط المصغّرة، يسارًا فوق غصن الأيام */}
-        <div className="flex items-end justify-end gap-4 px-3">
-          {/* أخطاء للمراجعة: عدد ما ينتظر الطالبة، ويفتح «أخطائي» */}
-          <button
-            type="button"
-            onClick={() => {
-              tick();
-              onGoTab("mistakes");
-            }}
-            className="flex shrink-0 flex-col items-center gap-1.5 text-[var(--t900)] dark:text-foreground"
-          >
-            {/* بطاقتان مكدّستان كبطاقات المراجعة، والعليا تحمل العدد، وسهما مراجعة يدوران حولهما ببطء */}
-            <span className="relative flex h-[44px] w-[44px] items-center justify-center" aria-hidden="true">
-              <svg viewBox="0 0 48 48" className="review-spin absolute -inset-[6px] h-[56px] w-[56px]">
-                <path d="M24 4a20 20 0 0 1 18.3 12" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" />
-                <path d="M43.6 10.5l-1.3 5.6-5.5-1.6" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M24 44A20 20 0 0 1 5.7 32" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" />
-                <path d="M4.4 37.5l1.3-5.6 5.5 1.6" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <span className="absolute h-[30px] w-[24px] translate-x-[3px] rotate-[10deg] rounded-[7px] bg-[var(--t150)]" />
-              <span className={cn("relative flex h-[30px] w-[24px] -rotate-[6deg] items-center justify-center rounded-[7px] text-[13px] font-extrabold text-white", due > 0 ? "bg-gradient-to-b from-[#E05A4C] to-[#B42318]" : "bg-gradient-to-b from-[var(--t600)] to-[var(--t850)]")}>
-                {ad(due)}
-              </span>
-            </span>
-            <span className="whitespace-nowrap text-[11px] font-bold leading-none min-[380px]:text-[12px]">للمراجعة</span>
-          </button>
+        <div className="flex items-end justify-around px-2">
           <MiniActivity sessions={sessions} />
           {/* مستوى الاستعداد: الحلقة وتحتها جملة قصيرة، على اليسار بجانب غصن الأيام */}
           <motion.button
@@ -339,6 +315,30 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             </span>
             <span className="whitespace-nowrap text-[11px] font-bold leading-none min-[380px]:text-[12px]">مستوى استعدادك</span>
           </motion.button>
+          {/* أخطاء للمراجعة: عدد ما ينتظر الطالبة، ويفتح «أخطائي» */}
+          <button
+            type="button"
+            onClick={() => {
+              tick();
+              onGoTab("mistakes");
+            }}
+            className="flex shrink-0 flex-col items-center gap-1.5 text-[var(--t900)] dark:text-foreground"
+          >
+            {/* بطاقتان مكدّستان كبطاقات المراجعة، والعليا تحمل العدد، وسهما مراجعة يدوران حولهما ببطء */}
+            <span className="relative flex h-[44px] w-[44px] items-center justify-center" aria-hidden="true">
+              <svg viewBox="0 0 48 48" className="review-spin absolute -inset-[6px] h-[56px] w-[56px]">
+                <path d="M24 4a20 20 0 0 1 18.3 12" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" />
+                <path d="M43.6 10.5l-1.3 5.6-5.5-1.6" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M24 44A20 20 0 0 1 5.7 32" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" />
+                <path d="M4.4 37.5l1.3-5.6 5.5 1.6" fill="none" stroke={due > 0 ? "#E3B23C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span className="absolute h-[30px] w-[24px] translate-x-[3px] rotate-[10deg] rounded-[7px] bg-[var(--t150)]" />
+              <span className={cn("relative flex h-[30px] w-[24px] -rotate-[6deg] items-center justify-center rounded-[7px] text-[13px] font-extrabold text-white", due > 0 ? "bg-gradient-to-b from-[#E05A4C] to-[#B42318]" : "bg-gradient-to-b from-[var(--t600)] to-[var(--t850)]")}>
+                {ad(due)}
+              </span>
+            </span>
+            <span className="whitespace-nowrap text-[11px] font-bold leading-none min-[380px]:text-[12px]">راجع أخطاءك</span>
+          </button>
         </div>
       </motion.div>
     </div>
