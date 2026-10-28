@@ -793,3 +793,16 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .review-spin { animation: none; }
 }
+
+/* بطاقة «اختبر نفسك»: الدوائر تُظلَّل تباعًا، ثم يظهر الختم الذهبي وتُرسم علامة الصح، وتتكرر بهدوء */
+.test-art .ta-fill { opacity: 0; transform-box: fill-box; transform-origin: center; animation: ta-fill 6s ease-out infinite; }
+@keyframes ta-fill { 0% { opacity: 0; transform: scale(0.3); } 6% { opacity: 1; transform: scale(1.15); } 9%, 88% { opacity: 1; transform: scale(1); } 100% { opacity: 0; } }
+.test-art .ta-seal { transform-box: fill-box; transform-origin: center; animation: ta-seal 6s cubic-bezier(.2,.8,.2,1) infinite; }
+@keyframes ta-seal { 0%, 40% { opacity: 0; transform: scale(0.4) rotate(-20deg); } 48% { opacity: 1; transform: scale(1.08) rotate(4deg); } 54%, 90% { opacity: 1; transform: scale(1) rotate(0); } 100% { opacity: 0; transform: scale(1); } }
+.test-art .ta-check { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ta-check 6s ease-out infinite; }
+@keyframes ta-check { 0%, 50% { stroke-dashoffset: 1; } 60%, 100% { stroke-dashoffset: 0; } }
+.test-art .ta-spark { transform-box: fill-box; transform-origin: center; animation: ta-spark 3s ease-in-out infinite; }
+@keyframes ta-spark { 50% { opacity: 0.35; transform: scale(0.7); } }
+@media (prefers-reduced-motion: reduce) {
+  .test-art .ta-fill, .test-art .ta-seal, .test-art .ta-check, .test-art .ta-spark { animation: none; opacity: 1; stroke-dashoffset: 0; transform: none; }
+}
