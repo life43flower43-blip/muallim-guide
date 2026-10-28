@@ -43,7 +43,7 @@ export function applyQbank(raw: QbankRaw) {
 }
 
 /** إصدار البنك: يتغيّر فقط حين يتغيّر محتواه، فيُحمَّل مرة واحدة ويبقى محفوظًا عبر تحديثات الواجهة */
-export const QBANK_VERSION = "48ccbfc7";
+export const QBANK_VERSION = "3b86a5b8";
 
 /** المحمّل: جلب البنك مع مؤشر تقدم ومحاولة إعادة واحدة عند الفشل */
 export async function loadQbank(
