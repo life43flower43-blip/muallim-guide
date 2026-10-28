@@ -129,7 +129,7 @@ export default function NotebookView() {
         </svg>
         <span className="min-w-0 flex-1">
           <FitText max={18} min={12} className="font-extrabold leading-7 text-white">الخرائط الذهنية المتحركة</FitText>
-          <FitText max={13} min={10} className="leading-6 text-[#F8E3A8]">خمس خرائط · مشاهد قصيرة · تدريب مباشر</FitText>
+          <FitText max={13} min={10} className="leading-6 text-[#F8E3A8]">إحدى عشرة خريطة · مشاهد قصيرة · تدريب مباشر</FitText>
         </span>
         <ChevronLeft className="h-5 w-5 shrink-0 text-[#F4C430]" strokeWidth={2.5} aria-hidden="true" />
       </button>
