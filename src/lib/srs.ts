@@ -31,6 +31,15 @@ export function dueQuestionIds(attempts: Record<string, Attempt>): string[] {
   return out.sort((a, b) => a.score - b.score).map((x) => x.qid);
 }
 
+/** المراجعة المتباعدة لما أُجيب صحيحًا وحان موعده — الأخطاء لها صفحة «أخطائي» */
+export function spacedDueIds(attempts: Record<string, Attempt>): string[] {
+  const now = Date.now();
+  return Object.entries(attempts)
+    .filter(([qid, at]) => at.correct && questionById(qid) && dueAt(at.box, at.ts) <= now)
+    .sort((a, b) => dueAt(a[1].box, a[1].ts) - dueAt(b[1].box, b[1].ts))
+    .map(([qid]) => qid);
+}
+
 /** بناء جلسة مراجعة ذكية بحد أقصى */
 export function buildReviewSet(attempts: Record<string, Attempt>, max = 15): string[] {
   const due = dueQuestionIds(attempts);

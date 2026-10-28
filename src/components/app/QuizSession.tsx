@@ -233,7 +233,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     } catch {}
     if (!ok) setWrongShake(true);
     setTimeout(() => setWrongShake(false), 450);
-    recordAttempt(q.id, ok, selected);
+    recordAttempt(q.id, ok, selected, conf ?? undefined);
     if (config.mode === "review") {
       const isGuest = !queryClient.getQueryData(USER_QUERY_KEY);
       recordReviewResult(q.id, ok, selected, isGuest);
@@ -633,6 +633,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   <div className="min-w-0 flex-1">
                     <p className={`text-base font-extrabold leading-7 ${graded ? "text-[var(--t800)]" : "text-[#C0392B]"}`}>{graded ? PRAISE[idx % PRAISE.length] : "الإجابة الصحيحة"}</p>
                     {!graded && <p className="text-[15px] font-semibold leading-7 text-foreground">{q.correct}</p>}
+                    {!graded && conf === "sure" && <p className="text-sm font-bold leading-6 text-[#9A6A12]">كنت متأكدًا، فهذا تصور خاطئ. سيعود إليك السؤال قريبًا.</p>}
+                    {graded && conf === "guess" && <p className="text-sm font-bold leading-6 text-[#9A6A12]">أصبت بالتخمين، فسيعود إليك غدًا.</p>}
                   </div>
                   <button type="button" onClick={handleReport} disabled={reported} aria-label="أبلغ عن خطأ في السؤال" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground/60 disabled:opacity-30">
                     <Flag className="h-4 w-4" />
@@ -649,6 +651,24 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   </div>
                 )}
               </motion.div>
+            )}
+            {!answered && selected !== null && (
+              // ما مدى ثقتك؟ اختيارية، وتكشف الفرق بين ما تظن أنك تعرفه وما تعرفه فعلًا
+              <div className="mb-3 flex items-center gap-2" role="radiogroup" aria-label="ما مدى ثقتك؟">
+                <span className="shrink-0 text-sm font-bold text-[var(--t500)]">ثقتك:</span>
+                {CONF_OPTIONS.map((o) => (
+                  <button
+                    key={o.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={conf === o.id}
+                    onClick={() => setConf(conf === o.id ? null : o.id)}
+                    className={`min-h-[36px] min-w-0 flex-1 rounded-full border text-sm font-bold transition ${conf === o.id ? "border-[var(--t700)] bg-[var(--t700)] text-white" : "border-[var(--t075)] text-[var(--t700)] dark:border-border"}`}
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
             )}
             <div className="flex gap-3">
               {showFeedback && !showWhy && (

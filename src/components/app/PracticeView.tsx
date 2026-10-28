@@ -14,6 +14,7 @@ import { useMemo, useState } from "react";
 import {
   ChevronLeft,
   ClipboardCheck,
+  RotateCcw,
   Gauge,
   Shuffle,
   SlidersHorizontal,
@@ -35,7 +36,8 @@ import {
   starsFor,
   topicKey,
 } from "@/lib/practice-bank";
-import { ad } from "@/lib/arabic";
+import { spacedDueIds } from "@/lib/srs";
+import { ad, arCount, QUESTION_GEN_FORMS } from "@/lib/arabic";
 import { cn } from "@/lib/utils";
 import type { Tab } from "./AppShell";
 import TestBuilder from "./TestBuilder";
@@ -84,6 +86,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
   const [view, setView] = useState<"tests" | "courses">("tests");
 
   const answered = useMemo(() => Object.keys(attempts).length, [attempts]);
+  const due = useMemo(() => spacedDueIds(attempts), [attempts]);
   const bank = QUESTIONS.length;
   const openCourse = COURSES.find((c) => c.id === open);
 
@@ -117,6 +120,24 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
           <span className="block h-full rounded-full bg-gradient-to-l from-[#FFE27A] to-[#E3B23C]" style={{ width: `${bank ? Math.max(2, (answered / bank) * 100) : 0}%` }} />
         </span>
       </button>
+
+      {/* المراجعة المتباعدة: ما أجبته صحيحًا وحان موعد تذكّره (بعد يوم، ثم ٣ أيام، ثم أسبوع...) */}
+      {due.length > 0 && (
+        <button
+          type="button"
+          onClick={() => ui.startQuiz({ mode: "training", label: "مراجعة اليوم", qids: due.slice(0, 15) })}
+          className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[#E3D3A0] bg-white p-3.5 text-right transition active:scale-[0.98] dark:bg-card"
+        >
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#FBF1D6] text-[#B8860B]">
+            <RotateCcw className="h-5 w-5" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <FitText max={16} min={12} className="font-extrabold leading-7">مراجعة اليوم</FitText>
+            <FitText max={13} min={10} className="text-secondary-foreground">{`حان موعد تذكّر ${arCount(Math.min(due.length, 15), QUESTION_GEN_FORMS)}`}</FitText>
+          </span>
+          <ChevronLeft className="h-5 w-5 shrink-0 text-[#C99A06]" />
+        </button>
+      )}
 
       {/* قسمان فقط، يظهر واحد منهما في كل مرة */}
       <div role="tablist" aria-label="أقسام التدريب" className="grid grid-cols-2 gap-1 rounded-[22px] border border-[#E3D3A0] bg-white p-1 dark:bg-card">
