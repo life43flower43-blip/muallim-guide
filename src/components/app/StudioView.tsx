@@ -40,12 +40,12 @@ import { useApp } from "@/lib/store";
 import { shareText } from "@/lib/share";
 import { toast } from "@/hooks/use-toast";
 import { ad } from "@/lib/arabic";
+import { MODEL_PLANS, type ModelPlan } from "@/lib/model-plans";
 import { Callout, Card, Chip, Divided, EmptyState, IconTile, PrimaryButton, ScreenShell, SecondaryButton, SectionHeader } from "./ui-kit";
 import {
   DURATION_OPTIONS,
   STRATEGY_OPTIONS,
   PHASE_META,
-  PLAN_TEMPLATES,
   planReview,
   composePlanText,
   planMaturityWord,
@@ -134,6 +134,56 @@ function PlanLines({ title, body }: { title: string; body: string }) {
   );
 }
 
+// نص الخطة كاملًا: الأهداف ثم الوسائل والاستراتيجيات ثم خطوات التنفيذ
+function PlanBody({ plan }: { plan: Omit<LessonPlan, "id" | "ts"> }) {
+  return (
+    <Card className="space-y-6 p-5">
+      <PlanLines title="الأهداف التعليمية" body={plan.objectives} />
+      <PlanLines title="المعرفة السابقة" body={plan.prior} />
+      <PlanLines title="الوسائل والأدوات" body={plan.materials} />
+      {plan.strategies.length > 0 && (
+        <section>
+          <h3 className="mb-2 font-display text-base font-semibold">استراتيجيات التدريس</h3>
+          <div className="flex flex-wrap gap-2">
+            {plan.strategies.map((x) => (
+              <Chip key={x} tone="primary">
+                {x}
+              </Chip>
+            ))}
+          </div>
+        </section>
+      )}
+      {PHASE_META.some((ph) => plan.phases[ph.key].trim()) && (
+        <section>
+          <h3 className="mb-3 font-display text-base font-semibold">خطوات التنفيذ</h3>
+          <ol className="space-y-4">
+            {PHASE_META.filter((ph) => plan.phases[ph.key].trim()).map((ph, i) => (
+              <li key={ph.key} className="flex gap-3">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">{ad(i + 1)}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold">{ph.label}</p>
+                  {plan.phases[ph.key]
+                    .split(/\n+/)
+                    .map((x) => x.trim())
+                    .filter(Boolean)
+                    .map((ln, k) => (
+                      <p key={k} className="mt-1 text-base leading-7 text-secondary-foreground">
+                        {ln}
+                      </p>
+                    ))}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+      <PlanLines title="الأسئلة المفتاحية" body={plan.keyQuestions} />
+      <PlanLines title="الواجب" body={plan.homework} />
+      <PlanLines title="الفروق الفردية" body={plan.differentiation} />
+    </Card>
+  );
+}
+
 export default function StudioView() {
   const clearStudio = useUi((s) => s.clearStudio);
   const lessonPlans = useApp((s) => s.lessonPlans);
@@ -146,6 +196,8 @@ export default function StudioView() {
   const [review, setReview] = useState<PlanReview | null>(null);
   const [formErr, setFormErr] = useState("");
   const [selected, setSelected] = useState<LessonPlan | null>(null);
+  const [preview, setPreview] = useState<ModelPlan | null>(null);
+  const [subjectFilter, setSubjectFilter] = useState("الكل");
   const [confirmDel, setConfirmDel] = useState<string | null>(null);
   const reviewRef = useRef<HTMLDivElement | null>(null);
 
@@ -205,14 +257,15 @@ export default function StudioView() {
     setFormErr("");
   };
 
-  // تحميل قالب جاهز إلى النموذج — يبدأ من خطة احترافية كاملة الأركان ويكيّفها
-  const loadTemplate = (t: (typeof PLAN_TEMPLATES)[number]) => {
-    setForm({ ...t.form, phases: { ...t.form.phases }, strategies: [...t.form.strategies] });
+  // تحميل خطة جاهزة إلى النموذج ليعدّلها المعلم لصفه
+  const loadModel = (m: ModelPlan) => {
+    setForm({ ...m.form, phases: { ...m.form.phases }, strategies: [...m.form.strategies] });
     setEditingId(null);
     setReview(null);
     setFormErr("");
+    setPreview(null);
     setTab("new");
-    toast({ title: `حُمّل قالب «${t.name}» — كيّفه بصفّك وموضوعك` });
+    toast({ title: `حُمّلت خطة «${m.form.topic}»، عدّلها لصفك ثم احفظها` });
   };
 
   const share = async (p: LessonPlan) => {
@@ -231,6 +284,36 @@ export default function StudioView() {
     setSelected(null);
     toast({ title: "حُذفت الخطة من «خططي»" });
   };
+
+  // ---------- عرض خطة جاهزة ----------
+  if (preview) {
+    const p = preview.form;
+    return (
+      <ScreenShell
+        title={p.topic}
+        onBack={() => setPreview(null)}
+        footer={
+          <>
+            <PrimaryButton onClick={() => loadModel(preview)} className="flex-1">
+              <Pencil className="h-4 w-4" /> استخدمها وعدّلها
+            </PrimaryButton>
+            <SecondaryButton onClick={() => share({ ...p, id: preview.id, ts: 0 })} aria-label="مشاركة الخطة" className="px-3">
+              <Share2 className="h-4 w-4" />
+            </SecondaryButton>
+          </>
+        }
+      >
+        <div className="space-y-5">
+          <div className="flex flex-wrap gap-2">
+            <Chip tone="primary">{p.subject}</Chip>
+            <Chip>{p.grade}</Chip>
+            <Chip>{p.duration}</Chip>
+          </div>
+          <PlanBody plan={p} />
+        </div>
+      </ScreenShell>
+    );
+  }
 
   // ---------- عرض خطة محفوظة ----------
   if (selected) {
@@ -267,50 +350,7 @@ export default function StudioView() {
             <Chip>{planMaturityWord(selected)}</Chip>
           </div>
           {confirmDel === selected.id && <Callout tone="danger">اضغط زر الحذف مرة أخرى للتأكيد.</Callout>}
-          <Card className="space-y-6 p-5">
-            <PlanLines title="الأهداف التعليمية" body={selected.objectives} />
-            <PlanLines title="المعرفة السابقة" body={selected.prior} />
-            <PlanLines title="الوسائل والأدوات" body={selected.materials} />
-            {selected.strategies.length > 0 && (
-              <section>
-                <h3 className="mb-2 font-display text-base font-semibold">استراتيجيات التدريس</h3>
-                <div className="flex flex-wrap gap-2">
-                  {selected.strategies.map((x) => (
-                    <Chip key={x} tone="primary">
-                      {x}
-                    </Chip>
-                  ))}
-                </div>
-              </section>
-            )}
-            {PHASE_META.some((ph) => selected.phases[ph.key].trim()) && (
-              <section>
-                <h3 className="mb-3 font-display text-base font-semibold">خطوات التنفيذ</h3>
-                <ol className="space-y-4">
-                  {PHASE_META.filter((ph) => selected.phases[ph.key].trim()).map((ph, i) => (
-                    <li key={ph.key} className="flex gap-3">
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">{ad(i + 1)}</span>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold">{ph.label}</p>
-                        {selected.phases[ph.key]
-                          .split(/\n+/)
-                          .map((x) => x.trim())
-                          .filter(Boolean)
-                          .map((ln, k) => (
-                            <p key={k} className="mt-1 text-base leading-7 text-secondary-foreground">
-                              {ln}
-                            </p>
-                          ))}
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </section>
-            )}
-            <PlanLines title="الأسئلة المفتاحية" body={selected.keyQuestions} />
-            <PlanLines title="الواجب" body={selected.homework} />
-            <PlanLines title="الفروق الفردية" body={selected.differentiation} />
-          </Card>
+          <PlanBody plan={selected} />
           <ReviewCard review={r} />
         </div>
       </ScreenShell>
@@ -322,7 +362,7 @@ export default function StudioView() {
       {(
         [
           ["new", editingId ? "تعديل الخطة" : "خطة جديدة", NotebookPen],
-          ["templates", "قوالب", LayoutTemplate],
+          ["templates", "خطط جاهزة", LayoutTemplate],
           ["mine", `خططي${lessonPlans.length ? ` (${ad(lessonPlans.length)})` : ""}`, FolderOpen],
         ] as const
       ).map(([id, lbl]) => (
@@ -467,30 +507,46 @@ export default function StudioView() {
         </div>
       ) : tab === "templates" ? (
         <div className="space-y-4">
-          <p className="text-base leading-7 text-secondary-foreground">قوالب مكتملة الأركان. حمّل ما يناسب نوع درسك، ثم كيّفه بصفك وموضوعك.</p>
-          {PLAN_TEMPLATES.map((t) => (
-            <Card key={t.id} className="p-5">
-              <div className="flex items-start justify-between gap-3">
-                <h3 className="font-display text-base font-semibold leading-7">{t.name}</h3>
-                <Chip tone="primary">{t.tag}</Chip>
-              </div>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">{t.desc}</p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {t.form.strategies.map((x) => (
-                  <Chip key={x}>{x}</Chip>
-                ))}
-              </div>
-              <SecondaryButton onClick={() => loadTemplate(t)} className="mt-4 w-full sm:w-auto">
-                <NotebookPen className="h-4 w-4" /> ابدأ بهذا القالب
-              </SecondaryButton>
-            </Card>
-          ))}
+          {/* تصفية حسب المادة */}
+          <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4" role="tablist" aria-label="المادة">
+            {["الكل", ...Array.from(new Set(MODEL_PLANS.map((m) => m.form.subject)))].map((sub) => (
+              <button
+                key={sub}
+                type="button"
+                role="tab"
+                aria-selected={subjectFilter === sub}
+                onClick={() => setSubjectFilter(sub)}
+                className={`min-h-[38px] shrink-0 rounded-full border px-4 text-sm font-bold transition ${subjectFilter === sub ? "border-transparent bg-[var(--t700)] text-white" : "border-[var(--t075)] bg-white text-[var(--t700)] dark:border-border dark:bg-card"}`}
+              >
+                {sub}
+              </button>
+            ))}
+          </div>
+          <div className="space-y-2.5">
+            {MODEL_PLANS.filter((m) => subjectFilter === "الكل" || m.form.subject === subjectFilter).map((m) => (
+              <button
+                key={m.id}
+                type="button"
+                onClick={() => setPreview(m)}
+                className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[var(--t075)] bg-white p-3.5 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#FBF1D6] text-[#B8860B]">
+                  <NotebookPen className="h-5 w-5" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <FitText max={16} min={11} className="font-bold leading-7">{m.form.topic}</FitText>
+                  <FitText max={13} min={9} className="leading-5 text-muted-foreground">{`${m.form.subject} · ${m.form.grade}`}</FitText>
+                  <FitText max={12} min={9} className="mt-1 leading-5 text-[var(--t600)]">{m.form.strategies.join(" · ")}</FitText>
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       ) : lessonPlans.length === 0 ? (
         <EmptyState
           icon={NotebookPen}
           title="لم تحفظ خططًا بعد"
-          sub="ابدأ خطة جديدة أو من قالب جاهز، ثم قيّمها واحفظها هنا."
+          sub="ابدأ خطة جديدة أو من خطة جاهزة، ثم قيّمها واحفظها هنا."
           action={<PrimaryButton onClick={() => setTab("new")}>خطة جديدة</PrimaryButton>}
         />
       ) : (
