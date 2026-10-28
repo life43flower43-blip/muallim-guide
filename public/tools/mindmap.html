@@ -1889,14 +1889,14 @@ const SCENES = {
     const kid = (i) => { const [x, y] = home[i]; return `<g class="jk" id="jk${i}">${person(x, y, cols[i % 4], { scale: .62, ...(i % 2 ? { hair: "#1E1E1E" } : { hijab: ["#2F5D50", "#8A5A44", "#4A4E69", "#2F5D50"][i % 4] }) })}<rect x="${x + 8}" y="${y - 22}" width="13" height="13" rx="2" fill="${cols[i % 4]}" stroke="#fff"></rect><text x="${x + 14.5}" y="${y - 15.5}" font-size="8" font-weight="800" fill="#fff">${"١٢٣٤"[i % 4]}</text></g>`; };
     return { dur: 16, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد استراتيجية الجيكسو">
       <style>.sc .jk{transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}${css}</style>
-      <g class="fade on" id="jg-h"><rect x="22" y="40" width="108" height="118" rx="14" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="5 4"></rect><rect x="200" y="40" width="108" height="118" rx="14" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="5 4"></rect>
+      <g class="fade" id="jg-h"><rect x="22" y="40" width="108" height="118" rx="14" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="5 4"></rect><rect x="200" y="40" width="108" height="118" rx="14" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="5 4"></rect>
         <text x="76" y="30" font-size="10.5" font-weight="700" fill="var(--muted)">مجموعة أصلية</text><text x="254" y="30" font-size="10.5" font-weight="700" fill="var(--muted)">مجموعة أصلية</text></g>
       <g class="fade" id="jg-e">${[0, 1, 2, 3].map(c => `<rect x="${24 + c * 78}" y="48" width="44" height="112" rx="12" fill="color-mix(in srgb, ${cols[c]} 12%, transparent)" stroke="${cols[c]}" stroke-width="1.4"></rect>`).join("")}
         <text x="160" y="30" font-size="10.5" font-weight="700" fill="var(--muted)">مجموعات الخبراء</text></g>
       <g id="jg">${home.map((_, i) => kid(i)).join("")}</g>
       ${bubble(76, 22, 92, "أشرح لكم جزئي", "jgb1")}${bubble(254, 22, 92, "أشرح لكم جزئي", "jgb2")}
     </svg>`,
-      events: [[4.0, "#jg-h", "on", 0], [4.2, "#jg", "ex", 1], [5.2, "#jg-e", "on", 1], [8.4, "#jg-e", "on", 0], [8.6, "#jg", "ex", 0], [9.6, "#jg-h", "on", 1],
+      events: [[0.05, "#jg-h", "on", 1], [4.0, "#jg-h", "on", 0], [4.2, "#jg", "ex", 1], [5.2, "#jg-e", "on", 1], [8.4, "#jg-e", "on", 0], [8.6, "#jg", "ex", 0], [9.6, "#jg-h", "on", 1],
         [11.0, ".jgb1", "on", 1], [11.4, ".jgb2", "on", 1]],
       subs: [[0, "في كل مجموعة أصلية أربعة طلاب، ولكلٍّ جزء مختلف من الدرس."], [4.0, "يجتمع أصحاب الجزء الواحد في مجموعة خبراء ليتقنوه معًا."],
         [8.4, "ثم يعود كل خبير إلى مجموعته الأصلية…"], [11.0, "ويعلّم زملاءه جزءه، فيحتاج كلٌّ منهم الآخر: هذه هي الجيكسو."]] };
@@ -2058,6 +2058,80 @@ const SCENES = {
   },
 
 
+  // برونر: عملي ثم أيقوني ثم رمزي
+  bruner: () => {
+    const q = (cx, cy, r, k) => { const a0 = -90 + k * 90, a1 = a0 + 90, p = a => [cx + r * Math.cos(a * Math.PI / 180), cy + r * Math.sin(a * Math.PI / 180)]; const [x0, y0] = p(a0), [x1, y1] = p(a1); return `M${cx},${cy} L${x0.toFixed(1)},${y0.toFixed(1)} A${r},${r} 0 0 1 ${x1.toFixed(1)},${y1.toFixed(1)}Z`; };
+    const out = [[8, -8], [8, 8], [-8, 8]];
+    return { dur: 17, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد أنماط التمثيل عند برونر">
+      <style>.sc .bq{transition:transform 1s cubic-bezier(.2,.7,.2,1)}${out.map(([x, y], k) => `.sc #br.on #bq${k}{transform:translate(${x}px,${y}px)}`).join("")}.sc .bs{transition:fill .6s}.sc .bs.on{fill:var(--h)}</style>
+      ${[["عملي", 262], ["أيقوني", 160], ["رمزي", 58]].map(([t, x], i) => `<g class="dim" id="bp${i}"><rect x="${x - 46}" y="26" width="92" height="120" rx="12" fill="var(--surface)" stroke="var(--line)"></rect><text x="${x}" y="40" font-size="11.5" font-weight="800" fill="var(--h)">${t}</text></g>`).join("")}
+      <g id="br">${[0, 1, 2, 3].map(k => `<path class="bq" id="bq${k}" d="${q(262, 92, 30, k)}" fill="#D9A066" stroke="#8B5A2B" stroke-width="1.2"></path>`).join("")}</g>
+      <circle cx="160" cy="92" r="30" fill="none" stroke="${ink}" stroke-width="1.6"></circle>${[0, 1, 2, 3].map(k => `<path class="bs" id="bs${k}" d="${q(160, 92, 30, k)}" fill="transparent" stroke="${ink}" stroke-width="1"></path>`).join("")}
+      <text class="fade pop" id="b-sym" x="58" y="92" font-size="34" font-weight="800" fill="${ink}">¾</text>
+      <text class="fade" id="b-arrow" x="160" y="166" font-size="12" font-weight="800" fill="var(--h)">محسوس ← صورة ← رمز</text>
+    </svg>`,
+      events: [[0.05, "#bp0", "on", 1], [0.05, "#bp1", "on", 1], [0.05, "#bp2", "on", 1], [2.5, "#bp0", "on", 0], [3.6, "#br", "on", 1], [7.0, "#bp1", "on", 0], ...[0, 1, 2].map(k => [7.6 + k * 0.6, "#bs" + k, "on", 1]),
+        [10.5, "#bp2", "on", 0], [11.0, "#b-sym", "on", 1], [13.5, "#b-arrow", "on", 1]],
+      subs: [[0, "برونر: نفهم الفكرة نفسها بثلاث طرق متدرجة."], [2.5, "عمليًا باليد: يقسّم الطالب رغيفًا أربع قطع ويأخذ ثلاثًا."],
+        [7.0, "ثم بالصورة: يرسم دائرة ويظلل ثلاثة أرباعها."], [10.5, "ثم بالرمز: يكتب ¾."],
+        [13.5, "من المحسوس إلى الصورة إلى الرمز: هذه أنماط التمثيل عند برونر."]] };
+  },
+
+  // المنهج الحلزوني: المفهوم يعود بعمق أكبر
+  spiral: () => {
+    let d = ""; for (let t = 0; t <= 6 * Math.PI; t += 0.12) { const r = 8 + 11 * t / Math.PI, x = 96 + r * Math.cos(t + Math.PI), y = 96 + r * Math.sin(t + Math.PI) * .82; d += (d ? " L" : "M") + x.toFixed(1) + "," + y.toFixed(1); }
+    const pts = [1, 3, 5].map(n => { const t = n * Math.PI, r = 8 + 11 * n; return [96 + r * Math.cos(t + Math.PI), 96 + r * Math.sin(t + Math.PI) * .82]; });
+    const lab = [["الصف الثالث", "نصف وربع بالنماذج"], ["الصف السادس", "جمع الكسور وضربها"], ["الصف التاسع", "النسبة والاحتمالات"]];
+    return { dur: 16, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد المنهج الحلزوني">
+      <style>.sc #sp-p{stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset 9s linear}.sc #sp-p.on{stroke-dashoffset:0}</style>
+      <path id="sp-p" pathLength="100" d="${d}" fill="none" stroke="color-mix(in srgb, var(--h) 60%, var(--surface))" stroke-width="2.4" stroke-linecap="round"></path>
+      ${pts.map(([x, y], i) => `<circle class="fade pop" id="spm${i}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${6 + i * 2}" fill="var(--h)"></circle>`).join("")}
+      ${lab.map(([a, b], i) => `<g class="fade" id="spl${i}"><rect x="194" y="${38 + i * 44}" width="116" height="36" rx="9" fill="var(--surface)" stroke="var(--h)" stroke-width="${1 + i * .5}"></rect><text x="252" y="${50 + i * 44}" font-size="10" font-weight="800" fill="var(--h)">${a}</text><text x="252" y="${64 + i * 44}" font-size="10" font-weight="700" fill="${ink}">${b}</text></g>`).join("")}
+      <text x="96" y="176" font-size="10.5" font-weight="700" fill="var(--muted)">الكسور</text>
+    </svg>`,
+      events: [[0.4, "#sp-p", "on", 1], [2.6, "#spm0", "on", 1], [2.8, "#spl0", "on", 1], [6.0, "#spm1", "on", 1], [6.2, "#spl1", "on", 1], [9.4, "#spm2", "on", 1], [9.6, "#spl2", "on", 1]],
+      subs: [[0, "يُقدَّم المفهوم أول مرة ببساطة…"], [2.6, "الصف الثالث: نصف التفاحة وربعها بالنماذج المحسوسة."],
+        [6.0, "ثم يعود المفهوم نفسه بعمق أكبر: جمع الكسور وضربها."], [9.4, "ويعود أعمق مرة أخرى: النسبة والتناسب والاحتمالات."],
+        [12.6, "المفهوم نفسه يتكرر ويتسع مع نمو الطالب: هذا هو المنهج الحلزوني."]] };
+  },
+
+  // الانتباه الانتقائي
+  attention: () => {
+    const src = [["#at0", 248, 40, "شرح المعلم"], ["#at1", 74, 30, "ضجيج الممر"], ["#at2", 40, 92, "حديث زميل"], ["#at3", 270, 120, "صوت المكيف"]];
+    return { dur: 16, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد الانتباه الانتقائي">
+      <style>.sc #at-h{transition:transform .5s;transform-box:fill-box;transform-origin:50% 100%}.sc #at-h.turn{transform:rotate(-12deg)}</style>
+      <rect x="0" y="160" width="320" height="30" fill="color-mix(in srgb, var(--h) 12%, var(--surface))"></rect>
+      <g id="at-h">${person(160, 104, "#C0605A", { hijab: "#2F5D50" })}</g>
+      ${src.map(([id, x, y, t], i) => `<g class="fade dim" id="${id.slice(1)}"><rect x="${x - 40}" y="${y - 13}" width="80" height="26" rx="13" fill="var(--surface)" stroke="${i ? "var(--muted)" : "var(--h)"}" stroke-width="1.4"></rect><text x="${x}" y="${y}" font-size="10.5" font-weight="700" fill="${ink}">${t}</text></g>
+        <path class="fade" id="atl${i}" d="M${x},${y + 13} L160,${92}" stroke="${i ? "var(--muted)" : "var(--h)"}" stroke-width="${i ? 1 : 2.2}" stroke-dasharray="${i ? "3 4" : "0"}"></path>`).join("")}
+      <g class="fade pop" id="at-name"><rect x="14" y="128" width="64" height="24" rx="12" fill="var(--h)"></rect><text x="46" y="140" font-size="11" font-weight="800" fill="#fff">«يا سارة»</text></g>
+    </svg>`,
+      events: [[0.05, "#at0", "on", 1], [0.05, "#at1", "on", 1], [0.05, "#at2", "on", 1], [0.05, "#at3", "on", 1], [0.3, "#at0", "dim", 0], [0.3, "#at1", "dim", 0], [0.3, "#at2", "dim", 0], [0.3, "#at3", "dim", 0], ...[0, 1, 2, 3].map(i => [0.6, "#atl" + i, "on", 1]),
+        [4.0, "#at1", "dim", 1], [4.0, "#at2", "dim", 1], [4.0, "#at3", "dim", 1], [4.0, "#atl1", "on", 0], [4.0, "#atl2", "on", 0], [4.0, "#atl3", "on", 0],
+        [8.0, "#at-name", "on", 1], [8.4, "#at-h", "turn", 1], [8.4, "#at0", "dim", 1], [8.4, "#atl0", "on", 0], [11.4, "#at-h", "turn", 0], [11.4, "#at-name", "on", 0], [11.6, "#at0", "dim", 0], [11.6, "#atl0", "on", 1]],
+      subs: [[0, "مثيرات كثيرة تصل في اللحظة نفسها."], [4.0, "الانتباه الانتقائي يمرّر مثيرًا واحدًا، ويُخفت الباقي."],
+        [8.0, "لكن المثير المهم شخصيًا يخترق: تسمع اسمها بصوت خافت فتلتفت فورًا."], [12.0, "لذلك نادِ الطالب باسمه لتعيد انتباهه إلى الدرس."]] };
+  },
+
+  // أثر الموقع التسلسلي
+  serial: () => {
+    const rec = [88, 74, 62, 44, 34, 30, 34, 50, 72, 86];
+    return { dur: 16, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد أثر الموقع التسلسلي">
+      <style>.sc .sb{transform-box:fill-box;transform-origin:50% 100%;transform:scaleY(0);transition:transform .7s cubic-bezier(.2,.7,.2,1)}.sc .sb.on{transform:none}</style>
+      <text x="160" y="16" font-size="10.5" font-weight="700" fill="var(--muted)">قائمة من عشر كلمات: كم تذكّر الطلاب من كل موقع؟</text>
+      <path d="M30,150 H296" stroke="var(--muted)" stroke-width="1.2"></path>
+      ${rec.map((v, i) => `<rect class="sb" id="sb${i}" x="${282 - i * 26}" y="${150 - v * 1.2}" width="18" height="${v * 1.2}" rx="2" fill="${i < 3 ? "var(--h)" : i > 6 ? "#E3B23C" : "#9AA3A0"}"></rect><text x="${291 - i * 26}" y="162" font-size="9.5" fill="var(--muted)">${"١٢٣٤٥٦٧٨٩"[i] || "١٠"}</text>`).join("")}
+      <g class="fade" id="sr-a"><text x="256" y="176" font-size="10.5" font-weight="800" fill="var(--h)">أثر الأولية</text></g>
+      <g class="fade" id="sr-b"><text x="160" y="176" font-size="10.5" font-weight="800" fill="#7D8784">الوسط يُنسى</text></g>
+      <g class="fade" id="sr-c"><text x="64" y="176" font-size="10.5" font-weight="800" fill="#B8860B">أثر الحداثة</text></g>
+    </svg>`,
+      events: [...rec.map((_, i) => [0.8 + i * 0.25, "#sb" + i, "on", 1]), [3.6, "#sr-a", "on", 1], [7.0, "#sr-b", "on", 1], [10.0, "#sr-c", "on", 1]],
+      subs: [[0, "عشر كلمات تُقرأ مرة واحدة، ثم يكتب الطلاب ما تذكّروه."], [3.6, "الكلمات الأولى تُتذكر جيدًا: أخذت تكرارًا أكثر، فهذا أثر الأولية."],
+        [7.0, "والوسط يُنسى أكثر: لم يأخذ حظه من التكرار، وزاحمته الكلمات بعده."], [10.0, "والأخيرة تُتذكر جيدًا أيضًا: ما زالت حاضرة، فهذا أثر الحداثة."],
+        [13.0, "فابدأ الحصة بأهم فكرة واختمها بمراجعتها، ولا تدفنها في المنتصف."]] };
+  },
+
+
   waittime: () => {
     const seats = [[56, 80], [100, 80], [144, 80], [56, 132], [100, 132], [144, 132]];
     const shirts = ["#C0605A", "#4F7CAC", "#6A9A5B", "#B98A3E", "#7B62A8", "#3E8A8A"];
@@ -2084,7 +2158,7 @@ const SCENES = {
 
 SCENES.zpd = SCENES.scaffold; SCENES.spacing = SCENES.forgetting;
 // ملفات الفيديو الجاهزة للمشاهد (للحفظ والمشاركة)
-const SCENE_VIDEO = { pavlov: "pavlov", reinforce: "reinforce", waittime: "waittime", scaffold: "scaffold", zpd: "scaffold", forgetting: "forgetting", spacing: "forgetting", shaping: "shaping", bandura: "bandura", piaget: "piaget", chunking: "chunking", maslow: "maslow", testing: "testing", gestalt: "gestalt", jigsaw: "jigsaw", formative: "formative", meta: "meta", differentiate: "differentiate", kohlberg: "kohlberg", normal: "normal", erikson: "erikson", specs: "specs", polya: "polya" };
+const SCENE_VIDEO = { pavlov: "pavlov", reinforce: "reinforce", waittime: "waittime", scaffold: "scaffold", zpd: "scaffold", forgetting: "forgetting", spacing: "forgetting", shaping: "shaping", bandura: "bandura", piaget: "piaget", chunking: "chunking", maslow: "maslow", testing: "testing", gestalt: "gestalt", jigsaw: "jigsaw", formative: "formative", meta: "meta", differentiate: "differentiate", kohlberg: "kohlberg", normal: "normal", erikson: "erikson", specs: "specs", polya: "polya", bruner: "bruner", spiral: "spiral", attention: "attention", serial: "serial" };
 
 let sceneTimers = [];
 function mountScene(fig, spec, key) {
