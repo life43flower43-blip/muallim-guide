@@ -2002,6 +2002,62 @@ const SCENES = {
   },
 
 
+  // إريكسون: الاجتهاد مقابل النقص في المرحلة الابتدائية
+  erikson: () => ({ dur: 18, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد الاجتهاد مقابل النقص عند إريكسون">
+      <style>.sc .em{transform-box:fill-box;transform-origin:50% 100%;transition:transform 1s cubic-bezier(.2,.7,.2,1)}
+        .sc #em-a{transform:scaleY(.2)}.sc #em-a.up{transform:scaleY(1)}.sc #em-b{transform:scaleY(.5)}.sc #em-b.dn{transform:scaleY(.15)}.sc #em-b.up{transform:scaleY(.85)}</style>
+      <rect x="0" y="160" width="320" height="30" fill="color-mix(in srgb, var(--h) 12%, var(--surface))"></rect>
+      <path d="M160,14 V156" stroke="var(--line)" stroke-dasharray="4 4"></path>
+      ${person(70, 104, "#C0605A", { hijab: "#2F5D50" })}${person(232, 104, "#4F7CAC", { hair: "#1E1E1E" })}
+      <rect x="112" y="60" width="12" height="96" rx="3" fill="var(--line)"></rect><rect class="em" id="em-a" x="112" y="60" width="12" height="96" rx="3" fill="#2F8F5B"></rect>
+      <rect x="276" y="60" width="12" height="96" rx="3" fill="var(--line)"></rect><rect class="em" id="em-b" x="276" y="60" width="12" height="96" rx="3" fill="#D9534F"></rect>
+      <text x="118" y="50" font-size="9" font-weight="700" fill="var(--muted)">ثقتها</text><text x="282" y="50" font-size="9" font-weight="700" fill="var(--muted)">ثقته</text>
+      ${[0, 1, 2].map(i => `<text class="fade pop" id="ea${i}" x="${44 + i * 26}" y="30" font-size="16" fill="#E3B23C">★</text>`).join("")}
+      ${[0, 1, 2].map(i => `<text class="fade pop" id="eb${i}" x="${206 + i * 26}" y="30" font-size="15" font-weight="800" fill="#D9534F">✗</text>`).join("")}
+      <g class="fade pop" id="eb-step"><rect x="166" y="132" width="44" height="22" rx="4" fill="#E3B23C"></rect><text x="188" y="143" font-size="9.5" font-weight="800" fill="#3B2A10">خطوة أصغر</text></g>
+      <text class="fade pop" id="eb-ok" x="232" y="56" font-size="16" font-weight="800" fill="#2F8F5B">✓</text>
+    </svg>`,
+    events: [[3.6, "#ea0", "on", 1], [4.4, "#ea1", "on", 1], [5.2, "#ea2", "on", 1], [4.0, "#em-a", "up", 1],
+      [7.6, "#eb0", "on", 1], [8.4, "#eb1", "on", 1], [9.2, "#eb2", "on", 1], [8.0, "#em-b", "dn", 1],
+      [11.0, "#eb0", "on", 0], [11.0, "#eb1", "on", 0], [11.0, "#eb2", "on", 0], [11.2, "#eb-step", "on", 1], [12.4, "#eb-ok", "on", 1], [12.6, "#em-b", "dn", 0], [12.6, "#em-b", "up", 1]],
+    subs: [[0, "في الابتدائي يسأل الطفل نفسه: هل أنا قادر؟"], [3.6, "حين ينجز مهامًا مناسبة ويُقدَّر جهده، ينمو عنده الاجتهاد."],
+      [7.6, "وحين يتكرر فشله بلا دعم، يشعر بالنقص."], [11.0, "لذا يعطيه المعلم مهامًا يقدر عليها، ثم يرفع التحدي تدريجيًا."],
+      [15.0, "هذه مرحلة «الاجتهاد مقابل النقص» عند إريكسون."]] }),
+
+  // جدول المواصفات: توزيع الأسئلة على الدروس والمستويات
+  specs: () => {
+    const rows = [["الدرس الأول", "٥٠٪", [3, 4, 3]], ["الدرس الثاني", "٣٠٪", [2, 2, 2]], ["الدرس الثالث", "٢٠٪", [1, 2, 1]]], cols = ["تذكر", "فهم", "تطبيق"];
+    const ar = n => String(n).replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
+    const X = [262, 196, 144, 92, 40], Y = [34, 70, 104, 138];
+    return { dur: 16, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد جدول المواصفات">
+      <rect x="14" y="18" width="292" height="138" rx="8" fill="var(--surface)" stroke="var(--line)"></rect>
+      ${[52, 87, 121].map(y => `<path d="M14,${y} H306" stroke="var(--line)"></path>`).join("")}${[230, 170, 118, 66].map(x => `<path d="M${x},18 V156" stroke="var(--line)"></path>`).join("")}
+      <text x="${X[0]}" y="${Y[0]}" font-size="10" font-weight="800" fill="var(--muted)">الدرس</text><text x="${X[1]}" y="${Y[0]}" font-size="10" font-weight="800" fill="var(--muted)">الوزن</text>
+      ${cols.map((c, j) => `<text class="fade" id="sc-c${j}" x="${X[2 + j]}" y="${Y[0]}" font-size="10" font-weight="800" fill="var(--h)">${c}</text>`).join("")}
+      ${rows.map(([n, w, v], i) => `<text x="${X[0]}" y="${Y[1 + i]}" font-size="10.5" font-weight="700" fill="${ink}">${n}</text><text class="fade pop" id="sw${i}" x="${X[1]}" y="${Y[1 + i]}" font-size="11" font-weight="800" fill="var(--h)">${w}</text>
+        ${v.map((x, j) => `<text class="fade pop" id="sv${i}${j}" x="${X[2 + j]}" y="${Y[1 + i]}" font-size="12" font-weight="800" fill="${ink}">${ar(x)}</text>`).join("")}`).join("")}
+      <g class="fade pop" id="sc-t"><rect x="96" y="162" width="128" height="22" rx="11" fill="var(--h)"></rect><text x="160" y="173" font-size="11" font-weight="800" fill="#fff">المجموع: ٢٠ سؤالًا</text></g>
+    </svg>`,
+      events: [[3.4, "#sw0", "on", 1], [4.0, "#sw1", "on", 1], [4.6, "#sw2", "on", 1], [7.0, "#sc-c0", "on", 1], [7.0, "#sc-c1", "on", 1], [7.0, "#sc-c2", "on", 1],
+        ...rows.flatMap((r, i) => r[2].map((_, j) => [7.6 + i * 0.9 + j * 0.25, `#sv${i}${j}`, "on", 1])), [10.8, "#sc-t", "on", 1]],
+      subs: [[0, "قبل كتابة الاختبار: كم سؤالًا لكل درس؟ ولكل مستوى؟"], [3.4, "نعطي كل درس وزنًا بحسب أهميته ووقت تدريسه."],
+        [7.0, "ونوزّع أسئلته على مستويات الأهداف."], [11.0, "فيمثّل الاختبار المحتوى تمثيلًا عادلًا: هذا هو جدول المواصفات."]] };
+  },
+
+  // بوليا: خطوات حل المشكلة
+  polya: () => {
+    const st = [["افهم", "المطلوب: نصيب كل طالب"], ["خطط", "نقسم المجموع على عدد الطلاب"], ["نفّذ", "٢٤ ÷ ٤ = ٦"], ["راجع", "٦ × ٤ = ٢٤ ✓"]];
+    return { dur: 17, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد خطوات بوليا">
+      <rect x="20" y="12" width="280" height="34" rx="8" fill="#2E5C4B"></rect><text x="160" y="29" font-size="11" font-weight="700" fill="#DDEBE3">وُزّع ٢٤ قلمًا على ٤ طلاب بالتساوي، كم لكل طالب؟</text>
+      ${st.map(([a, b], i) => `<g class="fade" id="py${i}"><circle cx="284" cy="${70 + i * 30}" r="12" fill="var(--h)"></circle><text x="284" y="${70 + i * 30}" font-size="11" font-weight="800" fill="#fff">${"١٢٣٤"[i]}</text>
+        <text x="252" y="${70 + i * 30}" font-size="11.5" font-weight="800" fill="var(--h)">${a}</text><text x="135" y="${70 + i * 30}" font-size="10.5" font-weight="700" fill="${ink}">${b}</text></g>`).join("")}
+    </svg>`,
+      events: [[3.4, "#py0", "on", 1], [6.6, "#py1", "on", 1], [9.6, "#py2", "on", 1], [12.6, "#py3", "on", 1]],
+      subs: [[0, "مسألة: وُزّع ٢٤ قلمًا على ٤ طلاب بالتساوي، كم لكل طالب؟"], [3.4, "افهم المسألة: ما المعطى؟ وما المطلوب؟"],
+        [6.6, "ضع خطة: نقسم المجموع على عدد الطلاب."], [9.6, "نفّذ الخطة: ٢٤ ÷ ٤ = ٦."], [12.6, "راجع الحل: ٦ × ٤ = ٢٤. هذه خطوات بوليا الأربع."]] };
+  },
+
+
   waittime: () => {
     const seats = [[56, 80], [100, 80], [144, 80], [56, 132], [100, 132], [144, 132]];
     const shirts = ["#C0605A", "#4F7CAC", "#6A9A5B", "#B98A3E", "#7B62A8", "#3E8A8A"];
@@ -2028,7 +2084,7 @@ const SCENES = {
 
 SCENES.zpd = SCENES.scaffold; SCENES.spacing = SCENES.forgetting;
 // ملفات الفيديو الجاهزة للمشاهد (للحفظ والمشاركة)
-const SCENE_VIDEO = { pavlov: "pavlov", reinforce: "reinforce", waittime: "waittime", scaffold: "scaffold", zpd: "scaffold", forgetting: "forgetting", spacing: "forgetting", shaping: "shaping", bandura: "bandura", piaget: "piaget", chunking: "chunking", maslow: "maslow", testing: "testing", gestalt: "gestalt", jigsaw: "jigsaw", formative: "formative", meta: "meta", differentiate: "differentiate", kohlberg: "kohlberg", normal: "normal" };
+const SCENE_VIDEO = { pavlov: "pavlov", reinforce: "reinforce", waittime: "waittime", scaffold: "scaffold", zpd: "scaffold", forgetting: "forgetting", spacing: "forgetting", shaping: "shaping", bandura: "bandura", piaget: "piaget", chunking: "chunking", maslow: "maslow", testing: "testing", gestalt: "gestalt", jigsaw: "jigsaw", formative: "formative", meta: "meta", differentiate: "differentiate", kohlberg: "kohlberg", normal: "normal", erikson: "erikson", specs: "specs", polya: "polya" };
 
 let sceneTimers = [];
 function mountScene(fig, spec, key) {
