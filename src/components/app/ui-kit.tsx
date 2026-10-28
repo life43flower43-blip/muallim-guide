@@ -512,12 +512,12 @@ export function ToolTiles({ items }: { items: { icon: React.ElementType; title: 
           key={t.title}
           type="button"
           onClick={t.onClick}
-          className="flex min-h-[64px] min-w-0 items-center gap-2.5 rounded-[20px] border border-[var(--t075)] bg-white px-3 text-right transition active:scale-[0.97] dark:border-border dark:bg-card"
+          className="flex min-h-[64px] min-w-0 items-center gap-2.5 rounded-[20px] border border-[var(--t075)] bg-white px-3 text-right transition active:scale-[0.97] max-[359px]:flex-col max-[359px]:justify-center max-[359px]:gap-1.5 max-[359px]:py-2.5 max-[359px]:text-center dark:border-border dark:bg-card"
         >
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FBF1D6] text-[#B8860B]">
             <t.icon className="h-[18px] w-[18px]" strokeWidth={2} />
           </span>
-          <FitText max={15} min={10} className="flex-1 font-bold">{t.title}</FitText>
+          <FitText max={15} min={10} className="w-full flex-1 font-bold max-[359px]:flex-none">{t.title}</FitText>
         </button>
       ))}
     </div>

@@ -42,6 +42,11 @@ const ratingTxt: Record<SimRating, string> = {
 };
 
 
+// المرحلة الدراسية من وصف الموقف: «الابتدائي العليا — حصة النشاط» ← «الابتدائي»
+const LEVELS = ["الكل", "الروضة", "الابتدائي", "المتوسط", "الثانوي"] as const;
+type Level = (typeof LEVELS)[number];
+const levelOf = (stage: string): Level => LEVELS.find((l) => l !== "الكل" && stage.startsWith(l)) ?? "الكل";
+
 export default function SimLabView() {
   const clearSim = useUi((s) => s.clearSim);
   const startLab = useUi((s) => s.startLab);
@@ -51,6 +56,7 @@ export default function SimLabView() {
   const labAttempts = useApp((s) => s.labAttempts);
 
   const [scenario, setScenario] = useState<SimScenario | null>(null);
+  const [level, setLevel] = useState<Level>("الكل");
   const [runId, setRunId] = useState(0);
   const [nodeKey, setNodeKey] = useState("start");
   const [steps, setSteps] = useState<SimAttempt["steps"]>([]);
@@ -83,9 +89,9 @@ export default function SimLabView() {
     const rel = simAttempts.filter((a) => a.sid === sid).sort((a, b) => a.ts - b.ts);
     if (!rel.length) return null;
     const ratings = rel[rel.length - 1].steps.map((s) => s.rating);
-    if (ratings.every((r) => r === "good")) return "متقن في آخر تجربة";
-    if (ratings.every((r) => r === "poor")) return "يحتاج إعادة نظر في آخر تجربة";
-    return "في تحسّن في آخر تجربة";
+    if (ratings.every((r) => r === "good")) return { word: "متقن", cls: "bg-[#E3F4EA] text-[#1F7A4D]" };
+    if (ratings.every((r) => r === "poor")) return { word: "أعده", cls: "bg-danger-soft text-destructive" };
+    return { word: "في تحسّن", cls: "bg-[#FBF1D6] text-[#9A6A12]" };
   };
 
   const startScenario = (s: SimScenario) => {
@@ -219,17 +225,33 @@ export default function SimLabView() {
   // ================== قائمة المواقف ==================
   if (!scenario) {
     const doneCount = new Set(simAttempts.map((a) => a.sid)).size;
+    const shown = SIM_SCENARIOS.filter((x) => level === "الكل" || levelOf(x.stage) === level);
     return (
-      <ScreenShell title="مختبر محاكاة الصفوف" sub="كل قرار يغيّر الموقف، ثم يُحلَّل" onClose={clearSim}>
+      <ScreenShell title="المواقف الصفية" onClose={clearSim}>
         <div className="space-y-6">
-          <div>
-            <div className="flex items-center gap-3">
-              <ProgressBar color="#E3B23C" value={(doneCount / Math.max(1, SIM_SCENARIOS.length)) * 100} className="flex-1" />
-              <span className="shrink-0 text-sm text-muted-foreground">
-                {ad(doneCount)} من {ad(SIM_SCENARIOS.length)} مواقف
+          {/* الجلسة المتتابعة مع تقدّمك في كل المواقف */}
+          <button
+            type="button"
+            onClick={startSession}
+            className="block w-full overflow-hidden rounded-[26px] bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] p-4 text-right text-white transition active:scale-[0.98]"
+          >
+            <span className="flex items-center gap-3">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 text-[#FFE27A]">
+                <Play className="h-6 w-6 fill-current" />
               </span>
-            </div>
-          </div>
+              <span className="min-w-0 flex-1">
+                <FitText max={19} min={14} className="font-extrabold leading-8">جلسة متتابعة</FitText>
+                <FitText max={14} min={10} className="font-medium text-white/80">{`${ad(SIM_SESSION_SIZE)} مواقف ثم تقرير كفاءاتك`}</FitText>
+              </span>
+              <ChevronLeft className="h-6 w-6 shrink-0 text-[#FFE27A]" />
+            </span>
+            <span className="mt-3 flex items-center gap-2">
+              <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/20" aria-hidden="true">
+                <span className="block h-full rounded-full bg-gradient-to-l from-[#FFE27A] to-[#E3B23C]" style={{ width: `${doneCount ? Math.max(3, (doneCount / Math.max(1, SIM_SCENARIOS.length)) * 100) : 0}%` }} />
+              </span>
+              <span className="shrink-0 text-xs font-bold text-white/85">أنجزت {ad(doneCount)} من {ad(SIM_SCENARIOS.length)}</span>
+            </span>
+          </button>
 
           <ToolTiles
             items={[
@@ -238,53 +260,53 @@ export default function SimLabView() {
             ]}
           />
 
-          <Card className="p-5">
-            <div className="flex items-center gap-4">
-              <IconTile icon={Play} size={48} />
-              <div className="min-w-0 flex-1">
-                <h2 className="font-display text-base font-semibold">جلسة متتابعة</h2>
-              </div>
-            </div>
-            <PrimaryButton onClick={startSession} className="mt-4 w-full sm:w-auto">
-              ابدأ الجلسة
-            </PrimaryButton>
-          </Card>
-
-          <Card className="p-5">
-            <SectionHeader title="خريطة كفاءاتك" sub="من قراراتك في المواقف، لا من الحفظ" action={<Gauge className="h-5 w-5 text-muted-foreground" />} />
-            {aggregate.length ? (
-              skillBars(aggregate)
-            ) : (
-              <p className="text-sm leading-6 text-muted-foreground">تظهر الخريطة بعد أول موقف تكمله.</p>
-            )}
-          </Card>
+          {/* خريطة الكفاءات تظهر بعد أول موقف */}
+          {aggregate.length > 0 && (
+            <section className="rounded-[24px] border border-[var(--t075)] bg-white p-4 dark:border-border dark:bg-card">
+              <SectionHeader title="خريطة كفاءاتك" action={<Gauge className="h-5 w-5 shrink-0 text-[var(--t500)]" />} />
+              {skillBars(aggregate)}
+            </section>
+          )}
 
           <section>
-            <SectionHeader title="المواقف" sub="اختر موقفًا لتبدأ" />
-            <Divided>
-              {SIM_SCENARIOS.map((s) => {
-                const st = lastStatusOf(s.id);
+            <SectionHeader title="المواقف" action={<span className="shrink-0 text-sm font-bold text-[var(--t500)]">{ad(shown.length)}</span>} />
+            {/* تصفية حسب المرحلة الدراسية */}
+            <div className="no-scrollbar -mx-4 mb-3 flex gap-2 overflow-x-auto px-4" role="tablist" aria-label="المرحلة">
+              {LEVELS.filter((l) => l === "الكل" || SIM_SCENARIOS.some((x) => levelOf(x.stage) === l)).map((l) => (
+                <button
+                  key={l}
+                  type="button"
+                  role="tab"
+                  aria-selected={level === l}
+                  onClick={() => setLevel(l)}
+                  className={`min-h-[38px] shrink-0 rounded-full border px-4 text-sm font-bold transition ${level === l ? "border-transparent bg-[var(--t700)] text-white" : "border-[var(--t075)] bg-white text-[var(--t700)] dark:border-border dark:bg-card"}`}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
+            <div className="space-y-2.5">
+              {shown.map((x) => {
+                const st = lastStatusOf(x.id);
                 return (
                   <button
-                    key={s.id}
+                    key={x.id}
                     type="button"
-                    onClick={() => startScenario(s)}
-                    className="flex w-full min-w-0 items-center gap-3 px-4 py-3.5 text-right transition-colors hover:bg-muted/60"
+                    onClick={() => startScenario(x)}
+                    className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[var(--t075)] bg-white p-3 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
                   >
-                    <IconTile icon={Users} />
-                    <span className="min-w-0 flex-1">
-                      <FitText max={17} min={12} className="font-bold leading-7">{s.title}</FitText>
-                      {/* تفاصيل الموقف كلها في قالب واحد على سطر واحد */}
-                      <span className="mt-1.5 flex min-w-0 items-start gap-1.5 rounded-[12px] bg-[var(--t050)] px-2.5 py-1 text-[var(--t500)]">
-                        <span className="flex-1 text-[13px] font-medium leading-5">{[s.stage, ...s.skills].join(" · ")}</span>
-                        {st && <span className="shrink-0 rounded-full bg-[var(--t100)] px-2 text-[11px] font-bold leading-5 text-[var(--t800)]">{st}</span>}
-                      </span>
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[var(--t050)] text-[var(--t700)]">
+                      <Users className="h-5 w-5" />
                     </span>
-                    <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" />
+                    <span className="min-w-0 flex-1">
+                      <FitText max={16} min={11} className="font-bold leading-7">{x.title}</FitText>
+                      <FitText max={13} min={9} className="leading-5 text-muted-foreground">{[levelOf(x.stage), ...x.skills.slice(0, 2)].join(" · ")}</FitText>
+                    </span>
+                    {st && <span className={`shrink-0 rounded-full px-2.5 text-xs font-bold leading-6 ${st.cls}`}>{st.word}</span>}
                   </button>
                 );
               })}
-            </Divided>
+            </div>
           </section>
         </div>
       </ScreenShell>
