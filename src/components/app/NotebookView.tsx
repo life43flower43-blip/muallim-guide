@@ -5,8 +5,9 @@
 // ============================================================================
 
 import { useMemo, useState } from "react";
-import { ArrowDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowDown, ChevronLeft, ChevronRight, Network } from "lucide-react";
 import { useApp } from "@/lib/store";
+import { useUi } from "@/lib/ui-store";
 import { CHAPTER_MAPS, COURSES, COURSE_SHORT, conceptsOfCourse, type ChapterMap } from "@/lib/qbank";
 import { cn } from "@/lib/utils";
 import type { Concept } from "@/lib/types";
@@ -107,6 +108,22 @@ export default function NotebookView() {
   return (
     <div className="mx-auto max-w-2xl space-y-5">
       <PageTitle title="البوصلة" />
+
+      {/* مدخل الخرائط الذهنية المتحركة */}
+      <button
+        type="button"
+        onClick={() => useUi.getState().startMind()}
+        className="flex w-full items-center gap-3 rounded-[22px] border border-[#E3D3A0] bg-white p-3 text-right transition active:scale-[0.98] dark:bg-card"
+      >
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--t600)] to-[var(--t850)] text-white" aria-hidden="true">
+          <Network className="h-6 w-6" strokeWidth={2.2} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <FitText max={17} min={12} className="font-extrabold leading-7 text-foreground">الخرائط الذهنية المتحركة</FitText>
+          <FitText max={13} min={10} className="leading-6 text-[var(--t500)]">نظريات التعلم · المعرفة والتذكر والفهم</FitText>
+        </span>
+        <ChevronLeft className="h-5 w-5 shrink-0 text-[#C99A06]" strokeWidth={2.5} aria-hidden="true" />
+      </button>
 
 
       {current ? (

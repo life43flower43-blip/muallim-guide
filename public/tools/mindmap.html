@@ -1,0 +1,1376 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>خريطة نظريات التعلم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
+<style>
+/* Layout: a pannable radial-tree canvas beside a reading panel; six schools of thought, one hue each */
+:root {
+  --bg: #F2F4F6;
+  --surface: #FFFFFF;
+  --ink: #15202B;
+  --muted: #5A6775;
+  --line: #D6DCE2;
+  --grid: #DDE2E7;
+  --b0: #D9480F; /* السلوكية */
+  --b1: #1971C2; /* المعرفية */
+  --b2: #2B8A3E; /* البنائية الاجتماعية */
+  --b3: #7048E8; /* التعلم الاجتماعي */
+  --b4: #C2255C; /* الإنسانية */
+  --b5: #0B7285; /* نماذج التصميم */
+  --b6: #A16207;
+  --on-branch: #FFFFFF;
+  --font-display: "Tajawal", "Segoe UI", Tahoma, sans-serif;
+  --font-body: "Tajawal", "Segoe UI", Tahoma, Arial, sans-serif;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F151B; --surface: #18212A; --ink: #E7ECF1; --muted: #9AA7B4; --line: #2A3540; --grid: #222C36;
+    --b0: #FF8A4C; --b1: #5AA9F0; --b2: #5CC46F; --b3: #A08BFF; --b4: #F06595; --b5: #3BC2D4; --b6: #E3A33B;
+    --on-branch: #0F151B; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F151B; --surface: #18212A; --ink: #E7ECF1; --muted: #9AA7B4; --line: #2A3540; --grid: #222C36;
+  --b0: #FF8A4C; --b1: #5AA9F0; --b2: #5CC46F; --b3: #A08BFF; --b4: #F06595; --b5: #3BC2D4; --b6: #E3A33B;
+  --on-branch: #0F151B; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.7;
+  direction: rtl;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 18px 24px;
+}
+.wrap { max-width: 1400px; margin: 0 auto; display: grid; gap: 14px; }
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px; }
+.brand { min-width: 0; }
+.eyebrow { font-size: 12px; letter-spacing: .04em; color: var(--muted); font-weight: 600; }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(24px, 3.2vw, 34px); line-height: 1.25; margin: 2px 0 0; text-wrap: balance; }
+.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.search { position: relative; }
+.search input {
+  font: inherit; font-size: 14px; width: min(260px, 70vw); padding: 8px 36px 8px 12px;
+  border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.search input:focus-visible { outline: 2px solid var(--b1); outline-offset: 1px; }
+.search svg { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; fill: none; stroke: var(--muted); stroke-width: 2; }
+.count { font-size: 12px; color: var(--muted); min-width: 4.5em; font-variant-numeric: tabular-nums; }
+.btn {
+  font: inherit; font-size: 13px; font-weight: 600; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; line-height: 1.5;
+}
+.btn:hover { border-color: var(--muted); }
+.btn:focus-visible { outline: 2px solid var(--b1); outline-offset: 2px; }
+.btn.icon { width: 34px; padding: 6px 0; text-align: center; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.tabs { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); justify-self: start; }
+.tabs button { font: inherit; font-size: 14px; font-weight: 700; border: 0; border-radius: 999px; padding: 7px 16px; background: none; color: var(--muted); cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+.tabs button:focus-visible { outline: 2px solid var(--b1); outline-offset: 2px; }
+.illus .st.on.dimmed { opacity: .28; }
+.illus text.dig { font-size: 21px; font-weight: 700; direction: ltr; fill: var(--ink); }
+.illus .bar { fill: var(--h); }
+.illus .bar.alt { fill: var(--muted); }
+.illus .axis { stroke: var(--line); stroke-width: 1.5; fill: none; }
+.illus .curve { fill: none; stroke: var(--h); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.illus .curve.alt { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 5 4; }
+.chip {
+  font: inherit; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 12px; border-radius: 999px; cursor: pointer; color: var(--ink);
+  background: color-mix(in srgb, var(--c) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--c) 35%, var(--surface));
+}
+.chip i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); display: block; }
+.chip:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
+main { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 14px; align-items: stretch; }
+.stage {
+  position: relative; min-width: 0; height: max(560px, calc(100dvh - 190px));
+  border: 1px solid var(--line); border-radius: var(--r); overflow: hidden;
+  background-color: var(--surface);
+  background-image: radial-gradient(var(--grid) 1.2px, transparent 1.3px);
+  background-size: 22px 22px;
+  touch-action: none; cursor: grab;
+}
+.stage.dragging { cursor: grabbing; }
+svg#map { width: 100%; height: 100%; display: block; user-select: none; -webkit-user-select: none; }
+.zoom { position: absolute; left: 12px; bottom: 12px; display: grid; gap: 6px; }
+.hint {
+  position: absolute; right: 12px; bottom: 12px; left: 64px; font-size: 12px; color: var(--muted);
+  pointer-events: none; text-align: right;
+}
+.hint span { background: color-mix(in srgb, var(--surface) 88%, transparent); padding: 3px 8px; border-radius: 8px; }
+
+/* nodes */
+.node { cursor: pointer; outline: none; }
+.node rect.box { stroke-width: 1.2; transition: stroke-width .15s; }
+.node text { font-family: var(--font-body); fill: var(--ink); dominant-baseline: central; text-anchor: middle; pointer-events: none; }
+.node.d0 rect.box { fill: var(--ink); stroke: var(--ink); }
+.node.d0 text { fill: var(--bg); font-family: var(--font-display); font-weight: 700; font-size: 22px; }
+.node.d1 rect.box { fill: var(--h); stroke: var(--h); }
+.node.d1 text { fill: var(--on-branch); font-weight: 700; font-size: 16px; }
+.node.dn rect.box { fill: color-mix(in srgb, var(--h) 11%, var(--surface)); stroke: color-mix(in srgb, var(--h) 45%, var(--surface)); }
+.node.dn text { font-weight: 600; font-size: 14.5px; }
+.node.d3 text { font-weight: 500; font-size: 14px; }
+.node:hover rect.box, .node:focus-visible rect.box { stroke-width: 2.4; stroke: var(--h); }
+.node.d0:hover rect.box, .node.d0:focus-visible rect.box { stroke: var(--b1); }
+.node.sel rect.box { stroke-width: 3; stroke: var(--h); }
+.node.d0.sel rect.box { stroke: var(--b1); }
+.node.sel.d1 rect.box { stroke: var(--ink); }
+.node .badge circle { fill: var(--surface); stroke: var(--h); stroke-width: 1.5; }
+.node .badge text { fill: var(--h); font-size: 11.5px; font-weight: 700; direction: ltr; }
+.node.d0 .badge { display: none; }
+.dim .node:not(.hit):not(.d0) { opacity: .28; }
+.dim path.link { opacity: .18; }
+.node.hit rect.box { stroke-width: 3; stroke: var(--h); }
+path.link { fill: none; stroke: var(--h); stroke-linecap: round; opacity: .75; }
+
+/* panel */
+aside.panel {
+  min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r);
+  padding: 20px; display: flex; flex-direction: column; gap: 14px; overflow: auto;
+  height: max(560px, calc(100dvh - 190px));
+}
+.crumbs { font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px; }
+.crumbs button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line); }
+.crumbs button:hover { color: var(--ink); }
+.ptitle { font-family: var(--font-display); font-weight: 700; font-size: 25px; line-height: 1.3; margin: 0; text-wrap: balance; }
+.tag { align-self: flex-start; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; color: var(--h); background: color-mix(in srgb, var(--h) 12%, var(--surface)); }
+.pdesc { margin: 0; max-width: 62ch; }
+.classroom { border-radius: 12px; padding: 12px 14px; background: color-mix(in srgb, var(--h) 8%, var(--surface)); border: 1px solid color-mix(in srgb, var(--h) 25%, var(--surface)); }
+.classroom b { display: block; font-size: 12px; letter-spacing: .03em; color: var(--h); margin-bottom: 2px; }
+.classroom p { margin: 0; }
+.sub h3 { font-size: 13px; color: var(--muted); font-weight: 600; margin: 0 0 8px; }
+.sub ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.sub li button {
+  width: 100%; text-align: right; font: inherit; font-size: 14px; font-weight: 600; color: var(--ink); cursor: pointer;
+  background: none; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px;
+  display: flex; justify-content: space-between; gap: 10px; align-items: center;
+}
+.sub li button:hover, .sub li button:focus-visible { border-color: var(--h); outline: none; }
+.sub li button small { color: var(--muted); font-weight: 500; font-size: 12px; white-space: nowrap; }
+.foot { margin-top: auto; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+
+/* flowing path from the root to the selected idea */
+path.link.flow { stroke-dasharray: 7 7; animation: flow .9s linear infinite; opacity: 1; }
+@keyframes flow { to { stroke-dashoffset: -14; } }
+.node .play { fill: var(--h); pointer-events: none; }
+.node.d1 .play { fill: var(--on-branch); }
+
+/* tour */
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn.primary:hover { opacity: .9; }
+.tourbar {
+  position: absolute; top: 12px; right: 12px; left: 12px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 8px 6px 14px;
+}
+.tourbar .prog { flex: 1 1 120px; height: 6px; border-radius: 99px; background: var(--line); overflow: hidden; min-width: 80px; }
+.tourbar .prog i { display: block; height: 100%; width: 0; background: var(--b1); transition: width .4s; }
+.tourbar .lbl { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* animated explanation */
+.illus { border: 1px solid var(--line); border-radius: 12px; padding: 10px 10px 8px; background: var(--bg); display: grid; gap: 6px; }
+.illus .ihead { font-size: 12px; font-weight: 700; color: var(--h); display: flex; align-items: center; gap: 6px; }
+.illus .ihead::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--h); animation: blink 1.4s ease-in-out infinite; }
+@keyframes blink { 50% { opacity: .25; } }
+.ill-svg svg { width: 100%; height: auto; display: block; overflow: visible; }
+.illus text { font-family: var(--font-body); font-size: 12px; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+.illus text.lbl { font-size: 11px; fill: var(--muted); }
+.illus text.sm { font-size: 10.5px; }
+.illus text.big { font-size: 30px; font-weight: 700; fill: var(--h); direction: ltr; }
+.illus .bx rect { fill: color-mix(in srgb, var(--h) 12%, var(--surface)); stroke: color-mix(in srgb, var(--h) 50%, var(--surface)); stroke-width: 1.2; transition: fill .4s, stroke .4s; }
+.illus .bx.hot rect, .illus .lvl.hot { fill: var(--h); stroke: var(--h); }
+.illus .bx.hot text { fill: var(--on-branch); font-weight: 700; }
+.illus .bx.mute rect { fill: var(--surface); stroke: var(--line); stroke-dasharray: 4 3; }
+.illus .bx.mute text { fill: var(--muted); }
+.illus .ar { fill: none; stroke: var(--muted); stroke-width: 1.6; }
+.illus .ar.hot { stroke: var(--h); stroke-width: 2.2; }
+.illus .st { opacity: 0; transform-box: fill-box; transform-origin: center;
+  transition: opacity .5s ease, transform .8s cubic-bezier(.2,.7,.2,1), stroke-dashoffset .8s ease, fill-opacity .6s; }
+.illus .st.on { opacity: 1; }
+.illus .st.gone { opacity: 0; }
+.illus .draw { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.illus .draw.on { stroke-dashoffset: 0; }
+.illus .reveal { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.illus .mv { fill: var(--h); }
+.illus .mv.helper { fill: var(--ink); }
+.illus .ground { stroke: var(--line); stroke-width: 2; }
+.illus .seg { stroke: var(--h); stroke-width: 12; stroke-linecap: round; fill: none; }
+.illus .ring { fill: color-mix(in srgb, var(--h) 10%, var(--surface)); stroke: color-mix(in srgb, var(--h) 55%, var(--surface)); stroke-width: 1.4; }
+.illus .ring.core { fill: color-mix(in srgb, var(--h) 38%, var(--surface)); stroke: var(--h); }
+.illus .ring.out { fill: none; stroke: var(--muted); stroke-dasharray: 4 4; }
+.illus .lvl { fill: color-mix(in srgb, var(--h) 16%, var(--surface)); stroke: color-mix(in srgb, var(--h) 55%, var(--surface)); stroke-width: 1.2; }
+.illus .bld { fill: var(--h); stroke: var(--h); fill-opacity: .15; }
+.illus .pulse.on rect { animation: pulse 1.1s ease-in-out infinite; }
+@keyframes pulse { 50% { stroke-width: 4; } }
+.ill-cap { margin: 2px 2px 0; min-height: 3.3em; font-size: 14px; font-weight: 500; line-height: 1.65; }
+.ill-ex { border-radius: 10px; padding: 8px 12px; background: var(--surface); border: 1px solid color-mix(in srgb, var(--h) 30%, var(--surface)); }
+.ill-ex b { display: block; font-size: 12px; color: var(--h); }
+.ill-ex p { margin: 0; font-size: 13.5px; }
+.ill-cap { min-height: 0 !important; font-weight: 700 !important; }
+.ill-ctl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ill-ctl .dots { display: flex; gap: 6px; flex-wrap: wrap; }
+.ill-ctl .dots button { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); font: inherit; font-size: 11px; color: var(--muted); cursor: pointer; padding: 0; line-height: 1; font-variant-numeric: tabular-nums; }
+.ill-ctl .dots button.on { background: var(--h); border-color: var(--h); color: var(--on-branch); }
+.ill-ctl .dots button:focus-visible { outline: 2px solid var(--h); outline-offset: 2px; }
+
+@media (max-width: 900px) {
+  main { grid-template-columns: minmax(0, 1fr); }
+  .stage { height: 58svh; min-height: 400px; }
+  aside.panel { height: auto; }
+  .hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<script>
+(function () {
+  var p = new URLSearchParams(location.search);
+  var t = p.get("theme"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+  if (p.get("embed") === "1") document.documentElement.classList.add("embed");
+})();
+</script>
+<style>
+.embed body { padding-block: 12px 16px; }
+.embed .brand { display: none; }
+.embed header { justify-content: flex-start; }
+.embed .stage, .embed aside.panel { height: max(480px, calc(100dvh - 150px)); }
+@media (max-width: 900px) { .embed .stage { height: 60svh; } .embed aside.panel { height: auto; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="eyebrow">علم النفس التربوي · خريطة تفاعلية</div>
+      <h1 id="maptitle">خريطة نظريات التعلم</h1>
+    </div>
+    <div class="tools">
+      <label class="search" for="q">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+        <input id="q" type="search" placeholder="ابحث: السقالات، التعزيز، بياجيه…" autocomplete="off" aria-label="بحث في الخريطة">
+      </label>
+      <span class="count" id="count" aria-live="polite"></span>
+      <button class="btn primary" id="tour" type="button">▶ جولة متحركة</button>
+      <button class="btn" id="expand" type="button">فتح الكل</button>
+      <button class="btn" id="collapse" type="button">طيّ الكل</button>
+      <button class="btn" id="fit" type="button">ملاءمة</button>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="اختر الخريطة">
+    <button type="button" role="tab" id="tab-theories" aria-selected="true">نظريات التعلم</button>
+    <button type="button" role="tab" id="tab-cognition" aria-selected="false">المعرفة والتذكر والفهم</button>
+  </div>
+  <nav class="legend" id="legend" aria-label="الفروع الكبرى"></nav>
+
+  <main>
+    <div class="stage" id="stage">
+      <svg id="map" role="tree" aria-label="خريطة ذهنية لنظريات التعلم">
+        <g id="vp"><g id="links"></g><g id="nodes"></g></g>
+      </svg>
+      <div class="zoom">
+        <button class="btn icon" id="zin" type="button" aria-label="تكبير">+</button>
+        <button class="btn icon" id="zout" type="button" aria-label="تصغير">−</button>
+      </div>
+      <div class="tourbar" id="tourbar" hidden>
+        <button class="btn icon" id="tprev" type="button" aria-label="السابق">›</button>
+        <button class="btn" id="tplay" type="button">إيقاف مؤقت</button>
+        <button class="btn icon" id="tnext" type="button" aria-label="التالي">‹</button>
+        <div class="prog" aria-hidden="true"><i id="tprog"></i></div>
+        <span class="lbl" id="tlbl"></span>
+        <button class="btn" id="tend" type="button">إنهاء</button>
+      </div>
+      <div class="hint"><span>اسحب للتنقل · كبّر بالعجلة أو بإصبعين · اضغط فكرة لتفتح فروعها</span></div>
+    </div>
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </main>
+</div>
+
+<script>
+const MAP_THEORIES = {t:"نظريات التعلم",
+ d:"كيف يتعلم الإنسان؟ تجيب ست مدارس كبرى، كلٌّ من زاوية: السلوك الظاهر، أو العقل من الداخل، أو المجتمع، أو الملاحظة، أو الإنسان بحاجاته، أو تصميم التدريس نفسه.",
+ c:"لا توجد نظرية واحدة لكل موقف: لتثبيت عادة استعن بالسلوكية، ولبناء الفهم بالمعرفية والبنائية، ولإشعال الدافعية بالإنسانية.",
+ k:[
+ {t:"السلوكية", d:"التعلم تغيّر في السلوك الظاهر ينشأ من ارتباط مثير باستجابة، وتحكمه نتائج السلوك لا ما يدور في العقل.", c:"قواعد صفية واضحة، وتعزيز فوري ومحدد للسلوك المرغوب، وتجاهل مخطط للسلوك البسيط غير المرغوب.", k:[
+  {t:"بافلوف · الاشتراط الكلاسيكي", d:"يقترن مثير محايد بمثير طبيعي مرات متكررة حتى يستدعي وحده الاستجابة.", c:"قلق الاختبار: اقترنت ورقة الاختبار مرارًا بتوبيخ المعلم، فصارت الورقة وحدها تثير القلق.", k:[
+   {t:"المثير الشرطي", d:"مثير كان محايدًا، ثم صار يستدعي الاستجابة بعد اقترانه المتكرر بالمثير الطبيعي.", c:"ورقة الاختبار: كانت محايدة، ثم صارت تثير القلق بعد اقترانها المتكرر بالتوبيخ."},
+   {t:"التعميم", d:"امتداد الاستجابة إلى مثيرات تشبه المثير الشرطي.", c:"قلق طالب من اختبار الرياضيات يمتد إلى كل ورقة اختبار."},
+   {t:"التمييز", d:"الاستجابة للمثير الأصلي وحده دون ما يشبهه.", c:"يميز الطلاب بين جرس الفسحة وجرس الإخلاء."},
+   {t:"الانطفاء", d:"تضعف الاستجابة الشرطية حين يتكرر المثير الشرطي دون المثير الطبيعي، وقد تعود فجأة (الاسترجاع التلقائي).", c:"يتلاشى خوف الطالب من الوقوف أمام السبورة بعد مرات من المشاركة الآمنة."}]},
+  {t:"ثورندايك · المحاولة والخطأ", d:"يتعلم الكائن بالمحاولة والخطأ، وتثبت الاستجابات التي تعقبها نتائج مُرضية.", c:"يتعلم الطالب حل اللغز بعد محاولات، فتثبت الخطوة الناجحة.", k:[
+   {t:"قانون الأثر", d:"تقوى الرابطة بين المثير والاستجابة إذا تبعها رضا، وتضعف إذا تبعها ضيق.", c:"تغذية راجعة إيجابية فورية بعد الإجابة الصحيحة."},
+   {t:"قانون التدريب", d:"تقوى الرابطة بالممارسة وتضعف بالإهمال.", c:"تدريبات قصيرة متكررة على الحقائق الأساسية بدل جلسة واحدة طويلة."},
+   {t:"قانون الاستعداد", d:"يكون التعلم مُرضيًا حين يكون المتعلم مهيأً له، ومزعجًا حين يُفرض قبل أوانه.", c:"تمهيد يثير الحاجة إلى الدرس قبل البدء فيه."}]},
+  {t:"سكنر · الاشتراط الإجرائي", d:"السلوك تحكمه نتائجه: ما يُعزَّز يتكرر، وما يُعاقَب أو يُهمَل يضعف.", c:"خطة تعزيز صفية تحدد السلوك المرغوب بدقة وتكافئه فور حدوثه.", k:[
+   {t:"التعزيز الموجب", d:"إضافة شيء مرغوب بعد السلوك فيزيد احتمال تكراره.", c:"مدح محدد: «رتّبت خطوات الحل بوضوح»، بدل «أحسنت» العامة."},
+   {t:"التعزيز السالب", d:"إزالة شيء مزعج بعد السلوك فيزيد تكراره، وهو ليس عقابًا.", c:"يُعفى من حصة الاستدراك المملة من يسلّم واجبه كاملًا، فيزيد تسليم الواجبات كاملة."},
+   {t:"العقاب", d:"نتيجة تقلل تكرار السلوك، وأثره مؤقت ما لم يُعلَّم السلوك البديل.", c:"حرمان مؤقت من امتياز مع توضيح السلوك المطلوب بدلًا منه."},
+   {t:"جداول التعزيز", d:"المستمر يسرّع الاكتساب، والمتقطع (نسبة أو فترة، ثابتة أو متغيرة) يحافظ على السلوك؛ والنسبة المتغيرة أشدها مقاومة للانطفاء.", c:"ابدأ بتعزيز كل استجابة، ثم انتقل إلى تعزيز متقطع غير متوقع."},
+   {t:"التشكيل", d:"تعزيز تقريبات متتابعة تقترب تدريجيًا من السلوك المستهدف.", c:"تعزيز كتابة كلمة، ثم جملة، ثم فقرة كاملة."}]}]},
+ {t:"المعرفية", d:"التعلم عملية عقلية داخلية: استقبال المعلومات وتنظيمها وربطها بما يعرفه المتعلم من قبل.", c:"ابدأ مما يعرفه الطلاب، ونظّم المحتوى في بنية واضحة، واطلب منهم شرح تفكيرهم.", k:[
+  {t:"بياجيه · النمو المعرفي", d:"يبني الطفل معرفته بنفسه عبر مراحل متتابعة، ويحفظ عقله توازنه بين التمثيل والمواءمة.", c:"قدّم المهمة التي تناسب مرحلة الطالب، ثم أربكه قليلًا بما يدفعه إلى المواءمة.", k:[
+   {t:"التمثيل والمواءمة", d:"التمثيل: إدخال الخبرة في مخطط قائم. المواءمة: تعديل المخطط ليتسع للجديد.", c:"طفل يسمي الحوت سمكة (تمثيل)، ثم يعدّل مفهومه حين يعرف أنه يرضع صغاره (مواءمة)."},
+   {t:"الحسية الحركية (0–2)", d:"يتعرف العالم بالحواس والحركة، ويكتسب ثبات الشيء.", c:"ألعاب الإخفاء والإظهار تنمّي ثبات الشيء."},
+   {t:"ما قبل العمليات (2–7)", d:"تنمو الرمزية واللغة، مع تمركز حول الذات وغياب الاحتفاظ.", c:"يظن الطفل أن الماء زاد حين صُب في كأس أطول."},
+   {t:"العمليات المادية (7–11)", d:"منطق في المحسوس: الاحتفاظ والتصنيف والتسلسل والمعكوسية.", c:"استخدم المكعبات والنماذج قبل الرموز المجردة."},
+   {t:"العمليات المجردة (11+)", d:"تفكير افتراضي استنتاجي في غير المحسوس.", c:"مسائل «ماذا لو…؟» وفرضيات تُختبر بالتجربة."}]},
+  {t:"برونر · التعلم بالاكتشاف", d:"يكتشف المتعلم البنية الأساسية للمادة بتوجيه من المعلم، ويُبنى المنهج حلزونيًا.", c:"قدّم أمثلة ودع الطلاب يستنتجون القاعدة قبل أن تصوغها لهم.", k:[
+   {t:"التمثيل العملي", d:"الفهم بالفعل والمعالجة اليدوية.", c:"قسمة قطع الفاكهة لفهم الكسور."},
+   {t:"التمثيل الأيقوني", d:"الفهم بالصور والرسوم والنماذج البصرية.", c:"رسم دوائر مظللة تمثّل الكسر."},
+   {t:"التمثيل الرمزي", d:"الفهم باللغة والرموز المجردة.", c:"كتابة الكسر ³⁄₄ وإجراء العمليات عليه."},
+   {t:"المنهج الحلزوني", d:"تعود المفاهيم الكبرى في كل مرحلة دراسية بعمق أكبر.", c:"الكسور في الصف الثالث بالنماذج، وفي السادس بالعمليات، وفي التاسع بالنسبة والتناسب."}]},
+  {t:"أوزوبل · التعلم ذو المعنى", d:"يحدث التعلم حين ترتبط المعلومة الجديدة بالبنية المعرفية القائمة ارتباطًا جوهريًا لا حرفيًا.", c:"اسأل قبل الدرس: ما الذي تعرفونه عن هذا؟ ثم ابنِ عليه.", k:[
+   {t:"المنظم المتقدم", d:"مقدمة عامة أعلى تجريدًا تُقدَّم قبل الدرس لتربط الجديد بالقديم.", c:"خريطة مفاهيم مختصرة في أول الحصة تُظهر موقع الدرس من الوحدة."},
+   {t:"التعلم الاستقبالي", d:"الشرح المنظم قد يكون ذا معنى، لا حفظًا آليًا، إذا ارتبط بالمعرفة السابقة.", c:"عرض مباشر منظم يتخلله ربط صريح بأمثلة يعرفها الطلاب."}]},
+  {t:"معالجة المعلومات", d:"يشبّه العقل بنظام يستقبل المعلومات ويرمزها ويخزنها ويسترجعها.", c:"وجّه الانتباه، وقسّم المحتوى، ودرّب الطلاب على الاسترجاع.", k:[
+   {t:"الذاكرة الحسية", d:"تحتفظ بالمثيرات لحظات قصيرة، ولا يعبر منها إلا ما ننتبه إليه.", c:"إشارة واضحة لبداية الشرح تجذب الانتباه إلى المهم."},
+   {t:"الذاكرة العاملة", d:"سعتها محدودة (نحو أربعة عناصر ذات معنى) ومدتها قصيرة.", c:"قسّم التعليمات الطويلة إلى خطوات مكتوبة على السبورة."},
+   {t:"الذاكرة طويلة المدى", d:"سعتها واسعة، والاسترجاع المتكرر والمتباعد يقوّي الوصول إليها.", c:"اختبارات قصيرة منخفضة المخاطر على دروس الأسابيع الماضية."},
+   {t:"العبء المعرفي", d:"قلّل العبء الدخيل (التشتت والتصميم المربك) ليبقى جهد العقل للتعلم نفسه.", c:"شرائح بلا زخرفة، وأمثلة محلولة قبل التمارين المستقلة."}]}]},
+ {t:"البنائية الاجتماعية", d:"تُبنى المعرفة أولًا في التفاعل مع الآخرين، ثم يستدخلها المتعلم فتصير ملكه.", c:"عمل ثنائي ومجموعات متفاوتة بأدوار واضحة، وحوار يشرح فيه الطلاب تفكيرهم.", k:[
+  {t:"فيجوتسكي", d:"ما يستطيعه الطفل اليوم بالمساعدة يستطيعه غدًا وحده.", c:"صمّم المهمة أصعب قليلًا مما يستطيعه الطالب وحده، ثم وفّر الدعم.", k:[
+   {t:"منطقة النمو القريب", d:"المسافة بين ما ينجزه المتعلم وحده وما ينجزه بمساعدة من هو أكفأ.", c:"مهمة يعجز عنها الطالب منفردًا وينجزها مع زميل أو بتلميح."},
+   {t:"السقالات", d:"دعم مؤقت يُسحب تدريجيًا كلما زادت كفاءة المتعلم.", c:"مثال محلول، ثم حل مشترك، ثم حل مستقل."},
+   {t:"اللغة والتفكير", d:"الكلام الخاص أداة لتنظيم التفكير قبل أن يصير كلامًا داخليًا.", c:"اسمح للطالب أن يتمتم بخطوات الحل لنفسه."},
+   {t:"الآخر الأكثر معرفة", d:"معلم أو زميل أو أداة يمتلك مهارة أعلى في المهمة المحددة.", c:"زميل متمكن يشرح لزميله بلغة قريبة منه."}]},
+  {t:"التعلم التعاوني", d:"يقوم على اعتماد متبادل إيجابي ومسؤولية فردية لكل عضو داخل المجموعة.", c:"أدوار محددة (قارئ، مسجل، مراجع) وتقويم فردي إلى جانب ناتج المجموعة.", k:[
+   {t:"الاعتماد المتبادل", d:"لا تنجح المجموعة إلا إذا نجح كل عضو في جزئه.", c:"كل طالب يملك جزءًا من المعلومات اللازمة للحل."},
+   {t:"المسؤولية الفردية", d:"يُحاسَب كل عضو على تعلمه، فلا يختفي أحد خلف المجموعة.", c:"سؤال عشوائي لأي عضو عن ناتج المجموعة."}]}]},
+ {t:"التعلم الاجتماعي", d:"نتعلم بملاحظة الآخرين ونتائج سلوكهم، دون أن نمر بالتجربة بأنفسنا.", c:"كن النموذج الذي تريد أن يقلده طلابك، وأظهر تفكيرك بصوت مسموع.", k:[
+  {t:"باندورا · التعلم بالملاحظة", d:"تتوسط الملاحظةَ عملياتٌ عقلية: انتباه، فاحتفاظ، فإعادة إنتاج، فدافعية.", c:"عرض نموذج أداء متقن ثم تدريب موجّه ثم أداء مستقل.", k:[
+   {t:"الانتباه", d:"لا نتعلم من نموذج لا ننتبه إليه؛ والنموذج القريب والمحترم أجذب.", c:"زميل من الصف نفسه نموذجًا للحل أقرب من نموذج بعيد."},
+   {t:"الاحتفاظ", d:"ترميز السلوك الملاحظ في الذاكرة بالصور أو الكلمات.", c:"تلخيص خطوات النموذج في قائمة قصيرة."},
+   {t:"إعادة الإنتاج", d:"القدرة الفعلية على أداء ما لوحظ، وتحتاج إلى تدريب.", c:"تطبيق فوري بعد العرض مع تغذية راجعة."},
+   {t:"الدافعية", d:"توقّع التعزيز يحدد هل نؤدي ما تعلمناه أم لا.", c:"وضّح فائدة المهارة ونتيجة إتقانها."}]},
+  {t:"التعزيز البديل", d:"يزيد السلوك حين نرى النموذج يُكافأ عليه، ويقل حين نراه يُعاقب.", c:"امتداح طريقة حل طالب أمام زملائه يشجعهم على تقليدها."},
+  {t:"الكفاءة الذاتية", d:"اعتقاد الفرد بقدرته على النجاح في مهمة محددة؛ وأقوى مصادرها خبرات الإتقان الفعلية.", c:"مهام متدرجة تضمن نجاحات مبكرة حقيقية لا مديحًا فارغًا."}]},
+ {t:"الإنسانية", d:"المتعلم إنسان كامل له حاجات ومشاعر واختيار، وأعمق التعلم ينبع من دافعه الذاتي.", c:"مناخ آمن، وخيارات حقيقية، وعلاقة قائمة على التقبل والاحترام.", k:[
+  {t:"ماسلو · هرم الحاجات", d:"حاجات فسيولوجية، ثم أمن، ثم انتماء، ثم تقدير، ثم تحقيق الذات.", c:"طالب جائع أو خائف لن يتفرغ لدرس الكسور مهما كان الشرح متقنًا."},
+  {t:"روجرز · التمركز حول المتعلم", d:"المعلم ميسّر لا ملقّن، والتقبل غير المشروط والتعاطف يطلقان التعلم.", c:"اترك للطالب اختيار موضوع مشروعه ضمن معايير واضحة."},
+  {t:"نظرية تقرير المصير", d:"تنمو الدافعية الداخلية بإشباع ثلاث حاجات: الاستقلالية والكفاءة والانتماء.", c:"خياران في الواجب، وتحدٍّ يمكن بلوغه، وصف يشعر فيه الطالب أنه مرغوب."}]},
+ {t:"نماذج تصميم التدريس", d:"نماذج تحوّل نظريات التعلم إلى خطوات عملية لتخطيط الدرس وتنفيذه.", c:"اختر نموذجًا واحدًا وابنِ عليه خطة درسك من أولها إلى آخرها.", k:[
+  {t:"جانييه · الأحداث التسعة", d:"جذب الانتباه، إعلام الأهداف، استدعاء المتطلبات، عرض المحتوى، التوجيه، استثارة الأداء، التغذية الراجعة، تقويم الأداء، تعزيز الاحتفاظ والانتقال.", c:"اجعل الأحداث التسعة هيكل خطة الدرس، حدثًا بعد حدث."},
+  {t:"كولب · التعلم التجريبي", d:"دورة من أربع مراحل: خبرة محسوسة، ثم ملاحظة تأملية، ثم مفاهيم مجردة، ثم تجريب نشط.", c:"تجربة في المختبر، ثم نقاش ما حدث، ثم صياغة القاعدة، ثم تطبيقها في موقف جديد."},
+  {t:"بلوم · المجالات الثلاثة", d:"معرفي ووجداني ومهاري؛ والمعرفي يتدرج من التذكر إلى الفهم فالتطبيق فالتحليل فالتقويم فالإبداع.", c:"نوّع أهداف الدرس وأسئلته على المستويات، لا تقف عند التذكر."}]}
+ ]};
+
+
+const MAP_COGNITION = {t:"العمليات المعرفية",
+ d:"ما يجري في عقل المتعلم من لحظة وصول المعلومة إلى أن يفهمها ويتذكرها ويستعملها: معرفة، وإدراك، وانتباه، وذاكرة، ونسيان، وحفظ، وفهم.",
+ c:"المعلم الذي يعرف كيف يعمل الانتباه والذاكرة والفهم يصمم درسًا يناسب عقل المتعلم، لا صفحات الكتاب فقط.",
+ k:[
+ {t:"المعرفة وأنواعها", a:"knowledge", d:"المعرفة ما يملكه المتعلم من معلومات ومهارات، وهي ثلاثة أنواع يكمل بعضها بعضًا، وتبني كلها على ما يعرفه من قبل.", c:"لا يكفي أن يعرف الطالب القاعدة؛ يجب أن يعرف كيف يطبقها، ومتى يختارها.", k:[
+  {t:"المعرفة التقريرية", d:"معرفة «ماذا»: حقائق ومفاهيم يستطيع المتعلم التصريح بها.", c:"يعرف الطالب أن الفعل الماضي يدل على حدث انتهى."},
+  {t:"المعرفة الإجرائية", d:"معرفة «كيف»: خطوات أداء مهارة، تصير آلية بالتدريب.", c:"يصرّف الفعل في الماضي بسرعة ودقة دون أن يتوقف ليتذكر القاعدة."},
+  {t:"المعرفة الشرطية", d:"معرفة «متى ولماذا»: اختيار الإجراء المناسب للموقف.", c:"يكتب قصة ما حدث أمس بالماضي، وخطته للغد بالمضارع."},
+  {t:"المعرفة السابقة", d:"ما يعرفه المتعلم قبل الدرس، وهي من أقوى ما يؤثر في تعلمه الجديد، صحيحة كانت أو خاطئة.", c:"اسأل في أول الدرس عما يعرفونه لتبني عليه، وتكتشف المفاهيم الخاطئة قبل أن تتعمق."}]},
+ {t:"الإحساس والإدراك", a:"perception", d:"الإحساس استقبال المثيرات بالحواس، والإدراك تفسيرها وإعطاؤها معنى في ضوء الخبرة والسياق.", c:"قد يرى طالبان الرسم نفسه ويفهمانه فهمين مختلفين بحسب خبرتهما السابقة.", k:[
+  {t:"الإحساس", d:"استقبال المثيرات عن طريق الحواس ونقلها إلى الدماغ قبل تفسيرها.", c:"تصل إلى العين خطوط ونقاط على السبورة، قبل أن يعرف الطالب ماذا تعني."},
+  {t:"الإدراك", a:"perception", d:"تفسير المثيرات وإعطاؤها معنى في ضوء السياق والخبرة السابقة والتوقع.", c:"يقرأ الطالب الرمز نفسه رقم 13 بين الأرقام، وحرف B بين الحروف."},
+  {t:"قوانين الجشطالت", a:"gestalt", d:"ندرك الأشياء كلًّا منظمًا: ما تقارب أو تشابه نراه مجموعة، ونكمل الشكل الناقص، ونميز الشكل من الأرضية.", c:"ضع العنوان قرب الشرح التابع له، ولوّن الأمثلة المتشابهة بلون واحد."}]},
+ {t:"الانتباه", d:"توجيه الوعي نحو مثير محدد وانتقاؤه من بين مثيرات كثيرة، وهو بوابة التعلم.", c:"ما لا ينتبه إليه الطالب لا يتعلمه، مهما كان الشرح متقنًا.", k:[
+  {t:"الانتباه الانتقائي", a:"attention", d:"التركيز على مثير واحد وتخفيت غيره، مع بقاء المثيرات المهمة شخصيًا قادرة على الاختراق.", c:"يركز الطالب في صوت المعلم وسط الضجيج، لكنه يلتفت فورًا إذا سمع اسمه."},
+  {t:"حدود تعدد المهام", d:"لا ننجز مهمتين ذهنيتين معًا بكفاءة؛ بل نتنقل بينهما فنخسر الوقت والدقة.", c:"المذاكرة مع متابعة الهاتف تطيل الوقت وتضعف التذكر."},
+  {t:"جذب الانتباه والحفاظ عليه", d:"الجِدّة والتغير والسؤال والمعنى الشخصي تجذب الانتباه، وتنويع النشاط يحافظ عليه.", c:"شرح قصير، ثم سؤال، ثم تطبيق، بدل شرح متصل طوال الحصة."}]},
+ {t:"الذاكرة والتذكر", d:"الذاكرة ترميز المعلومات وتخزينها ثم استرجاعها عند الحاجة، والتذكر هو هذا الاسترجاع.", c:"صمم الدرس لثلاث مراحل: أن تدخل المعلومة، وأن تثبت، وأن تُستدعى.", k:[
+  {t:"مراحل الذاكرة", a:"info", d:"ترميز، ثم تخزين، ثم استرجاع؛ وإذا ضعفت مرحلة منها ضعف التذكر كله.", c:"شرح واضح (ترميز)، ومراجعة موزعة (تخزين)، وسؤال لاحق (استرجاع)."},
+  {t:"الذاكرة العاملة والتجزئة", a:"chunking", d:"تحتفظ الذاكرة العاملة بعدد قليل من العناصر، والتجزئة تجمعها في وحدات أكبر ذات معنى.", c:"رقم من عشرة أرقام يصعب حفظه، ويسهل حين يُقسّم ثلاث مجموعات."},
+  {t:"أنواع الذاكرة طويلة المدى", d:"صريحة: دلالية (حقائق ومعانٍ) وعرضية (أحداث عشتها). وضمنية: منها الإجرائية (مهارات تؤدى دون تفكير).", c:"تعريف المضلع (دلالية)، ورحلة المدرسة العام الماضي (عرضية)، وركوب الدراجة (إجرائية)."},
+  {t:"التعرف والاستدعاء", d:"التعرف تمييز المعلومة حين تُعرض، والاستدعاء استخراجها دون مساعدة؛ والاستدعاء أصعب.", c:"سؤال الاختيار من متعدد يقيس التعرف غالبًا، والسؤال المقالي يقيس الاستدعاء."},
+  {t:"أثر الموقع التسلسلي", a:"serial", d:"يُتذكر أول القائمة (أثر الأولية) وآخرها (أثر الحداثة) أكثر من وسطها.", c:"ابدأ الحصة بأهم فكرة، واختمها بمراجعتها."}]},
+ {t:"النسيان", d:"العجز عن استرجاع ما تعلمناه، ومن أسبابه: التلاشي، والتداخل، وفشل الاسترجاع.", c:"النسيان طبيعي ومتوقع؛ والمعلم يخطط لمواجهته بالمراجعة الموزعة.", k:[
+  {t:"منحنى النسيان", a:"forgetting", d:"وجد إبنغهاوس أن النسيان سريع بعد التعلم مباشرة ثم يتباطأ، وأن المراجعة تبطئه.", c:"راجع الدرس بعد يوم، ثم بعد أيام، ثم بعد أسبوع."},
+  {t:"التداخل", a:"interference", d:"تتزاحم المعلومات المتشابهة: قديم يعوق تذكر الجديد (تداخل قبلي)، أو جديد يضعف تذكر القديم (تداخل بعدي).", c:"قارن صراحة بين المفاهيم المتشابهة جدًا، وراجع كلًّا منها منفردًا."},
+  {t:"فشل الاسترجاع", d:"المعلومة مخزنة لكن تنقصها الإشارة التي تستدعيها، كظاهرة «على طرف اللسان».", c:"تلميح صغير، كالحرف الأول، يعيد الكلمة الغائبة."},
+  {t:"التلاشي", d:"تضعف المعلومة التي لا تُستعمل مع مرور الوقت.", c:"مهارات لم تُستخدم طوال العطلة تحتاج إلى تنشيط في أول العام."}]},
+ {t:"الحفظ والاستذكار", d:"طرق تثبيت المعلومات في الذاكرة طويلة المدى؛ وأقواها ما يشغل العقل بالمعنى والاسترجاع.", c:"علّم طلابك كيف يذاكرون، لا ماذا يذاكرون فقط.", k:[
+  {t:"التسميع والتكرار", d:"ترديد المعلومة يبقيها حاضرة، لكن التكرار الآلي وحده تعلم سطحي سريع النسيان.", c:"ترديد جدول الضرب يفيد، لكنه يحتاج إلى فهم معنى الضرب معه."},
+  {t:"التكرار المتباعد", a:"spacing", d:"توزيع المذاكرة على جلسات متفرقة يثبّت أكثر من حشدها في جلسة واحدة بالوقت الكلي نفسه.", c:"ثلاثون دقيقة في أربعة أيام متفرقة أفضل من ساعتين متصلتين ليلة الاختبار."},
+  {t:"الاسترجاع النشط", a:"testing", d:"اختبار النفس واستدعاء المعلومة من الذاكرة يثبّتها أكثر من إعادة قراءتها (أثر الاختبار).", c:"أغلق الكتاب واكتب ما تتذكره، ثم افتحه وصحح."},
+  {t:"مستويات المعالجة", a:"levels", d:"كلما عالجنا المعلومة في معناها تذكرناها أكثر مما لو عالجنا شكلها أو صوتها.", c:"اطلب من الطالب جملة من حياته بالكلمة الجديدة، بدل نسخها خمس مرات."},
+  {t:"التنظيم والمعينات التذكرية", d:"تصنيف المعلومات في فئات، واستعمال الحروف الأولى أو الصور الذهنية، يسهّل الاستدعاء.", c:"جمع كلمات الدرس في مجموعات (حيوانات، أدوات، أماكن) قبل حفظها."}]},
+ {t:"الفهم والتفكير", d:"الفهم بناء معنى يربط المعلومة بغيرها، ودليله أن يشرحها المتعلم بكلماته ويستعملها في موقف جديد.", c:"اسأل «لماذا؟» و«ماذا لو؟»، لا «ما التعريف؟» وحده.", k:[
+  {t:"الحفظ مقابل الفهم", a:"understand", d:"الحافظ يعيد الإجابة كما هي، والفاهم يعدّلها حين يتغير الموقف.", c:"غيّر أرقام المسألة أو صياغتها لتعرف من فهم ومن حفظ."},
+  {t:"انتقال أثر التعلم", d:"استعمال ما تعلمناه في موقف جديد؛ قريب إن تشابه الموقفان، وبعيد إن اختلفا.", c:"يحسب الطالب الخصم في المتجر بعد أن تعلم النسبة المئوية في الصف."},
+  {t:"حل المشكلات", a:"polya", d:"عند بوليا أربع خطوات: فهم المشكلة، ثم وضع خطة، ثم تنفيذها، ثم مراجعة الحل.", c:"اطلب من الطالب أن يعيد صياغة المسألة بكلماته قبل أن يبدأ الحل."},
+  {t:"ما وراء المعرفة", a:"meta", d:"تفكير المتعلم في تفكيره: يخطط لتعلمه، ويراقب فهمه، ويقوّم نتيجته.", c:"«هل فهمت هذه الفقرة؟ إن لم أفهم أعيد قراءتها أو أسأل»."}]}
+ ]};
+const MAPS = { theories: { data: MAP_THEORIES, title: "خريطة نظريات التعلم" }, cognition: { data: MAP_COGNITION, title: "خريطة المعرفة والتذكر والفهم" } };
+let DATA = MAP_THEORIES;
+
+// which ideas carry a step-by-step animated explanation
+const ANIM = {
+  "بافلوف · الاشتراط الكلاسيكي": "pavlov", "المثير الشرطي": "pavlov",
+  "سكنر · الاشتراط الإجرائي": "reinforce", "التعزيز الموجب": "reinforce", "التعزيز السالب": "reinforce", "العقاب": "reinforce",
+  "التشكيل": "shaping",
+  "بياجيه · النمو المعرفي": "piaget",
+  "برونر · التعلم بالاكتشاف": "bruner", "المنهج الحلزوني": "spiral",
+  "معالجة المعلومات": "info", "الذاكرة العاملة": "info",
+  "فيجوتسكي": "zpd", "منطقة النمو القريب": "zpd", "السقالات": "scaffold",
+  "باندورا · التعلم بالملاحظة": "bandura",
+  "ماسلو · هرم الحاجات": "maslow",
+  "كولب · التعلم التجريبي": "kolb", "جانييه · الأحداث التسعة": "gagne"
+};
+const HUES = ["--b0","--b1","--b2","--b3","--b4","--b5","--b6"];
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const svg = document.getElementById("map"), vp = document.getElementById("vp");
+const gLinks = document.getElementById("links"), gNodes = document.getElementById("nodes");
+const stage = document.getElementById("stage"), panel = document.getElementById("panel");
+const NS = "http://www.w3.org/2000/svg";
+const all = []; let uid = 0, byId = {};
+function prepMap(data) {
+  all.length = 0;
+  const right = Math.ceil(data.k.length / 2); // first half of the branches on the right (reading start in RTL)
+  (function prep(n, parent, depth, branch, side) {
+    n.id = "n" + (uid++); n.parent = parent; n.depth = depth; n.k = n.k || [];
+    n.branch = branch; n.side = side; n.open = depth < 1; n.x = 0; n.y = 0; n.X = 0; n.Y = 0;
+    n.a = n.a || ANIM[n.t] || null;
+    all.push(n);
+    n.k.forEach((c, i) => prep(c, n, depth + 1, depth === 0 ? i : branch, depth === 0 ? (i < right ? 1 : -1) : side));
+  })(data, null, 0, -1, 0);
+  data.k.forEach(c => c.open = true); // start with branches open, their ideas visible
+  byId = Object.fromEntries(all.map(n => [n.id, n]));
+}
+prepMap(DATA);
+const hue = n => n.depth === 0 ? "--b1" : HUES[n.branch];
+
+// ---------- measuring ----------
+const mctx = document.createElement("canvas").getContext("2d");
+function fontFor(n) {
+  const body = getComputedStyle(document.body).getPropertyValue("--font-body");
+  const disp = getComputedStyle(document.body).getPropertyValue("--font-display");
+  if (n.depth === 0) return `700 22px ${disp}`;
+  if (n.depth === 1) return `700 16px ${body}`;
+  if (n.depth === 2) return `600 14.5px ${body}`;
+  return `500 14px ${body}`;
+}
+function measure() {
+  all.forEach(n => {
+    mctx.font = fontFor(n);
+    const tw = mctx.measureText(n.t).width;
+    const pad = n.depth === 0 ? 30 : n.depth === 1 ? 22 : 16;
+    n.w = Math.ceil(tw + pad * 2 + (n.a ? 20 : 0));
+    n.h = n.depth === 0 ? 62 : n.depth === 1 ? 44 : 36;
+  });
+}
+
+// ---------- layout ----------
+const VG = 12;
+const HG = d => d === 0 ? 64 : 50;
+const visible = n => !n.parent || (n.parent.open && visible(n.parent));
+function span(n) {
+  const own = n.h + VG;
+  if (!n.open || !n.k.length) return own;
+  return Math.max(own, n.k.reduce((s, c) => s + span(c), 0));
+}
+function place(n, x, y) {
+  n.X = x; n.Y = y;
+  if (!n.open || !n.k.length) return;
+  const kids = n.k;
+  layoutKids(n, kids, n.side);
+}
+function layoutKids(p, kids, side) {
+  const total = kids.reduce((s, c) => s + span(c), 0);
+  let top = p.Y - total / 2;
+  kids.forEach(c => {
+    const s = span(c);
+    const edge = p.X + side * (p.w / 2 + HG(p.depth));
+    place(c, edge + side * c.w / 2, top + s / 2);
+    top += s;
+  });
+}
+function layout() {
+  DATA.X = 0; DATA.Y = 0;
+  if (DATA.open) {
+    layoutKids(DATA, DATA.k.filter(c => c.side === 1), 1);
+    layoutKids(DATA, DATA.k.filter(c => c.side === -1), -1);
+  }
+}
+
+// ---------- rendering ----------
+const els = new Map(); // id -> {g, path}
+let dying = new Set();
+function makeNode(n) {
+  const g = document.createElementNS(NS, "g");
+  g.setAttribute("class", "node " + (n.depth === 0 ? "d0" : n.depth === 1 ? "d1" : "dn d" + n.depth));
+  g.style.setProperty("--h", `var(${hue(n)})`);
+  g.dataset.id = n.id;
+  g.setAttribute("tabindex", "0");
+  g.setAttribute("role", "treeitem");
+  g.setAttribute("aria-label", n.t);
+  const r = document.createElementNS(NS, "rect");
+  r.setAttribute("class", "box");
+  const t = document.createElementNS(NS, "text");
+  t.setAttribute("direction", "rtl");
+  t.textContent = n.t;
+  g.append(r, t);
+  if (n.a) {
+    const pl = document.createElementNS(NS, "path");
+    pl.setAttribute("class", "play"); pl.setAttribute("d", "M4,-5 L-5,0 L4,5 Z");
+    g.append(pl);
+  }
+  if (n.k.length) {
+    const b = document.createElementNS(NS, "g"); b.setAttribute("class", "badge");
+    const c = document.createElementNS(NS, "circle"); c.setAttribute("r", "11");
+    const bt = document.createElementNS(NS, "text");
+    b.append(c, bt); g.append(b);
+  }
+  gNodes.append(g);
+  let path = null;
+  if (n.parent) {
+    path = document.createElementNS(NS, "path");
+    path.setAttribute("class", "link");
+    path.style.setProperty("--h", `var(${hue(n)})`);
+    path.setAttribute("stroke-width", n.depth === 1 ? 4 : n.depth === 2 ? 2.4 : 1.6);
+    gLinks.append(path);
+  }
+  const e = { g, path }; els.set(n.id, e);
+  sizeNode(n);
+  return e;
+}
+function sizeNode(n) {
+  const e = els.get(n.id); if (!e) return;
+  const r = e.g.querySelector("rect.box");
+  r.setAttribute("x", -n.w / 2); r.setAttribute("y", -n.h / 2);
+  r.setAttribute("width", n.w); r.setAttribute("height", n.h);
+  r.setAttribute("rx", n.depth === 0 ? 18 : n.depth === 1 ? 14 : 11);
+  const pl = e.g.querySelector(".play");
+  if (pl) {
+    pl.setAttribute("transform", `translate(${-n.side * (n.w / 2 - 14)},0)`);
+    e.g.querySelector("text").setAttribute("x", n.side * 10);
+  }
+  const b = e.g.querySelector(".badge");
+  if (b) {
+    const bx = n.side * (n.w / 2);
+    b.setAttribute("transform", `translate(${bx},0)`);
+    b.querySelector("text").textContent = n.open ? "−" : "+" + n.k.length;
+    const bc = b.querySelector("circle");
+    bc.setAttribute("r", n.open ? 9 : 11);
+  }
+  e.g.setAttribute("aria-expanded", n.k.length ? String(n.open) : "");
+}
+function sync() {
+  const vis = all.filter(visible);
+  const visSet = new Set(vis.map(n => n.id));
+  vis.forEach(n => {
+    if (!els.has(n.id)) {
+      makeNode(n);
+      const p = n.parent;
+      n.x = p ? p.x : 0; n.y = p ? p.y : 0;
+      dying.delete(n.id);
+    } else dying.delete(n.id);
+    sizeNode(n);
+  });
+  for (const [id] of els) if (!visSet.has(id)) dying.add(id);
+}
+function linkD(n) {
+  const p = n.parent, s = n.side;
+  const x1 = p.x + s * (p.w / 2), y1 = p.y;
+  const x2 = n.x - s * (n.w / 2), y2 = n.y;
+  const mx = (x1 + x2) / 2;
+  return `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`;
+}
+function draw() {
+  for (const [id, e] of els) {
+    const n = byId[id];
+    e.g.setAttribute("transform", `translate(${n.x},${n.y})`);
+    if (e.path) e.path.setAttribute("d", linkD(n));
+  }
+}
+let anim = null;
+function animateTo() {
+  // dying nodes collapse into their nearest visible ancestor
+  dying.forEach(id => { const n = byId[id]; let a = n.parent; while (a && !visible(a)) a = a.parent; n.X = a ? a.X : 0; n.Y = a ? a.Y : 0; });
+  const nodes = [...els.keys()].map(id => byId[id]);
+  const from = nodes.map(n => [n.x, n.y]);
+  const dur = reduce ? 0 : 380, t0 = performance.now();
+  cancelAnimationFrame(anim);
+  const step = now => {
+    const t = dur ? Math.min(1, (now - t0) / dur) : 1;
+    const e = 1 - Math.pow(1 - t, 3);
+    nodes.forEach((n, i) => { n.x = from[i][0] + (n.X - from[i][0]) * e; n.y = from[i][1] + (n.Y - from[i][1]) * e; });
+    draw();
+    if (t < 1) anim = requestAnimationFrame(step);
+    else {
+      dying.forEach(id => { const e = els.get(id); e.g.remove(); e.path && e.path.remove(); els.delete(id); });
+      dying.clear();
+    }
+  };
+  anim = requestAnimationFrame(step);
+}
+function refresh() { layout(); sync(); animateTo(); applySearchClasses(); }
+
+// ---------- view (pan / zoom) ----------
+const view = { x: 0, y: 0, k: 1 };
+let vAnim = null;
+function applyView() { vp.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.k})`); }
+function stageSize() { const r = svg.getBoundingClientRect(); return { W: r.width, H: r.height, L: r.left, T: r.top }; }
+function animView(to, dur = 420) {
+  cancelAnimationFrame(vAnim);
+  if (reduce) dur = 0;
+  const f = { ...view }, t0 = performance.now();
+  const step = now => {
+    const t = dur ? Math.min(1, (now - t0) / dur) : 1, e = 1 - Math.pow(1 - t, 3);
+    view.x = f.x + (to.x - f.x) * e; view.y = f.y + (to.y - f.y) * e; view.k = f.k + (to.k - f.k) * e;
+    applyView(); if (t < 1) vAnim = requestAnimationFrame(step);
+  };
+  vAnim = requestAnimationFrame(step);
+}
+const clampK = k => Math.min(2.2, Math.max(0.3, k));
+function fit(animated = true) {
+  const vis = all.filter(visible);
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  vis.forEach(n => { x0 = Math.min(x0, n.X - n.w / 2 - 14); x1 = Math.max(x1, n.X + n.w / 2 + 14); y0 = Math.min(y0, n.Y - n.h / 2); y1 = Math.max(y1, n.Y + n.h / 2); });
+  const { W, H } = stageSize(); const pad = 28;
+  let k = clampK(Math.min((W - pad * 2) / (x1 - x0), (H - pad * 2) / (y1 - y0), 1.25));
+  let cx = (x0 + x1) / 2;
+  // on a phone a full fit is unreadable: keep text legible and open on the right-hand schools
+  if (W < 600 && k < 0.62) { k = 0.62; cx = Math.max(x0 + (W / 2 - pad) / k, Math.min(DATA.X + 120, x1)); }
+  const to = { k, x: W / 2 - cx * k, y: H / 2 - ((y0 + y1) / 2) * k };
+  animated ? animView(to) : (Object.assign(view, to), applyView());
+}
+function centerOn(n) {
+  const { W, H } = stageSize(); const k = Math.max(view.k, 0.85);
+  // aim slightly toward the side the branch grows, so its children have room
+  const lead = n.open && n.k.length ? n.side * Math.min(160, W * 0.18) : 0;
+  animView({ k, x: W / 2 - (n.X + lead) * k, y: H / 2 - n.Y * k });
+}
+function zoomAt(px, py, factor) {
+  const k2 = clampK(view.k * factor), r = k2 / view.k;
+  view.x = px - (px - view.x) * r; view.y = py - (py - view.y) * r; view.k = k2; applyView();
+}
+
+const pointers = new Map(); let drag = null, pinch = null;
+svg.addEventListener("pointerdown", e => {
+  svg.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  cancelAnimationFrame(vAnim);
+  if (pointers.size === 1) drag = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y, moved: false, target: e.target.closest(".node") };
+  if (pointers.size === 2) {
+    const [a, b] = [...pointers.values()];
+    pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), k: view.k }; drag = null;
+  }
+});
+svg.addEventListener("pointermove", e => {
+  if (!pointers.has(e.pointerId)) return;
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pinch && pointers.size === 2) {
+    const [a, b] = [...pointers.values()]; const { L, T } = stageSize();
+    const d = Math.hypot(a.x - b.x, a.y - b.y);
+    zoomAt((a.x + b.x) / 2 - L, (a.y + b.y) / 2 - T, (pinch.k * d / pinch.d) / view.k);
+    return;
+  }
+  if (!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if (!drag.moved && Math.hypot(dx, dy) > 5) { drag.moved = true; stage.classList.add("dragging"); }
+  if (drag.moved) { view.x = drag.vx + dx; view.y = drag.vy + dy; applyView(); }
+});
+function endPointer(e) {
+  pointers.delete(e.pointerId);
+  if (pointers.size < 2) pinch = null;
+  if (drag && pointers.size === 0) {
+    if (!drag.moved && drag.target) activate(byId[drag.target.dataset.id], e.target.closest(".badge") != null);
+    drag = null; stage.classList.remove("dragging");
+  }
+}
+svg.addEventListener("pointerup", endPointer);
+svg.addEventListener("pointercancel", endPointer);
+svg.addEventListener("wheel", e => {
+  e.preventDefault(); const { L, T } = stageSize();
+  zoomAt(e.clientX - L, e.clientY - T, Math.exp(-e.deltaY * 0.0016));
+}, { passive: false });
+gNodes.addEventListener("keydown", e => {
+  const g = e.target.closest(".node"); if (!g) return;
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activate(byId[g.dataset.id]); }
+});
+document.getElementById("zin").onclick = () => { const { W, H } = stageSize(); zoomAt(W / 2, H / 2, 1.25); };
+document.getElementById("zout").onclick = () => { const { W, H } = stageSize(); zoomAt(W / 2, H / 2, 0.8); };
+document.getElementById("fit").onclick = () => fit();
+document.getElementById("expand").onclick = () => { all.forEach(n => { if (n.k.length) n.open = true; }); refresh(); setTimeout(() => fit(), reduce ? 0 : 60); };
+document.getElementById("collapse").onclick = () => { all.forEach(n => n.open = n.depth === 0); refresh(); select(DATA); setTimeout(() => fit(), reduce ? 0 : 60); };
+
+// ---------- selection & panel ----------
+let selected = DATA;
+function activate(n, badgeOnly = false) {
+  if (tour.playing) pauseTour();
+  if (n.k.length) n.open = badgeOnly || n === selected ? !n.open : true;
+  refresh();
+  if (!badgeOnly) select(n);
+  centerOn(n);
+}
+function reveal(n) { let a = n.parent; while (a) { a.open = true; a = a.parent; } }
+function select(n) {
+  selected = n;
+  const chain = new Set(); for (let a = n; a; a = a.parent) chain.add(a.id);
+  for (const [id, e] of els) {
+    e.g.classList.toggle("sel", id === n.id);
+    if (e.path) e.path.classList.toggle("flow", chain.has(id) && !reduce);
+  }
+  renderPanel(n);
+}
+function renderPanel(n) {
+  panel.innerHTML = "";
+  panel.style.setProperty("--h", `var(${hue(n)})`);
+  const crumbs = document.createElement("div"); crumbs.className = "crumbs";
+  const chain = []; let a = n.parent; while (a) { chain.unshift(a); a = a.parent; }
+  chain.forEach((c, i) => {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = c.t;
+    b.onclick = () => { select(c); centerOn(c); };
+    crumbs.append(b);
+    const sep = document.createElement("span"); sep.textContent = "‹"; sep.setAttribute("aria-hidden", "true"); crumbs.append(sep);
+  });
+  if (chain.length) { crumbs.lastChild.remove(); panel.append(crumbs); }
+  const h = document.createElement("h2"); h.className = "ptitle"; h.textContent = n.t; panel.append(h);
+  if (n.depth > 0) { const tag = document.createElement("span"); tag.className = "tag"; tag.textContent = DATA.k[n.branch].t; panel.append(tag); }
+  const p = document.createElement("p"); p.className = "pdesc"; p.textContent = n.d; panel.append(p);
+  clearTimeout(illTimer); lastIllDur = 0;
+  if (n.a && ILL[n.a]) {
+    const fig = document.createElement("figure"); fig.className = "illus"; fig.style.margin = "0";
+    panel.append(fig); mountIllus(fig, ILL[n.a](), n.a);
+  }
+  if (n.depth === 0) {
+    const go = document.createElement("button"); go.type = "button"; go.className = "btn primary"; go.style.alignSelf = "flex-start";
+    go.textContent = tour.on ? "الجولة تعمل الآن" : "▶ ابدأ الجولة المتحركة"; go.onclick = () => startTour();
+    panel.append(go);
+  }
+  if (n.c) {
+    const box = document.createElement("div"); box.className = "classroom";
+    const b = document.createElement("b"); b.textContent = "في الصف";
+    const cp = document.createElement("p"); cp.textContent = n.c;
+    box.append(b, cp); panel.append(box);
+  }
+  if (n.k.length) {
+    const sub = document.createElement("div"); sub.className = "sub";
+    const h3 = document.createElement("h3"); h3.textContent = n.depth === 0 ? "الفروع الكبرى" : "يتفرع منه"; sub.append(h3);
+    const ul = document.createElement("ul");
+    n.k.forEach(c => {
+      const li = document.createElement("li"); const b = document.createElement("button"); b.type = "button";
+      b.style.setProperty("--h", `var(${hue(c)})`);
+      const s1 = document.createElement("span"); s1.textContent = c.t; b.append(s1);
+      if (c.k.length) { const sm = document.createElement("small"); sm.textContent = c.k.length + " فروع"; b.append(sm); }
+      b.onclick = () => { reveal(c); if (c.k.length) c.open = true; refresh(); select(c); centerOn(c); };
+      li.append(b); ul.append(li);
+    });
+    sub.append(ul); panel.append(sub);
+  }
+  const foot = document.createElement("div"); foot.className = "foot";
+  foot.textContent = `${all.length} فكرة في ${DATA.k.length} فروع كبرى · اضغط الفكرة لتفتح فروعها أو تطويها`;
+  panel.append(foot);
+}
+
+// ---------- legend ----------
+const legend = document.getElementById("legend");
+function buildLegend() { legend.innerHTML = ""; DATA.k.forEach(b => {
+  const c = document.createElement("button"); c.type = "button"; c.className = "chip";
+  c.style.setProperty("--c", `var(${hue(b)})`);
+  const i = document.createElement("i"); const s = document.createElement("span"); s.textContent = b.t;
+  c.append(i, s);
+  c.onclick = () => { b.open = true; refresh(); select(b); centerOn(b); };
+  legend.append(c);
+}); }
+buildLegend();
+
+// ---------- search ----------
+const norm = s => s.replace(/[ً-ْـ]/g, "").replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/ى/g, "ي").toLowerCase();
+const indexSearch = () => all.forEach(n => n.key = norm(n.t + " " + n.d + " " + (n.c || "")));
+indexSearch();
+const q = document.getElementById("q"), countEl = document.getElementById("count");
+let hits = [], hitIdx = 0;
+function applySearchClasses() {
+  const on = hits.length > 0;
+  svg.classList.toggle("dim", on);
+  const hs = new Set(hits.map(n => n.id));
+  for (const [id, e] of els) e.g.classList.toggle("hit", hs.has(id));
+}
+q.addEventListener("input", () => {
+  const v = norm(q.value.trim());
+  hits = v.length < 2 ? [] : all.filter(n => n.depth > 0 && n.key.includes(v));
+  hitIdx = 0;
+  countEl.textContent = v.length < 2 ? "" : hits.length ? `${hits.length} نتيجة` : "لا نتائج";
+  if (hits.length) { hits.forEach(reveal); refresh(); select(hits[0]); setTimeout(() => centerOn(hits[0]), reduce ? 0 : 40); }
+  else applySearchClasses();
+});
+q.addEventListener("keydown", e => {
+  if (e.key === "Enter" && hits.length) { e.preventDefault(); hitIdx = (hitIdx + 1) % hits.length; select(hits[hitIdx]); centerOn(hits[hitIdx]); countEl.textContent = `${hitIdx + 1} من ${hits.length}`; }
+  if (e.key === "Escape") { q.value = ""; hits = []; countEl.textContent = ""; applySearchClasses(); }
+});
+
+// ---------- animated explanations ----------
+// Each illustration is a set of SVG parts tagged with the step (data-s) at which they appear.
+// Optional per-step attributes: data-path (positions), data-out (hide from step), data-hot (highlight on one step),
+// data-reveal (stroke fraction per step), data-scale, data-op (fill opacity per step).
+const box = (x, y, w, h, t, s, k = "", ex = "") => `<g class="st bx ${k}" data-s="${s}" ${ex}><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="9"></rect><text x="${x + w / 2}" y="${y + h / 2}">${t}</text></g>`;
+const arr = (x1, y1, x2, y2, s, k = "") => `<path class="st draw ar ${k}" data-s="${s}" d="M${x1},${y1} L${x2},${y2}" pathLength="1" marker-end="url(#${k.includes("hot") ? "ahh" : "ah"})"></path>`;
+const curve = (d, s, k = "") => `<path class="st draw ar ${k}" data-s="${s}" d="${d}" pathLength="1" marker-end="url(#${k.includes("hot") ? "ahh" : "ah"})"></path>`;
+const lab = (x, y, t, s, k = "lbl", ex = "") => `<text class="st ${k}" data-s="${s}" x="${x}" y="${y}" ${ex}>${t}</text>`;
+const dot = (s, path, r = 6, k = "", ex = "") => `<circle class="st mv ${k}" data-s="${s}" r="${r}" cx="0" cy="0" data-path="${path}" ${ex}></circle>`;
+const wrap = (inner, label) => `<svg viewBox="0 0 320 180" role="img" aria-label="${label}"><defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"></path></marker>
+  <marker id="ahh" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--h)"></path></marker>
+  </defs>${inner}</svg>`;
+const P = (a, r, cx = 160, cy = 92) => [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+const deg = d => d * Math.PI / 180;
+
+const ILL = {
+  pavlov: () => ({ label: "الاشتراط الكلاسيكي", caps: [
+    "قبل التعلم: الطعام يستدعي اللعاب طبيعيًا دون أي تعلم.",
+    "الجرس وحده مثير محايد: لا يستدعي اللعاب.",
+    "الاقتران: يُقرع الجرس ثم يُقدَّم الطعام، مرات متكررة.",
+    "بعد التعلم: الجرس وحده صار مثيرًا شرطيًا يستدعي اللعاب."],
+    svg: wrap(
+      lab(32, 29, "قبل", 1) + box(222, 14, 86, 30, "طعام", 1) + arr(218, 29, 154, 29, 1) + box(64, 14, 86, 30, "لعاب", 1) +
+      lab(32, 71, "محايد", 2) + box(222, 56, 86, 30, "جرس", 2) + arr(218, 71, 154, 71, 2) + box(64, 56, 86, 30, "لا شيء", 2, "mute") +
+      lab(32, 113, "اقتران", 3) + box(256, 98, 52, 30, "جرس", 3) + lab(245, 113, "+", 3) + box(182, 98, 52, 30, "طعام", 3) + arr(178, 113, 154, 113, 3) + box(64, 98, 86, 30, "لعاب", 3) +
+      lab(32, 155, "بعد", 4) + box(222, 140, 86, 30, "جرس", 4, "hot pulse") + arr(218, 155, 154, 155, 4, "hot") + box(64, 140, 86, 30, "لعاب", 4, "hot"), "الاشتراط الكلاسيكي") }),
+
+  reinforce: () => {
+    const cell = (x, y, t1, t2, s, k) => `<g class="st bx ${k}" data-s="${s}"><rect x="${x}" y="${y}" width="112" height="54" rx="10"></rect><text x="${x + 56}" y="${y + 20}" style="font-weight:700">${t1}</text><text class="sm" x="${x + 56}" y="${y + 38}">${t2}</text></g>`;
+    return { label: "التعزيز والعقاب", caps: [
+      "نتيجة السلوك إما إضافة شيء أو إزالته، والشيء إما مرغوب أو مزعج.",
+      "نضيف شيئًا مرغوبًا فيزيد السلوك: تعزيز موجب، مثل مدح محدد.",
+      "نزيل شيئًا مزعجًا فيزيد السلوك: تعزيز سالب، مثل الإعفاء من واجب.",
+      "نضيف شيئًا مزعجًا فيقل السلوك: عقاب بالإضافة.",
+      "نزيل شيئًا مرغوبًا فيقل السلوك: عقاب بالحرمان."],
+      svg: wrap(
+        lab(216, 16, "نضيف", 1, "lbl", 'style="font-weight:700"') + lab(96, 16, "نزيل", 1, "lbl", 'style="font-weight:700"') +
+        lab(298, 63, "مرغوب", 1) + lab(298, 131, "مزعج", 1) +
+        cell(160, 36, "تعزيز موجب", "↑ يزيد السلوك", 2, "hot") +
+        cell(40, 104, "تعزيز سالب", "↑ يزيد السلوك", 3, "hot") +
+        cell(160, 104, "عقاب بالإضافة", "↓ يقل السلوك", 4, "") +
+        cell(40, 36, "عقاب بالحرمان", "↓ يقل السلوك", 5, ""), "التعزيز والعقاب") };
+  },
+
+  shaping: () => {
+    const L = ["كلمة", "جملة", "فقرة", "نص كامل"]; let parts = `<path class="st ground" data-s="1" d="M8,166 L312,166"></path>`, pos = [];
+    L.forEach((t, i) => { const w = 60, h = 32 + i * 30, x = 236 - i * 72, y = 166 - h; parts += box(x, y, w, h, t, i + 1, i === 3 ? "hot" : ""); pos.push(`${x + w / 2},${y - 13}`); });
+    parts += dot(1, pos.join("|"), 7);
+    return { label: "التشكيل", caps: [
+      "نعزز أول خطوة قريبة من الهدف: أن يكتب كلمة واحدة.",
+      "ثم نرفع المعيار: لا نعزز إلا الجملة.",
+      "ثم الفقرة، ونتوقف عن تعزيز ما دونها.",
+      "حتى يبلغ السلوك المستهدف كاملًا: نص مترابط."], svg: wrap(parts, "التشكيل") };
+  },
+
+  piaget: () => {
+    const S = [[300, 238, "حسية حركية", "0–2", "ثبات الشيء"], [230, 166, "ما قبل العمليات", "2–7", "تمركز حول الذات"], [158, 98, "عمليات مادية", "7–11", "الاحتفاظ والتصنيف"], [90, 20, "عمليات مجردة", "11+", "التفكير الافتراضي"]];
+    let parts = "", pos = [];
+    S.forEach(([a, b, t, age, ex], i) => {
+      parts += `<path class="st draw seg" data-s="${i + 1}" d="M${a},96 L${b},96" pathLength="1"></path>`;
+      parts += lab((a + b) / 2, i % 2 ? 48 : 70, t, i + 1, "", 'style="font-weight:600"') + lab((a + b) / 2, 122, age, i + 1);
+      pos.push(`${(a + b) / 2},96`);
+    });
+    parts += dot(1, pos.join("|"), 9, "", 'style="fill:var(--surface);stroke:var(--ink);stroke-width:2.5"');
+    return { label: "مراحل بياجيه", caps: [
+      "من الولادة حتى سنتين: يتعرف العالم بالحواس والحركة.",
+      "من 2 إلى 7: تنمو اللغة والرموز، لكنه يرى الأمور من زاويته وحده.",
+      "من 7 إلى 11: يفكر بمنطق في الأشياء المحسوسة.",
+      "من 11 فما فوق: يفكر في المجرد والافتراضي."], svg: wrap(parts, "مراحل بياجيه") };
+  },
+
+  bruner: () => {
+    const frame = (x, s) => `<g class="st bx" data-s="${s}"><rect x="${x}" y="30" width="86" height="96" rx="12"></rect></g>`;
+    let sq = ""; [[0, 0, 1], [22, 0, 1], [0, 22, 1], [22, 22, 0]].forEach(([dx, dy, f]) => sq += `<rect x="${241 + dx}" y="${56 + dy}" width="18" height="18" rx="3" style="fill:${f ? "var(--h)" : "none"};stroke:var(--h);stroke-width:1.5"></rect>`);
+    const parts = frame(220, 1) + `<g class="st" data-s="1">${sq}</g>` + lab(263, 146, "عملي", 1, "", 'style="font-weight:700"') +
+      arr(216, 78, 208, 78, 2) + frame(118, 2) +
+      `<g class="st" data-s="2"><circle cx="161" cy="78" r="28" style="fill:none;stroke:var(--h);stroke-width:1.5"></circle><path d="M161,78 L161,50 A28,28 0 1,1 133,78 Z" style="fill:var(--h);fill-opacity:.8"></path></g>` + lab(161, 146, "أيقوني", 2, "", 'style="font-weight:700"') +
+      arr(114, 78, 106, 78, 3) + frame(16, 3) + lab(59, 78, "3/4", 3, "big") + lab(59, 146, "رمزي", 3, "", 'style="font-weight:700"');
+    return { label: "تمثيلات برونر", caps: [
+      "عملي: يفهم الكسر بتقسيم قطع حقيقية بيديه.",
+      "أيقوني: يراه صورة، دائرة ظُلّل ثلاثة أرباعها.",
+      "رمزي: يكتبه رمزًا مجردًا ويجري عليه العمليات."], svg: wrap(parts, "تمثيلات برونر") };
+  },
+
+  spiral: () => {
+    const T = 2.55 * 2 * Math.PI, rr = th => 7 + 25 * th / (2 * Math.PI); let d = "";
+    for (let th = 0; th <= T; th += 0.12) { const [x, y] = P(th - Math.PI / 2, rr(th)); d += (d ? " L" : "M") + x.toFixed(1) + "," + y.toFixed(1); }
+    const at = f => P(T * f - Math.PI / 2, rr(T * f));
+    const marks = [[0.38, "الصف 3 · نماذج"], [0.68, "الصف 6 · عمليات"], [1, "الصف 9 · تناسب"]];
+    let parts = `<path class="st reveal" data-s="1" data-reveal="0.38|0.68|1" d="${d}" pathLength="1" style="fill:none;stroke:var(--h);stroke-width:3;stroke-linecap:round"></path>` + lab(160, 92, "الكسور", 1, "", 'style="font-weight:700;font-size:11px"');
+    marks.forEach(([f, t], i) => { const [x, y] = at(f); parts += `<circle class="st" data-s="${i + 1}" cx="${x}" cy="${y}" r="6" style="fill:var(--h);stroke:var(--surface);stroke-width:2"></circle>`; parts += lab(Math.min(Math.max(x < 160 ? x - 52 : x + 52, 44), 276), y, t, i + 1, "", 'style="font-weight:600;font-size:11px"'); });
+    return { label: "المنهج الحلزوني", caps: [
+      "الصف الثالث: الكسور بالنماذج المحسوسة.",
+      "الصف السادس: يعود المفهوم نفسه، أعمق، بالعمليات الحسابية.",
+      "الصف التاسع: يعود أعمق مرة أخرى، في النسبة والتناسب."], svg: wrap(parts, "المنهج الحلزوني") };
+  },
+
+  info: () => {
+    let parts = box(228, 58, 84, 46, "حسية", 1) + box(118, 58, 84, 46, "عاملة ≈ 4", 2) + box(8, 58, 84, 46, "طويلة المدى", 3, "hot") +
+      arr(224, 81, 206, 81, 2) + lab(215, 46, "انتباه", 2) + arr(114, 81, 96, 81, 3) + lab(105, 46, "ترميز", 3) +
+      curve("M50,108 C50,150 160,150 160,108", 4, "hot") + lab(105, 160, "استرجاع", 4, "", 'style="font-weight:700;fill:var(--h)"');
+    [302, 288, 268, 250, 240].forEach(x => parts += `<circle class="st" data-s="1" data-out="2" cx="${x}" cy="96" r="3.5" style="fill:var(--muted)"></circle>`);
+    parts += dot(1, "295,96|176,96|66,96", 3.8) + dot(1, "278,96|160,96|50,96", 3.8) + dot(1, "259,96|144,96", 3.8);
+    return { label: "معالجة المعلومات", caps: [
+      "تصل مثيرات كثيرة إلى الذاكرة الحسية وتبقى لحظات.",
+      "لا يعبر إلى الذاكرة العاملة إلا ما ننتبه إليه، وسعتها نحو أربعة عناصر.",
+      "الترميز الجيد ينقل المعلومة إلى الذاكرة طويلة المدى.",
+      "والاسترجاع يعيدها حين نحتاجها، وكل استرجاع يقوّيها."], svg: wrap(parts, "معالجة المعلومات") };
+  },
+
+  zpd: () => ({ label: "منطقة النمو القريب", caps: [
+    "الدائرة الداخلية: ما ينجزه المتعلم وحده الآن.",
+    "الحلقة الوسطى: ما ينجزه بمساعدة، وهي منطقة النمو القريب.",
+    "الحلقة الخارجية: ما يفوق قدرته الآن حتى مع المساعدة.",
+    "يعمل معه معلم أو زميل أكفأ داخل المنطقة.",
+    "غدًا ينجز وحده ما احتاج فيه إلى مساعدة اليوم، فتتسع دائرته."],
+    svg: wrap(
+      `<circle class="st ring out" data-s="3" cx="160" cy="92" r="84"></circle>` +
+      `<circle class="st ring" data-s="2" cx="160" cy="92" r="60"></circle>` +
+      `<circle class="st ring core" data-s="1" data-scale="1|1|1|1|1.95" cx="160" cy="92" r="31"></circle>` +
+      lab(160, 92, "وحده", 1, "", 'style="font-weight:700"') + lab(160, 46, "بمساعدة", 2, "", 'style="font-weight:700" data-out="5"') + lab(160, 18, "ليس بعد", 3) +
+      dot(4, "205,62|205,62|205,62|205,62|205,62", 6, "helper", 'data-out="5"') + lab(232, 54, "معلم", 4, "lbl", 'data-out="5"') +
+      dot(4, "176,104|176,104|176,104|176,104|140,58", 6), "منطقة النمو القريب") }),
+
+  scaffold: () => {
+    let parts = `<path class="st ground" data-s="1" d="M8,166 L312,166"></path>` +
+      `<rect class="st bld" data-s="1" data-op="0.18|0.42|0.7|1" x="118" y="44" width="84" height="122" rx="6"></rect>` + lab(160, 104, "المهارة", 1, "", 'style="font-weight:700"');
+    [["مثال محلول", 48, 2], ["تلميحات", 86, 3], ["حل مشترك", 124, 4]].forEach(([t, y, out]) => {
+      parts += `<path class="st ar" data-s="1" data-out="${out}" d="M206,${y + 14} L214,${y + 14}"></path>` + box(214, y, 96, 28, t, 1, "", `data-out="${out}"`);
+    });
+    parts += box(12, 90, 96, 30, "حل مستقل", 4, "hot");
+    return { label: "السقالات", caps: [
+      "في البداية: المهارة هشة، ويحيط بها دعم كامل.",
+      "نسحب المثال المحلول، ويبقى التلميح والحل المشترك.",
+      "نسحب التلميحات حين تزداد الكفاءة.",
+      "يُسحب آخر دعم، فتقوم المهارة وحدها: حل مستقل."], svg: wrap(parts, "السقالات") };
+  },
+
+  bandura: () => {
+    const S = [["الانتباه", "ينتبه للنموذج"], ["الاحتفاظ", "يحفظ خطواته"], ["الأداء", "يجربه بنفسه"], ["الدافعية", "يتوقع المكافأة"]];
+    let parts = lab(160, 22, "يلاحظ المتعلم نموذجًا يؤدي سلوكًا…", 1, "", 'style="font-weight:600"');
+    S.forEach(([t, ex], i) => {
+      const x = 250 - i * 76;
+      parts += box(x, 60, 62, 40, t, i + 1, "", `data-hot="${i + 1}"`) + lab(x + 31, 120, ex, i + 1);
+      if (i) parts += arr(x + 76, 80, x + 66, 80, i + 1);
+    });
+    parts += box(70, 140, 180, 30, "يتعلم دون أن يجرب بنفسه أولًا", 5, "hot");
+    return { label: "مراحل التعلم بالملاحظة", caps: [
+      "الانتباه: لا نتعلم من نموذج لا ننتبه إليه.",
+      "الاحتفاظ: نحفظ ما رأيناه بالصور والكلمات.",
+      "الأداء: نحاول أداء ما لاحظناه فعلًا.",
+      "الدافعية: نؤديه حين نتوقع أن يعود علينا بالنفع.",
+      "هكذا يتعلم الطالب من زميله أو معلمه قبل أن يمر بالتجربة."], svg: wrap(parts, "التعلم بالملاحظة") };
+  },
+
+  maslow: () => {
+    const L = ["فسيولوجية", "الأمن", "الانتماء", "التقدير", "تحقيق الذات"], wAt = y => 280 * (y - 18) / 150;
+    let parts = "";
+    L.forEach((t, i) => {
+      const yb = 168 - 30 * i, yt = yb - 30, wb = wAt(yb) / 2, wt = wAt(yt) / 2;
+      parts += `<polygon class="st lvl ${i === 4 ? "hot" : ""}" data-s="${i + 1}" points="${160 - wb},${yb} ${160 + wb},${yb} ${160 + wt},${yt} ${160 - wt},${yt}"></polygon>`;
+      parts += i === 4 ? lab(252, 33, t, i + 1, "", 'style="font-weight:700;fill:var(--h)"') : lab(160, yb - 15, t, i + 1, "", 'style="font-weight:600"');
+    });
+    return { label: "هرم ماسلو", caps: [
+      "القاعدة: طعام ونوم وماء؛ الطالب الجائع لا يتفرغ للدرس.",
+      "الأمن: صف لا خوف فيه من السخرية أو العقاب المفاجئ.",
+      "الانتماء: أن يشعر أنه مرغوب بين زملائه.",
+      "التقدير: أن يُرى جهده ويُحترم.",
+      "القمة: تحقيق الذات، حين يتعلم لأنه يريد أن ينمو."], svg: wrap(parts, "هرم ماسلو") };
+  },
+
+  kolb: () => {
+    const N = [[-90, "خبرة محسوسة"], [0, "ملاحظة تأملية"], [90, "مفاهيم مجردة"], [180, "تجريب نشط"]];
+    const A = [[-60, -25], [25, 60], [120, 155], [205, 240]];
+    const E = a => [160 + 100 * Math.cos(a), 92 + 62 * Math.sin(a)];
+    let parts = "";
+    N.forEach(([a, t], i) => { const [x, y] = E(deg(a)); parts += box(x - 48, y - 14, 96, 28, t, i + 1, "", `data-hot="${i + 1}"`); });
+    A.forEach(([a1, a2], i) => {
+      const [x1, y1] = E(deg(a1)), [x2, y2] = E(deg(a2));
+      parts += curve(`M${x1.toFixed(1)},${y1.toFixed(1)} A100,62 0 0,1 ${x2.toFixed(1)},${y2.toFixed(1)}`, i + 2, "hot");
+    });
+    parts += lab(160, 92, "دورة التعلم", 1, "lbl", 'style="font-weight:700"');
+    return { label: "دورة كولب", caps: [
+      "خبرة محسوسة: يجرّب الطلاب الطفو بأنفسهم في حوض ماء.",
+      "ملاحظة تأملية: يناقشون ما رأوه ولماذا طفا شيء وغرق آخر.",
+      "مفاهيم مجردة: يصوغون قاعدة الطفو بكلماتهم.",
+      "تجريب نشط: يطبقون القاعدة في تصميم قارب صغير.",
+      "ثم تبدأ دورة جديدة من خبرة أعمق."], svg: wrap(parts, "دورة كولب") };
+  },
+
+  knowledge: () => {
+    const card = (x, t1, t2, s) => `<g class="st bx" data-s="${s}" data-hot="${s}"><rect x="${x}" y="26" width="92" height="74" rx="12"></rect><text x="${x + 46}" y="52" style="font-weight:700">${t1}</text><text class="sm" x="${x + 46}" y="76">${t2}</text></g>`;
+    const parts = card(218, "تقريرية", "ماذا؟", 1) + arr(214, 63, 206, 63, 2) + card(114, "إجرائية", "كيف؟", 2) + arr(110, 63, 102, 63, 3) + card(10, "شرطية", "متى ولماذا؟", 3) +
+      curve("M264,104 C264,140 56,140 56,104", 4, "hot") + box(96, 132, 128, 32, "أداء ماهر متكامل", 4, "hot");
+    return { label: "أنواع المعرفة", caps: ["", "", "", ""], svg: wrap(parts, "أنواع المعرفة") };
+  },
+
+  perception: () => {
+    const amb = (x, y, s) => `<text class="st dig" data-s="${s}" x="${x}" y="${y}" style="font-size:34px;letter-spacing:-5px;fill:var(--h)">13</text>`;
+    const parts = lab(160, 18, "الرمز نفسه في سياقين", 1, "lbl", 'style="font-weight:700"') +
+      `<text class="st dig" data-s="1" x="250" y="62" style="font-size:30px">14</text>` + amb(160, 62, 1) + `<text class="st dig" data-s="1" x="70" y="62" style="font-size:30px">12</text>` +
+      lab(300, 62, "أرقام", 1) +
+      `<text class="st dig" data-s="2" x="250" y="122" style="font-size:30px">C</text>` + amb(160, 122, 2) + `<text class="st dig" data-s="2" x="70" y="122" style="font-size:30px">A</text>` +
+      lab(300, 122, "حروف", 2) +
+      box(96, 150, 128, 26, "نرى ما يتوقعه عقلنا", 3, "hot");
+    return { label: "الإدراك والسياق", caps: ["", "", ""], svg: wrap(parts, "الإدراك والسياق") };
+  },
+
+  gestalt: () => {
+    let a = "", b = "", c = "";
+    [0, 1, 2, 3].forEach(r => [0, 1, 2, 3].forEach(col => {
+      const x = 234 + col * 18 + (col > 1 ? 18 : 0); a += `<circle cx="${x}" cy="${48 + r * 18}" r="5" style="fill:var(--h)"></circle>`;
+      const x2 = 133 + col * 18; b += `<circle cx="${x2}" cy="${48 + r * 18}" r="5.5" style="fill:${r % 2 ? "var(--h)" : "var(--surface)"};stroke:var(--h);stroke-width:1.6"></circle>`;
+    }));
+    for (let i = 0; i < 8; i++) { const a1 = i * 45 + 8, a2 = a1 + 30; const [x1, y1] = P(deg(a1), 30, 50, 75), [x2, y2] = P(deg(a2), 30, 50, 75); c += `<path d="M${x1.toFixed(1)},${y1.toFixed(1)} A30,30 0 0,1 ${x2.toFixed(1)},${y2.toFixed(1)}" style="fill:none;stroke:var(--h);stroke-width:3;stroke-linecap:round"></path>`; }
+    const parts = `<g class="st" data-s="1">${a}</g>` + lab(270, 132, "التقارب", 1, "", 'style="font-weight:700"') +
+      `<g class="st" data-s="2">${b}</g>` + lab(160, 132, "التشابه", 2, "", 'style="font-weight:700"') +
+      `<g class="st" data-s="3">${c}</g>` + lab(50, 132, "الإغلاق", 3, "", 'style="font-weight:700"') +
+      box(70, 150, 180, 26, "العين تنظّم قبل أن نفكر", 4, "hot");
+    return { label: "قوانين الجشطالت", caps: ["", "", "", ""], svg: wrap(parts, "قوانين الجشطالت") };
+  },
+
+  attention: () => {
+    const src = [["صوت المعلم", 18, "", ""], ["ضجيج الممر", 58, 'data-dim="2"', ""], ["حديث زميل", 98, 'data-dim="2"', ""]];
+    let parts = "";
+    src.forEach(([t, y, ex]) => { parts += box(214, y, 98, 30, t, 1, "", ex) + `<path class="st draw ar" data-s="1" ${ex} d="M210,${y + 15} L170,92" pathLength="1" marker-end="url(#ah)"></path>`; });
+    parts += box(214, 138, 98, 30, "صوت المكيف", 1, "", 'data-dim="2" data-out="3"') + box(214, 138, 98, 30, "زميل ينادي اسمك", 3, "hot");
+    parts += `<path class="st draw ar" data-s="1" d="M210,153 L170,96" pathLength="1" marker-end="url(#ah)"></path>`;
+    parts += box(118, 74, 48, 40, "مرشح", 1, "mute") + arr(114, 94, 100, 94, 2, "hot");
+    parts += box(10, 76, 88, 36, "صوت المعلم", 2, "hot", 'data-out="3"') + box(10, 76, 88, 36, "اسمي!", 3, "hot pulse");
+    parts += lab(54, 128, "ما يصل إلى الوعي", 2);
+    return { label: "الانتباه الانتقائي", caps: ["", "", ""], svg: wrap(parts, "الانتباه الانتقائي") };
+  },
+
+  chunking: () => {
+    const D = "0501234567".split(""), G = [30, 52, 74, 128, 150, 172, 222, 244, 266, 288];
+    let parts = "";
+    D.forEach((d, i) => { parts += `<text class="st dig mv" data-s="1" data-path="${22 + i * 30.5},92|${G[i]},92" x="0" y="0" style="fill:var(--ink)">${d}</text>`; });
+    parts += lab(160, 40, "عشرة عناصر منفصلة", 1, "lbl", 'data-out="2" style="font-weight:700"') + lab(160, 40, "ثلاث وحدات فقط", 2, "lbl", 'style="font-weight:700;fill:var(--h)"');
+    [[14, 76], [112, 76], [206, 98]].forEach(([x, w]) => parts += `<rect class="st" data-s="2" x="${x}" y="70" width="${w}" height="44" rx="10" style="fill:none;stroke:var(--h);stroke-width:2"></rect>`);
+    parts += box(70, 138, 180, 30, "سعة الذاكرة العاملة ≈ 4 وحدات", 3, "hot");
+    return { label: "التجزئة", caps: ["", "", ""], svg: wrap(parts, "التجزئة") };
+  },
+
+  serial: () => {
+    const V = [85, 70, 56, 46, 40, 38, 43, 56, 76, 90], X = i => 290 - i * (250 / 9), Y = v => 150 - v * 1.25;
+    let d = ""; V.forEach((v, i) => d += (i ? " L" : "M") + X(i).toFixed(1) + "," + Y(v).toFixed(1));
+    let parts = `<path class="st axis" data-s="1" d="M300,150 L30,150 M300,150 L300,22"></path>` + lab(290, 164, "الأولى", 1) + lab(40, 164, "الأخيرة", 1) + lab(160, 164, "ترتيب الكلمة في القائمة", 1, "lbl", 'style="font-size:10px"') +
+      `<path class="st reveal curve" data-s="1" data-reveal="0.26|0.7|1" d="${d}" pathLength="1"></path>`;
+    V.forEach((v, i) => { const st = i < 3 ? 1 : i < 7 ? 2 : 3; parts += `<circle class="st" data-s="${st}" cx="${X(i)}" cy="${Y(v)}" r="4.5" style="fill:var(--h)"></circle>`; });
+    parts += lab(262, 28, "أثر الأولية", 1, "", 'style="font-weight:700;fill:var(--h)"') + lab(160, 112, "الوسط يُنسى", 2, "lbl") + lab(70, 22, "أثر الحداثة", 3, "", 'style="font-weight:700;fill:var(--h)"');
+    return { label: "أثر الموقع التسلسلي", caps: ["", "", "", ""], svg: wrap(parts, "أثر الموقع التسلسلي") };
+  },
+
+  forgetting: () => {
+    const X = t => 290 - t * (255 / 7), Y = r => 150 - r * 1.2;
+    let d0 = ""; for (let t = 0; t <= 7.001; t += 0.1) d0 += (d0 ? " L" : "M") + X(t).toFixed(1) + "," + Y(100 * Math.exp(-t / 1.1) * 0.8 + 20 * Math.exp(-t / 20)).toFixed(1);
+    const seg = [[0, 1, 1.1], [1, 3, 3], [3, 7, 9]]; const pts = []; const marks = [];
+    seg.forEach(([a, b, tau]) => { for (let t = a; t <= b + 0.001; t += 0.1) pts.push([X(t), Y(100 * Math.exp(-(t - a) / tau))]); marks.push(pts.length); });
+    let d1 = "", L = 0; const cum = [0];
+    pts.forEach((p, i) => { d1 += (i ? " L" : "M") + p[0].toFixed(1) + "," + p[1].toFixed(1); if (i) { L += Math.hypot(p[0] - pts[i - 1][0], p[1] - pts[i - 1][1]); cum.push(L); } });
+    const fr = m => (cum[m] / L).toFixed(3); // up to and including the jump back to 100%
+    let parts = `<path class="st axis" data-s="1" d="M300,150 L30,150 M300,150 L300,24"></path>` + lab(290, 164, "يوم 0", 1) + lab(X(3), 164, "يوم 3", 1) + lab(X(7), 164, "يوم 7", 1) +
+      `<path class="st draw curve alt" data-s="1" d="${d0}" pathLength="1"></path>` + lab(62, 142, "بلا مراجعة", 1, "lbl") +
+      `<path class="st reveal curve" data-s="2" data-reveal="${fr(marks[0])}|${fr(marks[1])}|1" d="${d1}" pathLength="1"></path>`;
+    [[1, 2], [3, 3]].forEach(([t, s2]) => parts += `<circle class="st" data-s="${s2}" cx="${X(t)}" cy="${Y(100)}" r="5" style="fill:var(--h);stroke:var(--surface);stroke-width:2"></circle>` + lab(X(t), Y(100) - 12, "مراجعة", s2, "lbl", 'style="font-size:10px"'));
+    const endY = Y(100 * Math.exp(-4 / 9));
+    parts += `<circle class="st" data-s="4" cx="${X(7)}" cy="${endY}" r="5" style="fill:var(--h)"></circle>` + lab(X(7) + 4, endY - 14, "يبقى أكثر", 4, "", 'style="font-weight:700;fill:var(--h);font-size:11px"');
+    return { label: "منحنى النسيان", caps: ["", "", "", ""], svg: wrap(parts, "منحنى النسيان") };
+  },
+
+  interference: () => {
+    const parts = lab(262, 16, "تعلّمه أولًا", 1) + lab(58, 16, "تعلّمه بعده", 1) +
+      lab(160, 36, "تداخل قبلي", 1, "", 'style="font-weight:700"') + box(214, 46, 98, 34, "الرقم القديم", 1, "hot") + arr(210, 63, 112, 63, 1, "hot") + box(10, 46, 98, 34, "الرقم الجديد", 1, "mute") + lab(160, 54, "يعوق", 1, "lbl") +
+      lab(160, 98, "تداخل بعدي", 2, "", 'style="font-weight:700"') + box(214, 108, 98, 34, "كلمات إنجليزية", 2, "mute") + `<path class="st draw ar hot" data-s="2" d="M112,125 L210,125" pathLength="1" marker-end="url(#ahh)"></path>` + box(10, 108, 98, 34, "كلمات فرنسية", 2, "hot") + lab(160, 116, "يُضعف", 2, "lbl") +
+      box(60, 152, 200, 26, "العلاج: قارن صراحة وباعد بين المتشابهات", 3, "hot");
+    return { label: "التداخل", caps: ["", "", ""], svg: wrap(parts, "التداخل") };
+  },
+
+  spacing: () => {
+    const X = dd => 250 - dd * 36;
+    let parts = `<path class="st axis" data-s="1" d="M262,96 L26,96"></path>`;
+    [0, 1, 2, 3, 4, 5, 6].forEach(dd => parts += lab(X(dd), 108, "ي" + (dd + 1), 1, "lbl", 'style="font-size:10px"'));
+    parts += lab(310, 34, "محتشد", 1, "", 'style="font-weight:700;text-anchor:start"');
+    parts += `<rect class="st" data-s="1" x="${X(0) - 16}" y="22" width="32" height="24" rx="6" style="fill:var(--muted)"></rect>` + lab(X(0), 34, "×4", 1, "", 'style="fill:var(--surface);font-weight:700;direction:ltr"');
+    parts += lab(310, 72, "متباعد", 2, "", 'style="font-weight:700;text-anchor:start"');
+    [0, 1, 3, 6].forEach(dd => parts += `<rect class="st" data-s="2" x="${X(dd) - 12}" y="62" width="24" height="20" rx="5" style="fill:var(--h)"></rect>`);
+    parts += lab(310, 128, "يبقى بعد شهر", 3, "lbl", 'style="text-anchor:start;font-weight:700"');
+    parts += `<rect class="st bar alt" data-s="3" data-sx="0.35" x="60" y="140" width="180" height="12" rx="4" style="transform-origin:240px 146px;transform-box:view-box"></rect>` + lab(276, 146, "محتشد", 3, "lbl");
+    parts += `<rect class="st bar" data-s="3" data-sx="1" x="60" y="160" width="180" height="12" rx="4" style="transform-origin:240px 166px;transform-box:view-box"></rect>` + lab(276, 166, "متباعد", 3, "lbl", 'style="fill:var(--h);font-weight:700"');
+    return { label: "التكرار المتباعد", caps: ["", "", ""], svg: wrap(parts, "التكرار المتباعد") };
+  },
+
+  testing: () => {
+    const blk = (x, y, t, s, hot) => `<g class="st" data-s="${s}"><rect x="${x}" y="${y}" width="50" height="24" rx="6" style="fill:${hot ? "var(--h)" : "var(--muted)"}"></rect><text x="${x + 25}" y="${y + 12}" style="fill:var(--surface);font-size:11px;font-weight:700">${t}</text></g>`;
+    let parts = lab(304, 34, "أ", 1, "", 'style="font-weight:700"');
+    [0, 1, 2, 3].forEach(i => parts += blk(240 - i * 56, 22, "يقرأ", 1, false));
+    parts += lab(304, 78, "ب", 2, "", 'style="font-weight:700"') + blk(240, 66, "يقرأ", 2, false);
+    [1, 2, 3].forEach(i => parts += blk(240 - i * 56, 66, "يختبر", 2, true));
+    const bar = (y, cls, sx, lbl) => `<rect class="st bar ${cls}" data-s="3" data-sx="${sx}" x="70" y="${y}" width="200" height="14" rx="4" style="transform-origin:270px ${y + 7}px;transform-box:view-box"></rect>` + lbl;
+    parts += lab(304, 118, "بعد 5 دقائق ثم بعد أسبوع", 3, "lbl", 'style="text-anchor:start"');
+    parts += bar(130, "alt", "0.83|0.83|0.83|0.40", "") + lab(48, 137, "83%", 3, "lbl", 'data-out="4"') + lab(48, 137, "40%", 4, "lbl") + lab(292, 137, "أ", 3);
+    parts += bar(152, "", "0.71|0.71|0.71|0.61", "") + lab(48, 159, "71%", 3, "lbl", 'data-out="4"') + lab(48, 159, "61%", 4, "", 'style="font-weight:700;fill:var(--h)"') + lab(292, 159, "ب", 3);
+    return { label: "الاسترجاع النشط", caps: ["", "", "", ""], svg: wrap(parts, "الاسترجاع النشط") };
+  },
+
+  levels: () => {
+    const R = [["شكل الكلمة", "هل تبدأ (قلم) بحرف القاف؟", 0.3], ["صوت الكلمة", "هل تقافي (قلم) كلمة (علم)؟", 0.5], ["معنى الكلمة", "كتب الطالب الدرس بـ…؟", 0.95]];
+    let parts = "";
+    R.forEach(([t, qn, v], i) => {
+      const y = 18 + i * 48;
+      parts += lab(296, y + 8, t, i + 1, "", 'style="font-weight:700;text-anchor:start"') + lab(296, y + 26, qn, i + 1, "lbl", 'style="text-anchor:start"');
+      parts += `<rect class="st bar ${i < 2 ? "alt" : ""}" data-s="${i + 1}" data-sx="${v}" x="20" y="${y + 6}" width="120" height="14" rx="4" style="transform-origin:140px ${y + 13}px;transform-box:view-box"></rect>`;
+    });
+    parts += lab(80, 160, "← مقدار التذكر لاحقًا", 1, "lbl") + box(160, 150, 140, 26, "كلما تعمّق المعنى ثبت", 4, "hot");
+    return { label: "مستويات المعالجة", caps: ["", "", "", ""], svg: wrap(parts, "مستويات المعالجة") };
+  },
+
+  understand: () => {
+    const parts = box(30, 10, 260, 30, "مستطيل طوله 5 وعرضه 3، ما مساحته؟", 1, "mute", 'data-out="2"') + box(30, 10, 260, 30, "مستطيل مساحته 15 وطوله 5، ما عرضه؟", 2, "mute") +
+      lab(240, 60, "الحافظ", 1, "", 'style="font-weight:700"') + lab(80, 60, "الفاهم", 1, "", 'style="font-weight:700;fill:var(--h)"') +
+      box(192, 72, 96, 34, "15 ✓", 1, "", 'data-out="2"') + box(32, 72, 96, 34, "15 ✓", 1, "hot", 'data-out="2"') +
+      box(192, 72, 96, 34, "لا أعرف", 2, "mute") + box(32, 72, 96, 34, "3 ✓", 2, "hot") +
+      box(12, 122, 136, 50, "المساحة = الطول × العرض", 3, "hot") + lab(240, 140, "حفظ الإجابة لا القاعدة", 3, "lbl");
+    return { label: "الحفظ والفهم", caps: ["", "", ""], svg: wrap(parts, "الحفظ والفهم") };
+  },
+
+  polya: () => {
+    const S = ["افهم", "خطّط", "نفّذ", "راجع"];
+    let parts = box(20, 10, 280, 30, "3 دفاتر بـ 12 ريالًا، فكم ثمن 5 دفاتر؟", 1, "mute");
+    S.forEach((t, i) => { const x = 238 - i * 74; parts += box(x, 66, 64, 40, `${i + 1}. ${t}`, i + 1, "", `data-hot="${i + 1}"`); if (i) parts += arr(x + 72, 86, x + 66, 86, i + 1); });
+    parts += box(70, 132, 180, 34, "الثمن 20 ريالًا ✓", 4, "hot");
+    return { label: "خطوات بوليا", caps: ["", "", "", ""], svg: wrap(parts, "خطوات بوليا") };
+  },
+
+  meta: () => {
+    const N = [[160, 26, "خطّط"], [256, 140, "راقب"], [64, 140, "قيّم"]];
+    let parts = "";
+    N.forEach(([x, y, t], i) => parts += box(x - 42, y - 15, 84, 30, t, i + 1, "", `data-hot="${i + 1}"`));
+    parts += curve("M204,30 C246,40 262,90 258,122", 2, "hot") + curve("M212,150 C180,166 140,166 108,150", 3, "hot") + curve("M62,122 C58,90 74,40 116,30", 4, "hot");
+    parts += lab(160, 96, "تفكير في التفكير", 1, "lbl", 'style="font-weight:700"');
+    return { label: "ما وراء المعرفة", caps: ["", "", "", ""], svg: wrap(parts, "ما وراء المعرفة") };
+  },
+
+  gagne: () => {
+    const L = ["جذب الانتباه", "إعلام الأهداف", "استدعاء السابق", "عرض المحتوى", "التوجيه", "استثارة الأداء", "التغذية الراجعة", "تقويم الأداء", "الاحتفاظ والنقل"];
+    let parts = "";
+    L.forEach((t, i) => { const c = i % 3, r = Math.floor(i / 3); parts += box(216 - c * 102, 14 + r * 52, 94, 40, `${i + 1}. ${t}`, i + 1, "", `data-hot="${i + 1}"`); });
+    return { label: "أحداث جانييه التسعة", caps: [
+      "سؤال مثير أو صورة غريبة تشد الطلاب في أول دقيقة.",
+      "أخبرهم بما سيستطيعون فعله في نهاية الحصة.",
+      "استدعِ ما تعلموه سابقًا ويحتاجونه اليوم.",
+      "اعرض المحتوى الجديد منظمًا وبأمثلة.",
+      "وجّههم بأمثلة محلولة وتلميحات.",
+      "اطلب منهم الأداء بأنفسهم.",
+      "قدّم تغذية راجعة محددة وفورية.",
+      "قوّم أداءهم لتعرف ما تحقق.",
+      "ثبّت التعلم بالمراجعة والتطبيق في مواقف جديدة."], svg: wrap(parts, "أحداث جانييه") };
+  }
+};
+
+
+// every step pairs the idea with a concrete, accurate example
+const CAPS = {
+  knowledge: [["المعرفة التقريرية: «ماذا».", "يعرف الطالب أن الفعل الماضي يدل على حدث انتهى."],
+    ["المعرفة الإجرائية: «كيف».", "يصرّف «كتب» إلى «كتبتُ، كتبوا» بسرعة ودقة."],
+    ["المعرفة الشرطية: «متى ولماذا».", "يكتب قصة ما حدث أمس بالماضي، وخطته للغد بالمضارع."],
+    ["تتكامل الأنواع الثلاثة في الأداء الماهر.", "الكاتب الجيد يعرف القاعدة، ويطبقها، ويعرف متى يختار كل زمن."]],
+  perception: [["الإحساس: تصل الخطوط نفسها إلى العين.", "يرى الطالب رمزًا بين 12 و14 فيقرؤه رقم 13."],
+    ["السياق يغيّر التفسير.", "الرمز نفسه بين A وC يقرؤه حرف B."],
+    ["الإدراك تفسير بالخبرة والسياق، لا نسخة مما تراه العين.", "لذلك قد يفهم طالبان الرسم نفسه فهمين مختلفين؛ فاسأل: ماذا ترى؟"]],
+  gestalt: [["التقارب: ما تقارب نراه مجموعة.", "ترى العين عمودين من النقاط، لا ست عشرة نقطة منفصلة."],
+    ["التشابه: ما تشابه في اللون أو الشكل نراه معًا.", "تُرى النقاط الملونة صفوفًا؛ فلوّن العناصر المترابطة بلون واحد."],
+    ["الإغلاق: نكمل الشكل الناقص.", "نرى دائرة كاملة رغم الفجوات بين أجزائها."],
+    ["التطبيق في تصميم الشرائح.", "ضع العنوان قرب الشرح التابع له، واجمع الأمثلة المتشابهة بلون واحد."]],
+  attention: [["مثيرات كثيرة تصل في اللحظة نفسها.", "صوت المعلم، وضجيج الممر، وحديث زميل، وصوت المكيف."],
+    ["الانتباه الانتقائي يمرر مثيرًا واحدًا ويخفت الباقي.", "يركز الطالب في شرح المعلم، ولا يكاد يسمع الضجيج."],
+    ["لكن المثير المهم شخصيًا يخترق المرشح.", "ينادي زميل اسمه بصوت خافت فيلتفت فورًا (ظاهرة حفلة الكوكتيل)."]],
+  chunking: [["عشرة أرقام منفصلة تفوق سعة الذاكرة العاملة.", "يحاول الطالب حفظ الرقم 0501234567 رقمًا رقمًا فينسى بعضه."],
+    ["التجزئة تجمع العناصر في وحدات أكبر.", "050 · 123 · 4567: صارت ثلاث وحدات فقط."],
+    ["الوحدات القليلة تتسع لها الذاكرة العاملة.", "وفي الصف: قسّم الخطوات الطويلة إلى مجموعات صغيرة لكل منها عنوان."]],
+  serial: [["أول القائمة يُتذكر جيدًا: أثر الأولية.", "حظيت الكلمات الأولى بتكرار أكثر، فانتقلت إلى الذاكرة طويلة المدى."],
+    ["وسط القائمة يُنسى أكثر.", "لم يأخذ حظه من التكرار، وزاحمته الكلمات التي بعده."],
+    ["آخر القائمة يُتذكر جيدًا أيضًا: أثر الحداثة.", "ما زال حاضرًا في الذاكرة العاملة لحظة التذكر."],
+    ["التطبيق في الصف.", "ابدأ الحصة بأهم فكرة واختمها بمراجعتها، ولا تدفنها في المنتصف."]],
+  forgetting: [["بلا مراجعة: نسيان سريع في البداية، ثم يتباطأ.", "بعد أيام قليلة لا يبقى إلا جزء صغير من درس لم يُراجع."],
+    ["مراجعة قصيرة بعد يوم تعيد المعلومة.", "خمس دقائق مراجعة في أول الحصة التالية."],
+    ["ومع كل مراجعة يصير النسيان أبطأ.", "مراجعة ثانية بعد ثلاثة أيام."],
+    ["بعد أسبوع يبقى أكثر بكثير بجهد قليل.", "وزّع المراجعة: بعد يوم، ثم بعد أيام، ثم بعد أسبوع."]],
+  interference: [["التداخل القبلي: القديم يعوق تذكر الجديد.", "يكتب الطالب رقم هاتفه القديم كلما سُئل عن رقمه الجديد."],
+    ["التداخل البعدي: الجديد يُضعف تذكر القديم.", "بعد تعلّم كلمات فرنسية صار يخلط في كلمات إنجليزية تعلمها قبلها."],
+    ["العلاج: قارن صراحة، وباعد بين المتشابهات.", "جدول يقارن بين المفهومين المتشابهين، ومراجعة كل منهما منفردًا."]],
+  spacing: [["المذاكرة المحتشدة: الوقت كله في جلسة واحدة.", "ساعتان متصلتان ليلة الاختبار."],
+    ["المذاكرة المتباعدة: الوقت نفسه موزعًا على أيام.", "ثلاثون دقيقة في أربعة أيام متفرقة."],
+    ["بعد مدة: يبقى من المتباعد أكثر بكثير.", "الوقت الكلي متساوٍ، لكن الفارق في التذكر بعد أسابيع كبير لصالح التوزيع."]],
+  testing: [["الطالب (أ) يعيد قراءة النص أربع مرات.", "يشعر أنه حفظه لأن النص صار مألوفًا."],
+    ["الطالب (ب) يقرأ مرة، ثم يختبر نفسه ثلاث مرات.", "يغلق الكتاب ويكتب ما يتذكره."],
+    ["بعد خمس دقائق: إعادة القراءة متقدمة قليلًا.", "83% مقابل 71% (دراسة رويدجر وكاربيك، 2006)."],
+    ["بعد أسبوع: الاسترجاع يتفوق بوضوح.", "61% لمن اختبر نفسه، مقابل 40% لمن أعاد القراءة."]],
+  levels: [["معالجة سطحية: شكل الكلمة.", "«هل تبدأ كلمة (قلم) بحرف القاف؟»، فتُنسى سريعًا."],
+    ["معالجة أعمق: صوت الكلمة.", "«هل تقافي (قلم) كلمة (علم)؟»، فتُتذكر أكثر قليلًا."],
+    ["معالجة عميقة: معنى الكلمة.", "«هل تكمل (قلم) جملة: كتب الطالب الدرس بـ…؟»، فتُتذكر أكثر بكثير."],
+    ["التطبيق: اجعل الطالب يفكر في المعنى.", "اطلب جملة من حياته بالكلمة الجديدة، بدل نسخها خمس مرات."]],
+  understand: [["سؤال مألوف: يجيب الحافظ والفاهم.", "مستطيل طوله 5 وعرضه 3، فمساحته 15."],
+    ["غيّر صيغة السؤال: يتعثر الحافظ.", "مستطيل مساحته 15 وطوله 5، فما عرضه؟ الفاهم يجيب: 3."],
+    ["الفاهم يشرح السبب بكلماته.", "«المساحة طول في عرض، فالعرض = 15 ÷ 5». هذا دليل الفهم."]],
+  polya: [["افهم المشكلة: ما المعطى؟ وما المطلوب؟", "المعطى: 3 دفاتر بـ 12 ريالًا. المطلوب: ثمن 5 دفاتر."],
+    ["خطّط: اختر طريقًا للحل.", "أجد ثمن الدفتر الواحد أولًا."],
+    ["نفّذ الخطة.", "12 ÷ 3 = 4 ريالات، ثم 4 × 5 = 20 ريالًا."],
+    ["راجع: هل الإجابة معقولة؟", "5 دفاتر أكثر من 3، والثمن 20 أكبر من 12، فالإجابة معقولة."]],
+  meta: [["التخطيط قبل التعلم.", "«ما هدفي من قراءة هذا الدرس؟ وكم أحتاج من الوقت؟»"],
+    ["المراقبة أثناء التعلم.", "«هل فهمت هذه الفقرة؟ لا… سأعيد قراءتها وأرسم مخططًا»."],
+    ["التقويم بعد التعلم.", "«هل حققت هدفي؟ ما الطريقة التي نفعتني، وما الذي أغيّره؟»"],
+    ["ثم يبدأ تعلم أذكى في المرة التالية.", "الطالب الذي يراقب فهمه لا ينتظر الاختبار ليكتشف أنه لم يفهم."]],
+
+  pavlov: [["قبل التعلم: الطعام يستدعي اللعاب طبيعيًا دون أي تعلم.", "وفي الصف: صراخ المعلم وتهديده يثيران خوف الطالب دون تعلم."],
+    ["الجرس وحده مثير محايد لا يستدعي اللعاب.", "ورقة الاختبار في البداية مجرد ورقة لا تخيف أحدًا."],
+    ["الاقتران: يُقرع الجرس ثم يُقدَّم الطعام، مرات متكررة.", "يوزّع المعلم أوراق الاختبار وهو يوبّخ ويهدد، مرة بعد مرة."],
+    ["بعد التعلم: الجرس وحده صار يستدعي اللعاب (مثير شرطي).", "صارت ورقة الاختبار وحدها تثير القلق، حتى لو وزّعها معلم هادئ."]],
+  reinforce: [["نتيجة السلوك إما إضافة شيء أو إزالته، والشيء إما مرغوب أو مزعج.", "والحكم بالأثر: هل زاد السلوك بعدها أم قلّ؟"],
+    ["نضيف شيئًا مرغوبًا فيزيد السلوك: تعزيز موجب.", "أجاب الطالب فقال المعلم: «فكرتك دقيقة»، فصار يرفع يده أكثر."],
+    ["نزيل شيئًا مزعجًا فيزيد السلوك: تعزيز سالب، وليس عقابًا.", "من يسلّم واجبه كاملًا يُعفى من حصة الاستدراك المملة، فيزيد تسليم الواجبات كاملة."],
+    ["نضيف شيئًا مزعجًا فيقل السلوك: عقاب بالإضافة.", "من يتأخر يكتب ورقة يشرح فيها سبب تأخره، فيقل التأخر."],
+    ["نزيل شيئًا مرغوبًا فيقل السلوك: عقاب بالحرمان.", "من يعبث بالجهاز اللوحي يُحرم منه بقية النشاط، فيقل العبث."]],
+  shaping: [["نعزز أول خطوة قريبة من الهدف.", "طالب يرفض الكتابة: يمدحه المعلم حين يكتب كلمة واحدة."],
+    ["نرفع المعيار: لا نعزز إلا الأقرب إلى الهدف.", "لم يعد يُمدح على الكلمة، بل على جملة كاملة."],
+    ["نواصل رفع المعيار تدريجيًا.", "ثم لا يُمدح إلا على فقرة من ثلاث جمل."],
+    ["حتى يبلغ السلوك المستهدف كاملًا.", "صار يكتب موضوعًا قصيرًا مترابطًا."]],
+  piaget: [["الحسية الحركية (0–2): يتعرف العالم بالحواس والحركة.", "يبحث الرضيع عن لعبة خُبئت تحت غطاء، فقد اكتسب ثبات الشيء."],
+    ["ما قبل العمليات (2–7): رموز ولغة، وتمركز حول الذات.", "يُصبّ الماء من كأس عريضة إلى كأس طويلة، فيظن الطفل أنه زاد."],
+    ["العمليات المادية (7–11): منطق في الأشياء المحسوسة.", "يدرك أن الماء لم يتغير لأنه يمكن إعادته إلى الكأس الأولى."],
+    ["العمليات المجردة (11+): تفكير افتراضي في غير المحسوس.", "يجيب عن «ماذا لو انعدمت الجاذبية؟» بفرضيات مترابطة."]],
+  bruner: [["عملي: يفهم بالفعل واليد.", "يقسّم الطالب رغيفًا إلى أربع قطع متساوية ويأخذ ثلاثًا منها."],
+    ["أيقوني: يفهم بالصورة.", "يرسم دائرة ويظلل ثلاثة أرباعها."],
+    ["رمزي: يفهم بالرمز المجرد.", "يكتب 3/4 ويحسب: 3/4 + 1/4 = 1."]],
+  spiral: [["يُقدَّم المفهوم أول مرة ببساطة.", "الصف الثالث: نصف التفاحة وربعها بالنماذج المحسوسة."],
+    ["يعود المفهوم نفسه بعمق أكبر.", "الصف السادس: جمع الكسور وضربها."],
+    ["ويعود أعمق مرة أخرى.", "الصف التاسع: النسبة والتناسب والاحتمالات."]],
+  info: [["تصل مثيرات كثيرة إلى الذاكرة الحسية وتبقى لحظات.", "في الحصة: صوت المعلم، والسبورة، وضجيج الممر، وحركة الزميل."],
+    ["لا يعبر إلى الذاكرة العاملة إلا ما ننتبه إليه، وسعتها نحو أربعة عناصر.", "ينتبه الطالب للتعريف على السبورة، ويضيع ضجيج الممر."],
+    ["الترميز ينقل المعلومة إلى الذاكرة طويلة المدى.", "يربط التعريف بمثال من حياته ويكتبه بكلماته."],
+    ["الاسترجاع يعيدها حين نحتاجها، وكل استرجاع يقوّيها.", "سؤال سريع في أول الحصة التالية يستدعي التعريف فيثبت."]],
+  zpd: [["الدائرة الداخلية: ما ينجزه المتعلم وحده الآن.", "يقرأ الطالب الكلمات المألوفة دون مساعدة."],
+    ["الحلقة الوسطى: ما ينجزه بمساعدة، وهي منطقة النمو القريب.", "يقرأ نصًا جديدًا إذا ساعده المعلم في تقطيع الكلمات الطويلة."],
+    ["الحلقة الخارجية: ما يفوق قدرته الآن حتى مع المساعدة.", "نص علمي متخصص ما زال أبعد من مستواه."],
+    ["يعمل معه معلم أو زميل أكفأ داخل المنطقة.", "يقرآن النص معًا، ويقدّم المعلم تلميحًا عند كل كلمة صعبة."],
+    ["غدًا ينجز وحده ما احتاج فيه إلى مساعدة اليوم، فتتسع دائرته.", "بعد أسابيع يقرأ النص الجديد وحده، فتنتقل منطقته إلى نصوص أصعب."]],
+  scaffold: [["المهارة جديدة، ويحيط بها دعم كامل.", "حل المعادلة: يحل المعلم مثالًا كاملًا أمام الطلاب ويشرح كل خطوة."],
+    ["نسحب المثال المحلول، ويبقى التلميح والحل المشترك.", "يحل الطلاب ومعهم تلميح مكتوب بجانب كل خطوة."],
+    ["نسحب التلميحات حين تزداد الكفاءة.", "يحلون في أزواج دون تلميحات، ويتدخل المعلم عند الحاجة."],
+    ["يُسحب آخر دعم، فتقوم المهارة وحدها: حل مستقل.", "يحل كل طالب المعادلة وحده في الاختبار القصير."]],
+  bandura: [["الانتباه: لا نتعلم من نموذج لا ننتبه إليه.", "يشاهد الطلاب زميلًا يعرض حل مسألة بخطوات مرتبة."],
+    ["الاحتفاظ: نحفظ ما رأيناه بالصور والكلمات.", "يكتبون خطوات زميلهم في دفاترهم."],
+    ["الأداء: نحاول أداء ما لاحظناه.", "يحلّون مسألة مشابهة بالطريقة نفسها."],
+    ["الدافعية: نؤديه حين نتوقع أن ينفعنا.", "رأوا المعلم يمدح ترتيب الحل، فصاروا يرتبون حلولهم (تعزيز بديل)."],
+    ["تعلّموا دون أن يمروا بالتجربة أولًا.", "لم يُمدح أحدهم بعد، لكنهم تعلموا من ملاحظة زميلهم وحدها."]],
+  maslow: [["الحاجات الفسيولوجية: طعام ونوم وماء.", "طالب جاء بلا إفطار ولم ينم جيدًا لن يتفرغ لدرس الكسور."],
+    ["الأمن: بيئة لا خوف فيها.", "صف لا يخشى فيه الطالب السخرية إن أخطأ."],
+    ["الانتماء: أن يشعر أنه مرغوب.", "أن يجد مكانًا في مجموعة ترحب به."],
+    ["التقدير: أن يُرى جهده ويُحترم.", "أن يُعرض عمله المتقن على لوحة الصف."],
+    ["تحقيق الذات: أن يتعلم لأنه يريد أن ينمو.", "أن يختار مشروعًا لأنه يحب الموضوع، لا من أجل الدرجة."]],
+  kolb: [["خبرة محسوسة: يعيش المتعلم التجربة.", "يضع الطلاب أشياء مختلفة في حوض ماء، فيطفو بعضها ويغرق بعضها."],
+    ["ملاحظة تأملية: يتأمل ما حدث.", "يتناقشون: لماذا طفت قطعة الخشب الكبيرة وغرق المسمار الصغير؟"],
+    ["مفاهيم مجردة: يصوغ القاعدة.", "يطفو الجسم إذا كانت كثافته أقل من كثافة الماء."],
+    ["تجريب نشط: يطبّق القاعدة في موقف جديد.", "يصممون قاربًا من ورق القصدير يحمل أكبر عدد من القطع النقدية."],
+    ["ثم تبدأ دورة جديدة من خبرة أعمق.", "يجربون القارب في ماء مالح، فيحمل أكثر، ويسألون لماذا."]],
+  gagne: [["جذب الانتباه.", "درس دورة الماء: صورة زجاج نافذة تكثّف عليه الماء صباحًا، من أين جاء؟"],
+    ["إعلام الأهداف.", "«في نهاية الحصة سترسم دورة الماء وتشرح مراحلها»."],
+    ["استدعاء التعلم السابق.", "يسأل المعلم: ماذا يحدث للماء حين يغلي؟"],
+    ["عرض المحتوى.", "يشرح التبخر والتكاثف والهطول بمخطط واضح."],
+    ["توجيه التعلم.", "يرسم المخطط مع الطلاب خطوة خطوة."],
+    ["استثارة الأداء.", "يرسم كل طالب الدورة ويكتب أسماء مراحلها."],
+    ["التغذية الراجعة.", "«رتّبت المراحل صحيحًا، لكن ينقص السهم بين الغيوم والمطر»."],
+    ["تقويم الأداء.", "ثلاثة أسئلة قصيرة في آخر الحصة."],
+    ["تعزيز الاحتفاظ والنقل.", "يفسّر الطالب في البيت لماذا تتجمع قطرات الماء على كوب بارد."]]
+};
+let illTimer = null, lastIllDur = 0;
+function mountIllus(fig, spec, key) {
+  const steps = CAPS[key] || spec.caps.map(c => [c, ""]);
+  const n = steps.length, STEP = 2300, END = 3400;
+  fig.innerHTML = `<div class="ihead">شاهد الفكرة تتحرك</div><div class="ill-svg">${spec.svg}</div><p class="ill-cap"></p><div class="ill-ex" hidden><b>مثال</b><p></p></div><div class="ill-ctl"><button class="btn icon" type="button" aria-label="إعادة العرض">⟲</button><div class="dots" role="group" aria-label="خطوات الشرح"></div></div>`;
+  const s = fig.querySelector("svg"), cap = fig.querySelector(".ill-cap"), dotsEl = fig.querySelector(".dots");
+  const ex = fig.querySelector(".ill-ex"), exP = ex.querySelector("p");
+  const parts = [...s.querySelectorAll("[data-s]")];
+  const dots = steps.map((c, i) => { const b = document.createElement("button"); b.type = "button"; b.textContent = i + 1; b.setAttribute("aria-label", "الخطوة " + (i + 1)); b.onclick = () => { clearTimeout(illTimer); show(i + 1); }; dotsEl.append(b); return b; });
+  function show(k) {
+    parts.forEach(e => {
+      e.classList.toggle("on", +e.dataset.s <= k && k > 0);
+      if (e.dataset.out) e.classList.toggle("gone", k >= +e.dataset.out);
+      if (e.dataset.hot) e.classList.toggle("hot", k === +e.dataset.hot);
+      const tf = [];
+      if (e.dataset.path) { const p = e.dataset.path.split("|"); const [x, y] = p[Math.max(0, Math.min(k, p.length) - 1)].split(","); tf.push(`translate(${x}px,${y}px)`); }
+      if (e.dataset.scale) { const p = e.dataset.scale.split("|"); tf.push(`scale(${p[Math.max(0, Math.min(k, p.length) - 1)]})`); }
+      if (tf.length) e.style.transform = tf.join(" ");
+      if (e.dataset.reveal) { const p = e.dataset.reveal.split("|"); e.style.strokeDashoffset = k ? 1 - +p[Math.min(k, p.length) - 1] : 1; }
+      if (e.dataset.dim) e.classList.toggle("dimmed", k >= +e.dataset.dim);
+      if (e.dataset.sx) { const p = e.dataset.sx.split("|"); e.style.transform = `scaleX(${k ? p[Math.min(k, p.length) - 1] : 0})`; }
+      if (e.dataset.op) { const p = e.dataset.op.split("|"); e.style.fillOpacity = k ? p[Math.min(k, p.length) - 1] : 0; }
+    });
+    cap.textContent = k ? steps[k - 1][0] : "";
+    exP.textContent = k ? steps[k - 1][1] : ""; ex.hidden = !(k && steps[k - 1][1]);
+    dots.forEach((d, i) => d.classList.toggle("on", i < k));
+  }
+  function loop(k) {
+    show(k);
+    illTimer = setTimeout(() => k < n ? loop(k + 1) : (show(0), illTimer = setTimeout(() => loop(1), 500)), k < n ? STEP : END);
+  }
+  fig.querySelector(".ill-ctl > .btn").onclick = () => { clearTimeout(illTimer); show(0); illTimer = setTimeout(() => loop(1), 350); };
+  show(0);
+  if (reduce) show(n); else illTimer = setTimeout(() => loop(1), 450);
+  lastIllDur = reduce ? 6000 : 450 + (n - 1) * STEP + END - 400;
+}
+
+// ---------- guided tour ----------
+let tourSteps = [];
+function buildTour() { tourSteps = [DATA]; DATA.k.forEach(s => { tourSteps.push(s); (function walk(n) { n.k.forEach(c => { if (c.a && !tourSteps.some(t => t.a === c.a)) tourSteps.push(c); walk(c); }); })(s); }); }
+buildTour();
+const tour = { on: false, playing: false, i: 0, timer: null };
+const tbar = document.getElementById("tourbar"), tplay = document.getElementById("tplay");
+function tourGo(i) {
+  tour.i = Math.max(0, Math.min(tourSteps.length - 1, i));
+  const n = tourSteps[tour.i];
+  reveal(n); if (n.k.length) n.open = true;
+  refresh(); select(n); setTimeout(() => centerOn(n), reduce ? 0 : 60);
+  document.getElementById("tprog").style.width = ((tour.i + 1) / tourSteps.length * 100) + "%";
+  document.getElementById("tlbl").textContent = `${tour.i + 1} من ${tourSteps.length}`;
+  clearTimeout(tour.timer);
+  if (tour.playing) tour.timer = setTimeout(() => tour.i + 1 < tourSteps.length ? tourGo(tour.i + 1) : pauseTour(), n.a ? lastIllDur : 6500);
+}
+function startTour() {
+  all.forEach(n => n.open = n.depth === 0);
+  tour.on = true; tour.playing = true; tbar.hidden = false; tplay.textContent = "إيقاف مؤقت";
+  tourGo(0);
+}
+function pauseTour() { tour.playing = false; clearTimeout(tour.timer); tplay.textContent = "تشغيل"; }
+function endTour() { pauseTour(); tour.on = false; tbar.hidden = true; }
+document.getElementById("tour").onclick = startTour;
+tplay.onclick = () => { if (tour.playing) pauseTour(); else { tour.playing = true; tplay.textContent = "إيقاف مؤقت"; tourGo(tour.i); } };
+document.getElementById("tnext").onclick = () => tourGo(tour.i + 1);
+document.getElementById("tprev").onclick = () => tourGo(tour.i - 1);
+document.getElementById("tend").onclick = endTour;
+
+// ---------- switching maps ----------
+function switchMap(key) {
+  const m = MAPS[key]; if (!m || m.data === DATA) return;
+  endTour(); clearTimeout(illTimer); cancelAnimationFrame(anim);
+  for (const [, e] of els) { e.g.remove(); e.path && e.path.remove(); }
+  els.clear(); dying.clear();
+  q.value = ""; hits = []; countEl.textContent = ""; svg.classList.remove("dim");
+  DATA = m.data; prepMap(DATA); indexSearch(); buildLegend(); buildTour();
+  document.getElementById("maptitle").textContent = m.title;
+  document.title = m.title;
+  document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", String(b.id === "tab-" + key)));
+  boot();
+}
+document.getElementById("tab-theories").onclick = () => switchMap("theories");
+document.getElementById("tab-cognition").onclick = () => switchMap("cognition");
+
+// ---------- boot ----------
+function boot() {
+  measure(); layout(); sync();
+  all.forEach(n => { n.x = n.X; n.y = n.Y; });
+  draw(); select(DATA); fit(false);
+}
+boot();
+if (new URLSearchParams(location.search).get("map") === "cognition") switchMap("cognition");
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); for (const id of els.keys()) sizeNode(byId[id]); layout(); all.forEach(n => { n.x = n.X; n.y = n.Y; }); draw(); fit(false); });
+let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => fit(), 150); });
+</script>
+</body>
+</html>

@@ -234,6 +234,7 @@ export function ScreenShell({
   footer,
   children,
   wide = false,
+  bare = false,
 }: {
   title: string;
   sub?: string;
@@ -243,6 +244,8 @@ export function ScreenShell({
   footer?: React.ReactNode;
   children: React.ReactNode;
   wide?: boolean;
+  /** محتوى يملأ المساحة كلها بلا حشوة ولا تمرير (إطار مضمّن مثلًا) */
+  bare?: boolean;
 }) {
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
@@ -273,9 +276,13 @@ export function ScreenShell({
           )}
         </div>
       </header>
-      <div className="no-scrollbar flex-1 overflow-y-auto">
-        <div className={cn("mx-auto px-4 pb-10 pt-5", wide ? "max-w-5xl lg:px-8" : "max-w-3xl")}>{children}</div>
-      </div>
+      {bare ? (
+        <div className="relative min-h-0 flex-1">{children}</div>
+      ) : (
+        <div className="no-scrollbar flex-1 overflow-y-auto">
+          <div className={cn("mx-auto px-4 pb-10 pt-5", wide ? "max-w-5xl lg:px-8" : "max-w-3xl")}>{children}</div>
+        </div>
+      )}
       {footer && (
         <div className="safe-bottom shrink-0 border-t border-border bg-card">
           <div className={cn("mx-auto flex gap-3 px-4 py-3", wide ? "max-w-5xl" : "max-w-3xl")}>{footer}</div>
