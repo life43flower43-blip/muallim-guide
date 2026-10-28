@@ -134,21 +134,6 @@ export default function NotebookView() {
         <ChevronLeft className="h-5 w-5 shrink-0 text-[#F4C430]" strokeWidth={2.5} aria-hidden="true" />
       </button>
 
-      {/* مدخل المفاهيم الخاطئة الشائعة */}
-      <button
-        type="button"
-        onClick={() => useUi.getState().startMyths()}
-        className="flex w-full items-center gap-3 rounded-[24px] border border-[var(--t075)] bg-white p-3.5 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
-      >
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[16px] bg-danger-soft text-xl font-extrabold text-destructive" aria-hidden="true">✗✓</span>
-        <span className="min-w-0 flex-1">
-          <FitText max={17} min={12} className="font-extrabold leading-7">مفاهيم خاطئة شائعة</FitText>
-          <FitText max={13} min={10} className="leading-6 text-secondary-foreground">صحيحة أم خاطئة؟ مع التصحيح</FitText>
-        </span>
-        <ChevronLeft className="h-5 w-5 shrink-0 text-[var(--t600)]" strokeWidth={2.5} aria-hidden="true" />
-      </button>
-
-
       {current ? (
         <div className="space-y-4">
           {/* المحور والفصل في محدِّد واحد، وسهمان صغيران للتنقل بين الفصول */}
