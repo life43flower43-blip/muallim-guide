@@ -806,3 +806,10 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .test-art .ta-fill, .test-art .ta-seal, .test-art .ta-check, .test-art .ta-spark { animation: none; opacity: 1; stroke-dashoffset: 0; transform: none; }
 }
+
+/* بطاقة «الخرائط الذهنية المتحركة»: خطوط الشبكة تُرسم تباعًا والمركز الذهبي ينبض */
+.mind-card .mc-line { stroke-dasharray: 40; stroke-dashoffset: 40; animation: mc-line 4s ease-in-out infinite; }
+@keyframes mc-line { 0% { stroke-dashoffset: 40; } 30%, 80% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -40; } }
+.mind-card .mc-core { transform-box: fill-box; transform-origin: center; animation: mc-core 2s ease-in-out infinite; }
+@keyframes mc-core { 50% { transform: scale(1.15); } }
+@media (prefers-reduced-motion: reduce) { .mind-card .mc-line, .mind-card .mc-core { animation: none; stroke-dashoffset: 0; } }
