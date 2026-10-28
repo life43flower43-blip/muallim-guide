@@ -1,7 +1,8 @@
 "use client";
 
 // «صحيحة أم خاطئة؟» — المفاهيم الخاطئة الشائعة في التربية:
-// عبارة واحدة في كل مرة، يحكم عليها المتعلم ثم يقرأ الصواب وسببه وأثره في الصف
+// عبارة واحدة في كل مرة، يحكم عليها المتعلم ثم يقرأ الصواب وسببه وأثره في الصف.
+// العبارات في جولات من عشر، وكل جولة تكمل من حيث انتهت السابقة.
 import { useState } from "react";
 import { CheckCircle2, RotateCcw, XCircle } from "lucide-react";
 import { useUi } from "@/lib/ui-store";
@@ -11,13 +12,17 @@ import { ad } from "@/lib/arabic";
 import { cn } from "@/lib/utils";
 import { PrimaryButton, ProgressBar, ScreenShell, SecondaryButton } from "./ui-kit";
 
+const ROUND = 10;
+
 export default function MisconceptionsView() {
   const clear = useUi((s) => s.clearMyths);
   const [order, setOrder] = useState(() => shuffle(MISCONCEPTIONS));
+  const [start, setStart] = useState(0);
   const [i, setI] = useState(0);
   const [answer, setAnswer] = useState<boolean | null>(null);
   const [score, setScore] = useState(0);
-  const done = i >= order.length;
+  const end = Math.min(start + ROUND, order.length);
+  const done = i >= end;
   const item = order[Math.min(i, order.length - 1)];
   const correct = answer !== null && answer === item.isTrue;
 
@@ -27,21 +32,27 @@ export default function MisconceptionsView() {
     if (v === item.isTrue) setScore((s) => s + 1);
   };
   const next = () => { setAnswer(null); setI((n) => n + 1); };
-  const restart = () => { setOrder(shuffle(MISCONCEPTIONS)); setI(0); setAnswer(null); setScore(0); };
+  const nextRound = () => {
+    if (end >= order.length) { setOrder(shuffle(MISCONCEPTIONS)); setStart(0); setI(0); }
+    else setStart(end);
+    setAnswer(null); setScore(0);
+  };
 
   return (
     <ScreenShell title="مفاهيم خاطئة شائعة" onClose={clear}>
       {done ? (
         <div className="space-y-5 py-6 text-center">
-          <p className="text-lg font-extrabold">أصبت الحكم في {ad(score)} من {ad(order.length)}</p>
-          <p className="leading-7 text-secondary-foreground">كل عبارة صححتها هنا تصحح فكرة يتداولها كثير من المعلمين.</p>
-          <PrimaryButton onClick={restart} className="w-full"><RotateCcw className="h-4 w-4" /> ابدأ من جديد</PrimaryButton>
+          <p className="text-lg font-extrabold">أصبت الحكم في {ad(score)} من {ad(end - start)}</p>
+          <p className="leading-7 text-secondary-foreground">أنهيت {ad(end)} من {ad(order.length)} عبارة.</p>
+          <PrimaryButton onClick={nextRound} className="w-full">
+            {end >= order.length ? <><RotateCcw className="h-4 w-4" /> ابدأ من جديد</> : "الجولة التالية"}
+          </PrimaryButton>
         </div>
       ) : (
         <div className="space-y-4">
           <div className="flex items-center gap-3 text-sm font-bold text-[var(--t500)]">
-            <ProgressBar value={(i / order.length) * 100} className="flex-1" />
-            <span>{ad(i + 1)} من {ad(order.length)}</span>
+            <ProgressBar value={((i - start) / (end - start)) * 100} className="flex-1" />
+            <span>{ad(i - start + 1)} من {ad(end - start)}</span>
           </div>
 
           <div className="rounded-[22px] border border-[var(--t075)] bg-white p-5 dark:border-border dark:bg-card">
@@ -74,7 +85,7 @@ export default function MisconceptionsView() {
                   <p className="leading-8 text-secondary-foreground">{item.classroom}</p>
                 </section>
               </div>
-              <PrimaryButton onClick={next} className="w-full">{i + 1 < order.length ? "التالية" : "النتيجة"}</PrimaryButton>
+              <PrimaryButton onClick={next} className="w-full">{i + 1 < end ? "التالية" : "النتيجة"}</PrimaryButton>
             </div>
           )}
         </div>
