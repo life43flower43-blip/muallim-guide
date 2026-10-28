@@ -11,12 +11,14 @@ import {
   COURSES,
   QUESTIONS,
   chaptersOfCourse,
+  conceptById,
   conceptsOfCourse,
   questionById,
   questionsOfChapter,
   questionsOfCourse,
   shuffle,
 } from './qbank'
+import { spacedDueIds } from './srs'
 import type { Attempt, Difficulty, Question } from './types'
 
 export const SESSION_SIZE = 10
@@ -190,9 +192,35 @@ export function weakChapters(attempts: Record<string, Attempt>, courseId?: strin
   return out.sort((a, b) => a.accuracy - b.accuracy).slice(0, limit)
 }
 
-/** التدريب الذكي: من الفصول الأضعف أولًا، ثم أول فصل لم يبدأه، ثم مراجعة المتقَن */
+/** أضعف المفاهيم: ما أُجيب فيه سؤالان فأكثر بدقة أقل من ٧٠٪، والخطأ بثقة يزيد ضعفه */
+export function weakConcepts(attempts: Record<string, Attempt>, courseId?: string, limit = 3): string[] {
+  const out: { id: string; score: number }[] = []
+  for (const [cid, qs] of questionsByConcept()) {
+    if (courseId && conceptById(cid)?.courseId !== courseId) continue
+    let answered = 0
+    let correct = 0
+    let sureWrong = 0
+    for (const q of qs) {
+      const a = attempts[q.id]
+      if (!a) continue
+      answered += 1
+      if (a.correct) correct += 1
+      else if (a.conf === 'sure') sureWrong += 1
+    }
+    if (answered < 2 || correct / answered >= 0.7) continue
+    out.push({ id: cid, score: correct / answered - sureWrong * 0.2 })
+  }
+  return out.sort((a, b) => a.score - b.score).slice(0, limit).map((x) => x.id)
+}
+
+/** التدريب الذكي: ما حان موعد مراجعته، ثم أضعف المفاهيم، ثم الفصول الأضعف، ثم أول فصل لم يبدأه */
 export function smartSession(attempts: Record<string, Attempt>, courseId?: string, size = SESSION_SIZE): string[] {
   const out = new Set<string>()
+  const inCourse = (id: string) => { const q = questionById(id); return !courseId || (!!q && conceptById(q.conceptId)?.courseId === courseId) }
+  for (const id of spacedDueIds(attempts).filter(inCourse).slice(0, 3)) out.add(id)
+  for (const cid of weakConcepts(attempts, courseId, 2)) {
+    for (const q of orderForLearning(questionsByConcept().get(cid) ?? [], attempts).slice(0, 2)) out.add(q.id)
+  }
   for (const w of weakChapters(attempts, courseId, 3)) {
     for (const id of chapterSession(w.courseId, w.chapter, attempts, 4)) out.add(id)
   }

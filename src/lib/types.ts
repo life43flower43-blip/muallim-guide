@@ -53,6 +53,7 @@ export interface Attempt {
   answer?: string; // نص إجابة المستخدم — لعرضه في صفحة أخطائي
   ts: number; // وقت المحاولة
   box: number; // صندوق ليتم 1-5 للمراجعة المتباعدة
+  conf?: "sure" | "unsure" | "guess"; // ثقة المتعلم بإجابته قبل التحقق
 }
 
 export interface SessionRecord {

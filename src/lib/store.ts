@@ -101,7 +101,7 @@ interface AppState {
   addLocalGems: (n: number) => void;
   spendLocalGems: (n: number) => boolean;
   readConcept: (cid: string) => void;
-  recordAttempt: (qid: string, correct: boolean, answer?: string) => void;
+  recordAttempt: (qid: string, correct: boolean, answer?: string, conf?: Attempt["conf"]) => void;
   recordScenarioChoice: (sid: string, opt: number) => void;
   finishSession: (s: Omit<SessionRecord, "id" | "ts">) => void;
   reportQuestion: (qid: string) => void;
@@ -236,11 +236,12 @@ export const useApp = create<AppState>()(
       readConcept: (cid) =>
         set((st) => ({ conceptReads: { ...st.conceptReads, [cid]: Date.now() } })),
 
-      recordAttempt: (qid, correct, answer) =>
+      recordAttempt: (qid, correct, answer, conf) =>
         set((st) => {
           const prev = st.attempts[qid];
-          const box = nextBox(prev?.box ?? 0, correct);
-          const at: Attempt = { qid, correct, answer, ts: Date.now(), box };
+          // الإجابة الصحيحة بالتخمين لا تُبعد المراجعة: تعود غدًا كأنها جديدة
+          const box = correct && conf === "guess" ? 1 : nextBox(prev?.box ?? 0, correct);
+          const at: Attempt = { qid, correct, answer, ts: Date.now(), box, ...(conf ? { conf } : {}) };
           return { attempts: { ...st.attempts, [qid]: at } };
         }),
 
