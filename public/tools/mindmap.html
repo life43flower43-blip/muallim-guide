@@ -333,6 +333,12 @@ path.link.flow { stroke-dasharray: 7 7; animation: flow .9s linear infinite; opa
     <button type="button" role="tab" id="tab-M4" aria-selected="false">التقويم والقياس</button>
     <button type="button" role="tab" id="tab-M1" aria-selected="false">نمو الطلاب</button>
     <button type="button" role="tab" id="tab-M5" aria-selected="false">التدريس داخل الصف</button>
+    <button type="button" role="tab" id="tab-M2" aria-selected="false">المشاعر والذكاء</button>
+    <button type="button" role="tab" id="tab-SE1" aria-selected="false">التربية الخاصة</button>
+    <button type="button" role="tab" id="tab-F1" aria-selected="false">أسس التربية</button>
+    <button type="button" role="tab" id="tab-AI1" aria-selected="false">الذكاء الاصطناعي</button>
+    <button type="button" role="tab" id="tab-C1" aria-selected="false">المهارات</button>
+    <button type="button" role="tab" id="tab-G1" aria-selected="false">المكتبة التربوية</button>
   </div>
   <nav class="legend" id="legend" aria-label="الفروع الكبرى"></nav>
 
@@ -475,7 +481,13 @@ const MAPS = {
   cognition: { data: MAP_COGNITION, title: "خريطة المعرفة والتذكر والفهم" },
   M4: { src: "maps/M4.json", title: "خريطة تقويم التعلم وقياسه" },
   M1: { src: "maps/M1.json", title: "خريطة نمو الطلاب" },
-  M5: { src: "maps/M5.json", title: "خريطة التدريس داخل الصف" }
+  M5: { src: "maps/M5.json", title: "خريطة التدريس داخل الصف" },
+  M2: { src: "maps/M2.json", title: "خريطة المشاعر والذكاء والشخصية" },
+  SE1: { src: "maps/SE1.json", title: "خريطة التربية الخاصة والدمج" },
+  F1: { src: "maps/F1.json", title: "خريطة أسس التربية ومهنة المعلم" },
+  AI1: { src: "maps/AI1.json", title: "خريطة الذكاء الاصطناعي في التعليم" },
+  C1: { src: "maps/C1.json", title: "خريطة المهارات" },
+  G1: { src: "maps/G1.json", title: "خريطة المكتبة التربوية العامة" }
 };
 let DATA = MAP_THEORIES;
 
@@ -1793,7 +1805,7 @@ async function switchMap(key) {
 }
 document.getElementById("tab-theories").onclick = () => switchMap("theories");
 document.getElementById("tab-cognition").onclick = () => switchMap("cognition");
-["M4", "M1", "M5"].forEach(k => document.getElementById("tab-" + k).onclick = () => switchMap(k));
+["M4", "M1", "M5", "M2", "SE1", "F1", "AI1", "C1", "G1"].forEach(k => document.getElementById("tab-" + k).onclick = () => switchMap(k));
 
 // ---------- boot ----------
 function boot() {
