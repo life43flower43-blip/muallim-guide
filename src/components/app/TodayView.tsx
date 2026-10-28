@@ -16,7 +16,7 @@ import { ad } from "@/lib/arabic";
 import type { Tab } from "./AppShell";
 import { FitText } from "./FitText";
 
-type Door = { title: string; img: string; pos?: string; progress: number; run: () => void };
+type Door = { title: string; img: string; pos?: string; progress: number; run: () => void; special?: boolean };
 
 const frac = (n: number, of: number) => (of > 0 ? Math.min(1, n / of) : 0);
 
@@ -158,7 +158,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
     { title: "مهارات التدريس", pos: "50% 22%", img: "/home/skills-v2.jpg", progress: frac(labCount, 20), run: ui.startLab },
     { title: "طرائق التدريس", pos: "40% 55%", img: "/home/methods-v2.jpg", progress: prog.methods, run: () => ui.openCourseTab("M5") },
     { title: "المواقف الصفية", pos: "55% 50%", img: "/home/situations-v2.jpg", progress: frac(simCount, 20), run: ui.startSim },
-    { title: "اختبر نفسك", pos: "65% 55%", img: "/home/test-v2.jpg", progress: readiness / 100, run: () => onGoTab("practice") },
+    { title: "اختبر نفسك", pos: "50% 50%", img: "", progress: readiness / 100, run: () => onGoTab("practice"), special: true },
     { title: "خطة الدرس", pos: "50% 50%", img: "/home/plan-v2.jpg", progress: frac(planCount, 5), run: ui.startStudio },
   ];
   // ترتيب شبكة الرئيسية: «اختبر نفسك» بجانب المحاكاة، والعناوين الطويلة في البطاقات العريضة
@@ -212,9 +212,9 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               className={cn("flex min-w-0 flex-col items-center gap-2", i === 1 || i === 2 ? "col-span-3" : "col-span-2")}
             >
               {/* صورة القسم بإطار ذهبي رفيع، وخط التقدّم الذهبي أسفلها */}
-              <span className="relative flex w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)] ring-1 ring-[#E3D3A0]" style={{ height: tileH ?? 120 }}>
+              <span className={cn("relative flex w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)]", d.special ? "ring-2 ring-[#F4C430]" : "ring-1 ring-[#E3D3A0]")} style={{ height: tileH ?? 120 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={d.img} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: d.pos }} />
+                {d.special ? <TestArt /> : <img src={d.img} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: d.pos }} />}
                 <span className="absolute inset-x-4 bottom-2.5 h-[3px] overflow-hidden rounded-full bg-white/80" aria-hidden="true">
                   <span className="block h-full rounded-full bg-gradient-to-l from-[#F4C430] to-[#E3B23C]" style={{ width: `${Math.round(d.progress * 100)}%` }} />
                 </span>
@@ -245,7 +245,11 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           >
             {/* الصورة تملأ البطاقة، ولوحة العنوان نصف شفافة تطفو فوق أسفلها */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={d.img} alt="" className="block h-[calc(clamp(64px,calc((100dvh-440px)/3),130px)+34px)] w-full object-cover" style={cardH ? { height: cardH } : undefined} />
+            {d.special ? (
+              <span className="relative block h-[calc(clamp(64px,calc((100dvh-440px)/3),130px)+34px)] w-full" style={cardH ? { height: cardH } : undefined}><TestArt /></span>
+            ) : (
+              <img src={d.img} alt="" className="block h-[calc(clamp(64px,calc((100dvh-440px)/3),130px)+34px)] w-full object-cover" style={cardH ? { height: cardH } : undefined} />
+            )}
             <span className="absolute inset-x-1.5 bottom-1.5 flex min-h-[48px] flex-col justify-center overflow-hidden rounded-[20px] bg-white/80 px-3 py-2 backdrop-blur-md dark:bg-card/80">
               <FitText max={16} min={8} group="doors" className="text-center font-extrabold text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
               {/* خط التقدّم الذهبي */}
@@ -361,5 +365,54 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+/** بطاقة «اختبر نفسك» مرسومة لا مصورة: ورقة إجابة تمتلئ دوائرها واحدة بعد أخرى، ثم يُختم عليها بالذهب */
+function TestArt() {
+  const rows = [0, 1, 2, 3, 4];
+  const pick = [2, 0, 3, 1, 2]; // الخيار المظلل في كل سطر
+  return (
+    <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" className="test-art absolute inset-0 h-full w-full" aria-hidden="true">
+      <defs>
+        <linearGradient id="ta-bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#0F4634" />
+          <stop offset="1" stopColor="#0B2236" />
+        </linearGradient>
+        <radialGradient id="ta-glow" cx="0.78" cy="0.22" r="0.6">
+          <stop offset="0" stopColor="#F4C430" stopOpacity="0.35" />
+          <stop offset="1" stopColor="#F4C430" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="ta-gold" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#FFE58A" />
+          <stop offset="0.55" stopColor="#F4C430" />
+          <stop offset="1" stopColor="#B8860B" />
+        </linearGradient>
+      </defs>
+      <rect width="200" height="200" fill="url(#ta-bg)" />
+      <rect width="200" height="200" fill="url(#ta-glow)" />
+      {/* ورقة الإجابة */}
+      <g transform="rotate(-7 96 104)">
+        <rect x="42" y="30" width="108" height="142" rx="11" fill="#FBF8EF" />
+        <rect x="56" y="44" width="56" height="7" rx="3.5" fill="#D9CFB4" />
+        <rect x="56" y="55" width="34" height="5" rx="2.5" fill="#E8E0CB" />
+        {rows.map((r) => (
+          <g key={r}>
+            <text x="58" y={80 + r * 19} fontSize="8" fontWeight="700" fill="#A89A78" textAnchor="middle" dominantBaseline="central">{r + 1}</text>
+            {[0, 1, 2, 3].map((c) => (
+              <circle key={c} cx={74 + c * 18} cy={80 + r * 19} r="6.2" fill="none" stroke="#CFC4A6" strokeWidth="1.6" />
+            ))}
+            <circle className="ta-fill" style={{ animationDelay: `${0.35 + r * 0.42}s` }} cx={74 + pick[r] * 18} cy={80 + r * 19} r="5.4" fill="url(#ta-gold)" />
+          </g>
+        ))}
+      </g>
+      {/* الختم الذهبي */}
+      <g className="ta-seal">
+        <circle cx="152" cy="150" r="31" fill="url(#ta-gold)" />
+        <circle cx="152" cy="150" r="25" fill="none" stroke="#FFF3C4" strokeOpacity="0.8" strokeWidth="1.5" strokeDasharray="2 3" />
+        <path className="ta-check" d="M139 151 l9 9 l18 -20" fill="none" stroke="#173322" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" pathLength={1} />
+      </g>
+      <path d="M170 34 l2.2 5.6 5.6 2.2 -5.6 2.2 -2.2 5.6 -2.2 -5.6 -5.6 -2.2 5.6 -2.2z" fill="#FFE58A" className="ta-spark" />
+    </svg>
   );
 }
