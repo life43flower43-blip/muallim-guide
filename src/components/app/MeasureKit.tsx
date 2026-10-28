@@ -15,20 +15,59 @@ import {
   Split,
   Scale,
   Info,
+  Table2,
+  ListChecks,
+  ClipboardCheck,
+  TrendingUp,
+  ListFilter,
+  ShieldCheck,
+  ChevronLeft,
 } from "lucide-react";
+import { BlueprintTool, ChecklistTool, DistractorTool, ReliabilityTool, RubricTool, ZScoreTool } from "./MeasureBuilders";
+import { FitText } from "./FitText";
 import { parseScores, parseSingle, statsOf, difficultyOf, discriminationOf, weightOf } from "@/lib/measure";
 import { useUi } from "@/lib/ui-store";
 import { ad } from "@/lib/arabic";
-import { Callout, Card, IconTile, ScreenShell } from "./ui-kit";
+import { Callout, IconTile, ScreenShell, SectionHeader } from "./ui-kit";
 
-type ToolId = "stats" | "difficulty" | "discrim" | "weight";
+type ToolId = "blueprint" | "rubric" | "checklist" | "stats" | "difficulty" | "discrim" | "distractor" | "weight" | "zscore" | "reliability";
 
-const TOOLS: { id: ToolId; label: string; icon: typeof Gauge; desc: string }[] = [
+type ToolDef = { id: ToolId; label: string; icon: typeof Gauge; desc: string };
+const BUILD_TOOLS: ToolDef[] = [
+  { id: "blueprint", label: "جدول المواصفات", icon: Table2, desc: "وزّع أسئلة الاختبار على الموضوعات والأهداف" },
+  { id: "rubric", label: "سلّم التقدير", icon: ListChecks, desc: "معايير ومستويات، ثم صحّح به" },
+  { id: "checklist", label: "قائمة الرصد", icon: ClipboardCheck, desc: "رصد السلوكيات لكل طالب داخل الصف" },
+];
+const ANALYZE_TOOLS: ToolDef[] = [
   { id: "stats", label: "مركز البيانات", icon: ChartBarBig, desc: "الوسط والوسيط والمدى" },
   { id: "difficulty", label: "صعوبة السؤال", icon: Gauge, desc: "هل سؤالك سهل أم صعب؟" },
   { id: "discrim", label: "تمييز السؤال", icon: Split, desc: "هل يميّز الفاهم من غيره؟" },
+  { id: "distractor", label: "تحليل البدائل", icon: ListFilter, desc: "أي البدائل الخاطئة يعمل وأيها لا يعمل" },
   { id: "weight", label: "وزن الدرجة", icon: Scale, desc: "حصة السؤال من المجموع" },
+  { id: "zscore", label: "الدرجة المعيارية", icon: TrendingUp, desc: "قارن أداء الطالب في اختبارين مختلفين" },
+  { id: "reliability", label: "ثبات الاختبار", icon: ShieldCheck, desc: "هل نتائج اختبارك متسقة؟" },
 ];
+const TOOLS = [...BUILD_TOOLS, ...ANALYZE_TOOLS];
+
+function ToolRow({ t, onClick }: { t: ToolDef; onClick: () => void }) {
+  const Icon = t.icon;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[var(--t075)] bg-white p-3 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
+    >
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#FBF1D6] text-[#B8860B]">
+        <Icon className="h-5 w-5" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <FitText max={16} min={12} className="font-bold leading-7">{t.label}</FitText>
+        <FitText max={13} min={9} className="leading-5 text-muted-foreground">{t.desc}</FitText>
+      </span>
+      <ChevronLeft className="h-5 w-5 shrink-0 text-[#C99A06]" />
+    </button>
+  );
+}
 
 // نسبة مئوية بأرقام مشرقية وعلامة ٪
 const pct = (v: number) => `${ad(Math.round(v * 100))}٪`;
@@ -61,37 +100,45 @@ function Note({ children }: { children: React.ReactNode }) {
 
 export default function MeasureKit() {
   const clearMeasure = useUi((s) => s.clearMeasure);
-  const [tool, setTool] = useState<ToolId>("stats");
+  const [tool, setTool] = useState<ToolId | null>(null);
+  const def = TOOLS.find((t) => t.id === tool);
+
+  if (!def) {
+    return (
+      <ScreenShell title="أدوات القياس والتقويم" onClose={clearMeasure}>
+        <div className="space-y-6">
+          <section>
+            <SectionHeader title="بناء أدوات التقويم" />
+            <div className="space-y-2.5">
+              {BUILD_TOOLS.map((t) => <ToolRow key={t.id} t={t} onClick={() => setTool(t.id)} />)}
+            </div>
+          </section>
+          <section>
+            <SectionHeader title="تحليل النتائج" />
+            <div className="space-y-2.5">
+              {ANALYZE_TOOLS.map((t) => <ToolRow key={t.id} t={t} onClick={() => setTool(t.id)} />)}
+            </div>
+          </section>
+          <p className="text-center text-xs text-muted-foreground">الحساب كله على جهازك، ولا تُرسل الدرجات إلى أي مكان.</p>
+        </div>
+      </ScreenShell>
+    );
+  }
 
   return (
-    <ScreenShell title="أدوات القياس والتقويم" sub="حاسبات لورقة التقويم، والحساب كله على جهازك" onClose={clearMeasure}>
-      <div role="tablist" aria-label="الأدوات" className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {TOOLS.map((t) => {
-          const Icon = t.icon;
-          const on = tool === t.id;
-          return (
-            <button
-              key={t.id}
-              type="button"
-              role="tab"
-              aria-selected={on}
-              onClick={() => setTool(t.id)}
-              className={`flex min-h-[52px] items-center justify-center gap-2 rounded-xl border px-3 text-sm transition-colors ${
-                on ? "border-primary bg-accent font-medium text-accent-foreground ring-1 ring-primary" : "border-border bg-card text-secondary-foreground hover:bg-muted"
-              }`}
-            >
-              <Icon className="h-5 w-5" />
-              {t.label}
-            </button>
-          );
-        })}
-      </div>
-      <Card className="p-5">
+    <ScreenShell title={def.label} onBack={() => setTool(null)}>
+      <div className="rounded-[24px] border border-[var(--t075)] bg-white p-4 dark:border-border dark:bg-card">
+        {tool === "blueprint" && <BlueprintTool />}
+        {tool === "rubric" && <RubricTool />}
+        {tool === "checklist" && <ChecklistTool />}
         {tool === "stats" && <StatsTool />}
         {tool === "difficulty" && <DifficultyTool />}
         {tool === "discrim" && <DiscrimTool />}
+        {tool === "distractor" && <DistractorTool />}
         {tool === "weight" && <WeightTool />}
-      </Card>
+        {tool === "zscore" && <ZScoreTool />}
+        {tool === "reliability" && <ReliabilityTool />}
+      </div>
     </ScreenShell>
   );
 }
