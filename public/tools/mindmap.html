@@ -1662,8 +1662,7 @@ const SCENES = {
       [13.6, "#pv-count", "on", 0], [14.2, "#pv-bell", "on", 1], [14.2, "#pv-w1", "on", 1], [15.1, "#pv-drool", "on", 1], [15.1, "#pv-bang", "on", 1], [17.2, "#pv-bell", "on", 0], [17.2, "#pv-w1", "on", 0]],
     subs: [[0, "الطعام وحده يجعل الكلب يسيل لعابه: استجابة طبيعية لم يتعلمها."], [3.8, "والجرس وحده في البداية لا يعني له شيئًا."],
       [7.0, "ثم يُقرع الجرس ويأتي الطعام بعده… مرة، ومرة، ومرة."], [14.0, "والآن يكفي الجرس وحده ليسيل لعابه: صار مثيرًا شرطيًا."],
-      [17.4, "وفي الصف: ورقة اختبار اقترنت مرارًا بالتوبيخ تصير وحدها مصدر قلق."]],
-    sounds: [[0.3, "food"], [1.6, "drip"], [4.0, "bell"], [4.6, "huh"], ...[7.2, 9.4, 11.6].flatMap(t => [[t, "bell"], [t + 0.5, "food"], [t + 0.8, "drip"]]), [14.2, "bell"], [15.1, "drip"], [15.1, "aha"]] }),
+      [17.4, "وفي الصف: ورقة اختبار اقترنت مرارًا بالتوبيخ تصير وحدها مصدر قلق."]] }),
 
   reinforce: () => ({ dur: 15, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد التعزيز الموجب">
       <rect x="196" y="16" width="112" height="62" rx="6" fill="#2E5C4B"></rect><path d="M212,40 h50 M212,54 h70" stroke="#DDEBE3" stroke-width="3" stroke-linecap="round"></path>
@@ -1680,8 +1679,7 @@ const SCENES = {
       [5.0, ".st-arm", "on", 1], [5.8, ".rb2", "on", 1], [7.2, ".rb2", "on", 0], [7.2, ".st-arm", "on", 0], [7.4, "#rbar2", "on", 1],
       [8.6, ".st-arm", "on", 1], [9.1, ".rb3", "on", 1], [10.5, ".rb3", "on", 0], [10.5, ".st-arm", "on", 0], [10.7, "#rbar3", "on", 1]],
     subs: [[0, "طالبة ترفع يدها وتشارك بإجابة."], [1.6, "تعقبها نتيجة مرغوبة: مدح محدد يصف ما أحسنته."],
-      [5.0, "تشارك مرة أخرى… ويعقبها المدح مرة أخرى."], [11.0, "زادت مشاركتها لأن نتيجتها مرغوبة: هذا هو التعزيز الموجب."]],
-    sounds: [[0.6, "hand"], [1.6, "praise"], [3.2, "rise1"], [5.0, "hand"], [5.8, "praise"], [7.4, "rise2"], [8.6, "hand"], [9.1, "praise"], [10.7, "rise3"]] }),
+      [5.0, "تشارك مرة أخرى… ويعقبها المدح مرة أخرى."], [11.0, "زادت مشاركتها لأن نتيجتها مرغوبة: هذا هو التعزيز الموجب."]] }),
 
   // السقالات ومنطقة النمو القريب: دعم مؤقت يُسحب كلما كبرت قدرة الطالبة
   scaffold: () => ({ dur: 18, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد السقالات التعليمية">
@@ -1704,8 +1702,7 @@ const SCENES = {
       [14.2, "#b1", "on", 0], [14.6, "#sf-st", "g2", 0], [14.6, "#sf-st", "g3", 1], [15.3, ".sf-arm", "on", 1], [15.6, "#sf-ok", "on", 1]],
     subs: [[0, "مهمة أعلى قليلًا مما تستطيعه الطالبة وحدها."], [3.0, "يضع المعلم دعمًا مؤقتًا: مثالًا محلولًا، ثم تلميحًا، ثم سؤالًا موجّهًا."],
       [5.6, "بالدعم تصل إلى المهمة: هذه منطقة النمو القريب."], [8.5, "ومع كل محاولة تكبر قدرتها، فيسحب المعلم دعمًا بعد دعم."],
-      [14.6, "حتى تؤديها وحدها: السقالة مؤقتة، والاستقلال هو الغاية."]],
-    sounds: [[3.0, "tick"], [3.6, "tick"], [4.2, "tick"], [6.2, "praise"], [8.6, "rise1"], [10.2, "praise"], [11.6, "rise2"], [13.0, "praise"], [14.2, "rise3"], [15.6, "aha"]] }),
+      [14.6, "حتى تؤديها وحدها: السقالة مؤقتة، والاستقلال هو الغاية."]] }),
 
   // منحنى النسيان والمراجعة المتباعدة
   forgetting: () => ({ dur: 18, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد منحنى النسيان والمراجعة المتباعدة">
@@ -1725,8 +1722,7 @@ const SCENES = {
       [9.2, "#fg-r2", "on", 1], [9.4, "#fg-s3", "on", 1], [11.2, "#fg-r3", "on", 1], [11.4, "#fg-s4", "on", 1], [13.4, "#fg-blab", "on", 1]],
     subs: [[0, "بعد الدرس مباشرة نتذكر معظم ما تعلمناه."], [1.4, "وبلا مراجعة يهبط التذكر سريعًا في أول يوم ثم يتباطأ: هذا منحنى النسيان."],
       [6.0, "مراجعة قصيرة بعد يوم تعيد المعلومة…"], [9.2, "ثم بعد ثلاثة أيام، ثم بعد أسبوع؛ وكل مرة يصير النسيان أبطأ."],
-      [13.6, "الوقت نفسه موزعًا على أيام يثبّت أكثر من ليلة واحدة قبل الاختبار."]],
-    sounds: [[1.4, "huh"], [7.4, "praise"], [9.2, "praise"], [11.2, "praise"], [13.4, "aha"]] }),
+      [13.6, "الوقت نفسه موزعًا على أيام يثبّت أكثر من ليلة واحدة قبل الاختبار."]] }),
 
   // التشكيل: تعزيز تقريبات متتابعة من كلمة إلى جملة إلى فقرة
   shaping: () => ({ dur: 18, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد التشكيل بالتقريبات المتتابعة">
@@ -1749,8 +1745,7 @@ const SCENES = {
       [11.6, "#sh-p2", "on", 1], [12.6, "#sh-p3", "on", 1], [13.3, ".shb1", "on", 1], [13.5, "#st3", "on", 1]],
     subs: [[0, "طالب لا يكتب شيئًا في دفتر التعبير."], [2.0, "يكتب كلمة واحدة، فيمدحه المعلم فورًا."],
       [5.5, "في المرة التالية لا تكفي الكلمة: لا مدح، بل «وماذا بعد؟»"], [8.2, "يكتب جملة كاملة، فيأتي المدح."],
-      [11.6, "ثم لا يُمدح إلا على فقرة… فتكتمل الفقرة."], [15.0, "تعزيز خطوات تقترب من الهدف خطوة خطوة: هذا هو التشكيل."]],
-    sounds: [[2.0, "tick"], [2.8, "praise"], [6.0, "tick"], [6.6, "huh"], [8.2, "tick"], [8.9, "praise"], [11.6, "tick"], [12.6, "tick"], [13.3, "aha"]] }),
+      [11.6, "ثم لا يُمدح إلا على فقرة… فتكتمل الفقرة."], [15.0, "تعزيز خطوات تقترب من الهدف خطوة خطوة: هذا هو التشكيل."]] }),
 
 
   waittime: () => {
@@ -1773,43 +1768,9 @@ const SCENES = {
         ...[0, 1, 2, 3, 4, 5].map(i => [7.4 + i * 0.25, ".think" + i, "on", 1]),
         ...[[1, 8.6], [4, 9.4], [0, 10.0], [2, 10.6], [5, 11.2], [3, 11.7]].flatMap(([i, t]) => [[t, ".think" + i, "on", 0], [t, ".karm" + i, "on", 1]])],
       subs: [[0, "يسأل المعلم، ثم يسمّي أول من يرفع يده."], [2.4, "أجاب طالب واحد، وتوقف تفكير الباقين."],
-        [6.6, "المرة الثانية: يسأل ثم ينتظر بصمت ثلاث إلى خمس ثوانٍ."], [12.2, "ارتفعت أيدٍ أكثر، والإجابات أطول وأعمق."]],
-      sounds: [[0.2, "ask"], [1.0, "hand"], [6.6, "ask"], ...[1, 2, 3, 4, 5].map(n => [6.8 + n, "tick"]), ...[8.6, 9.4, 10.0, 10.6, 11.2, 11.7].map(t => [t, "hand"])] };
+        [6.6, "المرة الثانية: يسأل ثم ينتظر بصمت ثلاث إلى خمس ثوانٍ."], [12.2, "ارتفعت أيدٍ أكثر، والإجابات أطول وأعمق."]] };
   }
 };
-
-// Sound effects drawn with Web Audio, so there are no recorded files and nothing borrowed.
-let actx = null, soundOn = true;
-try { soundOn = localStorage.getItem("mm-sound") !== "off"; } catch {}
-function tone(f, t0, len, { type = "sine", vol = .18, to = 0 } = {}) {
-  const o = actx.createOscillator(), g = actx.createGain();
-  o.type = type; o.frequency.setValueAtTime(f, t0); if (to) o.frequency.exponentialRampToValueAtTime(to, t0 + len);
-  g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(vol, t0 + .01); g.gain.exponentialRampToValueAtTime(.0001, t0 + len);
-  o.connect(g).connect(actx.destination); o.start(t0); o.stop(t0 + len + .05);
-}
-function noise(t0, len, { vol = .12, freq = 1200 } = {}) {
-  const b = actx.createBuffer(1, Math.ceil(actx.sampleRate * len), actx.sampleRate), d = b.getChannelData(0);
-  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
-  const src = actx.createBufferSource(), flt = actx.createBiquadFilter(), g = actx.createGain();
-  flt.type = "bandpass"; flt.frequency.value = freq; g.gain.value = vol; src.buffer = b;
-  src.connect(flt).connect(g).connect(actx.destination); src.start(t0);
-}
-const SFX = {
-  bell: t => [880, 1320, 2210].forEach((f, i) => { tone(f, t, 1.6, { vol: .16 / (i + 1) }); tone(f, t + .28, 1.4, { vol: .12 / (i + 1) }); }),
-  food: t => [0, .09, .2].forEach(d => noise(t + d, .08, { vol: .2, freq: 900 })),
-  drip: t => tone(1300, t, .18, { vol: .14, to: 500 }),
-  huh: t => tone(420, t, .35, { type: "triangle", vol: .12, to: 560 }),
-  aha: t => [784, 988, 1175, 1568].forEach((f, i) => tone(f, t + i * .07, .5, { vol: .1 })),
-  hand: t => noise(t, .16, { vol: .1, freq: 2400 }),
-  praise: t => [660, 880, 1320].forEach((f, i) => tone(f, t + i * .09, .6, { type: "triangle", vol: .11 })),
-  rise1: t => tone(440, t, .3, { vol: .1, to: 550 }), rise2: t => tone(520, t, .3, { vol: .1, to: 660 }), rise3: t => tone(620, t, .35, { vol: .1, to: 800 }),
-  ask: t => tone(520, t, .4, { type: "triangle", vol: .1, to: 700 }),
-  tick: t => tone(1800, t, .05, { type: "square", vol: .05 })
-};
-function sfx(name) {
-  if (!soundOn || !SFX[name]) return;
-  try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === "suspended") actx.resume(); SFX[name](actx.currentTime + .01); } catch {}
-}
 
 SCENES.zpd = SCENES.scaffold; SCENES.spacing = SCENES.forgetting;
 // ملفات الفيديو الجاهزة للمشاهد (للحفظ والمشاركة)
@@ -1817,7 +1778,7 @@ const SCENE_VIDEO = { pavlov: "pavlov", reinforce: "reinforce", waittime: "waitt
 
 let sceneTimers = [];
 function mountScene(fig, spec, key) {
-  fig.innerHTML = `<div class="shead"><b>مشهد قصير</b><span class="sctl"><button class="btn icon snd" type="button"></button>${SCENE_VIDEO[key] ? `<a class="btn" href="videos/${SCENE_VIDEO[key]}.mp4" download target="_blank" rel="noopener">⬇ فيديو</a>` : ""}<button class="btn" type="button">▶ أعد المشهد</button></span></div><div class="stage-svg">${spec.svg}</div><p class="sub"></p><div class="sbar"><i></i></div>`;
+  fig.innerHTML = `<div class="shead"><b>مشهد قصير</b><span class="sctl">${SCENE_VIDEO[key] ? `<a class="btn" href="videos/${SCENE_VIDEO[key]}.mp4" download target="_blank" rel="noopener">⬇ فيديو</a>` : ""}<button class="btn" type="button">▶ أعد المشهد</button></span></div><div class="stage-svg">${spec.svg}</div><p class="sub"></p><div class="sbar"><i></i></div>`;
   const svgEl = fig.querySelector("svg"), sub = fig.querySelector(".sub"), bar = fig.querySelector(".sbar i");
   const play = () => {
     sceneTimers.forEach(clearTimeout); sceneTimers = [];
@@ -1826,13 +1787,8 @@ function mountScene(fig, spec, key) {
     requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.transition = `width ${spec.dur}s linear`; bar.style.width = "100%"; }));
     spec.events.forEach(([t, sel, what, val]) => sceneTimers.push(setTimeout(() => svgEl.querySelectorAll(sel).forEach(e => what === "text" ? (e.textContent = val) : e.classList.toggle(what, !!val)), t * 1000)));
     spec.subs.forEach(([t, text]) => sceneTimers.push(setTimeout(() => { sub.textContent = text; }, t * 1000)));
-    (spec.sounds || []).forEach(([t, name]) => sceneTimers.push(setTimeout(() => sfx(name), t * 1000)));
   };
-  const snd = fig.querySelector(".snd");
-  const paint = () => { snd.textContent = soundOn ? "🔊" : "🔇"; snd.setAttribute("aria-label", soundOn ? "إيقاف الصوت" : "تشغيل الصوت"); snd.setAttribute("aria-pressed", String(soundOn)); };
-  snd.onclick = () => { soundOn = !soundOn; try { localStorage.setItem("mm-sound", soundOn ? "on" : "off"); } catch {} paint(); };
-  paint();
-  fig.querySelector(".shead button.btn:not(.snd)").onclick = play;
+  fig.querySelector(".shead button.btn").onclick = play;
   if (reduce) { spec.subs.length && (sub.textContent = spec.subs[spec.subs.length - 1][1]); } else play();
   return spec.dur * 1000;
 }
