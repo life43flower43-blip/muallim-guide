@@ -1881,6 +1881,66 @@ const SCENES = {
   },
 
 
+  // الجيكسو: مجموعات أصلية، ثم مجموعات خبراء، ثم عودة للتعليم
+  jigsaw: () => {
+    const cols = ["#C0605A", "#4F7CAC", "#6A9A5B", "#B98A3E"], home = [[46, 70], [96, 70], [46, 124], [96, 124], [224, 70], [274, 70], [224, 124], [274, 124]];
+    const exp = i => { const c = i % 4, k = Math.floor(i / 4); return [44 + c * 78, 82 + k * 50]; };
+    const css = home.map(([x, y], i) => { const [ex, ey] = exp(i); return `.sc #jg.ex #jk${i}{transform:translate(${ex - x}px,${ey - y}px)}`; }).join("");
+    const kid = (i) => { const [x, y] = home[i]; return `<g class="jk" id="jk${i}">${person(x, y, cols[i % 4], { scale: .62, ...(i % 2 ? { hair: "#1E1E1E" } : { hijab: ["#2F5D50", "#8A5A44", "#4A4E69", "#2F5D50"][i % 4] }) })}<rect x="${x + 8}" y="${y - 22}" width="13" height="13" rx="2" fill="${cols[i % 4]}" stroke="#fff"></rect><text x="${x + 14.5}" y="${y - 15.5}" font-size="8" font-weight="800" fill="#fff">${"١٢٣٤"[i % 4]}</text></g>`; };
+    return { dur: 16, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد استراتيجية الجيكسو">
+      <style>.sc .jk{transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}${css}</style>
+      <g class="fade on" id="jg-h"><rect x="22" y="40" width="108" height="118" rx="14" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="5 4"></rect><rect x="200" y="40" width="108" height="118" rx="14" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="5 4"></rect>
+        <text x="76" y="30" font-size="10.5" font-weight="700" fill="var(--muted)">مجموعة أصلية</text><text x="254" y="30" font-size="10.5" font-weight="700" fill="var(--muted)">مجموعة أصلية</text></g>
+      <g class="fade" id="jg-e">${[0, 1, 2, 3].map(c => `<rect x="${24 + c * 78}" y="48" width="44" height="112" rx="12" fill="color-mix(in srgb, ${cols[c]} 12%, transparent)" stroke="${cols[c]}" stroke-width="1.4"></rect>`).join("")}
+        <text x="160" y="30" font-size="10.5" font-weight="700" fill="var(--muted)">مجموعات الخبراء</text></g>
+      <g id="jg">${home.map((_, i) => kid(i)).join("")}</g>
+      ${bubble(76, 22, 92, "أشرح لكم جزئي", "jgb1")}${bubble(254, 22, 92, "أشرح لكم جزئي", "jgb2")}
+    </svg>`,
+      events: [[4.0, "#jg-h", "on", 0], [4.2, "#jg", "ex", 1], [5.2, "#jg-e", "on", 1], [8.4, "#jg-e", "on", 0], [8.6, "#jg", "ex", 0], [9.6, "#jg-h", "on", 1],
+        [11.0, ".jgb1", "on", 1], [11.4, ".jgb2", "on", 1]],
+      subs: [[0, "في كل مجموعة أصلية أربعة طلاب، ولكلٍّ جزء مختلف من الدرس."], [4.0, "يجتمع أصحاب الجزء الواحد في مجموعة خبراء ليتقنوه معًا."],
+        [8.4, "ثم يعود كل خبير إلى مجموعته الأصلية…"], [11.0, "ويعلّم زملاءه جزءه، فيحتاج كلٌّ منهم الآخر: هذه هي الجيكسو."]] };
+  },
+
+  // التقويم التكويني: بطاقة خروج تغيّر خطة الغد
+  formative: () => {
+    const marks = [1, 0, 1, 0, 0];
+    return { dur: 16, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد التقويم التكويني">
+      <rect x="0" y="160" width="320" height="30" fill="color-mix(in srgb, var(--h) 12%, var(--surface))"></rect>
+      ${person(276, 104, "#3C5A80", { scale: 1.1, hair: "#2A2A2A" })}
+      <text x="110" y="22" font-size="11" font-weight="700" fill="var(--muted)">بطاقة خروج: ما ناتج ½ + ¼ ؟</text>
+      ${marks.map((m, i) => `<g class="fade pop" id="fc${i}"><rect x="${18 + i * 40}" y="40" width="32" height="40" rx="4" fill="var(--surface)" stroke="var(--line)"></rect><path d="M${23 + i * 40},52 h22 M${23 + i * 40},60 h16" stroke="var(--line)" stroke-width="2"></path></g>
+        <text class="fade pop" id="fm${i}" x="${34 + i * 40}" y="72" font-size="14" font-weight="800" fill="${m ? "#2F8F5B" : "#D9534F"}">${m ? "✓" : "✗"}</text>`).join("")}
+      <text class="fade" id="fc-n" x="110" y="98" font-size="12" font-weight="800" fill="#D9534F">٣ لم يفهموا بعد</text>
+      <g class="fade pop" id="fc-plan"><rect x="40" y="112" width="140" height="40" rx="8" fill="var(--surface)" stroke="var(--h)" stroke-width="1.6"></rect>
+        <text x="110" y="124" font-size="10.5" font-weight="800" fill="var(--h)">خطة الغد</text><text x="110" y="140" font-size="10" font-weight="700" fill="${ink}">إعادة شرح بقطع ورقية للثلاثة</text></g>
+      <path class="fade" id="fc-ar" d="M110,102 V110" stroke="var(--h)" stroke-width="2" marker-end="url(#fcm)"></path>
+      <defs><marker id="fcm" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10Z" fill="var(--h)"></path></marker></defs>
+    </svg>`,
+      events: [...marks.map((_, i) => [0.6 + i * 0.4, "#fc" + i, "on", 1]), ...marks.map((_, i) => [4.0 + i * 0.4, "#fm" + i, "on", 1]), [6.4, "#fc-n", "on", 1],
+        [8.0, "#fc-ar", "on", 1], [8.4, "#fc-plan", "on", 1]],
+      subs: [[0, "في آخر الحصة يجيب كل طالب عن سؤال قصير في بطاقة خروج."], [4.0, "يقرأ المعلم البطاقات: ثلاثة لم يفهموا الفكرة بعد."],
+        [8.0, "فيعدّل خطة الغد: يعيد شرحها لهم بطريقة أخرى."], [12.0, "تقويم أثناء التعلم ليحسّنه: هذا هو التقويم التكويني."]] };
+  },
+
+  // ما وراء المعرفة: تخطيط، ومراقبة، وتقويم
+  meta: () => ({ dur: 17, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد ما وراء المعرفة">
+      <style>.sc #mt-bk.on{animation:te-f2 .5s ease-in-out infinite alternate}@keyframes te-f2{from{transform:translateY(0)}to{transform:translateY(-3px)}}</style>
+      <rect x="0" y="160" width="320" height="30" fill="color-mix(in srgb, var(--h) 12%, var(--surface))"></rect>
+      <rect x="80" y="134" width="96" height="10" rx="3" fill="#B98B5E"></rect><rect x="88" y="144" width="6" height="16" fill="#9C744B"></rect><rect x="162" y="144" width="6" height="16" fill="#9C744B"></rect>
+      ${person(128, 96, "#C0605A", { hijab: "#2F5D50" })}
+      <g id="mt-bk"><rect x="106" y="118" width="44" height="22" rx="3" fill="#F4EBDD" stroke="#9C744B"></rect><path d="M128,118 V140" stroke="#9C744B"></path></g>
+      ${[["mt1", "أخطط: ما هدفي؟", 262], ["mt2", "أراقب: هل فهمت؟", 160], ["mt3", "أقوّم: ماذا أحسّن؟", 58]].map(([id, t, x]) => `<g class="fade pop" id="${id}"><rect x="${x - 47}" y="22" width="94" height="30" rx="14" fill="var(--surface)" stroke="var(--h)" stroke-width="1.5"></rect><text x="${x}" y="37" font-size="11" font-weight="800" fill="${ink}">${t}</text></g>`).join("")}
+      <text class="fade pop" id="mt-no" x="160" y="70" font-size="13" font-weight="800" fill="#D9534F">لا… أعيد القراءة</text>
+      <text class="fade pop" id="mt-yes" x="160" y="70" font-size="13" font-weight="800" fill="#2F8F5B">نعم ✓</text>
+    </svg>`,
+    events: [[0.3, "#mt1", "on", 1], [4.0, "#mt2", "on", 1], [7.0, "#mt-no", "on", 1], [7.2, "#mt-bk", "on", 1], [9.6, "#mt-no", "on", 0], [9.6, "#mt-bk", "on", 0], [9.8, "#mt-yes", "on", 1],
+      [10.6, "#mt3", "on", 1]],
+    subs: [[0, "قبل أن تبدأ تسأل نفسها: ما هدفي؟ وكيف أذاكر؟"], [4.0, "وأثناء القراءة تراقب: هل فهمت هذه الفقرة؟"],
+      [7.0, "لم تفهم… فتعيد القراءة وتبحث عن مثال، حتى تفهم."], [10.6, "وفي النهاية تقوّم: ماذا نجح؟ وماذا أغيّر؟"],
+      [13.8, "التفكير في التفكير نفسه: هذا هو ما وراء المعرفة."]] }),
+
+
   waittime: () => {
     const seats = [[56, 80], [100, 80], [144, 80], [56, 132], [100, 132], [144, 132]];
     const shirts = ["#C0605A", "#4F7CAC", "#6A9A5B", "#B98A3E", "#7B62A8", "#3E8A8A"];
@@ -1907,7 +1967,7 @@ const SCENES = {
 
 SCENES.zpd = SCENES.scaffold; SCENES.spacing = SCENES.forgetting;
 // ملفات الفيديو الجاهزة للمشاهد (للحفظ والمشاركة)
-const SCENE_VIDEO = { pavlov: "pavlov", reinforce: "reinforce", waittime: "waittime", scaffold: "scaffold", zpd: "scaffold", forgetting: "forgetting", spacing: "forgetting", shaping: "shaping", bandura: "bandura", piaget: "piaget", chunking: "chunking", maslow: "maslow", testing: "testing", gestalt: "gestalt" };
+const SCENE_VIDEO = { pavlov: "pavlov", reinforce: "reinforce", waittime: "waittime", scaffold: "scaffold", zpd: "scaffold", forgetting: "forgetting", spacing: "forgetting", shaping: "shaping", bandura: "bandura", piaget: "piaget", chunking: "chunking", maslow: "maslow", testing: "testing", gestalt: "gestalt", jigsaw: "jigsaw", formative: "formative", meta: "meta" };
 
 let sceneTimers = [];
 function mountScene(fig, spec, key) {
