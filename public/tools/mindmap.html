@@ -227,6 +227,7 @@ path.link.flow { stroke-dasharray: 7 7; animation: flow .9s linear infinite; opa
 .scene { border: 1px solid var(--line); border-radius: 12px; padding: 10px; background: var(--bg); display: grid; gap: 8px; }
 .scene .shead { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .scene .shead b { font-size: 12px; color: var(--h); }
+.scene .sctl { display: flex; gap: 6px; align-items: center; }
 .scene .stage-svg { position: relative; border-radius: 10px; overflow: hidden; background: color-mix(in srgb, var(--h) 6%, var(--surface)); }
 .scene svg { width: 100%; height: auto; display: block; }
 .scene .sub { min-height: 3.2em; font-size: 14.5px; font-weight: 700; line-height: 1.6; margin: 0; }
@@ -1625,9 +1626,10 @@ const CAPS = {
 // ---------- short scenes ----------
 // Each scene: a drawn SVG, a list of timed events [seconds, selector, class|"text", on|value], and timed Arabic subtitles.
 const skin = "#E9C9A8", ink = "var(--ink)";
-const person = (x, y, shirt, { arm = "", scale = 1, hair = "#3B2A20" } = {}) => `<g transform="translate(${x},${y}) scale(${scale})">
+const person = (x, y, shirt, { arm = "", scale = 1, hair = "#3B2A20", hijab = "" } = {}) => `<g transform="translate(${x},${y}) scale(${scale})">
   <rect x="-15" y="14" width="30" height="40" rx="12" fill="${shirt}"></rect>
-  <circle cx="0" cy="0" r="12" fill="${skin}"></circle><path d="M-12,-2 Q-11,-15 0,-14 Q11,-15 12,-2 Q8,-9 0,-9 Q-8,-9 -12,-2Z" fill="${hair}"></path>
+  ${hijab ? `<path d="M-16,4 Q-17,-17 0,-17 Q17,-17 16,4 Q17,16 9,20 L-9,20 Q-17,16 -16,4Z" fill="${hijab}"></path><ellipse cx="0" cy="1" rx="9" ry="10.5" fill="${skin}"></ellipse>`
+    : `<circle cx="0" cy="0" r="12" fill="${skin}"></circle><path d="M-12,-2 Q-11,-15 0,-14 Q11,-15 12,-2 Q8,-9 0,-9 Q-8,-9 -12,-2Z" fill="${hair}"></path>`}
   <g class="arm ${arm}"><rect x="9" y="16" width="8" height="30" rx="4" fill="${shirt}"></rect><circle cx="13" cy="46" r="4.5" fill="${skin}"></circle></g>
   <rect x="-17" y="16" width="8" height="28" rx="4" fill="${shirt}"></rect></g>`;
 const bubble = (x, y, w, text, cls) => `<g class="fade pop ${cls}"><rect x="${x - w / 2}" y="${y - 15}" width="${w}" height="30" rx="14" fill="var(--surface)" stroke="var(--h)" stroke-width="1.5"></rect><text x="${x}" y="${y}" font-size="12.5" font-weight="700" fill="${ink}">${text}</text></g>`;
@@ -1659,13 +1661,14 @@ const SCENES = {
       [13.6, "#pv-count", "on", 0], [14.2, "#pv-bell", "on", 1], [14.2, "#pv-w1", "on", 1], [15.1, "#pv-drool", "on", 1], [15.1, "#pv-bang", "on", 1], [17.2, "#pv-bell", "on", 0], [17.2, "#pv-w1", "on", 0]],
     subs: [[0, "الطعام وحده يجعل الكلب يسيل لعابه: استجابة طبيعية لم يتعلمها."], [3.8, "والجرس وحده في البداية لا يعني له شيئًا."],
       [7.0, "ثم يُقرع الجرس ويأتي الطعام بعده… مرة، ومرة، ومرة."], [14.0, "والآن يكفي الجرس وحده ليسيل لعابه: صار مثيرًا شرطيًا."],
-      [17.4, "وفي الصف: ورقة اختبار اقترنت مرارًا بالتوبيخ تصير وحدها مصدر قلق."]] }),
+      [17.4, "وفي الصف: ورقة اختبار اقترنت مرارًا بالتوبيخ تصير وحدها مصدر قلق."]],
+    sounds: [[0.3, "food"], [1.6, "drip"], [4.0, "bell"], [4.6, "huh"], ...[7.2, 9.4, 11.6].flatMap(t => [[t, "bell"], [t + 0.5, "food"], [t + 0.8, "drip"]]), [14.2, "bell"], [15.1, "drip"], [15.1, "aha"]] }),
 
   reinforce: () => ({ dur: 15, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد التعزيز الموجب">
       <rect x="196" y="16" width="112" height="62" rx="6" fill="#2E5C4B"></rect><path d="M212,40 h50 M212,54 h70" stroke="#DDEBE3" stroke-width="3" stroke-linecap="round"></path>
       ${person(252, 104, "#3C5A80", { scale: 1.15, hair: "#2A2A2A" })}
       <rect x="40" y="134" width="96" height="10" rx="3" fill="#B98B5E"></rect><rect x="48" y="144" width="6" height="30" fill="#9C744B"></rect><rect x="122" y="144" width="6" height="30" fill="#9C744B"></rect>
-      <g id="st">${person(88, 96, "#C0605A", { arm: "st-arm", hair: "#1E1E1E" })}</g>
+      <g id="st">${person(88, 96, "#C0605A", { arm: "st-arm", hijab: "#2F5D50" })}</g>
       ${bubble(228, 40, 128, "فكرتك دقيقة!", "rb1")}${bubble(228, 40, 136, "شرحك واضح جدًا", "rb2")}${bubble(228, 40, 128, "سؤال ذكي!", "rb3")}
       <text x="40" y="18" font-size="10.5" fill="var(--muted)">مشاركتها</text>
       <rect class="bar" id="rbar1" x="16" y="52" width="12" height="20" rx="3" fill="var(--h)"></rect>
@@ -1676,13 +1679,14 @@ const SCENES = {
       [5.0, ".st-arm", "on", 1], [5.8, ".rb2", "on", 1], [7.2, ".rb2", "on", 0], [7.2, ".st-arm", "on", 0], [7.4, "#rbar2", "on", 1],
       [8.6, ".st-arm", "on", 1], [9.1, ".rb3", "on", 1], [10.5, ".rb3", "on", 0], [10.5, ".st-arm", "on", 0], [10.7, "#rbar3", "on", 1]],
     subs: [[0, "طالبة ترفع يدها وتشارك بإجابة."], [1.6, "تعقبها نتيجة مرغوبة: مدح محدد يصف ما أحسنته."],
-      [5.0, "تشارك مرة أخرى… ويعقبها المدح مرة أخرى."], [11.0, "زادت مشاركتها لأن نتيجتها مرغوبة: هذا هو التعزيز الموجب."]] }),
+      [5.0, "تشارك مرة أخرى… ويعقبها المدح مرة أخرى."], [11.0, "زادت مشاركتها لأن نتيجتها مرغوبة: هذا هو التعزيز الموجب."]],
+    sounds: [[0.6, "hand"], [1.6, "praise"], [3.2, "rise1"], [5.0, "hand"], [5.8, "praise"], [7.4, "rise2"], [8.6, "hand"], [9.1, "praise"], [10.7, "rise3"]] }),
 
   waittime: () => {
     const seats = [[56, 80], [100, 80], [144, 80], [56, 132], [100, 132], [144, 132]];
     const shirts = ["#C0605A", "#4F7CAC", "#6A9A5B", "#B98A3E", "#7B62A8", "#3E8A8A"];
     let kids = "";
-    seats.forEach(([x, y], i) => kids += `<g class="dim kid${i}">${person(x, y, shirts[i], { arm: "karm" + i, scale: .78, hair: i % 2 ? "#2A1A10" : "#1E1E1E" })}</g><text class="fade pop think${i}" x="${x + 14}" y="${y - 20}" font-size="13" fill="var(--muted)">…</text>`);
+    seats.forEach(([x, y], i) => kids += `<g class="dim kid${i}">${person(x, y, shirts[i], { arm: "karm" + i, scale: .78, hair: i % 2 ? "#2A1A10" : "#1E1E1E", hijab: i % 2 ? "" : ["#2F5D50", "#8A5A44", "#4A4E69"][i / 2] })}</g><text class="fade pop think${i}" x="${x + 14}" y="${y - 20}" font-size="13" fill="var(--muted)">…</text>`);
     return { dur: 17, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد زمن الانتظار">
       ${person(262, 100, "#3C5A80", { scale: 1.15, hair: "#2A2A2A" })}
       ${bubble(226, 34, 170, "لماذا يطفو الخشب؟", "wq")}
@@ -1698,13 +1702,47 @@ const SCENES = {
         ...[0, 1, 2, 3, 4, 5].map(i => [7.4 + i * 0.25, ".think" + i, "on", 1]),
         ...[[1, 8.6], [4, 9.4], [0, 10.0], [2, 10.6], [5, 11.2], [3, 11.7]].flatMap(([i, t]) => [[t, ".think" + i, "on", 0], [t, ".karm" + i, "on", 1]])],
       subs: [[0, "يسأل المعلم، ثم يسمّي أول من يرفع يده."], [2.4, "أجاب طالب واحد، وتوقف تفكير الباقين."],
-        [6.6, "المرة الثانية: يسأل ثم ينتظر بصمت ثلاث إلى خمس ثوانٍ."], [12.2, "ارتفعت أيدٍ أكثر، والإجابات أطول وأعمق."]] };
+        [6.6, "المرة الثانية: يسأل ثم ينتظر بصمت ثلاث إلى خمس ثوانٍ."], [12.2, "ارتفعت أيدٍ أكثر، والإجابات أطول وأعمق."]],
+      sounds: [[0.2, "ask"], [1.0, "hand"], [6.6, "ask"], ...[1, 2, 3, 4, 5].map(n => [6.8 + n, "tick"]), ...[8.6, 9.4, 10.0, 10.6, 11.2, 11.7].map(t => [t, "hand"])] };
   }
 };
 
+// Sound effects drawn with Web Audio, so there are no recorded files and nothing borrowed.
+let actx = null, soundOn = true;
+try { soundOn = localStorage.getItem("mm-sound") !== "off"; } catch {}
+function tone(f, t0, len, { type = "sine", vol = .18, to = 0 } = {}) {
+  const o = actx.createOscillator(), g = actx.createGain();
+  o.type = type; o.frequency.setValueAtTime(f, t0); if (to) o.frequency.exponentialRampToValueAtTime(to, t0 + len);
+  g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(vol, t0 + .01); g.gain.exponentialRampToValueAtTime(.0001, t0 + len);
+  o.connect(g).connect(actx.destination); o.start(t0); o.stop(t0 + len + .05);
+}
+function noise(t0, len, { vol = .12, freq = 1200 } = {}) {
+  const b = actx.createBuffer(1, Math.ceil(actx.sampleRate * len), actx.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+  const src = actx.createBufferSource(), flt = actx.createBiquadFilter(), g = actx.createGain();
+  flt.type = "bandpass"; flt.frequency.value = freq; g.gain.value = vol; src.buffer = b;
+  src.connect(flt).connect(g).connect(actx.destination); src.start(t0);
+}
+const SFX = {
+  bell: t => [880, 1320, 2210].forEach((f, i) => { tone(f, t, 1.6, { vol: .16 / (i + 1) }); tone(f, t + .28, 1.4, { vol: .12 / (i + 1) }); }),
+  food: t => [0, .09, .2].forEach(d => noise(t + d, .08, { vol: .2, freq: 900 })),
+  drip: t => tone(1300, t, .18, { vol: .14, to: 500 }),
+  huh: t => tone(420, t, .35, { type: "triangle", vol: .12, to: 560 }),
+  aha: t => [784, 988, 1175, 1568].forEach((f, i) => tone(f, t + i * .07, .5, { vol: .1 })),
+  hand: t => noise(t, .16, { vol: .1, freq: 2400 }),
+  praise: t => [660, 880, 1320].forEach((f, i) => tone(f, t + i * .09, .6, { type: "triangle", vol: .11 })),
+  rise1: t => tone(440, t, .3, { vol: .1, to: 550 }), rise2: t => tone(520, t, .3, { vol: .1, to: 660 }), rise3: t => tone(620, t, .35, { vol: .1, to: 800 }),
+  ask: t => tone(520, t, .4, { type: "triangle", vol: .1, to: 700 }),
+  tick: t => tone(1800, t, .05, { type: "square", vol: .05 })
+};
+function sfx(name) {
+  if (!soundOn || !SFX[name]) return;
+  try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === "suspended") actx.resume(); SFX[name](actx.currentTime + .01); } catch {}
+}
+
 let sceneTimers = [];
 function mountScene(fig, spec) {
-  fig.innerHTML = `<div class="shead"><b>مشهد قصير</b><button class="btn" type="button">▶ أعد المشهد</button></div><div class="stage-svg">${spec.svg}</div><p class="sub"></p><div class="sbar"><i></i></div>`;
+  fig.innerHTML = `<div class="shead"><b>مشهد قصير</b><span class="sctl"><button class="btn icon snd" type="button"></button><button class="btn" type="button">▶ أعد المشهد</button></span></div><div class="stage-svg">${spec.svg}</div><p class="sub"></p><div class="sbar"><i></i></div>`;
   const svgEl = fig.querySelector("svg"), sub = fig.querySelector(".sub"), bar = fig.querySelector(".sbar i");
   const play = () => {
     sceneTimers.forEach(clearTimeout); sceneTimers = [];
@@ -1713,8 +1751,13 @@ function mountScene(fig, spec) {
     requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.transition = `width ${spec.dur}s linear`; bar.style.width = "100%"; }));
     spec.events.forEach(([t, sel, what, val]) => sceneTimers.push(setTimeout(() => svgEl.querySelectorAll(sel).forEach(e => what === "text" ? (e.textContent = val) : e.classList.toggle(what, !!val)), t * 1000)));
     spec.subs.forEach(([t, text]) => sceneTimers.push(setTimeout(() => { sub.textContent = text; }, t * 1000)));
+    (spec.sounds || []).forEach(([t, name]) => sceneTimers.push(setTimeout(() => sfx(name), t * 1000)));
   };
-  fig.querySelector(".shead .btn").onclick = play;
+  const snd = fig.querySelector(".snd");
+  const paint = () => { snd.textContent = soundOn ? "🔊" : "🔇"; snd.setAttribute("aria-label", soundOn ? "إيقاف الصوت" : "تشغيل الصوت"); snd.setAttribute("aria-pressed", String(soundOn)); };
+  snd.onclick = () => { soundOn = !soundOn; try { localStorage.setItem("mm-sound", soundOn ? "on" : "off"); } catch {} paint(); };
+  paint();
+  fig.querySelector(".shead .btn:not(.snd)").onclick = play;
   if (reduce) { spec.subs.length && (sub.textContent = spec.subs[spec.subs.length - 1][1]); } else play();
   return spec.dur * 1000;
 }
