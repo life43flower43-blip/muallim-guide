@@ -870,6 +870,20 @@ export default function ConceptsView() {
             ]}
           />
 
+          {/* مفاهيم خاطئة شائعة: صحيحة أم خاطئة؟ */}
+          <button
+            type="button"
+            onClick={() => useUi.getState().startMyths()}
+            className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[var(--t075)] bg-white p-3 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
+          >
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-danger-soft text-base font-extrabold text-destructive" aria-hidden="true">✗✓</span>
+            <span className="min-w-0 flex-1">
+              <FitText max={16} min={11} className="font-bold leading-7">مفاهيم خاطئة شائعة</FitText>
+              <FitText max={13} min={9} className="leading-5 text-muted-foreground">صحيحة أم خاطئة؟ مع التصحيح</FitText>
+            </span>
+            <ChevronLeft className="h-5 w-5 shrink-0 text-[#C99A06]" />
+          </button>
+
           {/* المحاور: قائمة موحّدة، لكل محور اسمه في سطر واحد ووصفه وتقدّمه */}
           <section>
             <SectionHeader
