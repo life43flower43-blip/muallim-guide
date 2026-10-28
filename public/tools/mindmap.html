@@ -70,6 +70,7 @@ h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(24px, 
 }
 .btn:hover { border-color: var(--muted); }
 .btn:focus-visible { outline: 2px solid var(--b1); outline-offset: 2px; }
+a.btn { text-decoration: none; display: inline-block; }
 .btn.icon { width: 34px; padding: 6px 0; text-align: center; }
 .legend { display: flex; flex-wrap: wrap; gap: 8px; }
 .tabs { display: flex; flex-wrap: nowrap; gap: 4px; padding: 4px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); justify-self: start; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
@@ -841,7 +842,7 @@ function renderPanel(n) {
   let sceneDur = 0;
   if (n.a && SCENES[n.a]) {
     const sf = document.createElement("figure"); sf.className = "scene"; sf.style.margin = "0";
-    panel.append(sf); sceneDur = mountScene(sf, SCENES[n.a]());
+    panel.append(sf); sceneDur = mountScene(sf, SCENES[n.a](), n.a);
   }
   if (n.a && ILL[n.a]) {
     const fig = document.createElement("figure"); fig.className = "illus"; fig.style.margin = "0";
@@ -1661,8 +1662,7 @@ const SCENES = {
       [13.6, "#pv-count", "on", 0], [14.2, "#pv-bell", "on", 1], [14.2, "#pv-w1", "on", 1], [15.1, "#pv-drool", "on", 1], [15.1, "#pv-bang", "on", 1], [17.2, "#pv-bell", "on", 0], [17.2, "#pv-w1", "on", 0]],
     subs: [[0, "الطعام وحده يجعل الكلب يسيل لعابه: استجابة طبيعية لم يتعلمها."], [3.8, "والجرس وحده في البداية لا يعني له شيئًا."],
       [7.0, "ثم يُقرع الجرس ويأتي الطعام بعده… مرة، ومرة، ومرة."], [14.0, "والآن يكفي الجرس وحده ليسيل لعابه: صار مثيرًا شرطيًا."],
-      [17.4, "وفي الصف: ورقة اختبار اقترنت مرارًا بالتوبيخ تصير وحدها مصدر قلق."]],
-    sounds: [[0.3, "food"], [1.6, "drip"], [4.0, "bell"], [4.6, "huh"], ...[7.2, 9.4, 11.6].flatMap(t => [[t, "bell"], [t + 0.5, "food"], [t + 0.8, "drip"]]), [14.2, "bell"], [15.1, "drip"], [15.1, "aha"]] }),
+      [17.4, "وفي الصف: ورقة اختبار اقترنت مرارًا بالتوبيخ تصير وحدها مصدر قلق."]] }),
 
   reinforce: () => ({ dur: 15, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد التعزيز الموجب">
       <rect x="196" y="16" width="112" height="62" rx="6" fill="#2E5C4B"></rect><path d="M212,40 h50 M212,54 h70" stroke="#DDEBE3" stroke-width="3" stroke-linecap="round"></path>
@@ -1679,8 +1679,74 @@ const SCENES = {
       [5.0, ".st-arm", "on", 1], [5.8, ".rb2", "on", 1], [7.2, ".rb2", "on", 0], [7.2, ".st-arm", "on", 0], [7.4, "#rbar2", "on", 1],
       [8.6, ".st-arm", "on", 1], [9.1, ".rb3", "on", 1], [10.5, ".rb3", "on", 0], [10.5, ".st-arm", "on", 0], [10.7, "#rbar3", "on", 1]],
     subs: [[0, "طالبة ترفع يدها وتشارك بإجابة."], [1.6, "تعقبها نتيجة مرغوبة: مدح محدد يصف ما أحسنته."],
-      [5.0, "تشارك مرة أخرى… ويعقبها المدح مرة أخرى."], [11.0, "زادت مشاركتها لأن نتيجتها مرغوبة: هذا هو التعزيز الموجب."]],
-    sounds: [[0.6, "hand"], [1.6, "praise"], [3.2, "rise1"], [5.0, "hand"], [5.8, "praise"], [7.4, "rise2"], [8.6, "hand"], [9.1, "praise"], [10.7, "rise3"]] }),
+      [5.0, "تشارك مرة أخرى… ويعقبها المدح مرة أخرى."], [11.0, "زادت مشاركتها لأن نتيجتها مرغوبة: هذا هو التعزيز الموجب."]] }),
+
+  // السقالات ومنطقة النمو القريب: دعم مؤقت يُسحب كلما كبرت قدرة الطالبة
+  scaffold: () => ({ dur: 18, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد السقالات التعليمية">
+      <style>#sf-st{transition:transform .9s cubic-bezier(.2,.7,.2,1);transform-box:fill-box;transform-origin:50% 100%}
+        #sf-st.s3{transform:translate(80px,-58px)} #sf-st.g1{transform:translate(80px,-38px) scale(1.15)} #sf-st.g2{transform:translate(80px,-18px) scale(1.3)} #sf-st.g3{transform:translate(80px,0) scale(1.45)}</style>
+      <rect x="0" y="160" width="320" height="30" fill="color-mix(in srgb, var(--h) 12%, var(--surface))"></rect>
+      <rect x="236" y="66" width="80" height="7" rx="2" fill="#9C744B"></rect><rect x="300" y="73" width="6" height="87" fill="#9C744B"></rect>
+      <g class="fade pop" id="sf-goal"><rect x="252" y="44" width="30" height="22" rx="3" fill="#3C5A80"></rect><text x="267" y="30" font-size="11" font-weight="700" fill="var(--muted)">المهمة</text></g>
+      <text class="fade pop" id="sf-ok" x="267" y="14" font-size="18" font-weight="800" fill="var(--h)">✓</text>
+      <g class="fade pop" id="b1"><rect x="170" y="140" width="60" height="20" rx="3" fill="#E3B23C"></rect><text x="200" y="150" font-size="10.5" font-weight="700" fill="#3B2A10">سؤال موجّه</text></g>
+      <g class="fade pop" id="b2"><rect x="170" y="120" width="60" height="20" rx="3" fill="#E8C468"></rect><text x="200" y="130" font-size="10.5" font-weight="700" fill="#3B2A10">تلميح</text></g>
+      <g class="fade pop" id="b3"><rect x="170" y="100" width="60" height="20" rx="3" fill="#F0D791"></rect><text x="200" y="110" font-size="10.5" font-weight="700" fill="#3B2A10">مثال محلول</text></g>
+      <g id="sf-st">${person(120, 104, "#C0605A", { arm: "sf-arm", hijab: "#2F5D50" })}</g>
+    </svg>`,
+    events: [[0.2, "#sf-goal", "on", 1], [0.8, ".sf-arm", "on", 1], [2.4, ".sf-arm", "on", 0],
+      [3.0, "#b1", "on", 1], [3.6, "#b2", "on", 1], [4.2, "#b3", "on", 1],
+      [5.0, "#sf-st", "s3", 1], [5.9, ".sf-arm", "on", 1], [6.2, "#sf-ok", "on", 1], [7.8, "#sf-ok", "on", 0], [7.8, ".sf-arm", "on", 0],
+      [8.6, "#b3", "on", 0], [9.0, "#sf-st", "s3", 0], [9.0, "#sf-st", "g1", 1], [9.9, ".sf-arm", "on", 1], [10.2, "#sf-ok", "on", 1], [11.2, "#sf-ok", "on", 0], [11.2, ".sf-arm", "on", 0],
+      [11.6, "#b2", "on", 0], [12.0, "#sf-st", "g1", 0], [12.0, "#sf-st", "g2", 1], [12.7, ".sf-arm", "on", 1], [13.0, "#sf-ok", "on", 1], [13.8, "#sf-ok", "on", 0], [13.8, ".sf-arm", "on", 0],
+      [14.2, "#b1", "on", 0], [14.6, "#sf-st", "g2", 0], [14.6, "#sf-st", "g3", 1], [15.3, ".sf-arm", "on", 1], [15.6, "#sf-ok", "on", 1]],
+    subs: [[0, "مهمة أعلى قليلًا مما تستطيعه الطالبة وحدها."], [3.0, "يضع المعلم دعمًا مؤقتًا: مثالًا محلولًا، ثم تلميحًا، ثم سؤالًا موجّهًا."],
+      [5.6, "بالدعم تصل إلى المهمة: هذه منطقة النمو القريب."], [8.5, "ومع كل محاولة تكبر قدرتها، فيسحب المعلم دعمًا بعد دعم."],
+      [14.6, "حتى تؤديها وحدها: السقالة مؤقتة، والاستقلال هو الغاية."]] }),
+
+  // منحنى النسيان والمراجعة المتباعدة
+  forgetting: () => ({ dur: 18, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد منحنى النسيان والمراجعة المتباعدة">
+      <style>.sc .draw{stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset 2.6s ease}.sc .draw.on{stroke-dashoffset:0}.sc .draw.q{transition-duration:1.4s}</style>
+      <path d="M40,24 V160 H304" fill="none" stroke="var(--muted)" stroke-width="1.4"></path>
+      <text x="22" y="34" font-size="10" fill="var(--muted)">تذكّر</text><text x="290" y="174" font-size="10" fill="var(--muted)">الأيام</text>
+      <path class="draw" id="fg-a" pathLength="100" d="M40,32 C58,112 100,138 300,150" fill="none" stroke="#9AA3A0" stroke-width="3" stroke-linecap="round"></path>
+      <text class="fade" id="fg-alab" x="262" y="138" font-size="11" font-weight="700" fill="#7D8784">بلا مراجعة</text>
+      <path class="draw q" id="fg-s1" pathLength="100" d="M40,32 C52,72 62,86 82,92" fill="none" stroke="var(--h)" stroke-width="3.4" stroke-linecap="round"></path>
+      <path class="draw q" id="fg-s2" pathLength="100" d="M82,32 C104,60 128,72 150,78" fill="none" stroke="var(--h)" stroke-width="3.4" stroke-linecap="round"></path>
+      <path class="draw q" id="fg-s3" pathLength="100" d="M150,32 C180,48 214,56 238,60" fill="none" stroke="var(--h)" stroke-width="3.4" stroke-linecap="round"></path>
+      <path class="draw q" id="fg-s4" pathLength="100" d="M238,32 C258,40 282,44 302,46" fill="none" stroke="var(--h)" stroke-width="3.4" stroke-linecap="round"></path>
+      ${[[82, "fg-r1", "يوم"], [150, "fg-r2", "٣ أيام"], [238, "fg-r3", "أسبوع"]].map(([x, id, l]) => `<g class="fade pop" id="${id}"><path d="M${x},92 V32" stroke="var(--h)" stroke-width="1.2" stroke-dasharray="3 3"></path><circle cx="${x}" cy="32" r="5" fill="var(--h)"></circle><text x="${x}" y="176" font-size="10" font-weight="700" fill="var(--h)">${l}</text></g>`).join("")}
+      <text class="fade" id="fg-blab" x="262" y="20" font-size="11" font-weight="700" fill="var(--h)">مع مراجعة متباعدة</text>
+    </svg>`,
+    events: [[1.4, "#fg-a", "on", 1], [4.6, "#fg-alab", "on", 1], [6.0, "#fg-s1", "on", 1], [7.4, "#fg-r1", "on", 1], [7.6, "#fg-s2", "on", 1],
+      [9.2, "#fg-r2", "on", 1], [9.4, "#fg-s3", "on", 1], [11.2, "#fg-r3", "on", 1], [11.4, "#fg-s4", "on", 1], [13.4, "#fg-blab", "on", 1]],
+    subs: [[0, "بعد الدرس مباشرة نتذكر معظم ما تعلمناه."], [1.4, "وبلا مراجعة يهبط التذكر سريعًا في أول يوم ثم يتباطأ: هذا منحنى النسيان."],
+      [6.0, "مراجعة قصيرة بعد يوم تعيد المعلومة…"], [9.2, "ثم بعد ثلاثة أيام، ثم بعد أسبوع؛ وكل مرة يصير النسيان أبطأ."],
+      [13.6, "الوقت نفسه موزعًا على أيام يثبّت أكثر من ليلة واحدة قبل الاختبار."]] }),
+
+  // التشكيل: تعزيز تقريبات متتابعة من كلمة إلى جملة إلى فقرة
+  shaping: () => ({ dur: 18, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد التشكيل بالتقريبات المتتابعة">
+      <rect x="0" y="160" width="320" height="30" fill="color-mix(in srgb, var(--h) 12%, var(--surface))"></rect>
+      <rect x="128" y="18" width="180" height="134" rx="6" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"></rect>
+      ${[48, 74, 100, 126].map(y => `<path d="M140,${y + 10} H296" stroke="color-mix(in srgb, var(--h) 18%, var(--surface))" stroke-width="1"></path>`).join("")}
+      <text class="fade pop" id="sh-q" x="218" y="80" font-size="26" font-weight="800" fill="var(--muted)">؟</text>
+      <text class="fade" id="sh-w" x="218" y="48" font-size="14" font-weight="700" fill="${ink}">الشمس</text>
+      <text class="fade" id="sh-s" x="218" y="48" font-size="13" font-weight="700" fill="${ink}">الشمس تشرق كل صباح.</text>
+      <text class="fade" id="sh-p2" x="218" y="74" font-size="13" font-weight="700" fill="${ink}">فتمنحنا الضوء والدفء،</text>
+      <text class="fade" id="sh-p3" x="218" y="100" font-size="13" font-weight="700" fill="${ink}">وتساعد النبات على النمو.</text>
+      ${[[290, "st1"], [272, "st2"], [254, "st3"]].map(([x, id]) => `<text class="fade pop" id="${id}" x="${x}" y="138" font-size="16" fill="#E3B23C">★</text>`).join("")}
+      <rect x="40" y="134" width="70" height="8" rx="3" fill="#B98B5E"></rect><rect x="46" y="142" width="5" height="18" fill="#9C744B"></rect><rect x="99" y="142" width="5" height="18" fill="#9C744B"></rect>
+      ${person(75, 96, "#4F7CAC", { arm: "sh-arm", hair: "#1E1E1E" })}
+      ${bubble(64, 40, 84, "أحسنت!", "shb1")}${bubble(64, 40, 96, "وماذا بعد؟", "shb2")}
+    </svg>`,
+    events: [[0.2, "#sh-q", "on", 1], [2.0, "#sh-q", "on", 0], [2.0, "#sh-w", "on", 1], [2.8, ".shb1", "on", 1], [3.0, "#st1", "on", 1], [4.6, ".shb1", "on", 0],
+      [5.5, "#sh-w", "on", 0], [6.0, "#sh-w", "on", 1], [6.6, ".shb2", "on", 1], [7.8, ".shb2", "on", 0],
+      [8.0, "#sh-w", "on", 0], [8.2, "#sh-s", "on", 1], [8.9, ".shb1", "on", 1], [9.1, "#st2", "on", 1], [10.6, ".shb1", "on", 0],
+      [11.6, "#sh-p2", "on", 1], [12.6, "#sh-p3", "on", 1], [13.3, ".shb1", "on", 1], [13.5, "#st3", "on", 1]],
+    subs: [[0, "طالب لا يكتب شيئًا في دفتر التعبير."], [2.0, "يكتب كلمة واحدة، فيمدحه المعلم فورًا."],
+      [5.5, "في المرة التالية لا تكفي الكلمة: لا مدح، بل «وماذا بعد؟»"], [8.2, "يكتب جملة كاملة، فيأتي المدح."],
+      [11.6, "ثم لا يُمدح إلا على فقرة… فتكتمل الفقرة."], [15.0, "تعزيز خطوات تقترب من الهدف خطوة خطوة: هذا هو التشكيل."]] }),
+
 
   waittime: () => {
     const seats = [[56, 80], [100, 80], [144, 80], [56, 132], [100, 132], [144, 132]];
@@ -1702,47 +1768,17 @@ const SCENES = {
         ...[0, 1, 2, 3, 4, 5].map(i => [7.4 + i * 0.25, ".think" + i, "on", 1]),
         ...[[1, 8.6], [4, 9.4], [0, 10.0], [2, 10.6], [5, 11.2], [3, 11.7]].flatMap(([i, t]) => [[t, ".think" + i, "on", 0], [t, ".karm" + i, "on", 1]])],
       subs: [[0, "يسأل المعلم، ثم يسمّي أول من يرفع يده."], [2.4, "أجاب طالب واحد، وتوقف تفكير الباقين."],
-        [6.6, "المرة الثانية: يسأل ثم ينتظر بصمت ثلاث إلى خمس ثوانٍ."], [12.2, "ارتفعت أيدٍ أكثر، والإجابات أطول وأعمق."]],
-      sounds: [[0.2, "ask"], [1.0, "hand"], [6.6, "ask"], ...[1, 2, 3, 4, 5].map(n => [6.8 + n, "tick"]), ...[8.6, 9.4, 10.0, 10.6, 11.2, 11.7].map(t => [t, "hand"])] };
+        [6.6, "المرة الثانية: يسأل ثم ينتظر بصمت ثلاث إلى خمس ثوانٍ."], [12.2, "ارتفعت أيدٍ أكثر، والإجابات أطول وأعمق."]] };
   }
 };
 
-// Sound effects drawn with Web Audio, so there are no recorded files and nothing borrowed.
-let actx = null, soundOn = true;
-try { soundOn = localStorage.getItem("mm-sound") !== "off"; } catch {}
-function tone(f, t0, len, { type = "sine", vol = .18, to = 0 } = {}) {
-  const o = actx.createOscillator(), g = actx.createGain();
-  o.type = type; o.frequency.setValueAtTime(f, t0); if (to) o.frequency.exponentialRampToValueAtTime(to, t0 + len);
-  g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(vol, t0 + .01); g.gain.exponentialRampToValueAtTime(.0001, t0 + len);
-  o.connect(g).connect(actx.destination); o.start(t0); o.stop(t0 + len + .05);
-}
-function noise(t0, len, { vol = .12, freq = 1200 } = {}) {
-  const b = actx.createBuffer(1, Math.ceil(actx.sampleRate * len), actx.sampleRate), d = b.getChannelData(0);
-  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
-  const src = actx.createBufferSource(), flt = actx.createBiquadFilter(), g = actx.createGain();
-  flt.type = "bandpass"; flt.frequency.value = freq; g.gain.value = vol; src.buffer = b;
-  src.connect(flt).connect(g).connect(actx.destination); src.start(t0);
-}
-const SFX = {
-  bell: t => [880, 1320, 2210].forEach((f, i) => { tone(f, t, 1.6, { vol: .16 / (i + 1) }); tone(f, t + .28, 1.4, { vol: .12 / (i + 1) }); }),
-  food: t => [0, .09, .2].forEach(d => noise(t + d, .08, { vol: .2, freq: 900 })),
-  drip: t => tone(1300, t, .18, { vol: .14, to: 500 }),
-  huh: t => tone(420, t, .35, { type: "triangle", vol: .12, to: 560 }),
-  aha: t => [784, 988, 1175, 1568].forEach((f, i) => tone(f, t + i * .07, .5, { vol: .1 })),
-  hand: t => noise(t, .16, { vol: .1, freq: 2400 }),
-  praise: t => [660, 880, 1320].forEach((f, i) => tone(f, t + i * .09, .6, { type: "triangle", vol: .11 })),
-  rise1: t => tone(440, t, .3, { vol: .1, to: 550 }), rise2: t => tone(520, t, .3, { vol: .1, to: 660 }), rise3: t => tone(620, t, .35, { vol: .1, to: 800 }),
-  ask: t => tone(520, t, .4, { type: "triangle", vol: .1, to: 700 }),
-  tick: t => tone(1800, t, .05, { type: "square", vol: .05 })
-};
-function sfx(name) {
-  if (!soundOn || !SFX[name]) return;
-  try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === "suspended") actx.resume(); SFX[name](actx.currentTime + .01); } catch {}
-}
+SCENES.zpd = SCENES.scaffold; SCENES.spacing = SCENES.forgetting;
+// ملفات الفيديو الجاهزة للمشاهد (للحفظ والمشاركة)
+const SCENE_VIDEO = { pavlov: "pavlov", reinforce: "reinforce", waittime: "waittime", scaffold: "scaffold", zpd: "scaffold", forgetting: "forgetting", spacing: "forgetting", shaping: "shaping" };
 
 let sceneTimers = [];
-function mountScene(fig, spec) {
-  fig.innerHTML = `<div class="shead"><b>مشهد قصير</b><span class="sctl"><button class="btn icon snd" type="button"></button><button class="btn" type="button">▶ أعد المشهد</button></span></div><div class="stage-svg">${spec.svg}</div><p class="sub"></p><div class="sbar"><i></i></div>`;
+function mountScene(fig, spec, key) {
+  fig.innerHTML = `<div class="shead"><b>مشهد قصير</b><span class="sctl">${SCENE_VIDEO[key] ? `<a class="btn" href="videos/${SCENE_VIDEO[key]}.mp4" download target="_blank" rel="noopener">⬇ فيديو</a>` : ""}<button class="btn" type="button">▶ أعد المشهد</button></span></div><div class="stage-svg">${spec.svg}</div><p class="sub"></p><div class="sbar"><i></i></div>`;
   const svgEl = fig.querySelector("svg"), sub = fig.querySelector(".sub"), bar = fig.querySelector(".sbar i");
   const play = () => {
     sceneTimers.forEach(clearTimeout); sceneTimers = [];
@@ -1751,13 +1787,8 @@ function mountScene(fig, spec) {
     requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.transition = `width ${spec.dur}s linear`; bar.style.width = "100%"; }));
     spec.events.forEach(([t, sel, what, val]) => sceneTimers.push(setTimeout(() => svgEl.querySelectorAll(sel).forEach(e => what === "text" ? (e.textContent = val) : e.classList.toggle(what, !!val)), t * 1000)));
     spec.subs.forEach(([t, text]) => sceneTimers.push(setTimeout(() => { sub.textContent = text; }, t * 1000)));
-    (spec.sounds || []).forEach(([t, name]) => sceneTimers.push(setTimeout(() => sfx(name), t * 1000)));
   };
-  const snd = fig.querySelector(".snd");
-  const paint = () => { snd.textContent = soundOn ? "🔊" : "🔇"; snd.setAttribute("aria-label", soundOn ? "إيقاف الصوت" : "تشغيل الصوت"); snd.setAttribute("aria-pressed", String(soundOn)); };
-  snd.onclick = () => { soundOn = !soundOn; try { localStorage.setItem("mm-sound", soundOn ? "on" : "off"); } catch {} paint(); };
-  paint();
-  fig.querySelector(".shead .btn:not(.snd)").onclick = play;
+  fig.querySelector(".shead button.btn").onclick = play;
   if (reduce) { spec.subs.length && (sub.textContent = spec.subs[spec.subs.length - 1][1]); } else play();
   return spec.dur * 1000;
 }
