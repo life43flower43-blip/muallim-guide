@@ -241,7 +241,33 @@ path.link.flow { stroke-dasharray: 7 7; animation: flow .9s linear infinite; opa
 .embed .brand { display: none; }
 .embed header { justify-content: flex-start; }
 .embed .stage, .embed aside.panel { height: max(480px, calc(100dvh - 150px)); }
-@media (max-width: 900px) { .embed .stage { height: 60svh; } .embed aside.panel { height: auto; } }
+.embed .legend, .embed #expand, .embed #collapse, .embed #fit, .embed .hint, .embed .count:empty { display: none; }
+.embed .search { display: none; }
+.embed.searching .search { display: block; }
+.embed .tools { flex-wrap: nowrap; }
+.embed header { order: 2; }
+.embed .tabs { order: 1; }
+.embed main { order: 3; }
+.stage:has(.tourbar:not([hidden])) .zoom, .stage:has(.tourbar:not([hidden])) .starter { display: none; }
+.embed .wrap { gap: 10px; }
+.sheetbar { display: none; }
+@media (max-width: 900px) {
+  .embed body { padding-block: 10px 0; }
+  .embed .stage { height: calc(100dvh - 128px); min-height: 360px; }
+  .embed aside.panel {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; height: 64dvh;
+    border-radius: 22px 22px 0 0; border-bottom: 0; padding: 0 18px calc(18px + env(safe-area-inset-bottom, 0px));
+    transform: translateY(105%); transition: transform .35s cubic-bezier(.2,.7,.2,1);
+  }
+  .embed aside.panel.open { transform: none; }
+  .embed .sheetbar { display: flex; position: sticky; top: 0; z-index: 2; background: var(--surface); align-items: center; justify-content: space-between; gap: 8px; padding: 10px 0 8px; margin-bottom: -6px; }
+  .embed .sheetbar .grip { width: 44px; height: 5px; border-radius: 99px; background: var(--line); }
+  .embed .tabs button { padding: 6px 12px; font-size: 13px; }
+}
+.starter { position: absolute; right: 12px; left: 12px; bottom: 12px; max-width: 420px; margin-inline-start: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 10px 14px; font-size: 13.5px; line-height: 1.6; display: grid; gap: 2px; }
+.starter b { font-size: 13px; color: var(--b1); }
+.starter[hidden] { display: none; }
+.embed .zoom { bottom: auto; top: 12px; }
 </style>
 </head>
 <body>
@@ -252,12 +278,13 @@ path.link.flow { stroke-dasharray: 7 7; animation: flow .9s linear infinite; opa
       <h1 id="maptitle">خريطة نظريات التعلم</h1>
     </div>
     <div class="tools">
+      <button class="btn icon" id="qbtn" type="button" aria-label="بحث" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;vertical-align:-3px"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
       <label class="search" for="q">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
         <input id="q" type="search" placeholder="ابحث: السقالات، التعزيز، بياجيه…" autocomplete="off" aria-label="بحث في الخريطة">
       </label>
       <span class="count" id="count" aria-live="polite"></span>
-      <button class="btn primary" id="tour" type="button">▶ جولة متحركة</button>
+      <button class="btn primary" id="tour" type="button">▶ تعلّم خطوة بخطوة</button>
       <button class="btn" id="expand" type="button">فتح الكل</button>
       <button class="btn" id="collapse" type="button">طيّ الكل</button>
       <button class="btn" id="fit" type="button">ملاءمة</button>
@@ -278,6 +305,7 @@ path.link.flow { stroke-dasharray: 7 7; animation: flow .9s linear infinite; opa
       <div class="zoom">
         <button class="btn icon" id="zin" type="button" aria-label="تكبير">+</button>
         <button class="btn icon" id="zout" type="button" aria-label="تصغير">−</button>
+        <button class="btn icon" id="zfit" type="button" aria-label="عرض الخريطة كاملة">⤢</button>
       </div>
       <div class="tourbar" id="tourbar" hidden>
         <button class="btn icon" id="tprev" type="button" aria-label="السابق">›</button>
@@ -287,6 +315,7 @@ path.link.flow { stroke-dasharray: 7 7; animation: flow .9s linear infinite; opa
         <span class="lbl" id="tlbl"></span>
         <button class="btn" id="tend" type="button">إنهاء</button>
       </div>
+      <div class="starter" id="starter"><b>ابدأ من هنا</b><span>اضغط أحد الفروع الملونة لتفتحه، أو اضغط «تعلّم خطوة بخطوة» ليأخذك التطبيق في جولة.</span></div>
       <div class="hint"><span>اسحب للتنقل · كبّر بالعجلة أو بإصبعين · اضغط فكرة لتفتح فروعها</span></div>
     </div>
     <aside class="panel" id="panel" aria-live="polite"></aside>
@@ -427,7 +456,9 @@ const NS = "http://www.w3.org/2000/svg";
 const all = []; let uid = 0, byId = {};
 function prepMap(data) {
   all.length = 0;
-  const right = Math.ceil(data.k.length / 2); // first half of the branches on the right (reading start in RTL)
+  // first half of the branches on the right (reading start in RTL); on a phone all grow from the root leftwards in one readable column
+  const phone = document.documentElement.classList.contains("embed") && matchMedia("(max-width: 900px)").matches;
+  const right = phone ? 0 : Math.ceil(data.k.length / 2);
   (function prep(n, parent, depth, branch, side) {
     n.id = "n" + (uid++); n.parent = parent; n.depth = depth; n.k = n.k || [];
     n.branch = branch; n.side = side; n.open = depth < 1; n.x = 0; n.y = 0; n.X = 0; n.Y = 0;
@@ -435,7 +466,6 @@ function prepMap(data) {
     all.push(n);
     n.k.forEach((c, i) => prep(c, n, depth + 1, depth === 0 ? i : branch, depth === 0 ? (i < right ? 1 : -1) : side));
   })(data, null, 0, -1, 0);
-  data.k.forEach(c => c.open = true); // start with branches open, their ideas visible
   byId = Object.fromEntries(all.map(n => [n.id, n]));
 }
 prepMap(DATA);
@@ -632,7 +662,7 @@ function fit(animated = true) {
   let k = clampK(Math.min((W - pad * 2) / (x1 - x0), (H - pad * 2) / (y1 - y0), 1.25));
   let cx = (x0 + x1) / 2;
   // on a phone a full fit is unreadable: keep text legible and open on the right-hand schools
-  if (W < 600 && k < 0.62) { k = 0.62; cx = Math.max(x0 + (W / 2 - pad) / k, Math.min(DATA.X + 120, x1)); }
+  if (W < 600 && k < 0.42) { k = 0.42; cx = Math.max(x0 + (W / 2 - pad) / k, Math.min(DATA.X + 120, x1)); }
   const to = { k, x: W / 2 - cx * k, y: H / 2 - ((y0 + y1) / 2) * k };
   animated ? animView(to) : (Object.assign(view, to), applyView());
 }
@@ -640,7 +670,9 @@ function centerOn(n) {
   const { W, H } = stageSize(); const k = Math.max(view.k, 0.85);
   // aim slightly toward the side the branch grows, so its children have room
   const lead = n.open && n.k.length ? n.side * Math.min(160, W * 0.18) : 0;
-  animView({ k, x: W / 2 - (n.X + lead) * k, y: H / 2 - n.Y * k });
+  // with the explanation sheet up on a phone, keep the idea in the visible upper part of the map
+  const cy = narrowEmbed() && panel.classList.contains("open") ? H * 0.2 : H / 2;
+  animView({ k, x: W / 2 - (n.X + lead) * k, y: cy - n.Y * k });
 }
 function zoomAt(px, py, factor) {
   const k2 = clampK(view.k * factor), r = k2 / view.k;
@@ -693,13 +725,25 @@ gNodes.addEventListener("keydown", e => {
 document.getElementById("zin").onclick = () => { const { W, H } = stageSize(); zoomAt(W / 2, H / 2, 1.25); };
 document.getElementById("zout").onclick = () => { const { W, H } = stageSize(); zoomAt(W / 2, H / 2, 0.8); };
 document.getElementById("fit").onclick = () => fit();
+document.getElementById("zfit").onclick = () => fit();
+document.getElementById("qbtn").onclick = () => {
+  const on = document.documentElement.classList.toggle("searching");
+  document.getElementById("qbtn").setAttribute("aria-expanded", String(on));
+  if (on) document.getElementById("q").focus();
+};
 document.getElementById("expand").onclick = () => { all.forEach(n => { if (n.k.length) n.open = true; }); refresh(); setTimeout(() => fit(), reduce ? 0 : 60); };
 document.getElementById("collapse").onclick = () => { all.forEach(n => n.open = n.depth === 0); refresh(); select(DATA); setTimeout(() => fit(), reduce ? 0 : 60); };
 
 // ---------- selection & panel ----------
 let selected = DATA;
+const narrowEmbed = () => document.documentElement.classList.contains("embed") && matchMedia("(max-width: 900px)").matches;
+function sheet(open) {
+  panel.classList.toggle("open", open);
+  if (open) { document.getElementById("starter").hidden = true; panel.scrollTop = 0; }
+}
 function activate(n, badgeOnly = false) {
   if (tour.playing) pauseTour();
+  if (!badgeOnly) sheet(n.depth > 0);
   if (n.k.length) n.open = badgeOnly || n === selected ? !n.open : true;
   refresh();
   if (!badgeOnly) select(n);
@@ -717,6 +761,11 @@ function select(n) {
 }
 function renderPanel(n) {
   panel.innerHTML = "";
+  const bar = document.createElement("div"); bar.className = "sheetbar";
+  const grip = document.createElement("span"); grip.className = "grip"; grip.setAttribute("aria-hidden", "true");
+  const back = document.createElement("button"); back.type = "button"; back.className = "btn"; back.textContent = "→ رجوع إلى الخريطة";
+  back.onclick = () => { sheet(false); if (tour.playing) pauseTour(); };
+  bar.append(back, grip); panel.append(bar);
   panel.style.setProperty("--h", `var(${hue(n)})`);
   const crumbs = document.createElement("div"); crumbs.className = "crumbs";
   const chain = []; let a = n.parent; while (a) { chain.unshift(a); a = a.parent; }
@@ -1326,7 +1375,7 @@ function tourGo(i) {
   tour.i = Math.max(0, Math.min(tourSteps.length - 1, i));
   const n = tourSteps[tour.i];
   reveal(n); if (n.k.length) n.open = true;
-  refresh(); select(n); setTimeout(() => centerOn(n), reduce ? 0 : 60);
+  refresh(); sheet(true); select(n); setTimeout(() => centerOn(n), reduce ? 0 : 60);
   document.getElementById("tprog").style.width = ((tour.i + 1) / tourSteps.length * 100) + "%";
   document.getElementById("tlbl").textContent = `${tour.i + 1} من ${tourSteps.length}`;
   clearTimeout(tour.timer);
@@ -1352,6 +1401,7 @@ function switchMap(key) {
   for (const [, e] of els) { e.g.remove(); e.path && e.path.remove(); }
   els.clear(); dying.clear();
   q.value = ""; hits = []; countEl.textContent = ""; svg.classList.remove("dim");
+  sheet(false); document.getElementById("starter").hidden = false;
   DATA = m.data; prepMap(DATA); indexSearch(); buildLegend(); buildTour();
   document.getElementById("maptitle").textContent = m.title;
   document.title = m.title;

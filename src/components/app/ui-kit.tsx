@@ -257,8 +257,9 @@ export function ScreenShell({
               <ArrowRight className="h-6 w-6" strokeWidth={2.5} />
             </button>
           ) : onClose ? (
-            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[var(--t900)] hover:bg-black/5 dark:text-foreground">
-              <X className="h-6 w-6" strokeWidth={2.5} />
+            // كل شاشة لها زر رجوع واضح في مكانه المعتاد، حتى حين لا يكون فيها إلا الإغلاق
+            <button type="button" onClick={onClose} aria-label="رجوع" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[var(--t900)] hover:bg-black/5 dark:text-foreground">
+              <ArrowRight className="h-6 w-6" strokeWidth={2.5} />
             </button>
           ) : null}
           <div className="min-w-0 flex-1 px-1">

@@ -8,7 +8,7 @@
 // الوجهات: اليوم، التعلّم، التدريب، أخطائي، حسابي.
 // ============================================================================
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
 import { Bell, Flame, Settings, House, CircleUser, PencilLine, Target, WifiOff, Compass, ArrowRight } from "lucide-react";
@@ -269,10 +269,22 @@ export default function AppShell() {
     startBankLoad();
   }, []);
 
-  // زر الرجوع في الهاتف: يعود إلى الرئيسية
+  // زر الرجوع في الهاتف: يغلق الشاشة المفتوحة أولًا ويبقى في التبويب نفسه، ثم يعود إلى الرئيسية
+  const overlayOpen =
+    ui.scenariosOpen || ui.labOpen || ui.simOpen || ui.studioOpen || ui.fieldOpen || ui.challengesOpen || ui.measureOpen ||
+    ui.heartOpen || ui.peerOpen || ui.examsimOpen || ui.placementOpen || ui.mindOpen || ui.flashOpen || ui.aiOpen || ui.learnOpen;
+  const overlayRef = useRef(false);
+  useEffect(() => {
+    if (overlayOpen && !overlayRef.current) window.history.pushState({ turbawyOverlay: true }, "");
+    overlayRef.current = overlayOpen;
+  }, [overlayOpen]);
   useEffect(() => {
     const onPop = () => {
-      ui.closeOverlays();
+      if (overlayRef.current) {
+        overlayRef.current = false;
+        ui.closeOverlays();
+        return;
+      }
       setTab("today");
     };
     window.addEventListener("popstate", onPop);
