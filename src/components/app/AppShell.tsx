@@ -44,6 +44,7 @@ import PlacementView from "./PlacementView";
 import FlashcardsView from "./FlashcardsView";
 import AiAssistantView from "./AiAssistantView";
 import MindMapView from "./MindMapView";
+import MisconceptionsView from "./MisconceptionsView";
 import BootBank from "./BootBank";
 import { ScreenShell } from "./ui-kit";
 import { Splash } from "./Splash";
@@ -272,7 +273,7 @@ export default function AppShell() {
   // زر الرجوع في الهاتف: يغلق الشاشة المفتوحة أولًا ويبقى في التبويب نفسه، ثم يعود إلى الرئيسية
   const overlayOpen =
     ui.scenariosOpen || ui.labOpen || ui.simOpen || ui.studioOpen || ui.fieldOpen || ui.challengesOpen || ui.measureOpen ||
-    ui.heartOpen || ui.peerOpen || ui.examsimOpen || ui.placementOpen || ui.mindOpen || ui.flashOpen || ui.aiOpen || ui.learnOpen;
+    ui.heartOpen || ui.peerOpen || ui.examsimOpen || ui.placementOpen || ui.mindOpen || ui.mythOpen || ui.flashOpen || ui.aiOpen || ui.learnOpen;
   const overlayRef = useRef(false);
   useEffect(() => {
     if (overlayOpen && !overlayRef.current) window.history.pushState({ turbawyOverlay: true }, "");
@@ -440,6 +441,7 @@ export default function AppShell() {
       {ui.flashOpen && <FlashcardsView />}
       <AnimatePresence>{ui.aiOpen && <AiAssistantView key="ai" />}</AnimatePresence>
       {ui.mindOpen && <MindMapView />}
+      {ui.mythOpen && <MisconceptionsView />}
     </div>
   );
 }
