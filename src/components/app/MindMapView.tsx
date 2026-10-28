@@ -1,9 +1,11 @@
 "use client";
 
-// الخرائط الذهنية المتحركة — نظريات التعلم، والمعرفة والتذكر والفهم: فروع تُفتح وتُطوى،
-// ورسوم متحركة تشرح كل فكرة خطوة بخطوة مع مثال من الصف، وجولة تلقائية
-import { useState } from "react";
+// الخرائط الذهنية المتحركة — خمس خرائط (نظريات التعلم، والمعرفة والتذكر والفهم، والتقويم،
+// ونمو الطلاب، والتدريس): فروع تُفتح وتُطوى، ومشاهد قصيرة ورسوم تشرح الفكرة خطوة بخطوة،
+// وزر «تدرّب على هذه الفكرة» يفتح أسئلة المفهوم من البنك
+import { useEffect, useState } from "react";
 import { useUi } from "@/lib/ui-store";
+import { questionsOfConcept, shuffle } from "@/lib/qbank";
 import { ScreenShell } from "./ui-kit";
 
 export default function MindMapView() {
@@ -13,6 +15,19 @@ export default function MindMapView() {
     const dark = typeof document !== "undefined" && document.documentElement.classList.contains("dark");
     return `/tools/mindmap.html?embed=1&theme=${dark ? "dark" : "light"}`;
   });
+  // الخريطة تطلب تدريبًا على مفهوم: نغلقها ونفتح جلسة بأسئلته
+  useEffect(() => {
+    const onMsg = (e: MessageEvent) => {
+      if (e.origin !== window.location.origin || e.data?.type !== "turbawy-practice") return;
+      const qids = shuffle(questionsOfConcept(String(e.data.conceptId))).slice(0, 10).map((q) => q.id);
+      if (!qids.length) return;
+      const ui = useUi.getState();
+      ui.clearMind();
+      ui.startQuiz({ mode: "training", label: `تدريب: ${String(e.data.title ?? "")}`, qids, conceptId: String(e.data.conceptId) });
+    };
+    window.addEventListener("message", onMsg);
+    return () => window.removeEventListener("message", onMsg);
+  }, []);
   return (
     <ScreenShell title="الخرائط الذهنية المتحركة" onClose={clearMind} wide bare>
       <iframe src={src} title="الخرائط الذهنية المتحركة" className="absolute inset-0 h-full w-full border-0 bg-background" />

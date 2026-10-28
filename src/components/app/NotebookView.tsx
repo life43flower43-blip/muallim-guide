@@ -5,7 +5,7 @@
 // ============================================================================
 
 import { useMemo, useState } from "react";
-import { ArrowDown, ChevronLeft, ChevronRight, Network } from "lucide-react";
+import { ArrowDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { CHAPTER_MAPS, COURSES, COURSE_SHORT, conceptsOfCourse, type ChapterMap } from "@/lib/qbank";
@@ -109,20 +109,29 @@ export default function NotebookView() {
     <div className="mx-auto max-w-2xl space-y-5">
       <PageTitle title="البوصلة" />
 
-      {/* مدخل الخرائط الذهنية المتحركة */}
+      {/* مدخل الخرائط الذهنية المتحركة: بطاقة داكنة مميزة فيها شبكة أفكار تنبض بهدوء */}
       <button
         type="button"
         onClick={() => useUi.getState().startMind()}
-        className="flex w-full items-center gap-3 rounded-[22px] border border-[#E3D3A0] bg-white p-3 text-right transition active:scale-[0.98] dark:bg-card"
+        className="mind-card relative flex w-full items-center gap-3 overflow-hidden rounded-[24px] bg-gradient-to-l from-[#0F4634] via-[#103B3A] to-[#0B2236] p-3.5 text-right text-white ring-2 ring-[#F4C430] transition active:scale-[0.98]"
       >
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--t600)] to-[var(--t850)] text-white" aria-hidden="true">
-          <Network className="h-6 w-6" strokeWidth={2.2} />
-        </span>
+        <svg viewBox="0 0 64 64" className="h-16 w-16 shrink-0" aria-hidden="true">
+          <g stroke="#F4C430" strokeWidth="2" strokeLinecap="round" opacity="0.85">
+            <path className="mc-line" d="M32 32 L12 14" /><path className="mc-line" d="M32 32 L54 16" style={{ animationDelay: ".3s" }} />
+            <path className="mc-line" d="M32 32 L10 46" style={{ animationDelay: ".6s" }} /><path className="mc-line" d="M32 32 L52 50" style={{ animationDelay: ".9s" }} />
+          </g>
+          <circle cx="12" cy="14" r="5.5" fill="#FF8A4C" /><circle cx="54" cy="16" r="5.5" fill="#5AA9F0" />
+          <circle cx="10" cy="46" r="5.5" fill="#5CC46F" /><circle cx="52" cy="50" r="5.5" fill="#A08BFF" />
+          <circle className="mc-core" cx="32" cy="32" r="9" fill="url(#mc-gold)" />
+          <defs>
+            <linearGradient id="mc-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#FFE58A" /><stop offset="1" stopColor="#C99A06" /></linearGradient>
+          </defs>
+        </svg>
         <span className="min-w-0 flex-1">
-          <FitText max={17} min={12} className="font-extrabold leading-7 text-foreground">الخرائط الذهنية المتحركة</FitText>
-          <FitText max={13} min={10} className="leading-6 text-[var(--t500)]">نظريات التعلم · المعرفة والتذكر والفهم</FitText>
+          <FitText max={18} min={12} className="font-extrabold leading-7 text-white">الخرائط الذهنية المتحركة</FitText>
+          <FitText max={13} min={10} className="leading-6 text-[#F8E3A8]">خمس خرائط · مشاهد قصيرة · تدريب مباشر</FitText>
         </span>
-        <ChevronLeft className="h-5 w-5 shrink-0 text-[#C99A06]" strokeWidth={2.5} aria-hidden="true" />
+        <ChevronLeft className="h-5 w-5 shrink-0 text-[#F4C430]" strokeWidth={2.5} aria-hidden="true" />
       </button>
 
 
