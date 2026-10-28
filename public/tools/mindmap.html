@@ -2226,6 +2226,134 @@ const SCENES = {
   },
 
 
+  // الصدق والثبات: ثلاث لوحات تصويب
+  targets: () => {
+    const boards = [[262, "ثابت وصادق", [[0, 0], [4, -3], [-3, 4], [3, 3], [-4, -2]]], [160, "ثابت غير صادق", [[18, -16], [22, -19], [15, -12], [21, -13], [16, -20]]], [58, "غير ثابت", [[-22, 10], [18, -20], [4, 24], [-14, -18], [24, 12]]]];
+    return { dur: 16, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد الصدق والثبات">
+      ${boards.map(([x, t, h], i) => `<g class="fade" id="tg${i}">${[40, 28, 16, 6].map((r, k) => `<circle cx="${x}" cy="90" r="${r}" fill="${k % 2 ? "var(--surface)" : "color-mix(in srgb, var(--h) " + (18 + k * 14) + "%, var(--surface))"}" stroke="var(--line)"></circle>`).join("")}
+        <text x="${x}" y="150" font-size="11" font-weight="800" fill="var(--h)">${t}</text></g>
+        ${h.map(([dx, dy], k) => `<circle class="fade pop" id="th${i}${k}" cx="${x + dx}" cy="${90 + dy}" r="3.6" fill="#D9534F" stroke="#fff"></circle>`).join("")}`).join("")}
+      <text class="fade" id="tg-r" x="160" y="176" font-size="11" font-weight="800" fill="${ink}">الثبات شرط للصدق، لكنه لا يكفي</text>
+    </svg>`,
+      events: [...boards.flatMap((b, i) => [[0.3 + i * 3.6, "#tg" + i, "on", 1], ...b[2].map((_, k) => [0.8 + i * 3.6 + k * 0.3, `#th${i}${k}`, "on", 1])]), [11.4, "#tg-r", "on", 1]],
+      subs: [[0, "ثابت وصادق: النتائج متقاربة وفي المكان الصحيح، كميزان دقيق."], [3.6, "ثابت غير صادق: النتائج متقاربة لكنها بعيدة عن الهدف، كميزان يزيد كيلوغرامين كل مرة."],
+        [7.2, "غير ثابت: النتائج متفرقة، فلا يمكن أن يكون صادقًا."], [11.2, "القاعدة: الثبات شرط للصدق، لكنه لا يكفي وحده."]] };
+  },
+
+  // معامل السهولة
+  easiness: () => {
+    const ok = new Set([0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 16, 18, 19, 20, 21, 23, 24, 26, 27, 29, 30, 32, 34, 36]);
+    return { dur: 16, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد معامل السهولة">
+      <style>.sc .es{transition:fill .5s}.sc .es.on{fill:#2F8F5B}</style>
+      ${Array.from({ length: 40 }, (_, i) => `<circle class="es" id="es${i}" cx="${288 - (i % 10) * 26}" cy="${26 + Math.floor(i / 10) * 22}" r="8" fill="#C9CED3"></circle>`).join("")}
+      <text class="fade" id="es-n" x="160" y="122" font-size="12" font-weight="800" fill="#2F8F5B">أجاب ٢٨ من ٤٠ إجابة صحيحة</text>
+      <text class="fade pop" id="es-f" x="160" y="144" font-size="14" font-weight="800" fill="${ink}">السهولة = ٢٨ ÷ ٤٠ = ٠٫٧٠</text>
+      <g class="fade" id="es-s"><rect x="40" y="160" width="240" height="10" rx="5" fill="var(--line)"></rect><rect x="${40 + 0.2 * 240}" y="160" width="${0.6 * 240}" height="10" rx="5" fill="color-mix(in srgb, var(--h) 40%, var(--surface))"></rect>
+        <circle cx="${280 - 0.7 * 240}" cy="165" r="7" fill="var(--h)"></circle><text x="${280 - 0.2 * 240}" y="181" font-size="9" fill="var(--muted)">٠٫٢٠</text><text x="${280 - 0.8 * 240}" y="181" font-size="9" fill="var(--muted)">٠٫٨٠</text></g>
+    </svg>`,
+      events: [...[...ok].map((i, k) => [1.0 + k * 0.08, "#es" + i, "on", 1]), [4.0, "#es-n", "on", 1], [7.0, "#es-f", "on", 1], [10.6, "#es-s", "on", 1]],
+      subs: [[0, "طبّقت المعلمة السؤال على ٤٠ طالبًا."], [4.0, "وعدّت من أجاب إجابة صحيحة: ٢٨ طالبًا."],
+        [7.0, "معامل السهولة = الإجابات الصحيحة ÷ عدد من أجاب = ٠٫٧٠: سؤال سهل نسبيًا."], [10.6, "والمدى المقبول غالبًا بين ٠٫٢٠ و٠٫٨٠."]] };
+  },
+
+  // معامل التمييز
+  discrim: () => {
+    const up = [0, 1, 2, 3, 4, 5, 6, 7], lo = [0, 1, 2];
+    return { dur: 16, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد معامل التمييز">
+      <style>.sc .ds{transition:fill .5s}.sc .ds.on{fill:#2F8F5B}</style>
+      <text x="290" y="34" font-size="10.5" font-weight="800" fill="var(--h)">العليا</text><text x="290" y="72" font-size="10.5" font-weight="800" fill="#B8860B">الدنيا</text>
+      ${[0, 1].map(g => Array.from({ length: 10 }, (_, i) => `<circle class="ds" id="d${g}${i}" cx="${254 - i * 22}" cy="${34 + g * 38}" r="8" fill="#C9CED3"></circle>`).join("")).join("")}
+      <text class="fade" id="ds-n" x="160" y="104" font-size="12" font-weight="800" fill="#2F8F5B">صحيح: ٨ من العليا، و٣ من الدنيا</text>
+      <text class="fade pop" id="ds-f" x="160" y="128" font-size="13.5" font-weight="800" fill="${ink}">التمييز = (٨ − ٣) ÷ ١٠ = ٠٫٥٠</text>
+      <g class="fade" id="ds-s"><rect x="40" y="148" width="240" height="10" rx="5" fill="var(--line)"></rect><rect x="40" y="148" width="${0.6 * 240}" height="10" rx="5" fill="color-mix(in srgb, #2F8F5B 40%, var(--surface))"></rect>
+        <circle cx="${280 - 0.5 * 240}" cy="153" r="7" fill="var(--h)"></circle><text x="${280 - 0.4 * 240}" y="170" font-size="9" fill="var(--muted)">٠٫٤٠ ممتاز</text><text x="${280 - 0.2 * 240}" y="170" font-size="9" fill="var(--muted)">٠٫٢٠</text></g>
+      <text class="fade" id="ds-r" x="160" y="184" font-size="10" font-weight="700" fill="${ink}">دون ٠٫٢٠ يُعدَّل، والسالب يُراجَع مفتاحه</text>
+    </svg>`,
+      events: [...up.map((i, k) => [1.0 + k * 0.15, "#d0" + i, "on", 1]), ...lo.map((i, k) => [2.4 + k * 0.15, "#d1" + i, "on", 1]), [3.6, "#ds-n", "on", 1], [7.0, "#ds-f", "on", 1], [10.4, "#ds-s", "on", 1], [12.0, "#ds-r", "on", 1]],
+      subs: [[0, "نرتب الطلاب بدرجاتهم، ونأخذ عشرة من العليا وعشرة من الدنيا."], [3.6, "ونعدّ من أجاب عن السؤال صحيحًا في كل مجموعة."],
+        [7.0, "التمييز = (صحيح العليا − صحيح الدنيا) ÷ حجم المجموعة = ٠٫٥٠."], [10.4, "فوق ٠٫٤٠ ممتاز: سؤال يفرّق بوضوح بين من أتقن ومن لم يتقن."]] };
+  },
+
+  // اتجاهات النمو
+  directions: () => ({ dur: 15, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد اتجاهات النمو">
+      <style>.sc .dz{transition:fill .5s,opacity .5s;opacity:.25}.sc .dz.on{opacity:1}</style>
+      <g transform="translate(70,18)"><circle class="dz" id="dz0" cx="0" cy="18" r="16" fill="var(--h)"></circle><rect class="dz" id="dz1" x="-18" y="38" width="36" height="46" rx="12" fill="var(--h)"></rect>
+        <rect class="dz" id="dz2" x="-16" y="86" width="13" height="52" rx="6" fill="var(--h)"></rect><rect class="dz" id="dz3" x="3" y="86" width="13" height="52" rx="6" fill="var(--h)"></rect>
+        <path class="fade" id="dza" d="M34,8 V140" stroke="#E3B23C" stroke-width="2.4" marker-end="url(#dzm)"></path></g>
+      <g transform="translate(176,40)"><circle class="dz" id="dy0" cx="0" cy="30" r="12" fill="#B5532A"></circle><rect class="dz" id="dy1" x="12" y="26" width="46" height="9" rx="4" fill="#B5532A"></rect>
+        <rect class="dz" id="dy2" x="60" y="26" width="18" height="9" rx="4" fill="#B5532A"></rect><path class="dz" id="dy3" d="M80,22 l12,-6 M80,30 l14,0 M80,38 l12,6" stroke="#B5532A" stroke-width="3" stroke-linecap="round"></path>
+        <path class="fade" id="dya" d="M0,58 H92" stroke="#E3B23C" stroke-width="2.4" marker-end="url(#dzm)"></path></g>
+      <g class="fade" id="dw"><rect x="170" y="116" width="44" height="34" rx="10" fill="#E8C4A0"></rect><text x="192" y="160" font-size="9" fill="var(--muted)">الكف كلها</text>
+        <circle cx="270" cy="126" r="4" fill="#B5532A"></circle><path d="M256,140 Q262,122 270,126 Q278,122 284,140" fill="none" stroke="#E8C4A0" stroke-width="6" stroke-linecap="round"></path><text x="270" y="160" font-size="9" fill="var(--muted)">إصبعان</text>
+        <path d="M222,133 H246" stroke="#E3B23C" stroke-width="2.4" marker-end="url(#dzm)"></path></g>
+      <defs><marker id="dzm" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10Z" fill="#E3B23C"></path></marker></defs>
+    </svg>`,
+    events: [[0.6, "#dz0", "on", 1], [1.6, "#dz1", "on", 1], [2.6, "#dz2", "on", 1], [2.6, "#dz3", "on", 1], [1.0, "#dza", "on", 1],
+      [5.0, "#dy0", "on", 1], [5.8, "#dy1", "on", 1], [6.6, "#dy2", "on", 1], [7.4, "#dy3", "on", 1], [5.4, "#dya", "on", 1], [10.0, "#dw", "on", 1]],
+    subs: [[0, "من الرأس إلى القدمين: يرفع الرضيع رأسه، ثم يجلس، ثم يقف ويمشي."], [5.0, "ومن المركز إلى الأطراف: يتحكم في كتفه وذراعه قبل أصابعه."],
+      [10.0, "ومن العام إلى الخاص: يمسك بكفه كلها قبل أن يلتقط حبة بإصبعين؛ لذلك يسبق الرسمُ الكبير الكتابةَ الدقيقة."]] }),
+
+  // مراحل الدرس
+  lessonflow: () => {
+    const st = ["التهيئة", "العرض", "تطبيق موجّه", "تطبيق مستقل", "الغلق"];
+    return { dur: 18, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد مراحل الدرس">
+      <style>.sc #lf-d{transition:transform .9s cubic-bezier(.2,.7,.2,1)}${st.map((_, i) => `.sc #lf-d.p${i}{transform:translateX(${-i * 60}px)}`).join("")}</style>
+      <path d="M40,96 H280" stroke="var(--line)" stroke-width="4" stroke-linecap="round"></path>
+      ${st.map((t, i) => `<g class="fade pop" id="lf${i}"><circle cx="${280 - i * 60}" cy="96" r="13" fill="var(--h)"></circle><text x="${280 - i * 60}" y="96" font-size="11" font-weight="800" fill="#fff">${"١٢٣٤٥"[i]}</text>
+        <text x="${280 - i * 60}" y="${i % 2 ? 128 : 64}" font-size="11" font-weight="800" fill="${ink}">${t}</text></g>`).join("")}
+      <g id="lf-d"><circle cx="280" cy="96" r="18" fill="none" stroke="#E3B23C" stroke-width="3"></circle></g>
+      <text class="fade" id="lf-t" x="160" y="166" font-size="11" font-weight="700" fill="var(--muted)">الهدف نفسه من التهيئة حتى بطاقة الخروج</text>
+    </svg>`,
+      events: [...st.map((_, i) => [0.2 + i * 3, "#lf" + i, "on", 1]), ...st.slice(1).map((_, i) => [3.2 + i * 3, "#lf-d", "p" + (i + 1), 1]), [15.2, "#lf-t", "on", 1]],
+      subs: [[0, "التهيئة: سؤال من حياة الطلاب يجذب الانتباه ويربط الجديد بالسابق."], [3.2, "العرض: شرح القاعدة منظمة بثلاثة أمثلة متدرجة."],
+        [6.2, "التطبيق الموجّه: يحل الصف مثالين مع المعلم، ويُصحَّح الخطأ فورًا."], [9.2, "التطبيق المستقل: ورقة قصيرة يحلها كل طالب وحده."],
+        [12.2, "الغلق والتقويم: تلخيص، ثم بطاقة خروج بسؤال يقيس الهدف نفسه."]] };
+  },
+
+  // الفهم مقابل الحفظ
+  understand: () => ({ dur: 16, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد الفهم مقابل الحفظ">
+      <rect x="0" y="160" width="320" height="30" fill="color-mix(in srgb, var(--h) 12%, var(--surface))"></rect>
+      <rect x="60" y="10" width="200" height="40" rx="8" fill="#2E5C4B"></rect>
+      <text class="fade" id="ud-q1" x="160" y="30" font-size="11" font-weight="700" fill="#DDEBE3">مستطيل طوله ٥ وعرضه ٣، فما مساحته؟</text>
+      <text class="fade" id="ud-q2" x="160" y="30" font-size="11" font-weight="700" fill="#DDEBE3">مستطيل مساحته ١٥ وطوله ٥، فما عرضه؟</text>
+      ${person(250, 110, "#C0605A", { hijab: "#2F5D50" })}${person(70, 110, "#4F7CAC", { hair: "#1E1E1E" })}
+      <text x="250" y="178" font-size="10" font-weight="700" fill="var(--muted)">تفهم</text><text x="70" y="178" font-size="10" font-weight="700" fill="var(--muted)">يحفظ</text>
+      <text class="fade pop" id="ua1" x="250" y="80" font-size="15" font-weight="800" fill="#2F8F5B">١٥ ✓</text><text class="fade pop" id="ub1" x="70" y="80" font-size="15" font-weight="800" fill="#2F8F5B">١٥ ✓</text>
+      <text class="fade pop" id="ua2" x="250" y="80" font-size="15" font-weight="800" fill="#2F8F5B">٣ ✓</text><text class="fade pop" id="ub2" x="70" y="80" font-size="15" font-weight="800" fill="#D9534F">؟ ✗</text>
+      ${bubble(160, 96, 120, "العرض = ١٥ ÷ ٥", "udb")}
+    </svg>`,
+    events: [[0.3, "#ud-q1", "on", 1], [2.0, "#ua1", "on", 1], [2.3, "#ub1", "on", 1], [4.4, "#ud-q1", "on", 0], [4.4, "#ua1", "on", 0], [4.4, "#ub1", "on", 0],
+      [4.8, "#ud-q2", "on", 1], [6.4, "#ua2", "on", 1], [7.0, "#ub2", "on", 1], [9.6, ".udb", "on", 1]],
+    subs: [[0, "سؤال مألوف: يجيب الحافظ والفاهم معًا."], [4.8, "غيّر صيغة السؤال: يتعثر الحافظ، وتجيب الفاهمة: ٣."],
+      [9.6, "والفاهمة تشرح السبب: المساحة طول في عرض، فالعرض = ١٥ ÷ ٥."], [13.0, "تغيير الصيغة وطلب التفسير يكشفان الفهم الحقيقي."]] }),
+
+  // أنواع المعرفة: تقريرية وإجرائية وشرطية
+  knowledge: () => {
+    const k = [["تقريرية: ماذا؟", "الماضي يدل على حدث انتهى"], ["إجرائية: كيف؟", "كتب ← كتبتُ، كتبوا"], ["شرطية: متى ولماذا؟", "أمسِ بالماضي، وغدًا بالمضارع"]];
+    return { dur: 15, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد أنواع المعرفة">
+      ${k.map(([a, b], i) => `<g class="fade pop" id="kw${i}"><rect x="${210 - i * 100}" y="34" width="98" height="96" rx="12" fill="var(--surface)" stroke="var(--h)" stroke-width="${1.2 + i * .4}"></rect>
+        <text x="${259 - i * 100}" y="58" font-size="9.5" font-weight="800" fill="var(--h)">${a}</text><foreignObject x="${219 - i * 100}" y="72" width="80" height="54"><div xmlns="http://www.w3.org/1999/xhtml" style="font:700 10px/1.5 var(--font-body);color:var(--ink);text-align:center">${b}</div></foreignObject></g>`).join("")}
+      <text class="fade" id="kw-all" x="160" y="158" font-size="11.5" font-weight="800" fill="${ink}">الكاتب الماهر يجمع الثلاثة</text>
+    </svg>`,
+      events: [[0.4, "#kw0", "on", 1], [3.8, "#kw1", "on", 1], [7.2, "#kw2", "on", 1], [10.8, "#kw-all", "on", 1]],
+      subs: [[0, "المعرفة التقريرية «ماذا»: يعرف أن الفعل الماضي يدل على حدث انتهى."], [3.8, "والإجرائية «كيف»: يصرّف «كتب» إلى «كتبتُ، كتبوا» بسرعة ودقة."],
+        [7.2, "والشرطية «متى ولماذا»: يكتب ما حدث أمس بالماضي، وخطته للغد بالمضارع."], [10.8, "والأداء الماهر يجمع الأنواع الثلاثة معًا."]] };
+  },
+
+  // جانييه: الأحداث التعليمية التسعة
+  gagne: () => {
+    const ev = ["جذب الانتباه", "إعلام الأهداف", "استدعاء السابق", "عرض المحتوى", "توجيه التعلم", "استثارة الأداء", "التغذية الراجعة", "تقويم الأداء", "الاحتفاظ والنقل"];
+    return { dur: 18, svg: `<svg viewBox="0 0 320 190" class="sc" role="img" aria-label="مشهد أحداث جانييه التسعة">
+      ${ev.map((t, i) => `<g class="fade pop" id="gn${i}"><rect x="${i < 5 ? 176 : 22}" y="${14 + (i % 5) * 34}" width="122" height="26" rx="13" fill="color-mix(in srgb, var(--h) ${30 + i * 7}%, var(--surface))"></rect>
+        <text x="${i < 5 ? 237 : 83}" y="${27 + (i % 5) * 34}" font-size="10.5" font-weight="800" fill="${i > 3 ? "#fff" : ink}">${"١٢٣٤٥٦٧٨٩"[i]}. ${t}</text></g>`).join("")}
+    </svg>`,
+      events: ev.map((_, i) => [0.4 + i * 1.6, "#gn" + i, "on", 1]),
+      subs: [[0, "درس دورة الماء: صورة زجاج تكثّف عليه الماء تجذب الانتباه، ثم تُعلَن الأهداف، ويُستدعى السابق."],
+        [4.8, "ثم يُعرض المحتوى بمخطط واضح، ويُرسم مع الطلاب خطوة خطوة."], [8.0, "ثم يرسم كل طالب الدورة، ويتلقى تغذية راجعة محددة."],
+        [11.2, "ثم ثلاثة أسئلة قصيرة للتقويم، وتطبيق في موقف جديد يعزز الاحتفاظ والنقل."], [14.6, "تسعة أحداث تدعم عمليات التعلم الداخلية: نموذج جانييه."]] };
+  },
+
+
   waittime: () => {
     const seats = [[56, 80], [100, 80], [144, 80], [56, 132], [100, 132], [144, 132]];
     const shirts = ["#C0605A", "#4F7CAC", "#6A9A5B", "#B98A3E", "#7B62A8", "#3E8A8A"];
@@ -2252,7 +2380,7 @@ const SCENES = {
 
 SCENES.zpd = SCENES.scaffold; SCENES.spacing = SCENES.forgetting;
 // ملفات الفيديو الجاهزة للمشاهد (للحفظ والمشاركة)
-const SCENE_VIDEO = { pavlov: "pavlov", reinforce: "reinforce", waittime: "waittime", scaffold: "scaffold", zpd: "scaffold", forgetting: "forgetting", spacing: "forgetting", shaping: "shaping", bandura: "bandura", piaget: "piaget", chunking: "chunking", maslow: "maslow", testing: "testing", gestalt: "gestalt", jigsaw: "jigsaw", formative: "formative", meta: "meta", differentiate: "differentiate", kohlberg: "kohlberg", normal: "normal", erikson: "erikson", specs: "specs", polya: "polya", bruner: "bruner", spiral: "spiral", attention: "attention", serial: "serial", info: "info", kolb: "kolb", perception: "perception", interference: "interference", levels: "levels" };
+const SCENE_VIDEO = { pavlov: "pavlov", reinforce: "reinforce", waittime: "waittime", scaffold: "scaffold", zpd: "scaffold", forgetting: "forgetting", spacing: "forgetting", shaping: "shaping", bandura: "bandura", piaget: "piaget", chunking: "chunking", maslow: "maslow", testing: "testing", gestalt: "gestalt", jigsaw: "jigsaw", formative: "formative", meta: "meta", differentiate: "differentiate", kohlberg: "kohlberg", normal: "normal", erikson: "erikson", specs: "specs", polya: "polya", bruner: "bruner", spiral: "spiral", attention: "attention", serial: "serial", info: "info", kolb: "kolb", perception: "perception", interference: "interference", levels: "levels", targets: "targets", easiness: "easiness", discrim: "discrim", directions: "directions", lessonflow: "lessonflow", understand: "understand", knowledge: "knowledge", gagne: "gagne" };
 
 let sceneTimers = [];
 function mountScene(fig, spec, key) {
