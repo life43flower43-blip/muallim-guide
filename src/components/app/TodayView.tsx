@@ -16,7 +16,7 @@ import { ad } from "@/lib/arabic";
 import type { Tab } from "./AppShell";
 import { FitText } from "./FitText";
 
-type Door = { title: string; img: string; pos?: string; progress: number; run: () => void };
+type Door = { title: string; img: string; pos?: string; progress: number; run: () => void; special?: boolean };
 
 const frac = (n: number, of: number) => (of > 0 ? Math.min(1, n / of) : 0);
 
@@ -158,7 +158,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
     { title: "مهارات التدريس", pos: "50% 22%", img: "/home/skills-v2.jpg", progress: frac(labCount, 20), run: ui.startLab },
     { title: "طرائق التدريس", pos: "40% 55%", img: "/home/methods-v2.jpg", progress: prog.methods, run: () => ui.openCourseTab("M5") },
     { title: "المواقف الصفية", pos: "55% 50%", img: "/home/situations-v2.jpg", progress: frac(simCount, 20), run: ui.startSim },
-    { title: "اختبر نفسك", pos: "65% 55%", img: "/home/test-v2.jpg", progress: readiness / 100, run: () => onGoTab("practice") },
+    { title: "اختبر نفسك", pos: "50% 50%", img: "/home/test-v3.jpg", progress: readiness / 100, run: () => onGoTab("practice"), special: true },
     { title: "خطة الدرس", pos: "50% 50%", img: "/home/plan-v2.jpg", progress: frac(planCount, 5), run: ui.startStudio },
   ];
   // ترتيب شبكة الرئيسية: «اختبر نفسك» بجانب المحاكاة، والعناوين الطويلة في البطاقات العريضة
@@ -212,9 +212,10 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               className={cn("flex min-w-0 flex-col items-center gap-2", i === 1 || i === 2 ? "col-span-3" : "col-span-2")}
             >
               {/* صورة القسم بإطار ذهبي رفيع، وخط التقدّم الذهبي أسفلها */}
-              <span className="relative flex w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)] ring-1 ring-[#E3D3A0]" style={{ height: tileH ?? 120 }}>
+              <span className={cn("relative flex w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)]", d.special ? "ring-2 ring-[#F4C430]" : "ring-1 ring-[#E3D3A0]")} style={{ height: tileH ?? 120 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={d.img} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: d.pos }} />
+                <img src={d.img} alt="" className={cn("absolute inset-0 h-full w-full object-cover", d.special && "scale-110 blur-[1.5px]")} style={{ objectPosition: d.pos }} />
+                {d.special && <TestBadge />}
                 <span className="absolute inset-x-4 bottom-2.5 h-[3px] overflow-hidden rounded-full bg-white/80" aria-hidden="true">
                   <span className="block h-full rounded-full bg-gradient-to-l from-[#F4C430] to-[#E3B23C]" style={{ width: `${Math.round(d.progress * 100)}%` }} />
                 </span>
@@ -245,7 +246,8 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           >
             {/* الصورة تملأ البطاقة، ولوحة العنوان نصف شفافة تطفو فوق أسفلها */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={d.img} alt="" className="block h-[calc(clamp(64px,calc((100dvh-440px)/3),130px)+34px)] w-full object-cover" style={cardH ? { height: cardH } : undefined} />
+            <img src={d.img} alt="" className={cn("block h-[calc(clamp(64px,calc((100dvh-440px)/3),130px)+34px)] w-full object-cover", d.special && "scale-110 blur-[1.5px]")} style={cardH ? { height: cardH } : undefined} />
+            {d.special && <span className="absolute inset-x-0 top-0 flex items-center justify-center" style={{ height: cardH ?? "calc(clamp(64px,calc((100dvh-440px)/3),130px)+34px)" }}><TestBadge /></span>}
             <span className="absolute inset-x-1.5 bottom-1.5 flex min-h-[48px] flex-col justify-center overflow-hidden rounded-[20px] bg-white/80 px-3 py-2 backdrop-blur-md dark:bg-card/80">
               <FitText max={16} min={8} group="doors" className="text-center font-extrabold text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
               {/* خط التقدّم الذهبي */}
@@ -361,5 +363,20 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+/** بطاقة «اختبر نفسك» مميزة عن باقي الأبواب: ظلمة خضراء عميقة وختم ذهبي ينبض بهدوء */
+function TestBadge() {
+  return (
+    <>
+      <span className="absolute inset-0 bg-gradient-to-br from-[#0E3B2E]/75 via-[#0B2B3A]/60 to-[#122033]/85" aria-hidden="true" />
+      <span className="relative flex h-[52px] w-[52px] items-center justify-center" aria-hidden="true">
+        <span className="gold-wave" />
+        <span className="relative flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-[#FFE27A] via-[#F4C430] to-[#C99A06] ring-2 ring-[#FFF1B8]/70">
+          <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="#1B2A1F" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.2 4.2L19 7" /></svg>
+        </span>
+      </span>
+    </>
   );
 }
