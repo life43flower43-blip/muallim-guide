@@ -32,6 +32,7 @@ interface UiState {
   flashOpen: boolean; // بطاقات المفاهيم — وضع بطاقات القلب
   learnOpen: boolean; // شاشة المفاهيم التربوية (المحاور والفصول والمفاهيم)
   aiOpen: boolean; // المساعد الذكي — إجابات تربوية فورية من المحرك المحلي
+  mythOpen: boolean; // المفاهيم الخاطئة الشائعة — صحيحة أم خاطئة؟
   mindOpen: boolean; // الخرائط الذهنية المتحركة — نظريات التعلم والعمليات المعرفية
   startQuiz: (c: QuizConfig) => void;
   clearQuiz: () => void;
@@ -66,6 +67,8 @@ interface UiState {
   clearFlash: () => void;
   startAi: () => void;
   clearAi: () => void;
+  startMyths: () => void;
+  clearMyths: () => void;
   startMind: () => void;
   clearMind: () => void;
   startLearn: () => void;
@@ -92,6 +95,7 @@ export const useUi = create<UiState>((set) => ({
   placementOpen: false,
   flashOpen: false,
   aiOpen: false,
+  mythOpen: false,
   mindOpen: false,
   learnOpen: false,
   startQuiz: (c) => set({ quizConfig: c }),
@@ -127,6 +131,8 @@ export const useUi = create<UiState>((set) => ({
   clearFlash: () => set({ flashOpen: false }),
   startAi: () => set({ aiOpen: true }),
   clearAi: () => set({ aiOpen: false }),
+  startMyths: () => set({ mythOpen: true }),
+  clearMyths: () => set({ mythOpen: false }),
   startMind: () => set({ mindOpen: true }),
   clearMind: () => set({ mindOpen: false }),
   startLearn: () => set({ learnOpen: true }),
@@ -144,6 +150,7 @@ export const useUi = create<UiState>((set) => ({
       peerOpen: false,
       examsimOpen: false,
       placementOpen: false,
+      mythOpen: false,
       mindOpen: false,
       flashOpen: false,
       aiOpen: false,
