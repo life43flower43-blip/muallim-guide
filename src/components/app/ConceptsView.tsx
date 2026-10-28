@@ -787,21 +787,22 @@ export default function ConceptsView() {
   const resume = lastConcept ? conceptById(lastConcept) : undefined;
   const resumeSiblings = resume ? conceptsOfChapter(resume.courseId, resume.chapter) : [];
   const resumeRead = resumeSiblings.filter((c) => conceptReads[c.id]).length;
+  const totalRead = CONCEPTS.filter((c) => conceptReads[c.id]).length;
 
   return (
-    <div className="space-y-7 pb-6">
-
-      <div className="flex h-12 items-center gap-2 rounded-xl border border-input bg-card px-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
-        <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+    <div className="space-y-6 pb-6">
+      {/* البحث */}
+      <div className="flex h-12 items-center gap-2.5 rounded-[20px] border border-[var(--t075)] bg-white px-4 focus-within:border-[var(--t500)] dark:border-border dark:bg-card">
+        <Search className="h-5 w-5 shrink-0 text-[var(--t500)]" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="ابحث عن مفهوم أو نظرية"
           aria-label="ابحث عن مفهوم"
-          className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground"
+          className="w-full min-w-0 bg-transparent text-base outline-none placeholder:text-muted-foreground"
         />
         {query && (
-          <button type="button" onClick={() => setQuery("")} aria-label="مسح البحث" className="flex h-8 w-8 items-center justify-center rounded-full hover:bg-muted">
+          <button type="button" onClick={() => setQuery("")} aria-label="مسح البحث" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full hover:bg-muted">
             <X className="h-4 w-4 text-muted-foreground" />
           </button>
         )}
@@ -812,21 +813,19 @@ export default function ConceptsView() {
           <EmptyState icon={Search} title="لا نتائج مطابقة" sub="جرّب كلمة أقصر أو مختلفة" />
         ) : (
           <section>
-            <SectionHeader title="نتائج البحث" sub={arCount(searchResults.length, CONCEPT_FORMS)} />
+            <SectionHeader title="نتائج البحث" />
             <Divided>
               {searchResults.map((c) => (
                 <button
                   key={c.id}
                   type="button"
                   onClick={() => openConceptHere(c.id)}
-                  className="flex min-h-[60px] w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
+                  className="flex min-h-[60px] w-full min-w-0 items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
                 >
                   <CourseBadge id={c.courseId} size={36} />
                   <span className="min-w-0 flex-1">
-                    <span className="block text-base font-medium leading-6">{c.title}</span>
-                    <span className="block truncate text-sm text-muted-foreground">
-                      {COURSE_SHORT[c.courseId]}، {chapterLabel(c.chapter)}
-                    </span>
+                    <FitText max={15} min={11} className="font-bold leading-6">{c.title}</FitText>
+                    <FitText max={13} min={10} className="text-muted-foreground">{`${COURSE_SHORT[c.courseId] ?? ""}، ${chapterLabel(c.chapter)}`}</FitText>
                   </span>
                   <MasteryDot level={conceptMastery(c.id, attempts)} />
                 </button>
@@ -836,43 +835,52 @@ export default function ConceptsView() {
         )
       ) : (
         <>
+          {/* تابع التعلّم: بطاقة مدمجة بسطر واحد وزر تشغيل */}
           {resume && (
             <section>
               <SectionHeader title="تابع التعلّم" />
-              <Card className="p-5">
-                <div className="flex items-start gap-4">
-                  <CourseBadge id={resume.courseId} />
-                  <div className="min-w-0 flex-1">
-                    <p className="font-display text-lg font-bold leading-7">{resume.title}</p>
-                    <div className="mt-3 flex items-center gap-3">
-                      <ProgressBar value={resumeSiblings.length ? (resumeRead / resumeSiblings.length) * 100 : 0} className="flex-1" />
-                      <span className="shrink-0 text-xs text-muted-foreground">
-                        {ad(resumeRead)} من {ad(resumeSiblings.length)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <PrimaryButton onClick={() => openConceptHere(resume.id)} className="mt-4 w-full sm:w-auto">
-                  <Play className="h-4 w-4" /> تابع
-                </PrimaryButton>
-              </Card>
+              <button
+                type="button"
+                onClick={() => openConceptHere(resume.id)}
+                className="flex w-full min-w-0 items-center gap-3 rounded-[24px] bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] p-3.5 text-right text-white transition active:scale-[0.98]"
+              >
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] bg-white/15 text-[#FFE27A]">
+                  <CourseIcon id={resume.courseId} className="h-6 w-6" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <FitText max={17} min={12} className="font-extrabold leading-7">{resume.title}</FitText>
+                  <span className="mt-1.5 flex items-center gap-2">
+                    <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/20">
+                      <span className="block h-full rounded-full bg-[#FFE27A]" style={{ width: `${resumeSiblings.length ? Math.max(4, (resumeRead / resumeSiblings.length) * 100) : 0}%` }} />
+                    </span>
+                    <span className="shrink-0 text-xs font-bold text-white/85">{ad(resumeRead)} من {ad(resumeSiblings.length)}</span>
+                  </span>
+                </span>
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[var(--t800)]">
+                  <Play className="h-4 w-4 fill-current" />
+                </span>
+              </button>
             </section>
           )}
 
+          <ToolTiles
+            items={[
+              { icon: Layers, title: "البطاقات", onClick: () => useUi.getState().startFlash() },
+              { icon: Puzzle, title: "التحديات", onClick: () => useUi.getState().startChallenges() },
+            ]}
+          />
+
+          {/* المحاور: قائمة موحّدة، لكل محور اسمه في سطر واحد ووصفه وتقدّمه */}
           <section>
-            <div className="mb-5">
-              <ToolTiles
-                items={[
-                  { icon: Layers, title: "بطاقات المفاهيم", onClick: () => useUi.getState().startFlash() },
-                  { icon: Puzzle, title: "التحديات", onClick: () => useUi.getState().startChallenges() },
-                ]}
-              />
-            </div>
-            <SectionHeader title="المحاور" />
-            <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }} className="grid gap-3 sm:grid-cols-2">
+            <SectionHeader
+              title="المحاور"
+              action={<span className="shrink-0 text-sm font-bold text-[var(--t500)]">قرأت {ad(totalRead)} من {ad(CONCEPTS.length)}</span>}
+            />
+            <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }} className="grid gap-2.5 sm:grid-cols-2">
               {COURSES.map((course) => {
                 const cs = conceptsOfCourse(course.id);
                 const readCount = cs.filter((cc) => conceptReads[cc.id]).length;
+                const color = COURSE_COLOR[course.id] ?? "var(--primary)";
                 return (
                   <button
                     key={course.id}
@@ -881,18 +889,17 @@ export default function ConceptsView() {
                       setOpenCourseId(course.id);
                       setOpenChapter(null);
                     }}
-                    className="flex min-w-0 items-center gap-3 rounded-[24px] border border-[var(--t075)] bg-white p-3.5 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
+                    className="flex min-w-0 items-center gap-2.5 rounded-[22px] border border-[var(--t075)] bg-white p-3 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
                   >
-                    <CourseBadge id={course.id} size={48} />
+                    <CourseBadge id={course.id} size={40} />
                     <span className="min-w-0 flex-1">
-                      <FitText max={20} min={13} className="font-bold leading-7">{course.name}</FitText>
+                      <FitText max={16} min={10} className="font-bold leading-7">{course.name}</FitText>
+                      {COURSE_SUBTITLE[course.id] && <FitText max={13} min={9} className="leading-5 text-muted-foreground">{COURSE_SUBTITLE[course.id]}</FitText>}
                       <span className="mt-2 flex items-center gap-2">
-                        <span className="h-2.5 flex-1 overflow-hidden rounded-full bg-muted">
-                          <span className="block h-full rounded-full" style={{ width: `${cs.length ? (readCount / cs.length) * 100 : 0}%`, background: COURSE_COLOR[course.id] ?? "var(--primary)" }} />
+                        <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--t075)] dark:bg-muted">
+                          <span className="block h-full rounded-full" style={{ width: `${cs.length && readCount ? Math.max(3, (readCount / cs.length) * 100) : 0}%`, background: color }} />
                         </span>
-                        <span className="shrink-0 text-sm font-bold text-muted-foreground">
-                          {ad(readCount)}/{ad(cs.length)}
-                        </span>
+                        <span className="shrink-0 text-xs font-bold text-muted-foreground">{ad(readCount)} من {ad(cs.length)}</span>
                       </span>
                     </span>
                   </button>
