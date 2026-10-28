@@ -32,6 +32,7 @@ interface UiState {
   flashOpen: boolean; // بطاقات المفاهيم — وضع بطاقات القلب
   learnOpen: boolean; // شاشة المفاهيم التربوية (المحاور والفصول والمفاهيم)
   aiOpen: boolean; // المساعد الذكي — إجابات تربوية فورية من المحرك المحلي
+  mindOpen: boolean; // الخرائط الذهنية المتحركة — نظريات التعلم والعمليات المعرفية
   startQuiz: (c: QuizConfig) => void;
   clearQuiz: () => void;
   openConcept: (id: string) => void;
@@ -65,6 +66,8 @@ interface UiState {
   clearFlash: () => void;
   startAi: () => void;
   clearAi: () => void;
+  startMind: () => void;
+  clearMind: () => void;
   startLearn: () => void;
   clearLearn: () => void;
   /** يغلق كل الطبقات المفتوحة عند الانتقال بين الوجهات */
@@ -89,6 +92,7 @@ export const useUi = create<UiState>((set) => ({
   placementOpen: false,
   flashOpen: false,
   aiOpen: false,
+  mindOpen: false,
   learnOpen: false,
   startQuiz: (c) => set({ quizConfig: c }),
   clearQuiz: () => set({ quizConfig: null }),
@@ -123,6 +127,8 @@ export const useUi = create<UiState>((set) => ({
   clearFlash: () => set({ flashOpen: false }),
   startAi: () => set({ aiOpen: true }),
   clearAi: () => set({ aiOpen: false }),
+  startMind: () => set({ mindOpen: true }),
+  clearMind: () => set({ mindOpen: false }),
   startLearn: () => set({ learnOpen: true }),
   clearLearn: () => set({ learnOpen: false, pendingConceptId: null, pendingCourseId: null }),
   closeOverlays: () =>
@@ -138,6 +144,7 @@ export const useUi = create<UiState>((set) => ({
       peerOpen: false,
       examsimOpen: false,
       placementOpen: false,
+      mindOpen: false,
       flashOpen: false,
       aiOpen: false,
       learnOpen: false,

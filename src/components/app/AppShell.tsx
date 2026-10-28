@@ -43,6 +43,7 @@ import ExamSimView from "./ExamSimView";
 import PlacementView from "./PlacementView";
 import FlashcardsView from "./FlashcardsView";
 import AiAssistantView from "./AiAssistantView";
+import MindMapView from "./MindMapView";
 import BootBank from "./BootBank";
 import { ScreenShell } from "./ui-kit";
 import { Splash } from "./Splash";
@@ -426,6 +427,7 @@ export default function AppShell() {
       )}
       {ui.flashOpen && <FlashcardsView />}
       <AnimatePresence>{ui.aiOpen && <AiAssistantView key="ai" />}</AnimatePresence>
+      {ui.mindOpen && <MindMapView />}
     </div>
   );
 }
