@@ -184,3 +184,113 @@ export function weightOf(score: number, total: number): WeightResult | null {
     note = "وزن دقيق جدًا — كثير من الأسئلة الصغيرة يشعر المتعلم بالسحق بالتفاصيل؛ اجمع التفاصيل الصغرى في سؤال واحد موزون.";
   return { pct, note };
 }
+
+// ---------- جدول المواصفات: توزيع الأسئلة على الموضوعات ومستويات الأهداف ----------
+
+/** يوزّع العدد الكلي على الخانات بحسب أوزانها، ويجبر الكسور بطريقة أكبر الباقي فيبقى المجموع صحيحًا */
+export function blueprintOf(total: number, topicWeights: number[], levelPcts: number[]): number[][] | null {
+  const tw = topicWeights.reduce((a, b) => a + b, 0);
+  const lw = levelPcts.reduce((a, b) => a + b, 0);
+  if (total <= 0 || tw <= 0 || lw <= 0 || topicWeights.some((w) => w < 0) || levelPcts.some((w) => w < 0)) return null;
+  const cells: { r: number; c: number; exact: number; n: number }[] = [];
+  topicWeights.forEach((w, r) =>
+    levelPcts.forEach((p, c) => {
+      const exact = (total * (w / tw) * p) / lw;
+      cells.push({ r, c, exact, n: Math.floor(exact) });
+    }),
+  );
+  let left = total - cells.reduce((a, x) => a + x.n, 0);
+  for (const x of [...cells].sort((a, b) => b.exact - b.n - (a.exact - a.n))) {
+    if (left <= 0) break;
+    x.n += 1;
+    left -= 1;
+  }
+  const out = topicWeights.map(() => levelPcts.map(() => 0));
+  for (const x of cells) out[x.r][x.c] = x.n;
+  return out;
+}
+
+// ---------- الدرجة المعيارية ----------
+
+export function meanSd(xs: number[]): { mean: number; sd: number } | null {
+  if (xs.length < 2) return null;
+  const mean = xs.reduce((a, b) => a + b, 0) / xs.length;
+  const sd = Math.sqrt(xs.reduce((a, x) => a + (x - mean) ** 2, 0) / xs.length);
+  return { mean, sd };
+}
+
+/** التوزيع الاعتدالي التراكمي — تقريب أبراموفيتز وستيغن */
+export function normalCdf(z: number): number {
+  const t = 1 / (1 + 0.2316419 * Math.abs(z));
+  const d = 0.3989423 * Math.exp((-z * z) / 2);
+  const p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+  return z >= 0 ? 1 - p : p;
+}
+
+export interface ZResult {
+  mean: number;
+  sd: number;
+  z: number;
+  t: number; // الدرجة التائية: ٥٠ + ١٠ × الزائية
+  percentile: number; // نسبة من يقل عنه تقريبًا
+}
+
+export function zScoreOf(scores: number[], score: number): ZResult | null {
+  const ms = meanSd(scores);
+  if (!ms || ms.sd === 0) return null;
+  const z = (score - ms.mean) / ms.sd;
+  return { ...ms, z, t: 50 + 10 * z, percentile: normalCdf(z) };
+}
+
+// ---------- تحليل البدائل ----------
+
+export type DistractorVerdict = "key-good" | "key-weak" | "key-neg" | "dead" | "reverse" | "good";
+
+export interface DistractorResult {
+  p: number;
+  d: number;
+  rows: { upper: number; lower: number; verdict: DistractorVerdict }[];
+}
+
+export function distractorsOf(correct: number, upper: number[], lower: number[]): DistractorResult | null {
+  const nu = upper.reduce((a, b) => a + b, 0);
+  const nl = lower.reduce((a, b) => a + b, 0);
+  if (nu <= 0 || nl <= 0 || [...upper, ...lower].some((x) => x < 0)) return null;
+  const d = upper[correct] / nu - lower[correct] / nl;
+  const rows = upper.map((u, i) => {
+    const l = lower[i];
+    let verdict: DistractorVerdict;
+    if (i === correct) verdict = d >= 0.3 ? "key-good" : d >= 0 ? "key-weak" : "key-neg";
+    else if (u + l === 0) verdict = "dead";
+    else if (u / nu > l / nl) verdict = "reverse";
+    else verdict = "good";
+    return { upper: u, lower: l, verdict };
+  });
+  return { p: (upper[correct] + lower[correct]) / (nu + nl), d, rows };
+}
+
+// ---------- ثبات الاختبار: معادلة كودر ريتشاردسون ٢١ ----------
+
+export interface ReliabilityResult {
+  r: number;
+  mean: number;
+  variance: number;
+  word: string;
+  tone: "good" | "fair" | "weak";
+  note: string;
+}
+
+export function kr21Of(items: number, scores: number[]): ReliabilityResult | null {
+  if (items < 2 || scores.length < 3 || scores.some((s) => s < 0 || s > items)) return null;
+  const ms = meanSd(scores);
+  if (!ms || ms.sd === 0) return null;
+  const variance = ms.sd ** 2;
+  const r = (items / (items - 1)) * (1 - (ms.mean * (items - ms.mean)) / (items * variance));
+  if (r >= 0.8)
+    return { r, mean: ms.mean, variance, word: "ثبات مرتفع", tone: "good", note: "نتائج الاختبار متسقة؛ يمكن الاعتماد عليه في قرارات مهمة إذا كان صادقًا في قياس أهدافه." };
+  if (r >= 0.7)
+    return { r, mean: ms.mean, variance, word: "ثبات جيد", tone: "good", note: "مستوى مناسب لاختبار صفي. زيادة عدد الأسئلة الجيدة ترفعه أكثر." };
+  if (r >= 0.5)
+    return { r, mean: ms.mean, variance, word: "ثبات مقبول", tone: "fair", note: "مقبول لاختبار قصير، لكن لا تبنِ عليه وحده قرارًا مهمًا. راجع الأسئلة ضعيفة التمييز وأضف أسئلة جيدة." };
+  return { r, mean: ms.mean, variance, word: "ثبات ضعيف", tone: "weak", note: "الدرجات تتأثر كثيرًا بالصدفة. ابحث عن الأسئلة الغامضة أو السالبة التمييز، وزد عدد الأسئلة." };
+}
