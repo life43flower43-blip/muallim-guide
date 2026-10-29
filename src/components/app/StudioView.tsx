@@ -190,7 +190,7 @@ export default function StudioView() {
   const saveLessonPlan = useApp((s) => s.saveLessonPlan);
   const removeLessonPlan = useApp((s) => s.removeLessonPlan);
 
-  const [tab, setTab] = useState<StudioTab>("new");
+  const [tab, setTab] = useState<StudioTab>("templates");
   const [form, setForm] = useState<FormPlan>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [review, setReview] = useState<PlanReview | null>(null);
@@ -358,10 +358,9 @@ export default function StudioView() {
   }
 
   const tabs = (
-    <div role="tablist" aria-label="أقسام الاستوديو" className="mb-5 grid grid-cols-3 gap-1 rounded-[22px] border border-[#E3D3A0] bg-white p-1 dark:bg-card">
+    <div role="tablist" aria-label="أقسام الاستوديو" className="mb-5 grid grid-cols-2 gap-1 rounded-[22px] border border-[#E3D3A0] bg-white p-1 dark:bg-card">
       {(
         [
-          ["new", editingId ? "تعديل الخطة" : "خطة جديدة", NotebookPen],
           ["templates", "خطط جاهزة", LayoutTemplate],
           ["mine", `خططي${lessonPlans.length ? ` (${ad(lessonPlans.length)})` : ""}`, FolderOpen],
         ] as const
@@ -384,9 +383,9 @@ export default function StudioView() {
 
   return (
     <ScreenShell
-      title="استوديو خطط الدروس"
-      sub="خطة كاملة الأركان بخطوات موجهة، وتقييم قبل الحصة"
-      onClose={clearStudio}
+      title={tab === "new" ? "تعديل الخطة" : "استوديو خطط الدروس"}
+      onClose={tab === "new" ? undefined : clearStudio}
+      onBack={tab === "new" ? () => setTab(editingId ? "mine" : "templates") : undefined}
       footer={
         tab === "new" ? (
           <>
@@ -400,7 +399,7 @@ export default function StudioView() {
         ) : undefined
       }
     >
-      {tabs}
+      {tab !== "new" && tabs}
       {tab === "new" ? (
         <div className="space-y-4">
           {formErr && <Callout tone="danger">{formErr}</Callout>}
@@ -546,8 +545,8 @@ export default function StudioView() {
         <EmptyState
           icon={NotebookPen}
           title="لم تحفظ خططًا بعد"
-          sub="ابدأ خطة جديدة أو من خطة جاهزة، ثم قيّمها واحفظها هنا."
-          action={<PrimaryButton onClick={() => setTab("new")}>خطة جديدة</PrimaryButton>}
+          sub="اختر خطة جاهزة، وعدّلها لصفك، ثم احفظها هنا."
+          action={<PrimaryButton onClick={() => setTab("templates")}>الخطط الجاهزة</PrimaryButton>}
         />
       ) : (
         <Divided>

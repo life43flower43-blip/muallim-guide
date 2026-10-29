@@ -218,13 +218,16 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     saveSnapshot({ config, idx, review, sessionXp });
   }, [finished, config, idx, review, sessionXp, questions.length]);
 
+  // الضغط على الخيار يعتمده مباشرة بلا زر تأكيد
   const choose = (text: string) => {
     if (graded !== null) return;
     setSelected(text);
+    grade(text);
   };
 
-  const grade = () => {
-    if (!q || selected === null || graded !== null) return;
+  const grade = (picked: string | null = selected) => {
+    if (!q || picked === null || graded !== null) return;
+    const selected = picked;
     const ok = selected === q.correct;
     setGraded(ok);
     // الخطأ يبقى أمام الطالب، والشرح بضغطة واحدة فلا تزدحم الشاشة
@@ -652,8 +655,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                 )}
               </motion.div>
             )}
-            {!answered && selected !== null && (
-              // ما مدى ثقتك؟ اختيارية، وتكشف الفرق بين ما تظن أنك تعرفه وما تعرفه فعلًا
+            {!answered && (
+              // ما مدى ثقتك؟ تُختار قبل الإجابة، وهي اختيارية، وتكشف الفرق بين ما تظن أنك تعرفه وما تعرفه فعلًا
               <div className="mb-3 flex items-center gap-2" role="radiogroup" aria-label="ما مدى ثقتك؟">
                 <span className="shrink-0 text-sm font-bold text-[var(--t500)]">ثقتك:</span>
                 {CONF_OPTIONS.map((o) => (
@@ -680,16 +683,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   الشرح
                 </button>
               )}
-              {!answered ? (
-                <button
-                  type="button"
-                  disabled={selected === null}
-                  onClick={grade}
-                  className="min-h-[52px] flex-[2] rounded-[20px] bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-lg font-bold text-white transition active:scale-[0.98] disabled:from-[var(--t075)] disabled:to-[var(--t075)] disabled:text-[var(--t450)]"
-                >
-                  {instantFeedback ? "تحقّق" : "تأكيد"}
-                </button>
-              ) : (
+              {answered && (
                 <button
                   type="button"
                   onClick={next}
