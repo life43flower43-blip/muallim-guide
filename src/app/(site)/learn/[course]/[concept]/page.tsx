@@ -119,7 +119,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
       <div className="rounded-2xl bg-accent p-5">
         <p className="font-display text-lg font-semibold text-accent-foreground">تدرّب على هذا المفهوم</p>
         <p className="mt-1 text-sm leading-7 text-accent-foreground/85">أسئلة بشرح بعد كل إجابة، ومراجعة لأخطائك في موعدها، مجانًا.</p>
-        <Link href={`/?concept=${c.id}`} className="mt-3 inline-block rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">
+        <Link href={`/app?concept=${c.id}`} className="mt-3 inline-block rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">
           ابدأ التدريب
         </Link>
       </div>

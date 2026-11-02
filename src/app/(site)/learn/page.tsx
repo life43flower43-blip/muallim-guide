@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE_URL, courseChapters, courseList } from "@/lib/public-bank";
+import { arCount, CHAPTER_FORMS, CONCEPT_FORMS } from "@/lib/arabic";
 
 export const metadata: Metadata = {
   title: "محاور إعداد المعلم | تربوي",
@@ -23,7 +24,7 @@ export default function LearnIndex() {
           <Link key={c.id} href={`/learn/${c.id}`} className="rounded-2xl border border-border bg-card p-5 transition-colors hover:border-primary/40">
             <h2 className="font-display text-lg font-semibold">{c.name}</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              {courseChapters(c.id).length} فصلًا، {c.concepts.length} مفهومًا
+              {arCount(courseChapters(c.id).length, CHAPTER_FORMS)}، {arCount(c.concepts.length, CONCEPT_FORMS)}
             </p>
           </Link>
         ))}

@@ -40,10 +40,10 @@ export async function GET(request: NextRequest) {
       })
       if (due > 0) {
         const n = due.toLocaleString('ar-u-nu-arab')
-        payload = { title: 'حان موعد مراجعة أخطائك', body: due === 1 ? 'خطأ واحد ينتظر المراجعة قبل أن يُنسى.' : `${n} أخطاء تنتظر المراجعة قبل أن تُنسى.`, url: '/?tab=mistakes' }
+        payload = { title: 'حان موعد مراجعة أخطائك', body: due === 1 ? 'خطأ واحد ينتظر المراجعة قبل أن يُنسى.' : `${n} أخطاء تنتظر المراجعة قبل أن تُنسى.`, url: '/app?tab=mistakes' }
       }
     }
-    const res = await sendPush(s, { tag: 'daily', url: '/', ...payload })
+    const res = await sendPush(s, { tag: 'daily', url: '/app', ...payload })
     if (res === 'gone') {
       await db.pushSubscription.delete({ where: { id: s.id } })
       removed++

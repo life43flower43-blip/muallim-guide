@@ -32,16 +32,16 @@ export async function GET(request: NextRequest) {
   const cookieStore = await cookies()
   const stateFromCookie = cookieStore.get(STATE_COOKIE_NAME)?.value
   if (!stateFromUrl || !stateFromCookie || stateFromUrl !== stateFromCookie) {
-    return NextResponse.redirect(`${APP_URL}/?login=error&reason=state_mismatch`, { status: 302 })
+    return NextResponse.redirect(`${APP_URL}/app?login=error&reason=state_mismatch`, { status: 302 })
   }
   cookieStore.delete(STATE_COOKIE_NAME)
 
-  if (error || !code) return NextResponse.redirect(`${APP_URL}/?login=cancelled`, { status: 302 })
+  if (error || !code) return NextResponse.redirect(`${APP_URL}/app?login=cancelled`, { status: 302 })
 
   const clientId = process.env.GOOGLE_CLIENT_ID
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET
   if (!clientId || !clientSecret) {
-    return NextResponse.redirect(`${APP_URL}/?login=error&reason=no_config`, { status: 302 })
+    return NextResponse.redirect(`${APP_URL}/app?login=error&reason=no_config`, { status: 302 })
   }
 
   try {
@@ -59,31 +59,31 @@ export async function GET(request: NextRequest) {
     })
     if (!tokenResponse.ok) {
       console.error('Google token exchange failed:', await tokenResponse.text())
-      return NextResponse.redirect(`${APP_URL}/?login=error&reason=token_failed`, { status: 302 })
+      return NextResponse.redirect(`${APP_URL}/app?login=error&reason=token_failed`, { status: 302 })
     }
     const tokens = await tokenResponse.json()
-    if (!tokens.access_token) return NextResponse.redirect(`${APP_URL}/?login=error`, { status: 302 })
+    if (!tokens.access_token) return NextResponse.redirect(`${APP_URL}/app?login=error`, { status: 302 })
 
     // ٢. بيانات المستخدم
     const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
       headers: { Authorization: `Bearer ${tokens.access_token}` },
     })
-    if (!userResponse.ok) return NextResponse.redirect(`${APP_URL}/?login=error`, { status: 302 })
+    if (!userResponse.ok) return NextResponse.redirect(`${APP_URL}/app?login=error`, { status: 302 })
     const info = await userResponse.json()
     const googleId: string | undefined = info.id
     const email = String(info.email || '').toLowerCase()
     const name: string = info.name || email.split('@')[0] || 'مستخدم'
     const picture: string | undefined = info.picture
-    if (!googleId || !email) return NextResponse.redirect(`${APP_URL}/?login=error`, { status: 302 })
+    if (!googleId || !email) return NextResponse.redirect(`${APP_URL}/app?login=error`, { status: 302 })
     if (info.verified_email !== true) {
-      return NextResponse.redirect(`${APP_URL}/?login=error&reason=email_not_verified`, { status: 302 })
+      return NextResponse.redirect(`${APP_URL}/app?login=error&reason=email_not_verified`, { status: 302 })
     }
 
     // ٣. حساب Google مربوط من قبل
     const linked = await db.oAuthAccount.findUnique({
       where: { provider_providerAccountId: { provider: 'google', providerAccountId: googleId } },
     })
-    if (linked) return signedInRedirect(`${APP_URL}/?login=success`, linked.userId)
+    if (linked) return signedInRedirect(`${APP_URL}/app?login=success`, linked.userId)
 
     // ٤. مستخدم بالبريد نفسه: يُربط به حساب Google، أو يُنشأ حساب جديد
     const user = (await db.user.findUnique({ where: { email } })) ??
@@ -91,9 +91,9 @@ export async function GET(request: NextRequest) {
     await db.oAuthAccount.create({
       data: { userId: user.id, provider: 'google', providerAccountId: googleId, email, name, picture },
     })
-    return signedInRedirect(`${APP_URL}/?login=success`, user.id)
+    return signedInRedirect(`${APP_URL}/app?login=success`, user.id)
   } catch (err) {
     console.error('Google OAuth callback error:', err)
-    return NextResponse.redirect(`${APP_URL}/?login=error`, { status: 302 })
+    return NextResponse.redirect(`${APP_URL}/app?login=error`, { status: 302 })
   }
 }
