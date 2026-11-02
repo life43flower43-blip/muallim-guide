@@ -1,4 +1,5 @@
 // غلاف خاص بكل مقال: لون المحور، وزخرفة تختلف بحسب المقال، وأيقونة من موضوعه، وعنوانه
+import { ARTICLE_COVERS } from "@/lib/article-covers";
 import {
   Accessibility, Activity, Baby, BookOpen, Brain, BrainCircuit, ChartBar, ClipboardCheck, Compass, Cpu, Ear, Eye, FileQuestion,
   Flame, Gauge, GraduationCap, Hand, HeartHandshake, Heart, Lightbulb, ListChecks, Map, MessageCircle, Mic, Network, Palette,
@@ -124,6 +125,7 @@ const PHOTOS: Record<string, string[]> = {
 const POS = ["50% 50%", "30% 40%", "70% 45%", "50% 25%", "40% 70%", "65% 60%"];
 
 export function photoFor(id: string, courseId: string) {
+  if (ARTICLE_COVERS.has(id)) return { src: `/covers/${id}.jpg`, pos: "50% 45%" };
   const seed = hash(id);
   const list = PHOTOS[courseId] ?? ["/home/concepts-v2.jpg"];
   return { src: list[seed % list.length], pos: POS[(seed >> 3) % POS.length] };
