@@ -1,29 +1,54 @@
 "use client";
 
-// أزرار الهاتف في رأس الموقع: زر بحث يفتح شريط بحث بعرض الشاشة، وزر قائمة يفتح لوحة كاملة
+// أزرار الهاتف في رأس الموقع: زر بحث يفتح شريط بحث بعرض الشاشة، وزر قائمة يفتح درجًا جانبيًا من اليمين
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, Search, X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { BookOpen, ChevronDown, ChevronLeft, Home, Info, Layers, Library, Newspaper, Search, Smartphone, Timer, X } from "lucide-react";
 import SearchBox from "./SearchBox";
 
 type L = { href: string; label: string };
 
+const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  "/": Home,
+  "/articles": Newspaper,
+  "/learn": Layers,
+  "/glossary": Library,
+  "/sections/exam-simulator": Timer,
+  "/sections": Smartphone,
+  "/about": Info,
+};
+
+function Burger({ open }: { open: boolean }) {
+  // ثلاثة خطوط بأطوال مختلفة تتحول إلى علامة إغلاق
+  return (
+    <span className="relative block h-5 w-6" aria-hidden="true">
+      <span className={`absolute end-0 h-[2.5px] rounded-full bg-current transition-all ${open ? "top-[9px] w-6 rotate-45" : "top-0.5 w-6"}`} />
+      <span className={`absolute end-0 top-[9px] h-[2.5px] rounded-full bg-current transition-all ${open ? "w-0 opacity-0" : "w-4"}`} />
+      <span className={`absolute end-0 h-[2.5px] rounded-full bg-current transition-all ${open ? "top-[9px] w-6 -rotate-45" : "top-[17px] w-5"}`} />
+    </span>
+  );
+}
+
 export default function MobileBar({ nav, courses }: { nav: L[]; courses: L[] }) {
   const [panel, setPanel] = useState<"none" | "search" | "menu">("none");
+  const [showCourses, setShowCourses] = useState(false);
+  const path = usePathname();
+  useEffect(() => setPanel("none"), [path]);
   useEffect(() => {
     document.body.style.overflow = panel === "menu" ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [panel]);
   const close = () => setPanel("none");
-  const btn = "flex h-11 w-11 items-center justify-center rounded-xl border border-[#D4E3DA] text-[#136F5C]";
+  const btn = "flex h-11 w-11 items-center justify-center rounded-full text-[#136F5C] transition active:bg-[#EEF5F1]";
 
   return (
-    <div className="ms-auto flex items-center gap-2 md:hidden">
-      <button type="button" aria-label="بحث" onClick={() => setPanel(panel === "search" ? "none" : "search")} className={`${btn} ${panel === "search" ? "bg-[#136F5C] text-white" : ""}`}>
-        {panel === "search" ? <X className="h-6 w-6" /> : <Search className="h-6 w-6" />}
+    <div className="ms-auto flex items-center gap-1 md:hidden">
+      <button type="button" aria-label="بحث" onClick={() => setPanel(panel === "search" ? "none" : "search")} className={`${btn} ${panel === "search" ? "bg-[#EEF5F1]" : ""}`}>
+        {panel === "search" ? <X className="h-6 w-6" /> : <Search className="h-6 w-6" strokeWidth={2.2} />}
       </button>
-      <button type="button" aria-label="القائمة" onClick={() => setPanel("menu")} className={btn}>
-        <Menu className="h-6 w-6" />
+      <button type="button" aria-label="القائمة" aria-expanded={panel === "menu"} onClick={() => setPanel(panel === "menu" ? "none" : "menu")} className={btn}>
+        <Burger open={panel === "menu"} />
       </button>
 
       {panel === "search" && (
@@ -32,33 +57,60 @@ export default function MobileBar({ nav, courses }: { nav: L[]; courses: L[] }) 
         </div>
       )}
 
-      {panel === "menu" && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-white">
-          <div className="flex items-center justify-between border-b border-[#E2ECE6] px-4 py-3">
-            <span className="font-display text-[22px] font-extrabold text-[#136F5C]">تربوي</span>
-            <button type="button" aria-label="إغلاق" onClick={close} className={btn}><X className="h-6 w-6" /></button>
+      {/* الدرج الجانبي */}
+      <div className={`fixed inset-0 z-50 ${panel === "menu" ? "" : "pointer-events-none"}`} aria-hidden={panel !== "menu"}>
+        <button type="button" aria-label="إغلاق القائمة" onClick={close} className={`absolute inset-0 bg-[#0B2A23]/50 transition-opacity ${panel === "menu" ? "opacity-100" : "opacity-0"}`} />
+        <aside className={`absolute inset-y-0 start-0 flex w-[84%] max-w-[340px] flex-col bg-white transition-transform duration-300 ${panel === "menu" ? "translate-x-0" : "translate-x-full"}`}>
+          <div className="bg-[linear-gradient(135deg,#0E4F42,#136F5C)] px-5 pb-5 pt-4 text-white">
+            <div className="flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <img src="/icons/logo-128.png" alt="" className="h-10 w-10 rounded-xl bg-white object-contain p-0.5" />
+                <span className="font-display text-[22px] font-extrabold">تربوي</span>
+              </span>
+              <button type="button" aria-label="إغلاق" onClick={close} className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15"><X className="h-5 w-5" /></button>
+            </div>
+            <p className="mt-2 text-[13px] text-white/80">دليل المعلم إلى اختبار الرخصة والتوظيف</p>
           </div>
-          <div className="flex-1 overflow-y-auto px-4 py-4">
-            <SearchBox onDone={close} />
-            <ul className="mt-4 grid grid-cols-2 gap-2">
-              {nav.map((n) => (
-                <li key={n.href}>
-                  <Link href={n.href} onClick={close} className="flex h-14 items-center justify-center rounded-2xl bg-[#F4F8F6] px-2 text-center text-[15px] font-bold text-[#14302A]">{n.label}</Link>
-                </li>
-              ))}
-            </ul>
-            <p className="mb-2 mt-6 text-[13px] font-extrabold text-[#5B7268]">المحاور</p>
-            <ul className="grid grid-cols-2 gap-2">
-              {courses.map((c) => (
-                <li key={c.href}>
-                  <Link href={c.href} onClick={close} className="block truncate rounded-xl border border-[#E2ECE6] px-3 py-3 text-[14px] font-bold text-[#1E3A32]">{c.label}</Link>
-                </li>
-              ))}
-            </ul>
-            <Link href="/app" onClick={close} className="mt-6 flex h-12 items-center justify-center rounded-2xl bg-[#E8A317] font-bold text-[#2B1D00]">ابدأ التدريب مجانًا</Link>
+
+          <nav className="flex-1 overflow-y-auto py-2">
+            {nav.map((n) => {
+              const Icon = ICONS[n.href] ?? BookOpen;
+              const active = n.href === "/" ? path === "/" : path.startsWith(n.href);
+              if (n.href === "/learn")
+                return (
+                  <div key={n.href}>
+                    <button type="button" onClick={() => setShowCourses((v) => !v)} className={`flex w-full items-center gap-3 px-5 py-3.5 text-[16px] font-bold ${active ? "text-[#136F5C]" : "text-[#14302A]"}`}>
+                      <Icon className="h-5 w-5 text-[#136F5C]" />
+                      <span className="flex-1 text-right">{n.label}</span>
+                      <ChevronDown className={`h-5 w-5 text-[#8AA095] transition ${showCourses ? "rotate-180" : ""}`} />
+                    </button>
+                    {showCourses && (
+                      <div className="mx-5 mb-2 border-s-2 border-[#DDE9E2] ps-3">
+                        <Link href="/learn" className="block py-2 text-[14px] font-bold text-[#136F5C]">كل المحاور</Link>
+                        {courses.map((c) => (
+                          <Link key={c.href} href={c.href} className="block py-2 text-[14px] text-[#2E4A42]">{c.label}</Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              return (
+                <Link key={n.href} href={n.href} className={`flex items-center gap-3 px-5 py-3.5 text-[16px] font-bold ${active ? "bg-[#EEF5F1] text-[#136F5C]" : "text-[#14302A]"}`}>
+                  <Icon className="h-5 w-5 text-[#136F5C]" />
+                  <span className="flex-1">{n.label}</span>
+                  <ChevronLeft className="h-4 w-4 text-[#B5C6BE]" />
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="border-t border-[#E2ECE6] p-4">
+            <Link href="/app" className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#E8A317] font-bold text-[#2B1D00]">
+              <Smartphone className="h-5 w-5" /> ابدأ التدريب مجانًا
+            </Link>
           </div>
-        </div>
-      )}
+        </aside>
+      </div>
     </div>
   );
 }
