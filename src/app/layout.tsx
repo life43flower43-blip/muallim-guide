@@ -2,7 +2,11 @@ import type { Metadata, Viewport } from "next";
 import { Tajawal } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import Script from "next/script";
 import Providers from "./providers";
+
+// معرّف Google Analytics: يمكن تغييره من متغيرات Vercel دون تعديل الكود
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-N07YNJGJB2";
 
 // خط تجوّل مستضاف مع التطبيق نفسه: لا ينتظر الفتح خوادم خارجية
 const tajawal = Tajawal({ subsets: ["arabic"], weight: ["400", "500", "700", "800"], display: "swap", variable: "--font-tajawal" });
@@ -58,6 +62,15 @@ export default function RootLayout({
       <body className="antialiased bg-background text-foreground font-sans">
         <Providers>{children}</Providers>
         <Toaster />
+        {/* إحصاءات الزوار: تُحمَّل بعد ظهور الصفحة فلا تبطئها */}
+        {process.env.NODE_ENV === "production" && GA_ID && (
+          <>
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+            <Script id="ga" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   );
