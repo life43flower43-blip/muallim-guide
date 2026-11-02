@@ -3,22 +3,18 @@ import Link from "next/link";
 import { Search, Clock, Smartphone, ChevronLeft } from "lucide-react";
 import type { Concept } from "@/lib/types";
 import { chapterLabel, courseList, SITE_URL } from "@/lib/public-bank";
-import { APP_SECTIONS, courseMeta, excerpt, latestConcepts, pickedConcepts, readMinutes } from "@/lib/site-nav";
+import { APP_SECTIONS, courseMeta, excerpt, pickedConcepts, readMinutes } from "@/lib/site-nav";
 import { ad } from "@/lib/arabic";
 import AdSlot from "./AdSlot";
+import ShareBar from "./ShareBar";
+import { Cover, MiniCover } from "./Cover";
+import { type Article, allArticles, arDate, articleCourse } from "@/lib/articles";
 
 const href = (c: Concept) => `/learn/${c.courseId}/${c.id}`;
 
-/** صورة المقال المصغرة: صورة المحور بلونه، وعليها اسم الفصل */
-export function Thumb({ c, className = "" }: { c: Concept; className?: string }) {
-  const m = courseMeta(c.courseId);
-  return (
-    <span className={`relative block overflow-hidden bg-[#DDE8E2] ${className}`}>
-      <img src={m.img} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
-      <span className="absolute inset-0" style={{ background: `linear-gradient(to top, ${m.color}E6 0%, ${m.color}55 55%, transparent 100%)` }} />
-      <span className="absolute inset-x-0 bottom-0 line-clamp-2 p-3 text-[13px] font-bold leading-5 text-white">{chapterLabel(c.chapter)}</span>
-    </span>
-  );
+/** غلاف المقال: خاص بكل مقال (لون المحور، وزخرفة، وأيقونة الموضوع، والعنوان) */
+export function Thumb({ c, className = "", compact = false }: { c: Concept; className?: string; compact?: boolean }) {
+  return <Cover id={c.id} title={c.title} courseId={c.courseId} label={chapterLabel(c.chapter)} className={className} compact={compact} />;
 }
 
 export function CatBadge({ id }: { id: string }) {
@@ -34,7 +30,7 @@ export function CatBadge({ id }: { id: string }) {
 export function PostCard({ c, big = false }: { c: Concept; big?: boolean }) {
   return (
     <article className="flex flex-col overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
-      <Link href={href(c)} tabIndex={-1} aria-hidden="true"><Thumb c={c} className={big ? "h-56 sm:h-72" : "h-40"} /></Link>
+      <Link href={href(c)} tabIndex={-1} aria-hidden="true"><Thumb c={c} compact className={big ? "h-48 sm:h-64" : "h-36"} /></Link>
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-center justify-between gap-2">
           <CatBadge id={c.courseId} />
@@ -43,7 +39,7 @@ export function PostCard({ c, big = false }: { c: Concept; big?: boolean }) {
         <h3 className={`mt-2 font-display font-bold leading-[1.55] text-[#14302A] ${big ? "text-[22px]" : "text-[17px]"}`}>
           <Link href={href(c)} className="hover:text-[#136F5C]">{c.title}</Link>
         </h3>
-        <p className={`mt-1.5 leading-7 text-[#4D635A] ${big ? "text-[15px]" : "line-clamp-3 text-[14px]"}`}>{excerpt(c, big ? 220 : 130)}</p>
+        <p className={`mt-1.5 leading-7 text-[#4D635A] ${big ? "line-clamp-3 text-[15px]" : "line-clamp-2 text-[14px]"}`}>{excerpt(c, big ? 220 : 130)}</p>
         <Link href={href(c)} className="mt-auto flex items-center gap-1 pt-3 text-[14px] font-bold text-[#136F5C]">اقرأ المزيد <ChevronLeft className="h-4 w-4" /></Link>
       </div>
     </article>
@@ -54,13 +50,13 @@ export function PostCard({ c, big = false }: { c: Concept; big?: boolean }) {
 export function PostRow({ c, showExcerpt = false }: { c: Concept; showExcerpt?: boolean }) {
   return (
     <article className="flex gap-3">
-      <Link href={href(c)} tabIndex={-1} aria-hidden="true" className="shrink-0"><Thumb c={c} className="h-[72px] w-[96px] rounded-xl [&>span:last-child]:hidden" /></Link>
+      <Link href={href(c)} tabIndex={-1} aria-hidden="true" className="shrink-0"><MiniCover id={c.id} title={c.title} courseId={c.courseId} hint={c.chapter} className="h-[72px] w-[96px] rounded-xl" /></Link>
       <div className="min-w-0">
-        <h3 className="font-bold leading-6 text-[#14302A]"><Link href={href(c)} className="hover:text-[#136F5C]">{c.title}</Link></h3>
+        <h3 className="line-clamp-2 text-[15px] font-bold leading-6 text-[#14302A]"><Link href={href(c)} className="hover:text-[#136F5C]">{c.title}</Link></h3>
         {showExcerpt ? (
           <p className="mt-1 line-clamp-2 text-[14px] leading-6 text-[#4D635A]">{excerpt(c, 120)}</p>
         ) : (
-          <p className="mt-0.5 text-[12px] text-[#6B8077]">{courseMeta(c.courseId).short}</p>
+          <p className="mt-0.5 flex items-center gap-1 text-[12px] text-[#6B8077]"><Clock className="h-3 w-3" /> {ad(readMinutes(c))} د قراءة</p>
         )}
       </div>
     </article>
@@ -134,7 +130,17 @@ export function Sidebar() {
       <AdSlot />
 
       <Widget title="أحدث المقالات">
-        <div className="space-y-4">{latestConcepts(5).map((c) => <PostRow key={c.id} c={c} />)}</div>
+        <div className="space-y-4">
+          {allArticles().slice(0, 5).map((a) => (
+            <article key={a.slug} className="flex gap-3">
+              <Link href={`/articles/${a.slug}`} tabIndex={-1} aria-hidden="true" className="shrink-0"><MiniCover id={a.slug} title={a.title} courseId={articleCourse(a)} className="h-[72px] w-[96px] rounded-xl" /></Link>
+              <div className="min-w-0">
+                <h3 className="line-clamp-2 font-bold leading-6 text-[#14302A]"><Link href={`/articles/${a.slug}`} className="hover:text-[#136F5C]">{a.title}</Link></h3>
+                <p className="mt-0.5 text-[12px] text-[#6B8077]">{arDate(a.date)}</p>
+              </div>
+            </article>
+          ))}
+        </div>
       </Widget>
 
       <Widget title="أقسام التطبيق">
@@ -163,22 +169,27 @@ export function WithSidebar({ children }: { children: React.ReactNode }) {
 }
 
 export function ShareRow({ path, title }: { path: string; title: string }) {
-  const url = encodeURIComponent(`${SITE_URL}${path}`);
-  const text = encodeURIComponent(title);
-  const links = [
-    { label: "واتساب", href: `https://wa.me/?text=${text}%20${url}`, bg: "#1FA855" },
-    { label: "لينكدإن", href: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`, bg: "#0A66C2" },
-    { label: "إكس", href: `https://x.com/intent/post?text=${text}&url=${url}`, bg: "#111111" },
-    { label: "تيليجرام", href: `https://t.me/share/url?url=${url}&text=${text}`, bg: "#229ED9" },
-  ];
+  return <ShareBar url={`${SITE_URL}${path}`} title={title} />;
+}
+
+/** بطاقة مقال مكتوب (قضايا تربوية) */
+export function ArticleCard({ a, wide = false }: { a: Article; wide?: boolean }) {
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="text-[14px] font-bold text-[#14302A]">شارك:</span>
-      {links.map((l) => (
-        <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" className="rounded-lg px-3 py-1.5 text-[13px] font-bold text-white" style={{ background: l.bg }}>
-          {l.label}
-        </a>
-      ))}
-    </div>
+    <article className={`flex overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white ${wide ? "flex-col sm:flex-row" : "flex-col"}`}>
+      <Link href={`/articles/${a.slug}`} tabIndex={-1} aria-hidden="true" className={wide ? "sm:w-[46%] sm:shrink-0" : ""}>
+        <Cover id={a.slug} title={a.title} courseId={articleCourse(a)} label={a.category} compact className={wide ? "h-44 sm:h-full sm:min-h-[220px]" : "h-36"} />
+      </Link>
+      <div className="flex flex-1 flex-col p-4">
+        <div className="flex items-center justify-between gap-2 text-[12px] text-[#6B8077]">
+          <span className="rounded-md px-2 py-0.5 font-bold text-white" style={{ background: courseMeta(articleCourse(a)).color }}>{a.category}</span>
+          <span>{arDate(a.date)}</span>
+        </div>
+        <h3 className={`mt-2 font-display font-bold leading-[1.55] text-[#14302A] ${wide ? "text-[20px]" : "text-[17px]"}`}>
+          <Link href={`/articles/${a.slug}`} className="hover:text-[#136F5C]">{a.title}</Link>
+        </h3>
+        <p className="mt-1.5 line-clamp-2 text-[14px] leading-7 text-[#4D635A]">{a.description}</p>
+        <Link href={`/articles/${a.slug}`} className="mt-auto flex items-center gap-1 pt-3 text-[14px] font-bold text-[#136F5C]">اقرأ المقال <ChevronLeft className="h-4 w-4" /></Link>
+      </div>
+    </article>
   );
 }
