@@ -7,7 +7,7 @@ import AdSlot from "@/components/site/AdSlot";
 import { Clock } from "lucide-react";
 import { ad } from "@/lib/arabic";
 import { courseMeta, readMinutes } from "@/lib/site-nav";
-import { CatBadge, Crumbs, PostCard, SectionTitle, ShareRow, Thumb, WithSidebar } from "@/components/site/Blocks";
+import { CatBadge, Crumbs, conceptTile, SectionTitle, ShareRow, Thumb, WithSidebar } from "@/components/site/Blocks";
 import { SITE_URL, SITE_NAME, chapterLabel, conceptQuestions, publicBank, summary } from "@/lib/public-bank";
 
 export const dynamicParams = false;
@@ -40,7 +40,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
   const pos = siblings.findIndex((x) => x.id === c.id);
   const prev = siblings[pos - 1];
   const next = siblings[pos + 1];
-  const sample = conceptQuestions(c.id).slice(0, 2);
+  const sample = conceptQuestions(c.id).slice(0, 5);
   const examples = c.examples?.length ? c.examples : [c.example];
 
   const jsonLd = {
@@ -56,16 +56,33 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
   };
 
   const m = courseMeta(course);
-  const related = siblings.filter((x) => x.id !== c.id).slice(0, 4);
+  const related = siblings.filter((x) => x.id !== c.id).slice(0, 6);
   const path = `/learn/${course}/${c.id}`;
 
   return (
     <WithSidebar>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            jsonLd,
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "الرئيسية", item: `${SITE_URL}/` },
+                { "@type": "ListItem", position: 2, name: "المحاور", item: `${SITE_URL}/learn` },
+                { "@type": "ListItem", position: 3, name: courseName, item: `${SITE_URL}/learn/${course}` },
+                { "@type": "ListItem", position: 4, name: c.title, item: `${SITE_URL}${path}` },
+              ],
+            },
+          ]),
+        }}
+      />
       <Crumbs items={[{ href: "/learn", label: "المحاور" }, { href: `/learn/${course}`, label: m.short }, { label: c.title }]} />
 
       <article className="overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
-        <Thumb c={c} className="h-52 sm:h-64" />
+        <Thumb c={c} className="h-56 sm:h-72" />
         <div className="space-y-7 p-5 sm:p-7">
           <header>
             <div className="flex flex-wrap items-center gap-3 text-[13px] text-[#6B8077]">
@@ -162,7 +179,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
       {related.length > 0 && (
         <section className="mt-8">
           <SectionTitle title="مقالات ذات صلة" />
-          <div className="grid gap-4 sm:grid-cols-2">{related.map((r) => <PostCard key={r.id} c={r} />)}</div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{related.map(conceptTile)}</div>
         </section>
       )}
     </WithSidebar>
