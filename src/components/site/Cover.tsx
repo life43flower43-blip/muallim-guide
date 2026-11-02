@@ -109,35 +109,32 @@ function Pattern({ seed }: { seed: number }) {
   );
 }
 
-/** صور كل محور: تُختار واحدة منها بحسب المقال، مع زاوية قص مختلفة، حتى لا تتكرر الصورة نفسها متجاورة */
-const PHOTOS: Record<string, string[]> = {
-  M1: ["/home/situations-v2.jpg", "/home/skills-v2.jpg"],
-  M2: ["/home/concepts-v2.jpg", "/home/situations-v2.jpg"],
-  M3: ["/home/methods-v2.jpg", "/home/concepts-v2.jpg"],
-  M4: ["/home/test-v2.jpg", "/home/plan-v2.jpg"],
-  M5: ["/home/skills-v2.jpg", "/home/methods-v2.jpg"],
-  SE1: ["/home/situations-v2.jpg", "/home/skills-v2.jpg"],
-  F1: ["/home/plan-v2.jpg", "/home/concepts-v2.jpg"],
-  AI1: ["/home/concepts-v2.jpg", "/home/methods-v2.jpg"],
-  G1: ["/home/plan-v2.jpg", "/home/concepts-v2.jpg"],
-  C1: ["/home/skills-v2.jpg", "/home/situations-v2.jpg"],
-};
-const POS = ["50% 50%", "30% 40%", "70% 45%", "50% 25%", "40% 70%", "65% 60%"];
+/** الصورة الحقيقية للمقال فقط، وما سواه غلاف مرسوم بلون محوره حتى لا تتكرر صورة */
+export function photoFor(id: string) {
+  return ARTICLE_COVERS.has(id) ? `/covers/${id}.jpg` : null;
+}
 
-export function photoFor(id: string, courseId: string) {
-  if (ARTICLE_COVERS.has(id)) return { src: `/covers/${id}.jpg`, pos: "50% 45%" };
+/** غلاف مرسوم: لون المحور، وزخرفة وموضع يختلفان بحسب المفهوم، وأيقونة من موضوعه */
+function Drawn({ id, title, courseId, small = false }: { id: string; title: string; courseId: string; small?: boolean }) {
+  const m = courseMeta(courseId);
   const seed = hash(id);
-  const list = PHOTOS[courseId] ?? ["/home/concepts-v2.jpg"];
-  return { src: list[seed % list.length], pos: POS[(seed >> 3) % POS.length] };
+  const Icon = topicIcon(title);
+  const angle = 120 + (seed % 90);
+  return (
+    <span className="absolute inset-0" style={{ background: `linear-gradient(${angle}deg, ${m.color}, color-mix(in srgb, ${m.color} 62%, #0B2A23))` }}>
+      <Pattern seed={seed} />
+      <Icon className={`absolute text-white/90 ${small ? "left-1/2 top-1/2 h-9 w-9 -translate-x-1/2 -translate-y-1/2" : "end-5 top-5 h-14 w-14 sm:h-16 sm:w-16"}`} strokeWidth={1.6} />
+    </span>
+  );
 }
 
 /** غلاف بصورة: في البطاقات صورة فقط، وفي رأس المقال صورة وعليها العنوان */
 export function Cover({ id, title, courseId, label, className = "", compact = false }: { id: string; title: string; courseId: string; label?: string; className?: string; compact?: boolean }) {
   const m = courseMeta(courseId);
-  const p = photoFor(id, courseId);
+  const src = photoFor(id);
   return (
     <span className={`relative block overflow-hidden bg-[#DDE8E2] ${className}`}>
-      <img src={p.src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: p.pos }} />
+      {src ? <img src={src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: "50% 45%" }} /> : <Drawn id={id} title={title} courseId={courseId} small={compact} />}
       {compact ? (
         label && <span className="absolute bottom-2 start-2 max-w-[85%] truncate rounded-md px-2 py-0.5 text-[11px] font-bold text-white" style={{ background: `${m.color}E6` }}>{label}</span>
       ) : (
@@ -154,11 +151,11 @@ export function Cover({ id, title, courseId, label, className = "", compact = fa
 }
 
 /** صورة مصغرة */
-export function MiniCover({ id, courseId, className = "" }: { id: string; title?: string; courseId: string; hint?: string; className?: string }) {
-  const p = photoFor(id, courseId);
+export function MiniCover({ id, title = "", courseId, className = "" }: { id: string; title?: string; courseId: string; hint?: string; className?: string }) {
+  const src = photoFor(id);
   return (
     <span className={`relative block overflow-hidden bg-[#DDE8E2] ${className}`}>
-      <img src={p.src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: p.pos }} />
+      {src ? <img src={src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: "50% 45%" }} /> : <Drawn id={id} title={title} courseId={courseId} small />}
     </span>
   );
 }

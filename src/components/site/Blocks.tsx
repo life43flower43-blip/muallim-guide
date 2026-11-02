@@ -162,7 +162,7 @@ export function Sidebar() {
 /** صفحة بعمودين: المحتوى ثم الشريط الجانبي (تحته في الهاتف) */
 export function WithSidebar({ children }: { children: React.ReactNode }) {
   return (
-    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
       <div className="min-w-0">{children}</div>
       <Sidebar />
     </div>
@@ -202,7 +202,7 @@ export function Tile({ href, id, title, courseId, meta, card = false }: { href: 
     return (
       <Link href={href} className="group flex w-[68%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white sm:w-auto">
         <span className="relative block">
-          <MiniCover id={id} courseId={courseId} className="h-32 sm:h-36" />
+          <MiniCover id={id} title={title} courseId={courseId} className="h-32 sm:h-36" />
           <span className="absolute inset-x-0 bottom-0 h-1.5" style={{ background: courseMeta(courseId).color }} />
         </span>
         <span className="flex flex-1 flex-col p-3">
@@ -213,7 +213,7 @@ export function Tile({ href, id, title, courseId, meta, card = false }: { href: 
     );
   return (
     <Link href={href} className="group flex items-stretch gap-3 overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white p-2.5 transition hover:shadow-[0_0_0_2px_var(--c)]" style={{ ["--c" as string]: courseMeta(courseId).color }}>
-      <MiniCover id={id} courseId={courseId} className="h-[84px] w-[104px] shrink-0 rounded-xl" />
+      <MiniCover id={id} title={title} courseId={courseId} className="h-[84px] w-[104px] shrink-0 rounded-xl" />
       <span className="flex min-w-0 flex-1 flex-col justify-center py-0.5">
         <span className="line-clamp-2 text-[15px] font-bold leading-6 text-[#14302A]">{title}</span>
         {meta && <span className="mt-1 flex items-center gap-1.5 text-[12px] font-bold" style={{ color: courseMeta(courseId).color }}><span className="h-1.5 w-1.5 rounded-full bg-current" />{meta}</span>}

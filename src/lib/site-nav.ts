@@ -5,16 +5,16 @@ import type { Concept } from "@/lib/types";
 export type CourseMeta = { short: string; img: string; color: string; about: string };
 
 export const COURSE_META: Record<string, CourseMeta> = {
-  M1: { short: "النمو", img: "/home/situations-v2.jpg", color: "#2E7D5B", about: "مراحل نمو الطالب الجسمي والعقلي والانفعالي والاجتماعي، وما يعنيه كل منها للمعلم داخل الصف." },
-  M2: { short: "علم النفس التربوي", img: "/home/concepts-v2.jpg", color: "#7A4E9C", about: "الدافعية والانفعالات والذكاء والفروق الفردية: الأسس النفسية التي يقوم عليها التعليم." },
-  M3: { short: "التعلم", img: "/home/methods-v2.jpg", color: "#1F6FA8", about: "نظريات التعلم السلوكية والمعرفية والبنائية، وكيف يحفظ الطالب المعلومة ويسترجعها وينقلها." },
-  M4: { short: "التقويم والقياس", img: "/home/test-v2.jpg", color: "#B4532A", about: "أنواع التقويم، وبناء الاختبارات، والصدق والثبات، وتحليل الأسئلة وتفسير الدرجات." },
-  M5: { short: "طرائق التدريس", img: "/home/skills-v2.jpg", color: "#136F5C", about: "استراتيجيات التدريس وإدارة الصف وتخطيط الدرس وأساليب طرح الأسئلة داخل الصف." },
-  SE1: { short: "التربية الخاصة", img: "/home/situations-v2.jpg", color: "#A0466B", about: "فئات ذوي الاحتياجات الخاصة، والتعليم الدامج، وتكييف التدريس والتقويم لكل طالب." },
-  F1: { short: "أسس التربية", img: "/home/plan-v2.jpg", color: "#6B5B2E", about: "الأسس الفلسفية والاجتماعية للتربية، وأخلاقيات مهنة التعليم، وأدوار المعلم." },
-  AI1: { short: "الذكاء الاصطناعي", img: "/home/concepts-v2.jpg", color: "#3A55A4", about: "استخدام أدوات الذكاء الاصطناعي في التعليم بوعي: الفرص والمخاطر والضوابط." },
-  G1: { short: "المكتبة التربوية", img: "/home/plan-v2.jpg", color: "#4E6E3A", about: "مفاهيم تربوية عامة يحتاجها كل معلم، مجمّعة من مصادر الإعداد التربوي." },
-  C1: { short: "المهارات", img: "/home/skills-v2.jpg", color: "#8A6A12", about: "مهارات المعلم العملية: التواصل، والعرض، والتعزيز، وتنويع المثيرات، وغلق الدرس." },
+  M1: { short: "النمو", img: "/topics/M1.jpg", color: "#2E7D5B", about: "مراحل نمو الطالب الجسمي والعقلي والانفعالي والاجتماعي، وما يعنيه كل منها للمعلم داخل الصف." },
+  M2: { short: "علم النفس التربوي", img: "/topics/M2.jpg", color: "#7A4E9C", about: "الدافعية والانفعالات والذكاء والفروق الفردية: الأسس النفسية التي يقوم عليها التعليم." },
+  M3: { short: "التعلم", img: "/topics/M3.jpg", color: "#1F6FA8", about: "نظريات التعلم السلوكية والمعرفية والبنائية، وكيف يحفظ الطالب المعلومة ويسترجعها وينقلها." },
+  M4: { short: "التقويم والقياس", img: "/topics/M4.jpg", color: "#B4532A", about: "أنواع التقويم، وبناء الاختبارات، والصدق والثبات، وتحليل الأسئلة وتفسير الدرجات." },
+  M5: { short: "طرائق التدريس", img: "/topics/M5.jpg", color: "#136F5C", about: "استراتيجيات التدريس وإدارة الصف وتخطيط الدرس وأساليب طرح الأسئلة داخل الصف." },
+  SE1: { short: "التربية الخاصة", img: "/topics/SE1.jpg", color: "#A0466B", about: "فئات ذوي الاحتياجات الخاصة، والتعليم الدامج، وتكييف التدريس والتقويم لكل طالب." },
+  F1: { short: "أسس التربية", img: "/topics/F1.jpg", color: "#6B5B2E", about: "الأسس الفلسفية والاجتماعية للتربية، وأخلاقيات مهنة التعليم، وأدوار المعلم." },
+  AI1: { short: "الذكاء الاصطناعي", img: "/topics/AI1.jpg", color: "#3A55A4", about: "استخدام أدوات الذكاء الاصطناعي في التعليم بوعي: الفرص والمخاطر والضوابط." },
+  G1: { short: "المكتبة التربوية", img: "/topics/G1.jpg", color: "#4E6E3A", about: "مفاهيم تربوية عامة يحتاجها كل معلم، مجمّعة من مصادر الإعداد التربوي." },
+  C1: { short: "المهارات", img: "/topics/C1.jpg", color: "#8A6A12", about: "مهارات المعلم العملية: التواصل، والعرض، والتعزيز، وتنويع المثيرات، وغلق الدرس." },
 };
 
 export const courseMeta = (id: string): CourseMeta => COURSE_META[id] ?? { short: id, img: "/home/concepts-v2.jpg", color: "#136F5C", about: "" };
@@ -24,52 +24,52 @@ export type AppSection = { slug: string; open: string; title: string; img: strin
 
 export const APP_SECTIONS: AppSection[] = [
   {
-    slug: "exam-simulator", open: "examsim", title: "اختبار المحاكاة", img: "/home/test-v2.jpg",
+    slug: "exam-simulator", open: "examsim", title: "اختبار المحاكاة", img: "/topics/exam-simulator.jpg",
     lead: "اختبار كامل بأقسام وزمن محدد يحاكي اختبارات التوظيف والرخصة المهنية، ثم تقرير يبين أداءك في كل قسم.",
     points: ["أقسام موزعة على المحاور التربوية بأوزان قريبة من الاختبارات الرسمية", "مؤقت ظاهر، وخريطة للأسئلة، وإمكانية تمييز السؤال للعودة إليه", "تقرير بعد النهاية: نسبتك في كل قسم، وحد النجاح، وأين تحتاج مراجعة"],
   },
   {
-    slug: "placement", open: "placement", title: "اختبر نفسك", img: "/home/test-v2.jpg",
+    slug: "placement", open: "placement", title: "اختبر نفسك", img: "/topics/placement.jpg",
     lead: "اختبار قصير يحدد مستواك في كل محور، ويرتب لك من أين تبدأ المذاكرة.",
     points: ["أسئلة من كل المحاور في جلسة واحدة قصيرة", "نتيجة لكل محور بدل رقم واحد عام", "خطة تبدأ بالمحور الأضعف"],
   },
   {
-    slug: "concepts", open: "learn", title: "المفاهيم التربوية", img: "/home/concepts-v2.jpg",
+    slug: "concepts", open: "learn", title: "المفاهيم التربوية", img: "/topics/concepts.jpg",
     lead: "أكثر من ألف وخمسمئة مفهوم تربوي، لكل مفهوم شرح مبسط وأمثلة من الصف وقاعدة تطبقها.",
     points: ["المفاهيم مرتبة في محاور وفصول كما في مقررات كليات التربية", "خريطة ذهنية لكل فصل، ومقاطع مصورة لأهم المفاهيم", "سؤال تدريبي بعد كل مفهوم مع تفسير كل خيار"],
   },
   {
-    slug: "classroom-situations", open: "sim", title: "المواقف الصفية", img: "/home/situations-v2.jpg",
+    slug: "classroom-situations", open: "sim", title: "المواقف الصفية", img: "/topics/classroom-situations.jpg",
     lead: "مواقف حقيقية من الصف تختار فيها تصرفك، ثم ترى أثره على الطلاب والمفهوم التربوي الذي يفسره.",
     points: ["مواقف في إدارة الصف والتعامل مع الطلاب وأولياء الأمور", "لكل خيار نتيجة وتفسير، لا إجابة صحيحة فقط", "تدريب مباشر على أسئلة المواقف في اختبارات التوظيف"],
   },
   {
-    slug: "teaching-skills", open: "lab", title: "مهارات التدريس", img: "/home/skills-v2.jpg",
+    slug: "teaching-skills", open: "lab", title: "مهارات التدريس", img: "/topics/teaching-skills.jpg",
     lead: "مختبر لمهارات المعلم العملية: التهيئة، وطرح الأسئلة، والتعزيز، وإدارة الوقت، وغلق الدرس.",
     points: ["تمارين قصيرة لكل مهارة", "أمثلة لما يقوله المعلم ويفعله داخل الصف", "أدوات للقياس والتقويم في المكان نفسه"],
   },
   {
-    slug: "lesson-plan", open: "studio", title: "خطة الدرس", img: "/home/plan-v2.jpg",
+    slug: "lesson-plan", open: "studio", title: "خطة الدرس", img: "/topics/lesson-plan.jpg",
     lead: "اكتب خطة درس كاملة خطوة بخطوة: الأهداف، والتهيئة، والأنشطة، والتقويم، والواجب.",
     points: ["صياغة أهداف سلوكية قابلة للقياس", "قوالب جاهزة لاستراتيجيات تدريس مختلفة", "حفظ خططك والرجوع إليها"],
   },
   {
-    slug: "assessment-tools", open: "measure", title: "أدوات القياس والتقويم", img: "/home/methods-v2.jpg",
+    slug: "assessment-tools", open: "measure", title: "أدوات القياس والتقويم", img: "/topics/assessment-tools.jpg",
     lead: "أدوات يحتاجها المعلم في التقويم: جدول المواصفات، وسلم التقدير، وتحليل البدائل، وحساب الثبات.",
     points: ["جدول مواصفات يوزع الأسئلة على الأهداف والمحتوى", "سلم تقدير وقائمة رصد قابلة للتعديل", "حساب معاملات الصعوبة والتمييز والثبات"],
   },
   {
-    slug: "mind-maps", open: "mind", title: "الخرائط الذهنية", img: "/home/concepts-v2.jpg",
+    slug: "mind-maps", open: "mind", title: "الخرائط الذهنية", img: "/topics/mind-maps.jpg",
     lead: "خريطة ذهنية لكل فصل تربط مفاهيمه ببعضها، مع مقاطع مصورة بصوت عربي لأهم النظريات.",
     points: ["مراجعة فصل كامل في دقائق", "روابط تنقلك من الخريطة إلى شرح المفهوم", "مقاطع قصيرة لنظريات بياجيه وماسلو وفيجوتسكي وغيرها"],
   },
   {
-    slug: "misconceptions", open: "myths", title: "أخطاء تربوية شائعة", img: "/home/methods-v2.jpg",
+    slug: "misconceptions", open: "myths", title: "أخطاء تربوية شائعة", img: "/topics/misconceptions.jpg",
     lead: "أفكار منتشرة بين المعلمين والطلاب لا يدعمها البحث التربوي، مع التصحيح والدليل.",
     points: ["الخطأ الشائع، ثم ما يقوله البحث", "أمثلة توضح أثر الفكرة الخاطئة في الصف", "أسئلة تتحقق بها من فهمك"],
   },
   {
-    slug: "flashcards", open: "flash", title: "البطاقات التعليمية", img: "/home/plan-v2.jpg",
+    slug: "flashcards", open: "flash", title: "البطاقات التعليمية", img: "/topics/flashcards.jpg",
     lead: "بطاقات للمراجعة السريعة: المفهوم على وجه، والتعريف على الوجه الآخر.",
     points: ["مراجعة في أي وقت ولو لدقيقتين", "تعيد عليك البطاقات التي نسيتها أكثر", "مرتبة بحسب المحور والفصل"],
   },
