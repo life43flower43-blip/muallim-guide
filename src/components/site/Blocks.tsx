@@ -7,6 +7,7 @@ import { APP_SECTIONS, courseMeta, excerpt, pickedConcepts, readMinutes } from "
 import { ad } from "@/lib/arabic";
 import AdSlot from "./AdSlot";
 import ShareBar from "./ShareBar";
+import SearchBox from "./SearchBox";
 import { Cover, MiniCover } from "./Cover";
 import { type Article, allArticles, arDate, articleCourse } from "@/lib/articles";
 
@@ -101,10 +102,7 @@ export function Sidebar() {
   return (
     <aside className="space-y-5">
       <Widget title="ابحث في الموقع">
-        <form action="/search" className="flex">
-          <input name="q" placeholder="مثال: التعزيز، بياجيه" className="h-11 min-w-0 flex-1 rounded-s-xl border border-e-0 border-[#D4E3DA] bg-[#F7FAF8] px-3 text-[15px] outline-none focus:border-[#136F5C]" />
-          <button aria-label="بحث" className="flex h-11 w-11 items-center justify-center rounded-e-xl bg-[#136F5C] text-white"><Search className="h-5 w-5" /></button>
-        </form>
+        <SearchBox />
       </Widget>
 
       <section className="rounded-2xl bg-[#136F5C] p-5 text-white">
@@ -195,18 +193,32 @@ export function ArticleCard({ a, wide = false }: { a: Article; wide?: boolean })
 }
 
 /** بطاقة صغيرة: غلاف ثم عنوان، تصلح لشبكة من عمودين في الهاتف */
-export function Tile({ href, id, title, courseId, label, meta }: { href: string; id: string; title: string; courseId: string; label?: string; meta?: string }) {
+export function Tile({ href, id, title, courseId, meta, card = false }: { href: string; id: string; title: string; courseId: string; label?: string; meta?: string; card?: boolean }) {
+  // card: بطاقة عمودية للشرائط التي تُسحب جانبيًا. وبدونها: بطاقة أفقية، الصورة بجانب العنوان
+  if (card)
+    return (
+      <Link href={href} className="group flex w-[68%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white transition hover:border-[#136F5C] sm:w-auto">
+        <MiniCover id={id} courseId={courseId} className="h-32 sm:h-36" />
+        <span className="flex flex-1 flex-col p-3">
+          <span className="line-clamp-2 text-[15px] font-bold leading-6 text-[#14302A] group-hover:text-[#136F5C]">{title}</span>
+          {meta && <span className="mt-auto pt-1.5 text-[12px] text-[#6B8077]">{meta}</span>}
+        </span>
+      </Link>
+    );
   return (
-    <Link href={href} className="group flex flex-col overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white transition hover:border-[#136F5C]">
-      <Cover id={id} title={title} courseId={courseId} label={label} compact className="h-24 sm:h-32" />
-      <span className="flex flex-1 flex-col p-3">
-        <span className="line-clamp-3 text-[14px] font-bold leading-6 text-[#14302A] group-hover:text-[#136F5C] sm:text-[15px]">{title}</span>
-        {meta && <span className="mt-auto pt-1.5 text-[11.5px] text-[#6B8077]">{meta}</span>}
+    <Link href={href} className="group flex items-stretch gap-3 overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white p-2.5 transition hover:border-[#136F5C]">
+      <MiniCover id={id} courseId={courseId} className="h-[84px] w-[104px] shrink-0 rounded-xl" />
+      <span className="flex min-w-0 flex-1 flex-col justify-center py-0.5">
+        <span className="line-clamp-2 text-[15px] font-bold leading-6 text-[#14302A] group-hover:text-[#136F5C]">{title}</span>
+        {meta && <span className="mt-1 text-[12px] text-[#6B8077]">{meta}</span>}
       </span>
     </Link>
   );
 }
 
 export const conceptTile = (c: Concept) => (
-  <Tile key={c.id} href={href(c)} id={c.id} title={c.title} courseId={c.courseId} meta={`${courseMeta(c.courseId).short}، ${ad(readMinutes(c))} د`} />
+  <Tile key={c.id} href={href(c)} id={c.id} title={c.title} courseId={c.courseId} meta={`${courseMeta(c.courseId).short}، ${ad(readMinutes(c))} د قراءة`} />
+);
+export const conceptCard = (c: Concept) => (
+  <Tile key={c.id} card href={href(c)} id={c.id} title={c.title} courseId={c.courseId} meta={`${courseMeta(c.courseId).short}، ${ad(readMinutes(c))} د قراءة`} />
 );

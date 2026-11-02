@@ -5,7 +5,8 @@ import { BookOpenText, ChevronDown, FileQuestion, Layers, Search } from "lucide-
 import { SITE_URL, publicBank } from "@/lib/public-bank";
 import { allArticles } from "@/lib/articles";
 import { APP_SECTIONS, courseMeta } from "@/lib/site-nav";
-import { ArticleCard, SectionTitle, Tile, WithSidebar, conceptTile } from "@/components/site/Blocks";
+import SearchBox from "@/components/site/SearchBox";
+import { ArticleCard, SectionTitle, Tile, WithSidebar, conceptCard } from "@/components/site/Blocks";
 import { articleCourse } from "@/lib/articles";
 import { ad } from "@/lib/arabic";
 import type { Concept } from "@/lib/types";
@@ -41,7 +42,11 @@ const FAQ = [
 
 /** صف بطاقات يمرّ أفقيًا في الهاتف، وشبكة في الشاشات الكبيرة */
 function Rail({ children }: { children: React.ReactNode }) {
-  return <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3">{children}</div>;
+  return (
+    <div className="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 xl:grid-cols-3">
+      {children}
+    </div>
+  );
 }
 
 export default function Home() {
@@ -68,20 +73,19 @@ export default function Home() {
       />
 
       {/* الترحيب والبحث */}
-      <section className="relative overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#0E4F42,#136F5C_55%,#1F8A70)] px-5 py-9 text-white sm:px-10 sm:py-12">
+      <section className="relative rounded-[28px] bg-[linear-gradient(135deg,#0E4F42,#136F5C_55%,#1F8A70)] px-5 py-9 text-white sm:px-10 sm:py-12">
+<div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[28px]">
         <svg className="absolute inset-0 h-full w-full opacity-[0.12]" aria-hidden="true">
           <defs><pattern id="hero-dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="2" fill="#fff" /></pattern></defs>
           <rect width="100%" height="100%" fill="url(#hero-dots)" />
         </svg>
         <span className="absolute -start-16 -top-16 h-56 w-56 rounded-full bg-[#E8A317]/20" aria-hidden="true" />
+        </div>
         <div className="relative max-w-2xl">
           <p className="inline-block rounded-full bg-white/15 px-3 py-1 text-[13px] font-bold">مجاني للمعلمين وطلاب كليات التربية</p>
           <h1 className="mt-4 font-display text-[28px] font-extrabold leading-[1.45] sm:text-[40px]">كل ما يحتاجه المعلم العربي، في مكان واحد</h1>
           <p className="mt-3 text-[16px] leading-8 text-white/85 sm:text-[18px]">مقالات تربوية، ومفاهيم مشروحة بأمثلة من الصف، واستعداد حقيقي لاختبارات الرخصة المهنية والتوظيف.</p>
-          <form action="/search" className="mt-6 flex max-w-xl rounded-2xl bg-white p-1.5">
-            <input name="q" placeholder="ابحث: التعزيز، بياجيه، التقويم البنائي…" className="h-11 min-w-0 flex-1 bg-transparent px-3 text-[15px] text-[#14302A] outline-none placeholder:text-[#8AA095]" />
-            <button aria-label="بحث" className="flex h-11 items-center gap-1.5 rounded-xl bg-[#E8A317] px-4 font-bold text-[#2B1D00]"><Search className="h-5 w-5" /><span className="max-[359px]:hidden">بحث</span></button>
-          </form>
+          <div className="relative z-30 mt-6 max-w-xl text-right"><SearchBox /></div>
           <div className="mt-5 flex flex-wrap gap-2 text-[13px]">
             {["إدارة الصف", "التقويم", "نظريات التعلم", "التربية الخاصة"].map((t) => (
               <Link key={t} href={`/search?q=${encodeURIComponent(t)}`} className="rounded-full border border-white/30 px-3 py-1 font-bold text-white/90 hover:bg-white/10">{t}</Link>
@@ -106,7 +110,7 @@ export default function Home() {
         <SectionTitle title="أحدث المقالات" more={{ href: "/articles", label: "كل المقالات" }} />
         <div className="space-y-5">
           <ArticleCard a={articles[0]} wide />
-          <Rail>{articles.slice(1, 7).map((a) => <Tile key={a.slug} href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={a.category} />)}</Rail>
+          <Rail>{articles.slice(1, 7).map((a) => <Tile key={a.slug} card href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={a.category} />)}</Rail>
         </div>
       </section>
 
@@ -127,13 +131,13 @@ export default function Home() {
         <div className="space-y-12">
           <section>
             <SectionTitle title="مفاهيم مختارة" more={{ href: "/learn", label: "كل المحاور" }} />
-            <Rail>{picks.map(conceptTile)}</Rail>
+            <Rail>{picks.map(conceptCard)}</Rail>
           </section>
 
           {HOME_COURSES.map((id) => (
             <section key={id}>
               <SectionTitle title={courseMeta(id).short} more={{ href: `/learn/${id}`, label: "المزيد" }} />
-              <Rail>{spread(id, 4, 1).map(conceptTile)}</Rail>
+              <Rail>{spread(id, 4, 1).map(conceptCard)}</Rail>
             </section>
           ))}
 

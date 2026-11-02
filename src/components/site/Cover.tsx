@@ -108,48 +108,55 @@ function Pattern({ seed }: { seed: number }) {
   );
 }
 
-/** غلاف كبير: يُستعمل في البطاقات وأعلى المقال */
+/** صور كل محور: تُختار واحدة منها بحسب المقال، مع زاوية قص مختلفة، حتى لا تتكرر الصورة نفسها متجاورة */
+const PHOTOS: Record<string, string[]> = {
+  M1: ["/home/situations-v2.jpg", "/home/skills-v2.jpg"],
+  M2: ["/home/concepts-v2.jpg", "/home/situations-v2.jpg"],
+  M3: ["/home/methods-v2.jpg", "/home/concepts-v2.jpg"],
+  M4: ["/home/test-v2.jpg", "/home/plan-v2.jpg"],
+  M5: ["/home/skills-v2.jpg", "/home/methods-v2.jpg"],
+  SE1: ["/home/situations-v2.jpg", "/home/skills-v2.jpg"],
+  F1: ["/home/plan-v2.jpg", "/home/concepts-v2.jpg"],
+  AI1: ["/home/concepts-v2.jpg", "/home/methods-v2.jpg"],
+  G1: ["/home/plan-v2.jpg", "/home/concepts-v2.jpg"],
+  C1: ["/home/skills-v2.jpg", "/home/situations-v2.jpg"],
+};
+const POS = ["50% 50%", "30% 40%", "70% 45%", "50% 25%", "40% 70%", "65% 60%"];
+
+export function photoFor(id: string, courseId: string) {
+  const seed = hash(id);
+  const list = PHOTOS[courseId] ?? ["/home/concepts-v2.jpg"];
+  return { src: list[seed % list.length], pos: POS[(seed >> 3) % POS.length] };
+}
+
+/** غلاف بصورة: في البطاقات صورة فقط، وفي رأس المقال صورة وعليها العنوان */
 export function Cover({ id, title, courseId, label, className = "", compact = false }: { id: string; title: string; courseId: string; label?: string; className?: string; compact?: boolean }) {
   const m = courseMeta(courseId);
-  const seed = hash(id);
-  const Icon = topicIcon(title) !== Compass ? topicIcon(title) : topicIcon(label ?? "");
-  const angle = 120 + (seed % 100);
+  const p = photoFor(id, courseId);
   return (
-    <span className={`relative block overflow-hidden ${className}`} style={{ background: `linear-gradient(${angle}deg, ${m.color} 0%, ${m.color}CC 55%, #0E3B32 130%)` }}>
-      <Pattern seed={seed} />
+    <span className={`relative block overflow-hidden bg-[#DDE8E2] ${className}`}>
+      <img src={p.src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: p.pos }} />
       {compact ? (
-        <>
-          <span className="absolute inset-0 flex items-center justify-center">
-            <span className="flex h-20 w-20 items-center justify-center rounded-[26px] bg-white/15 ring-1 ring-white/25">
-              <Icon className="h-11 w-11 text-white" strokeWidth={1.6} />
-            </span>
-          </span>
-          {label && <span className="absolute bottom-3 start-3 max-w-[85%] truncate rounded-md bg-black/20 px-2 py-0.5 text-[12px] font-bold text-white/90">{label}</span>}
-        </>
+        label && <span className="absolute bottom-2 start-2 max-w-[85%] truncate rounded-md px-2 py-0.5 text-[11px] font-bold text-white" style={{ background: `${m.color}E6` }}>{label}</span>
       ) : (
-      <>
-      <span className="absolute end-4 top-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/25">
-        <Icon className="h-8 w-8 text-white" strokeWidth={1.7} />
-      </span>
-      <span className="absolute inset-x-0 bottom-0 p-4">
-        {label && <span className="mb-1.5 inline-block rounded-md bg-black/20 px-2 py-0.5 text-[11px] font-bold text-white/90">{label}</span>}
-        <span className="line-clamp-3 block font-display text-[20px] font-extrabold leading-[1.45] text-white sm:text-[24px]">{title}</span>
-      </span>
-      </>
+        <>
+          <span className="absolute inset-0 bg-[linear-gradient(to_top,rgba(10,30,25,0.88)_0%,rgba(10,30,25,0.35)_55%,transparent_100%)]" />
+          <span className="absolute inset-x-0 bottom-0 p-4 sm:p-6">
+            {label && <span className="mb-2 inline-block rounded-md px-2 py-0.5 text-[12px] font-bold text-white" style={{ background: m.color }}>{label}</span>}
+            <span className="line-clamp-3 block font-display text-[22px] font-extrabold leading-[1.45] text-white sm:text-[28px]">{title}</span>
+          </span>
+        </>
       )}
     </span>
   );
 }
 
-/** غلاف مصغر: أيقونة الموضوع على لون المحور */
-export function MiniCover({ id, title, courseId, hint = "", className = "" }: { id: string; title: string; courseId: string; hint?: string; className?: string }) {
-  const m = courseMeta(courseId);
-  const seed = hash(id);
-  const Icon = topicIcon(title) !== Compass ? topicIcon(title) : topicIcon(hint);
+/** صورة مصغرة */
+export function MiniCover({ id, courseId, className = "" }: { id: string; title?: string; courseId: string; hint?: string; className?: string }) {
+  const p = photoFor(id, courseId);
   return (
-    <span className={`relative flex items-center justify-center overflow-hidden ${className}`} style={{ background: `linear-gradient(${120 + (seed % 100)}deg, ${m.color}, ${m.color}B3)` }}>
-      <Pattern seed={seed} />
-      <Icon className="relative h-8 w-8 text-white" strokeWidth={1.8} />
+    <span className={`relative block overflow-hidden bg-[#DDE8E2] ${className}`}>
+      <img src={p.src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: p.pos }} />
     </span>
   );
 }
