@@ -107,7 +107,7 @@ export default function Home() {
 
       {/* أحدث المقالات */}
       <section>
-        <SectionTitle title="أحدث المقالات" more={{ href: "/articles", label: "كل المقالات" }} />
+        <SectionTitle title="أحدث المقالات" color="#B4532A" more={{ href: "/articles", label: "كل المقالات" }} />
         <div className="space-y-5">
           <ArticleCard a={articles[0]} wide />
           <Rail>{articles.slice(1, 7).map((a) => <Tile key={a.slug} card href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={a.category} />)}</Rail>
@@ -116,7 +116,7 @@ export default function Home() {
 
       {/* أقسام التطبيق */}
       <section>
-        <SectionTitle title="تدرّب في تطبيق تربوي" more={{ href: "/sections", label: "كل الأقسام" }} />
+        <SectionTitle title="تدرّب في تطبيق تربوي" color="#3A55A4" more={{ href: "/sections", label: "كل الأقسام" }} />
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {APP_SECTIONS.slice(0, 5).map((s, i) => (
             <Link key={s.slug} href={`/sections/${s.slug}`} className={`group overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white ${i === 0 ? "col-span-2 sm:col-span-1" : ""}`}>
@@ -130,13 +130,13 @@ export default function Home() {
       <WithSidebar>
         <div className="space-y-12">
           <section>
-            <SectionTitle title="مفاهيم مختارة" more={{ href: "/learn", label: "كل المحاور" }} />
+            <SectionTitle title="مفاهيم مختارة" color="#7A4E9C" more={{ href: "/learn", label: "كل المحاور" }} />
             <Rail>{picks.map(conceptCard)}</Rail>
           </section>
 
           {HOME_COURSES.map((id) => (
             <section key={id}>
-              <SectionTitle title={courseMeta(id).short} more={{ href: `/learn/${id}`, label: "المزيد" }} />
+              <SectionTitle title={courseMeta(id).short} color={courseMeta(id).color} more={{ href: `/learn/${id}`, label: "المزيد" }} />
               <Rail>{spread(id, 4, 1).map(conceptCard)}</Rail>
             </section>
           ))}
@@ -148,7 +148,7 @@ export default function Home() {
           </section>
 
           <section>
-            <SectionTitle title="أسئلة شائعة" />
+            <SectionTitle title="أسئلة شائعة" color="#8A6A12" />
             <div className="divide-y divide-[#EEF3F0] overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
               {FAQ.map((f) => (
                 <details key={f.q} className="group px-5 py-4 open:bg-[#F7FAF8]">

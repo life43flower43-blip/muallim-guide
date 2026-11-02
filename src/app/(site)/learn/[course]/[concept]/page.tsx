@@ -4,8 +4,9 @@ import { referencesFor } from "@/lib/references";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import AdSlot from "@/components/site/AdSlot";
+import ReadProgress from "@/components/site/ReadProgress";
 import { Clock } from "lucide-react";
-import { ad } from "@/lib/arabic";
+import { ad, arCount, MINUTE_FORMS } from "@/lib/arabic";
 import { courseMeta, readMinutes } from "@/lib/site-nav";
 import { CatBadge, Crumbs, conceptTile, SectionTitle, ShareRow, Thumb, WithSidebar } from "@/components/site/Blocks";
 import { SITE_URL, SITE_NAME, chapterLabel, conceptQuestions, publicBank, summary } from "@/lib/public-bank";
@@ -61,6 +62,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
 
   return (
     <WithSidebar>
+      <ReadProgress color={m.color} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -88,7 +90,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
             <div className="flex flex-wrap items-center gap-3 text-[13px] text-[#6B8077]">
               <CatBadge id={course} />
               <span>{chapterLabel(c.chapter)}</span>
-              <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {ad(readMinutes(c))} د قراءة</span>
+              <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {arCount(readMinutes(c), MINUTE_FORMS)} للقراءة</span>
             </div>
             <h1 className="mt-3 font-display text-[28px] font-extrabold leading-[1.55] sm:text-[32px]">{c.title}</h1>
           </header>
