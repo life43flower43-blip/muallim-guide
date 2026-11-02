@@ -1,7 +1,7 @@
 // الصفحة الرئيسية للموقع: ترحيب وبحث، ثم أحدث المقالات، ومفاهيم مختارة، وأقسام التطبيق، ثم التصنيفات مع شريط جانبي
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlertTriangle, BookOpenText, ChevronDown, FileQuestion, Layers, Network, School, Search } from "lucide-react";
+import { AlertTriangle, BookOpenText, ChevronDown, FileQuestion, Layers, Network, Scale, School, Search } from "lucide-react";
 import { SITE_URL, publicBank } from "@/lib/public-bank";
 import { allArticles } from "@/lib/articles";
 import { APP_SECTIONS, courseMeta, pickQuestions } from "@/lib/site-nav";
@@ -132,11 +132,12 @@ export default function Home() {
       {/* مصادر تفاعلية */}
       <section>
         <SectionTitle title="تعلّم من الصف مباشرة" color="#A0466B" />
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { href: "/classroom-problems", t: "مشكلات صفية", d: "مواقف حقيقية: التصرف التقليدي وأثره، والتصرف المتقدم ولماذا ينجح.", c: "#B4532A", Icon: School },
             { href: "/misconceptions", t: "مفاهيم خاطئة شائعة", d: "أفكار يتداولها المعلمون عن التعلم. صحيحة أم خاطئة؟ اختبر نفسك.", c: "#7A4E9C", Icon: AlertTriangle },
             { href: "/mind-maps", t: "خرائط ذهنية تفاعلية", d: "كل محور في خريطة تتفرع بالضغط، لمراجعة فصل كامل في دقائق.", c: "#1F6FA8", Icon: Network },
+            { href: "/comparisons", t: "مقارنات تربوية", d: "مفاهيم يكثر الخلط بينها جنبًا إلى جنب، مع مفتاح للتمييز في الاختبار.", c: "#3A55A4", Icon: Scale },
           ].map((x) => (
             <Link key={x.href} href={x.href} className="group rounded-2xl p-5 text-white transition hover:-translate-y-0.5" style={{ background: `linear-gradient(135deg, ${x.c}, ${x.c}CC)` }}>
               <x.Icon className="h-8 w-8 text-white/90" />
