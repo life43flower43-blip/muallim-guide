@@ -11,7 +11,7 @@ import { saveSnapshot, loadSnapshot, clearSnapshot, RESUME_FLAG, type Confidence
 import { ad, arCount, QUESTION_OBJ_FORMS, splitReason } from "@/lib/arabic";
 import { ConceptReader } from "./ConceptsView";
 import { toast } from "@/hooks/use-toast";
-import { Callout, Card, Divided, EmptyState, PrimaryButton, Ring, ScreenShell, SecondaryButton, SectionHeader, SkillBar, pct } from "./ui-kit";
+import { Callout, Card, DifficultyChip, Divided, EmptyState, PrimaryButton, Ring, ScreenShell, SecondaryButton, SectionHeader, SkillBar, pct } from "./ui-kit";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -566,15 +566,12 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
             <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
           </button>
           <div className="flex h-2.5 flex-1 justify-start overflow-hidden rounded-full bg-[var(--t075)]" role="progressbar" aria-valuenow={Math.round(progress)} aria-valuemin={0} aria-valuemax={100}>
-            <motion.div className="h-full rounded-full bg-gradient-to-l from-[#F4C430] to-[var(--t700)]" animate={{ width: `${Math.max(progress, 3)}%` }} transition={{ type: "spring", stiffness: 120, damping: 20 }} />
+            <motion.div className="h-full rounded-full bg-[var(--t700)]" animate={{ width: `${Math.max(progress, 3)}%` }} transition={{ type: "spring", stiffness: 120, damping: 20 }} />
           </div>
-          {config.timeLimitSec ? (
-            <Timer seconds={config.timeLimitSec} onTimeout={() => setFinished(true)} />
-          ) : (
-            <span className="shrink-0 whitespace-nowrap text-sm font-bold text-[var(--t500)]">
-              {ad(idx + 1)} من {ad(questions.length)}
-            </span>
-          )}
+          <span className="shrink-0 whitespace-nowrap text-sm font-bold text-[var(--t700)] dark:text-muted-foreground">
+            <bdi>{ad(idx + 1)} من {ad(questions.length)}</bdi>
+          </span>
+          {config.timeLimitSec ? <Timer seconds={config.timeLimitSec} onTimeout={() => setFinished(true)} /> : null}
         </header>
 
         {/* السؤال والخيارات */}
@@ -591,8 +588,13 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               {combo >= 3 && !answered && (
                 <p className="mb-3 text-base font-bold text-[#E3A93B]">{ad(combo)} إجابات صحيحة متتالية!</p>
               )}
-              {concept && <p className="inline-flex max-w-full rounded-full bg-[#FBF1D6] px-3 text-[13px] font-bold leading-7 text-[#9A6A12]"><span className="truncate">{concept.title}</span></p>}
-              <h2 className="mt-3 font-display text-lg font-extrabold leading-8 text-foreground">{q.question}</h2>
+              <div className="flex flex-wrap items-center gap-1.5">
+                {/* الوضع: في التدريب يظهر التصحيح بعد كل سؤال، وفي الاختبار بعد التسليم */}
+                <span className="rounded-full bg-[var(--t075)] px-2.5 text-[12px] font-bold leading-6 text-[var(--t800)] dark:bg-muted dark:text-foreground">{instantFeedback ? "تدريب: التصحيح فوري" : "اختبار: التصحيح بعد النهاية"}</span>
+                <DifficultyChip level={q.difficulty} />
+                {concept && <span className="inline-flex min-w-0 max-w-full rounded-full bg-muted px-2.5 text-[12px] font-bold leading-6 text-secondary-foreground"><span className="truncate">{concept.title}</span></span>}
+              </div>
+              <h2 className="mt-3 font-display text-[17px] font-bold leading-8 text-foreground">{q.question}</h2>
 
               <div className={q.type === "tf" ? "mt-6 grid grid-cols-2 gap-3" : "mt-6 space-y-2.5"}>
                 {opts.map((o, i) => (
@@ -634,13 +636,13 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                     {graded ? <Check className="h-4 w-4" strokeWidth={3} /> : <X className="h-4 w-4" strokeWidth={3} />}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className={`text-base font-extrabold leading-7 ${graded ? "text-[var(--t800)]" : "text-[#C0392B]"}`}>{graded ? PRAISE[idx % PRAISE.length] : "الإجابة الصحيحة"}</p>
-                    {!graded && <p className="text-[15px] font-semibold leading-7 text-foreground">{q.correct}</p>}
+                    <p className={`text-base font-extrabold leading-7 ${graded ? "text-[var(--t800)]" : "text-[#C0392B]"}`}>{graded ? PRAISE[idx % PRAISE.length] : "إجابة غير صحيحة"}</p>
+                    {!graded && <p className="text-[14px] font-semibold leading-6 text-secondary-foreground">الإجابة الصحيحة مظلّلة بالأخضر في الأعلى.</p>}
                     {!graded && conf === "sure" && <p className="text-sm font-bold leading-6 text-[#9A6A12]">كنت متأكدًا، فهذا تصور خاطئ. سيعود إليك السؤال قريبًا.</p>}
                     {graded && conf === "guess" && <p className="text-sm font-bold leading-6 text-[#9A6A12]">أصبت بالتخمين، فسيعود إليك غدًا.</p>}
                   </div>
-                  <button type="button" onClick={handleReport} disabled={reported} aria-label="أبلغ عن خطأ في السؤال" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground/60 disabled:opacity-30">
-                    <Flag className="h-4 w-4" />
+                  <button type="button" onClick={handleReport} disabled={reported} aria-label="أبلغ عن خطأ في السؤال" className="flex min-h-[32px] shrink-0 items-center gap-1 rounded-full px-2 text-[12px] font-bold text-muted-foreground disabled:opacity-40">
+                    <Flag className="h-3.5 w-3.5" /> {reported ? "أُبلغ" : "إبلاغ"}
                   </button>
                 </div>
                 {showWhy && (
@@ -678,7 +680,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                 <button
                   type="button"
                   onClick={() => setShowWhy(true)}
-                  className="min-h-[50px] flex-1 rounded-[20px] border border-[#E3D3A0] bg-white text-base font-bold text-[#9A6A12] active:scale-[0.98] dark:bg-card"
+                  className="min-h-[50px] flex-1 rounded-[20px] border border-[var(--t150)] bg-white text-base font-bold text-[var(--t800)] active:scale-[0.98] dark:border-border dark:bg-card dark:text-primary"
                 >
                   الشرح
                 </button>
@@ -702,19 +704,19 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
           <AlertDialogContent className="rounded-2xl">
             <AlertDialogHeader>
               <AlertDialogTitle>الخروج من الجلسة؟</AlertDialogTitle>
-              <AlertDialogDescription>لن تُحتسب هذه الجلسة، وتبقى أخطاؤك محفوظة في «أخطائي».</AlertDialogDescription>
+              <AlertDialogDescription>إجاباتك حتى الآن محفوظة، وأخطاؤك في «أخطائي». لكن لن تظهر نتيجة هذه الجلسة، ولن تُحسب نقاطها في هدف اليوم.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>متابعة الجلسة</AlertDialogCancel>
-              <AlertDialogAction
-                className="bg-destructive text-white hover:bg-destructive/90"
+              <AlertDialogAction>متابعة الجلسة</AlertDialogAction>
+              <AlertDialogCancel
+                className="border-destructive/40 text-destructive hover:bg-danger-soft hover:text-destructive"
                 onClick={() => {
                   clearSnapshot();
                   clearQuiz();
                 }}
               >
-                خروج
-              </AlertDialogAction>
+                خروج دون نتيجة
+              </AlertDialogCancel>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

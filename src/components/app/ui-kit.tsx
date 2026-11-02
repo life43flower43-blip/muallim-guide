@@ -8,7 +8,7 @@
 // ============================================================================
 
 import { FitText } from "./FitText";
-import { ArrowRight, ChevronLeft, EyeOff, Flame, Gem, X } from "lucide-react";
+import { ArrowRight, ChevronLeft, CircleCheck, CircleX, EyeOff, Flame, Gem, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ad } from "@/lib/arabic";
 
@@ -176,7 +176,7 @@ export function PrimaryButton({ className, ...rest }: React.ButtonHTMLAttributes
     <button
       type="button"
       className={cn(
-        "inline-flex min-h-[50px] items-center justify-center gap-2 whitespace-nowrap rounded-[20px] bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] px-5 text-base font-bold text-white transition active:scale-[0.97] hover:brightness-105 disabled:from-muted disabled:to-muted disabled:text-muted-foreground",
+        "inline-flex min-h-[50px] items-center justify-center gap-2 whitespace-nowrap rounded-[20px] bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] px-5 text-base max-[359px]:px-3 font-bold text-white transition active:scale-[0.97] hover:brightness-105 disabled:from-muted disabled:to-muted disabled:text-muted-foreground",
         className
       )}
       {...rest}
@@ -189,7 +189,7 @@ export function SecondaryButton({ className, ...rest }: React.ButtonHTMLAttribut
     <button
       type="button"
       className={cn(
-        "inline-flex min-h-[50px] items-center justify-center gap-2 whitespace-nowrap rounded-[20px] border border-[#E3D3A0] bg-white px-5 text-base font-bold text-[var(--t900)] transition active:scale-[0.97] hover:bg-[#FBF7EA] disabled:opacity-50 dark:bg-card dark:text-foreground",
+        "inline-flex min-h-[50px] items-center justify-center gap-2 whitespace-nowrap rounded-[20px] border border-[var(--t150)] bg-white px-5 text-base font-bold text-[var(--t900)] transition active:scale-[0.97] hover:bg-[var(--t050)] disabled:border-border disabled:text-muted-foreground disabled:opacity-80 max-[359px]:px-3 dark:border-border dark:bg-card dark:text-foreground",
         className
       )}
       {...rest}
@@ -355,6 +355,24 @@ export function SkillBar({ label, value, status, tone = "primary" }: { label: st
 
 /** زر خيار في سؤال أو موقف: حرف، نص، وحالة بعد التقييم.
  *  onToggleStrike يضيف زر «استبعاد» يشطب الخيار (نمط UWorld) */
+/** شارة الصعوبة: لون ورمز معًا، فلا يعتمد التمييز على اللون وحده */
+export function DifficultyChip({ level }: { level?: string }) {
+  if (!level) return null;
+  const tone =
+    level === "سهل" ? "bg-success-soft text-success" : level === "صعب" ? "bg-danger-soft text-destructive" : "bg-[#FDF3DC] text-[#8A5A00] dark:bg-[#8A5A00]/20 dark:text-[#F2C46D]";
+  const bars = level === "سهل" ? 1 : level === "صعب" ? 3 : 2;
+  return (
+    <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 text-[12px] font-bold leading-6", tone)}>
+      <span className="flex items-end gap-[2px]" aria-hidden="true">
+        {[1, 2, 3].map((b) => (
+          <span key={b} className={cn("w-[3px] rounded-sm bg-current", b > bars && "opacity-25")} style={{ height: 4 + b * 2 }} />
+        ))}
+      </span>
+      {level}
+    </span>
+  );
+}
+
 export function OptionButton({
   letter,
   children,
@@ -382,7 +400,7 @@ export function OptionButton({
     dim: "border-border bg-card opacity-60",
   }[state];
   const letterCls = {
-    idle: "bg-muted text-secondary-foreground",
+    idle: "bg-[var(--t075)] text-[var(--t800)] dark:bg-muted dark:text-foreground",
     selected: "bg-primary text-primary-foreground",
     correct: "bg-success text-white",
     wrong: "bg-destructive text-white",
@@ -400,6 +418,9 @@ export function OptionButton({
       >
         {letter && <span className={cn("flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm font-semibold", letterCls)}>{letter}</span>}
         <span className={cn("flex-1 text-base leading-7", isStruck && "line-through decoration-2")}>{children}</span>
+        {/* رمز الصح والخطأ مع اللون، حتى لا يعتمد التمييز على اللون وحده */}
+        {state === "correct" && <CircleCheck className="mt-1 h-5 w-5 shrink-0 text-success" aria-label="صحيح" />}
+        {state === "wrong" && <CircleX className="mt-1 h-5 w-5 shrink-0 text-destructive" aria-label="خطأ" />}
       </button>
       {onToggleStrike && !disabled && (
         <button
@@ -465,43 +486,11 @@ export function MasteryDot({ level, size = 14 }: { level: 0 | 1 | 2 | 3; size?: 
   );
 }
 
-/** زخرفة شريط العنوان: موجات خضراء متراكبة تنساب من الزاوية، وخيطان ذهبيان، ونجوم ذهبية تومض */
+/** كان زخرفة موجات ذهبية خلف العناوين؛ أُزيلت ليبقى الشريط العلوي هادئًا وموحّدًا في كل الشاشات */
 export function HeaderArt() {
-  const star = "M0 -6 C0.8 -1.2 1.2 -0.8 6 0 C1.2 0.8 0.8 1.2 0 6 C-0.8 1.2 -1.2 0.8 -6 0 C-1.2 -0.8 -0.8 -1.2 0 -6Z";
-  return (
-    <svg className="head-art pointer-events-none absolute inset-0 h-full w-full -scale-y-100" viewBox="0 0 400 130" preserveAspectRatio="none" aria-hidden="true">
-      <defs>
-        <linearGradient id="ha1" x1="0" y1="0" x2="1" y2="0.5">
-          <stop offset="0" stopColor="var(--t800)" stopOpacity="0.95" />
-          <stop offset="0.6" stopColor="var(--t850)" stopOpacity="0.35" />
-          <stop offset="1" stopColor="var(--t600)" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id="ha2" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="var(--t600)" stopOpacity="0.55" />
-          <stop offset="1" stopColor="var(--t100)" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id="ha3" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="var(--t200)" />
-          <stop offset="1" stopColor="var(--t100)" stopOpacity="0.3" />
-        </linearGradient>
-        <linearGradient id="hag" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#F4C430" stopOpacity="0.2" />
-          <stop offset="0.35" stopColor="#E3B23C" />
-          <stop offset="0.75" stopColor="#FFE27A" />
-          <stop offset="1" stopColor="#F4C430" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path className="w3" d="M-20 0H420V6C340 16 280 2 215 16C145 32 80 58 -20 118Z" fill="url(#ha3)" />
-      <path className="w2" d="M-20 0H330C280 16 225 8 170 28C115 48 60 78 -20 104Z" fill="url(#ha2)" />
-      <path className="w1" d="M-20 0H240C200 12 160 12 118 30C78 48 40 70 -20 90Z" fill="url(#ha1)" />
-      <path className="w2" d="M-20 108C40 62 92 44 140 28C205 8 290 4 420 2" stroke="url(#hag)" strokeWidth="1.8" fill="none" />
-      <path className="w1" d="M-20 98C38 58 88 40 132 25C190 6 270 2 420 -1" stroke="url(#hag)" strokeWidth="0.9" fill="none" opacity="0.7" />
-      <g transform="translate(150 22) scale(1.6)"><path className="sp" d={star} fill="#F4C430" /></g>
-      <g transform="translate(212 12) scale(1.1)"><path className="sp" style={{ animationDelay: "1s" }} d={star} fill="#FFE27A" /></g>
-      <g transform="translate(96 46) scale(1.3)"><path className="sp" style={{ animationDelay: "2s" }} d={star} fill="#E3B23C" /></g>
-    </svg>
-  );
+  return null;
 }
+
 
 /** أدوات مرتبطة داخل القسم: مربعات صغيرة متساوية برمز ذهبي واسم في سطر واحد */
 export function ToolTiles({ items }: { items: { icon: React.ElementType; title: string; onClick: () => void }[] }) {
