@@ -10,7 +10,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       {/* التطبيق المثبّت على الهاتف يفتح دائمًا على التطبيق لا على الموقع، حتى لو ثُبّت قديمًا على الرابط الرئيسي */}
       <script
         dangerouslySetInnerHTML={{
-          __html: `try{if((window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone){location.replace("/app")}}catch(e){}`,
+          __html: `try{var m=function(q){return window.matchMedia&&matchMedia("(display-mode: "+q+")").matches};if(m("standalone")||m("fullscreen")||m("minimal-ui")||navigator.standalone||document.referrer.indexOf("android-app://")===0){location.replace("/app")}}catch(e){}`,
         }}
       />
       {ADS && <Script async strategy="afterInteractive" crossOrigin="anonymous" src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADS}`} />}
