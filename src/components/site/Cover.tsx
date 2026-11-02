@@ -11,6 +11,7 @@ import { courseMeta } from "@/lib/site-nav";
 /** أيقونة الموضوع من كلمات العنوان والفصل، والأسبق في القائمة أولى */
 const RULES: [RegExp, LucideIcon][] = [
   [/تنمر/, ShieldAlert],
+  [/بافلوف|إشراط|سكنر|ثورندايك|واطسون/, Trophy],
   [/احتراق|إنهاك/, BatteryLow],
   [/هاتف|جوال/, Smartphone],
   [/التعلم النشط|نشط/, Zap],

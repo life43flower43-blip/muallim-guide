@@ -9,7 +9,7 @@ import { allArticles, arDate, articleBySlug, articleCourse } from "@/lib/article
 import { courseMeta } from "@/lib/site-nav";
 import { ad } from "@/lib/arabic";
 import { Cover, MiniCover } from "@/components/site/Cover";
-import { Crumbs, SectionTitle, ShareRow, WithSidebar } from "@/components/site/Blocks";
+import { Tile, Crumbs, SectionTitle, ShareRow, WithSidebar } from "@/components/site/Blocks";
 import AdSlot from "@/components/site/AdSlot";
 
 export const dynamicParams = false;
@@ -106,17 +106,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
       <section className="mt-8">
         <SectionTitle title="مقالات قد تهمك" more={{ href: "/articles", label: "كل المقالات" }} />
-        <div className="grid gap-5 rounded-2xl border border-[#E2ECE6] bg-white p-4 sm:grid-cols-2">
-          {related.map((r) => (
-            <Link key={r.slug} href={`/articles/${r.slug}`} className="flex gap-3">
-              <MiniCover id={r.slug} title={r.title} courseId={articleCourse(r)} className="h-[72px] w-[96px] shrink-0 rounded-xl" />
-              <span className="min-w-0">
-                <span className="line-clamp-2 text-[15px] font-bold leading-6 text-[#14302A]">{r.title}</span>
-                <span className="mt-0.5 block text-[12px] text-[#6B8077]">{r.category}</span>
-              </span>
-            </Link>
-          ))}
-        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{related.map((r) => <Tile key={r.slug} href={`/articles/${r.slug}`} id={r.slug} title={r.title} courseId={articleCourse(r)} meta={r.category} />)}</div>
       </section>
     </WithSidebar>
   );

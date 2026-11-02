@@ -7,7 +7,7 @@ import AdSlot from "@/components/site/AdSlot";
 import { Clock } from "lucide-react";
 import { ad } from "@/lib/arabic";
 import { courseMeta, readMinutes } from "@/lib/site-nav";
-import { CatBadge, Crumbs, PostRow, SectionTitle, ShareRow, Thumb, WithSidebar } from "@/components/site/Blocks";
+import { CatBadge, Crumbs, conceptTile, SectionTitle, ShareRow, Thumb, WithSidebar } from "@/components/site/Blocks";
 import { SITE_URL, SITE_NAME, chapterLabel, conceptQuestions, publicBank, summary } from "@/lib/public-bank";
 
 export const dynamicParams = false;
@@ -40,7 +40,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
   const pos = siblings.findIndex((x) => x.id === c.id);
   const prev = siblings[pos - 1];
   const next = siblings[pos + 1];
-  const sample = conceptQuestions(c.id).slice(0, 2);
+  const sample = conceptQuestions(c.id).slice(0, 5);
   const examples = c.examples?.length ? c.examples : [c.example];
 
   const jsonLd = {
@@ -56,7 +56,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
   };
 
   const m = courseMeta(course);
-  const related = siblings.filter((x) => x.id !== c.id).slice(0, 4);
+  const related = siblings.filter((x) => x.id !== c.id).slice(0, 6);
   const path = `/learn/${course}/${c.id}`;
 
   return (
@@ -179,7 +179,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
       {related.length > 0 && (
         <section className="mt-8">
           <SectionTitle title="مقالات ذات صلة" />
-          <div className="grid gap-5 rounded-2xl border border-[#E2ECE6] bg-white p-4 sm:grid-cols-2">{related.map((r) => <PostRow key={r.id} c={r} showExcerpt />)}</div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{related.map(conceptTile)}</div>
         </section>
       )}
     </WithSidebar>

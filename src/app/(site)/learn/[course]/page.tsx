@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { SITE_URL, chapterLabel, courseChapters, publicBank } from "@/lib/public-bank";
 import { courseMeta } from "@/lib/site-nav";
 import { arCount, CHAPTER_FORMS, CONCEPT_FORMS, ad } from "@/lib/arabic";
-import { Crumbs, PostRow, SectionTitle, WithSidebar } from "@/components/site/Blocks";
+import { Crumbs, conceptTile, SectionTitle, WithSidebar } from "@/components/site/Blocks";
 import AdSlot from "@/components/site/AdSlot";
 
 export const dynamicParams = false;
@@ -67,9 +67,7 @@ export default async function CoursePage({ params }: { params: Promise<{ course:
         {chapters.map((ch, i) => (
           <section key={ch.chapter} id={`ch-${i + 1}`} className="scroll-mt-16">
             <SectionTitle title={`${ad(i + 1)}. ${chapterLabel(ch.chapter)}`} />
-            <div className="grid gap-x-6 gap-y-5 rounded-2xl border border-[#E2ECE6] bg-white p-4 sm:grid-cols-2">
-              {ch.concepts.map((c) => <PostRow key={c.id} c={c} />)}
-            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{ch.concepts.map(conceptTile)}</div>
             {i === 1 && <AdSlot />}
           </section>
         ))}
