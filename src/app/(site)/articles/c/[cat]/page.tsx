@@ -7,6 +7,9 @@ import { courseMeta } from "@/lib/site-nav";
 import { ArticleCard, Crumbs, Tile, WithSidebar, PageHero } from "@/components/site/Blocks";
 import CatChips from "@/components/site/CatChips";
 
+// المقالات المجدولة تظهر في موعدها دون إعادة بناء
+export const revalidate = 3600;
+
 export const dynamicParams = false;
 export function generateStaticParams() {
   return articleCats().map((c) => ({ cat: c.slug }));

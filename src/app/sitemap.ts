@@ -4,6 +4,9 @@ import { APP_SECTIONS } from "@/lib/site-nav";
 import { allArticles, articleCats } from "@/lib/articles";
 import { PROBLEMS } from "@/lib/site-problems";
 
+// المقالات المجدولة تظهر في موعدها دون إعادة بناء
+export const revalidate = 3600;
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const b = publicBank();
   const fixed = ["", "/learn", "/articles", "/practice-test", "/license-guide", "/tatbeeq", "/misconceptions", "/classroom-problems", "/mind-maps", "/comparisons", "/glossary", "/sections", ...APP_SECTIONS.map((s) => `/sections/${s.slug}`), "/about", "/privacy", "/terms", "/contact"].map((p) => ({ url: `${SITE_URL}${p}`, changeFrequency: "monthly" as const, priority: p === "/learn" ? 0.9 : 0.5 }));

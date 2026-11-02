@@ -13,6 +13,9 @@ import { articleCourse } from "@/lib/articles";
 import { ad } from "@/lib/arabic";
 import type { Concept } from "@/lib/types";
 
+// المقالات المجدولة تظهر في موعدها دون إعادة بناء
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "تربوي | الاستعداد لاختبار الرخصة المهنية والتوظيف للمعلمين",
   description:

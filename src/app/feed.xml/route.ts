@@ -2,7 +2,7 @@
 import { allArticles } from "@/lib/articles";
 import { SITE_URL } from "@/lib/public-bank";
 
-export const dynamic = "force-static";
+export const revalidate = 3600;
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
