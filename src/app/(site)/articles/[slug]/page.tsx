@@ -11,6 +11,7 @@ import { ad, arCount, MINUTE_FORMS } from "@/lib/arabic";
 import { Cover, MiniCover } from "@/components/site/Cover";
 import { Tile, Crumbs, SectionTitle, ShareRow, WithSidebar } from "@/components/site/Blocks";
 import AdSlot from "@/components/site/AdSlot";
+import { ARTICLE_COVERS } from "@/lib/article-covers";
 import ReadProgress from "@/components/site/ReadProgress";
 
 export const dynamicParams = false;
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: a.description,
     keywords: a.tags,
     alternates: { canonical: url },
-    openGraph: { title: a.title, description: a.description, url, type: "article", locale: "ar_AR", siteName: "تربوي", publishedTime: a.date, tags: a.tags, images: [{ url: "/og.jpg", width: 1200, height: 630 }] },
+    openGraph: { title: a.title, description: a.description, url, type: "article", locale: "ar_AR", siteName: "تربوي", publishedTime: a.date, tags: a.tags, images: [{ url: ARTICLE_COVERS.has(a.slug) ? `/covers/${a.slug}.jpg` : "/og.jpg" }] },
   };
 }
 
@@ -50,7 +51,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       inLanguage: "ar",
       keywords: a.tags.join("، "),
       articleSection: a.category,
-      image: `${SITE_URL}/og.jpg`,
+      image: `${SITE_URL}${ARTICLE_COVERS.has(a.slug) ? `/covers/${a.slug}.jpg` : "/og.jpg"}`,
       author: { "@type": "Organization", name: "تربوي", url: `${SITE_URL}/` },
       publisher: { "@type": "Organization", name: "تربوي", logo: { "@type": "ImageObject", url: `${SITE_URL}/icons/icon-512-v3.png` } },
       mainEntityOfPage: `${SITE_URL}${path}`,
