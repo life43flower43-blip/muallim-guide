@@ -636,14 +636,17 @@ body {
   color: #fff;
 }
 
-/* الشريط السفلي العائم: إطار رفيع هادئ */
+/* الشريط السفلي العائم: إطار ذهبي رفيع */
 .nav-gold {
-  border: 1px solid var(--t100);
-  background: #fff;
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(90deg, #D4AF37, #FFE680 25%, #F4C430 50%, #FFE680 75%, #D4AF37) border-box;
 }
 .dark .nav-gold {
-  border-color: var(--border);
-  background: var(--card);
+  background:
+    linear-gradient(var(--card), var(--card)) padding-box,
+    linear-gradient(90deg, #D4AF37, #FFE680 25%, #F4C430 50%, #FFE680 75%, #D4AF37) border-box;
 }
 
 /* شريط العنوان متصل بأعلى الشاشة وجانبيها، بلون شريط حالة الهاتف نفسه، وحوافه السفلى مستديرة */

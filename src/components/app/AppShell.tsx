@@ -11,8 +11,8 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
-import { Settings, House, CircleUser, PencilLine, Target, WifiOff, BookOpenText, ArrowRight } from "lucide-react";
-import { useApp, useAppHydrated } from "@/lib/store";
+import { Bell, Flame, Settings, House, CircleUser, PencilLine, Target, WifiOff, Compass, ArrowRight } from "lucide-react";
+import { useApp, useAppHydrated, xpToday, DAILY_GOAL_XP } from "@/lib/store";
 import { useUi, OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
 import { loadQbank } from "@/lib/qbank";
 import { readPeerHash } from "@/lib/peer";
@@ -48,12 +48,14 @@ import MisconceptionsView from "./MisconceptionsView";
 import BootBank from "./BootBank";
 import { ScreenShell } from "./ui-kit";
 import { Splash } from "./Splash";
+import { GoalBurst } from "./GoalBurst";
+import { HeaderArt } from "./ui-kit";
 
 export type Tab = "today" | "notebook" | "practice" | "mistakes" | "profile";
 
 const NAV: { id: Tab; label: string; icon: React.ElementType }[] = [
   { id: "today", label: "الرئيسية", icon: House },
-  { id: "notebook", label: "الملخصات", icon: BookOpenText },
+  { id: "notebook", label: "البوصلة", icon: Compass },
   { id: "practice", label: "التدريب", icon: PencilLine },
   { id: "mistakes", label: "أخطائي", icon: Target },
   { id: "profile", label: "حسابي", icon: CircleUser },
@@ -121,7 +123,7 @@ function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: 
 function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
   return (
     <nav id="bottom-nav" aria-label="التنقل الرئيسي" className="safe-bottom px-2 pb-2 pt-1 min-[380px]:px-3 lg:hidden">
-      {/* شريط عائم بإطار رفيع، والحبة الخضراء تنزلق بين التبويبات */}
+      {/* شريط عائم بإطار ذهبي، والحبة الخضراء تنزلق بين التبويبات */}
       <div className="nav-gold grid grid-cols-5 gap-0.5 rounded-[26px] p-1 min-[380px]:gap-1 min-[380px]:p-1.5">
         {NAV.map((n) => {
           const active = tab === n.id;
@@ -141,7 +143,7 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
                   aria-hidden="true"
                 />
               )}
-              <n.icon className={cn("relative h-6 w-6 transition-colors", active ? "text-white" : "text-[var(--t700)] dark:text-primary")} strokeWidth={active ? 2.3 : 1.9} />
+              <n.icon className={cn("relative h-6 w-6 transition-colors", active ? "text-[#FFD95A]" : "text-[var(--t700)] dark:text-primary")} strokeWidth={active ? 2.4 : 1.9} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.2 : 0} />
               <span className={cn("relative whitespace-nowrap text-[clamp(10px,3.1vw,13px)] transition-colors", active ? "font-bold text-white" : "font-medium text-[var(--t700)] dark:text-primary")}>{n.label}</span>
               {n.id === "mistakes" && due > 0 && (
                 <span className="absolute right-1/2 top-0.5 translate-x-5 rounded-full bg-destructive px-1.5 text-[10px] font-semibold leading-4 text-white ring-2 ring-white">
@@ -157,11 +159,10 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
 }
 
 // الشريط العلوي فاتح بلون خلفية التطبيق (ولون شريط حالة الهاتف): في الرئيسية الشعار والترحيب، وفي غيرها اسم الصفحة
-function MobileTopBar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
-  // تحية باسم المستخدم بدل اسم التطبيق: الشعار يكفي للتعريف
-  const name = useApp((s) => s.name).trim().split(/\s+/)[0];
-  const h = new Date().getHours();
-  const greeting = `${h < 12 ? "صباح الخير" : "مساء الخير"}${name ? `، ${name}` : ""}`;
+function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
+  // الشعلة بلا رقم: حلقة هدف اليوم وحدها
+  const sessions = useApp((s) => s.sessions);
+  const goal = Math.min(1, xpToday(sessions) / DAILY_GOAL_XP);
   const openSettings = () => {
     onTab("profile");
     setTimeout(() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT)), 50);
@@ -169,6 +170,7 @@ function MobileTopBar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
   if (tab !== "today")
     return (
       <header className="green-head safe-top sticky top-0 z-30 px-2 pb-2 lg:hidden">
+        <HeaderArt />
         <div className="relative flex h-14 items-center justify-center px-14">
           {/* رجوع إلى الرئيسية */}
           <button type="button" onClick={() => onTab("today")} aria-label="رجوع" className="absolute right-1.5 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
@@ -184,16 +186,43 @@ function MobileTopBar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
       </header>
     );
   return (
-    <header className="green-head safe-top sticky top-0 z-30 px-2 pb-1 lg:hidden">
-      <div className="flex h-14 items-center justify-between gap-2 px-2.5">
-        <span className="flex min-w-0 items-center gap-2.5">
+    <header className="green-head safe-top sticky top-0 z-30 px-2 pb-2 lg:hidden">
+        <HeaderArt />
+      <div className="flex items-center justify-between gap-2 px-2.5 pb-1 pt-1">
+        <span className="flex min-w-0 items-center gap-2 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icons/logo-128.png" alt="" className="h-9 w-9 shrink-0 rounded-[12px] bg-white object-contain p-0.5 ring-1 ring-[var(--t100)]" />
-          <span className="min-w-0 truncate font-display text-[19px] font-extrabold">{greeting}</span>
+          <img src="/icons/logo-128.png" alt="" className="h-11 w-11 shrink-0 rounded-[14px] bg-white object-contain p-0.5 ring-1 ring-[#F4C430]/70" />
+          <span className="shrink-0 whitespace-nowrap font-display text-[clamp(20px,6.8vw,28px)] font-extrabold leading-9">تربوي</span>
         </span>
-        <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[var(--t800)] hover:bg-black/5 dark:text-primary">
-          <Settings className="h-[22px] w-[22px]" strokeWidth={2} />
-        </button>
+        <span className="flex shrink-0 items-center gap-1">
+          <span className="flex items-center gap-1 rounded-full bg-white p-[4px] max-[360px]:hidden text-base font-extrabold text-[#D19B00] dark:bg-card" aria-label={`هدف اليوم ${ad(Math.round(goal * 100))}٪`}>
+            {/* حلقة هدف اليوم تمتلئ بالذهبي حول الشعلة، وتتوهج عند اكتمالها */}
+            <span className={cn("relative h-[28px] w-[28px] rounded-full", goal >= 1 && "ring-2 ring-[#FFE27A]")}>
+              <GoalBurst done={goal >= 1} />
+              <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90" aria-hidden="true">
+                <defs>
+                  <linearGradient id="goalGold" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stopColor="#F2C230" />
+                    <stop offset="1" stopColor="#C99A06" />
+                  </linearGradient>
+                </defs>
+                <circle cx="18" cy="18" r="15" fill="none" stroke="#FBF0CF" strokeWidth="3.5" />
+                <circle cx="18" cy="18" r="15" fill="none" stroke="url(#goalGold)" strokeWidth="3.5" strokeLinecap="round" strokeDasharray={`${goal * 94.25} 94.25`} className="transition-[stroke-dasharray] duration-700" />
+              </svg>
+              <Flame className="absolute inset-0 m-auto h-[14px] w-[14px]" fill="#E8B511" stroke="#BF8E05" strokeWidth={1.5} />
+            </span>
+            
+          </span>
+          <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-[36px] w-[36px] items-center justify-center rounded-full bg-white text-[#C99A06] dark:bg-card">
+            <Bell className="h-[18px] w-[18px]" strokeWidth={2.2} />
+            {due > 0 && (
+              <span className="absolute -right-1 -top-1 min-w-[20px] rounded-full bg-destructive px-1 text-center text-[11px] font-bold leading-5 text-white">{ad(Math.min(due, 99))}</span>
+            )}
+          </button>
+          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-[36px] w-[36px] items-center justify-center rounded-full bg-white text-[#C99A06] dark:bg-card">
+            <Settings className="h-[18px] w-[18px]" strokeWidth={2.2} />
+          </button>
+        </span>
       </div>
     </header>
   );
@@ -314,6 +343,20 @@ export default function AppShell() {
     window.history.replaceState(null, "", window.location.pathname);
   }, []);
 
+  // رابط قسم من الموقع العام (?open=examsim مثلًا): يفتح القسم مباشرة
+  useEffect(() => {
+    const what = new URLSearchParams(window.location.search).get("open");
+    if (!what) return;
+    const s = useUi.getState();
+    const open: Record<string, () => void> = {
+      examsim: s.startExamsim, placement: s.startPlacement, learn: s.startLearn, sim: s.startSim, lab: s.startLab,
+      studio: s.startStudio, scenarios: s.startScenarios, measure: s.startMeasure, mind: s.startMind, myths: s.startMyths,
+      flash: s.startFlash, challenges: s.startChallenges, field: s.startField,
+    };
+    open[what]?.();
+    window.history.replaceState(null, "", window.location.pathname);
+  }, []);
+
   // العودة من Google: رسالة، ثم نقل بيانات الجهاز إلى الحساب
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -369,7 +412,7 @@ export default function AppShell() {
       <Splash />
       <SideNav tab={tab} onTab={go} due={due} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <MobileTopBar tab={tab} onTab={go} />
+        <MobileTopBar tab={tab} onTab={go} due={due} />
         {!isOnline && (
           <div role="status" className="flex items-center justify-center gap-2 border-b border-border bg-gem-soft px-4 py-1.5 text-xs font-medium text-gem">
             <WifiOff className="h-3.5 w-3.5 shrink-0" />

@@ -1,142 +1,106 @@
-// الصفحة الرئيسية للموقع: تعرّف بتربوي لمن يصل من البحث أو من رابط، وتقوده إلى المحاور أو إلى التطبيق
+// الصفحة الرئيسية للموقع بالنمط المعتاد: مقالات مميزة، وأقسام التطبيق، ثم أحدث ما في كل تصنيف مع شريط جانبي
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SITE_URL, courseChapters, courseList, publicBank } from "@/lib/public-bank";
-import { ad, arCount, CHAPTER_FORMS, CONCEPT_FORMS } from "@/lib/arabic";
+import { SITE_URL, publicBank } from "@/lib/public-bank";
+import { APP_SECTIONS, courseMeta } from "@/lib/site-nav";
+import { PostCard, PostRow, SectionTitle, WithSidebar } from "@/components/site/Blocks";
+import { ad } from "@/lib/arabic";
+import type { Concept } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "تربوي | الاستعداد لاختبار الرخصة المهنية والتوظيف للمعلمين",
   description:
-    "منصة عربية مجانية للمعلمين وطلاب كليات التربية: مفاهيم تربوية مشروحة بأمثلة من الصف، وآلاف الأسئلة مع تفسير كل خيار، واختبارات محاكية، ومواقف صفية، وأدوات للقياس والتقويم.",
+    "موقع عربي مجاني للمعلمين وطلاب كليات التربية: مفاهيم تربوية مشروحة بأمثلة من الصف، وآلاف الأسئلة مع تفسير كل خيار، واختبارات محاكية، ومواقف صفية، وأدوات للقياس والتقويم.",
   alternates: { canonical: `${SITE_URL}/` },
 };
 
-const FEATURES = [
-  { img: "/home/concepts-v2.jpg", title: "مفاهيم مشروحة بأمثلة", text: "كل مفهوم تربوي بلغة واضحة، مع مثال من الصف وقاعدة تطبقها، وخرائط ذهنية لكل فصل." },
-  { img: "/home/test-v2.jpg", title: "أسئلة بتفسير لكل خيار", text: "لا تعرف أنك أخطأت فقط، بل لماذا كان اختيارك خطأ، ولماذا كانت الإجابة الصحيحة صحيحة." },
-  { img: "/home/situations-v2.jpg", title: "مواقف صفية حقيقية", text: "تختار تصرفك في موقف من الصف، ثم ترى أثره والمفهوم التربوي الذي يفسره." },
-  { img: "/home/plan-v2.jpg", title: "أدوات المعلم الجاهزة", text: "خطط دروس كاملة، وجدول مواصفات، وسلم تقدير، وتحليل البدائل، وحساب الثبات." },
-];
+const HOME_COURSES = ["M5", "M3", "M4", "M1", "M2", "SE1"];
 
-const STEPS = [
-  { n: 1, title: "اعرف مستواك", text: "اختبار قصير يقيس أداءك في كل محور، ويرتب لك من أين تبدأ." },
-  { n: 2, title: "تدرّب كل يوم", text: "عشر دقائق من الأسئلة، ومراجعة تعيد عليك ما أخطأت فيه في الوقت الذي تبدأ فيه بنسيانه." },
-  { n: 3, title: "جرّب الاختبار كاملًا", text: "محاكٍ بأقسام وزمن محدد، ثم تحليل لكل قسم يوضح أين تحتاج مراجعة." },
-];
+/** مقالات من فصول مختلفة في التصنيف نفسه */
+function spread(courseId: string, n: number): Concept[] {
+  const all = publicBank().concepts.filter((c) => c.courseId === courseId);
+  const seen = new Set<string>();
+  const out: Concept[] = [];
+  for (const c of all) {
+    if (seen.has(c.chapter)) continue;
+    seen.add(c.chapter);
+    out.push(c);
+    if (out.length === n) break;
+  }
+  return out;
+}
 
 const FAQ = [
-  { q: "هل تربوي مجاني؟", a: "نعم. المحتوى والأسئلة والأدوات متاحة مجانًا، ويمكنك أن تبدأ دون تسجيل." },
+  { q: "هل موقع تربوي مجاني؟", a: "نعم. المقالات والأسئلة والاختبارات المحاكية والأدوات كلها مجانية، ويمكنك أن تبدأ دون تسجيل." },
   { q: "لمن هذا الموقع؟", a: "للمتقدمين لاختبارات الرخصة المهنية والتوظيف في التعليم في البلاد العربية، ولطلاب كليات التربية، وللمعلمين الذين يطورون ممارستهم." },
-  { q: "هل يطابق اختبار بلدي الرسمي؟", a: "يغطي المحاور التربوية المشتركة في أغلب هذه الاختبارات، لكنه ليس الاختبار الرسمي. راجع دليل الاختبار في بلدك لمعرفة المحاور وأوزانها." },
-  { q: "هل يعمل على الهاتف؟", a: "نعم. يفتح من المتصفح، ويمكنك تثبيته على الشاشة الرئيسية ليعمل كتطبيق، حتى دون اتصال بعد أول فتح." },
+  { q: "هل يطابق الاختبار الرسمي في بلدي؟", a: "يغطي المحاور التربوية المشتركة في أغلب هذه الاختبارات، لكنه ليس الاختبار الرسمي. راجع دليل الاختبار في بلدك لمعرفة المحاور وأوزانها." },
+  { q: "ما الفرق بين الموقع والتطبيق؟", a: "الموقع للقراءة: شرح المفاهيم والمصطلحات. والتطبيق للتدريب: أسئلة مع التفسير، واختبارات بزمن، ومراجعة لأخطائك. يفتح التطبيق من المتصفح، ويمكن تثبيته على الهاتف." },
 ];
 
 export default function Home() {
   const b = publicBank();
-  const courses = courseList().filter((c) => c.concepts.length > 0);
-  const stats = [
-    { v: ad(b.concepts.length), l: "مفهومًا تربويًا" },
-    { v: ad(b.questions.length), l: "سؤالًا مع التفسير" },
-    { v: ad(courses.length), l: courses.length >= 3 && courses.length <= 10 ? "محاور" : "محورًا" },
-  ];
+  const featured = [spread("M5", 1)[0], spread("M3", 2)[1], spread("M4", 1)[0], spread("M1", 1)[0], spread("SE1", 1)[0]].filter(Boolean);
+  const [lead, ...side] = featured;
 
   return (
-    <div className="space-y-14">
-      {/* البداية: ماذا نقدّم ولمن */}
-      <section className="grid items-center gap-8 md:grid-cols-2">
-        <div>
-          <p className="inline-block rounded-full bg-accent px-3 py-1 text-sm font-bold text-accent-foreground">مجاني بالكامل</p>
-          <h1 className="mt-4 font-display text-[32px] font-extrabold leading-[1.35] sm:text-4xl">استعد لاختبار المعلمين وأنت تفهم، لا وأنت تحفظ</h1>
-          <p className="mt-4 text-lg leading-8 text-secondary-foreground">
-            تربوي يجمع لك المفاهيم التربوية مشروحة بأمثلة من الصف، وأسئلة بمستوى اختبارات الرخصة المهنية والتوظيف مع تفسير كل خيار، واختبارات محاكية بزمن حقيقي.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/app" className="rounded-2xl bg-primary px-6 py-3 text-base font-bold text-primary-foreground">ابدأ التدريب مجانًا</Link>
-            <Link href="/learn" className="rounded-2xl border border-border bg-card px-6 py-3 text-base font-bold text-foreground">تصفّح المحاور</Link>
+    <div className="space-y-10">
+      {/* المقالات المميزة */}
+      <section className="grid gap-5 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+        <PostCard c={lead} big />
+        <div className="rounded-2xl border border-[#E2ECE6] bg-white p-4">
+          <h2 className="mb-4 border-s-4 border-[#E8A317] ps-2.5 font-display text-[18px] font-extrabold">مقالات مميزة</h2>
+          <div className="space-y-4">{side.map((c) => <PostRow key={c.id} c={c} showExcerpt />)}</div>
+          <div className="mt-5 grid grid-cols-3 gap-2 border-t border-[#EEF3F0] pt-4 text-center">
+            <div><p className="font-display text-[22px] font-extrabold text-[#136F5C]">{ad(b.concepts.length)}</p><p className="text-[12px] text-[#5B7268]">مقال ومفهوم</p></div>
+            <div><p className="font-display text-[22px] font-extrabold text-[#136F5C]">{ad(b.questions.length)}</p><p className="text-[12px] text-[#5B7268]">سؤال مع التفسير</p></div>
+            <div><p className="font-display text-[22px] font-extrabold text-[#136F5C]">{ad(Object.keys(b.courses).length)}</p><p className="text-[12px] text-[#5B7268]">محاور</p></div>
           </div>
         </div>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/home/situations-v2.jpg" alt="صف دراسي هادئ" className="aspect-[4/3] w-full rounded-[28px] border border-border object-cover" />
       </section>
 
-      {/* أرقام المحتوى */}
-      <section className="grid grid-cols-3 gap-3">
-        {stats.map((s) => (
-          <div key={s.l} className="rounded-2xl border border-border bg-card px-3 py-4 text-center">
-            <p className="font-display text-2xl font-extrabold text-primary sm:text-3xl">{s.v}</p>
-            <p className="mt-1 text-sm text-secondary-foreground">{s.l}</p>
-          </div>
-        ))}
-      </section>
-
-      {/* ما الذي تجده */}
+      {/* أقسام التطبيق */}
       <section>
-        <h2 className="font-display text-2xl font-bold">ماذا تجد في تربوي؟</h2>
-        <div className="mt-5 grid gap-4 sm:grid-cols-2">
-          {FEATURES.map((f) => (
-            <div key={f.title} className="overflow-hidden rounded-[24px] border border-border bg-card">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={f.img} alt="" className="h-40 w-full object-cover" />
-              <div className="p-5">
-                <h3 className="font-display text-lg font-bold">{f.title}</h3>
-                <p className="mt-1 leading-7 text-secondary-foreground">{f.text}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* كيف تستعد */}
-      <section>
-        <h2 className="font-display text-2xl font-bold">كيف تستعد في ثلاث خطوات؟</h2>
-        <ol className="mt-5 grid gap-4 md:grid-cols-3">
-          {STEPS.map((s) => (
-            <li key={s.n} className="rounded-[24px] border border-border bg-card p-5">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary font-display text-lg font-extrabold text-primary-foreground">{ad(s.n)}</span>
-              <h3 className="mt-3 font-display text-lg font-bold">{s.title}</h3>
-              <p className="mt-1 leading-7 text-secondary-foreground">{s.text}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {/* المحاور: تقود إلى صفحات الشرح العامة */}
-      <section>
-        <div className="flex items-end justify-between gap-4">
-          <h2 className="font-display text-2xl font-bold">المحاور</h2>
-          <Link href="/learn" className="text-sm font-bold text-primary">كل المحاور</Link>
-        </div>
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          {courses.map((c) => (
-            <Link key={c.id} href={`/learn/${c.id}`} className="rounded-2xl border border-border bg-card p-4 transition-colors hover:border-primary/40">
-              <h3 className="font-display text-base font-bold">{c.name}</h3>
-              <p className="mt-1 text-sm text-secondary-foreground">
-                {arCount(courseChapters(c.id).length, CHAPTER_FORMS)}، {arCount(c.concepts.length, CONCEPT_FORMS)}
-              </p>
+        <SectionTitle title="أقسام تطبيق تربوي" more={{ href: "/sections", label: "كل الأقسام" }} />
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          {APP_SECTIONS.slice(0, 5).map((s) => (
+            <Link key={s.slug} href={`/sections/${s.slug}`} className="group overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
+              <img src={s.img} alt="" loading="lazy" className="h-28 w-full object-cover transition group-hover:scale-105" />
+              <p className="truncate px-3 py-2.5 text-center font-bold text-[#14302A]">{s.title}</p>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* أسئلة شائعة */}
-      <section>
-        <h2 className="font-display text-2xl font-bold">أسئلة شائعة</h2>
-        <div className="mt-5 divide-y divide-border rounded-[24px] border border-border bg-card">
-          {FAQ.map((f) => (
-            <details key={f.q} className="group px-5 py-4">
-              <summary className="cursor-pointer list-none font-bold">{f.q}</summary>
-              <p className="mt-2 leading-7 text-secondary-foreground">{f.a}</p>
-            </details>
+      <WithSidebar>
+        <div className="space-y-10">
+          {HOME_COURSES.map((id) => (
+            <section key={id}>
+              <SectionTitle title={courseMeta(id).short} more={{ href: `/learn/${id}`, label: "المزيد" }} />
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {spread(id, 3).map((c) => <PostCard key={c.id} c={c} />)}
+              </div>
+            </section>
           ))}
-        </div>
-      </section>
 
-      {/* الدعوة الأخيرة */}
-      <section className="rounded-[28px] bg-accent px-6 py-8 text-center">
-        <h2 className="font-display text-2xl font-bold text-accent-foreground">ابدأ بعشر دقائق اليوم</h2>
-        <p className="mx-auto mt-2 max-w-xl leading-7 text-accent-foreground">اختبار قصير يحدد مستواك، ثم خطة تبدأ بالمحور الأضعف. لا تحتاج تسجيلًا لتبدأ.</p>
-        <Link href="/app" className="mt-5 inline-block rounded-2xl bg-primary px-6 py-3 text-base font-bold text-primary-foreground">افتح التطبيق</Link>
-      </section>
+          <section className="rounded-2xl border border-[#E2ECE6] bg-white p-5">
+            <h2 className="font-display text-[20px] font-extrabold">معجم المصطلحات التربوية</h2>
+            <p className="mt-1 leading-7 text-[#4D635A]">كل المصطلحات التربوية في الموقع مرتبة على حروف الهجاء، ولكل مصطلح صفحة بشرحه وأمثلته.</p>
+            <Link href="/glossary" className="mt-3 inline-block rounded-xl bg-[#136F5C] px-5 py-2.5 font-bold text-white">تصفّح المصطلحات</Link>
+          </section>
+
+          <section>
+            <SectionTitle title="أسئلة شائعة" />
+            <div className="divide-y divide-[#EEF3F0] rounded-2xl border border-[#E2ECE6] bg-white">
+              {FAQ.map((f) => (
+                <details key={f.q} className="px-5 py-4">
+                  <summary className="cursor-pointer list-none font-bold">{f.q}</summary>
+                  <p className="mt-2 leading-7 text-[#4D635A]">{f.a}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        </div>
+      </WithSidebar>
     </div>
   );
 }
