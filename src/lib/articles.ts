@@ -27,6 +27,25 @@ export const ARTICLE_CATS: Record<string, string> = {
   "التربية الخاصة": "SE1",
 };
 
+/** روابط تصنيفات المقالات */
+export const CAT_SLUGS: Record<string, string> = {
+  "التدريس والتخطيط": "teaching",
+  "نظريات التعلم": "learning-theories",
+  "التقويم والقياس": "assessment",
+  "المذاكرة والاختبارات": "exams",
+  "الصحة النفسية والسلوك": "wellbeing",
+  "التعليم والتقنية": "edtech",
+  "التربية الخاصة": "special-education",
+  "قضايا تربوية": "issues",
+};
+export const catBySlug = (slug: string) => Object.keys(CAT_SLUGS).find((k) => CAT_SLUGS[k] === slug);
+/** التصنيفات التي فيها مقالات، مرتبة بعددها */
+export function articleCats() {
+  const n = new Map<string, number>();
+  for (const a of allArticles()) n.set(a.category, (n.get(a.category) ?? 0) + 1);
+  return [...n.entries()].sort((a, b) => b[1] - a[1]).map(([name, count]) => ({ name, count, slug: CAT_SLUGS[name] ?? "issues" }));
+}
+
 /** وسوم افتراضية للمقالات القديمة التي كُتبت دون وسوم */
 const DEFAULT_TAGS: Record<string, string[]> = {
   "bandura-social-learning": ["باندورا", "التعلم الاجتماعي", "نظريات التعلم", "النمذجة"],

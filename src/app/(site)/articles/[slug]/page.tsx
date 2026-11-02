@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import { Clock, Tag } from "lucide-react";
 import { SITE_URL } from "@/lib/public-bank";
-import { allArticles, arDate, articleBySlug, articleCourse } from "@/lib/articles";
+import { CAT_SLUGS, allArticles, arDate, articleBySlug, articleCourse } from "@/lib/articles";
 import { courseMeta } from "@/lib/site-nav";
 import { ad, arCount, MINUTE_FORMS } from "@/lib/arabic";
 import { Cover, MiniCover } from "@/components/site/Cover";
@@ -70,13 +70,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     <WithSidebar>
       <ReadProgress color={courseMeta(course).color} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <Crumbs items={[{ href: "/articles", label: "مقالات تربوية" }, { label: a.category }]} />
+      <Crumbs items={[{ href: "/articles", label: "مقالات تربوية" }, { href: `/articles/c/${CAT_SLUGS[a.category] ?? "issues"}`, label: a.category }]} />
 
       <article className="overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
         <Cover id={a.slug} title={a.title} courseId={course} label={a.category} className="h-60 sm:h-80" />
         <div className="p-5 sm:p-8">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-[#6B8077]">
-            <span className="rounded-md px-2 py-0.5 font-bold text-white" style={{ background: courseMeta(course).color }}>{a.category}</span>
+            <Link href={`/articles/c/${CAT_SLUGS[a.category] ?? "issues"}`} className="rounded-md px-2 py-0.5 font-bold text-white" style={{ background: courseMeta(course).color }}>{a.category}</Link>
             <span>{arDate(a.date)}</span>
             <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {arCount(a.minutes, MINUTE_FORMS)} للقراءة</span>
           </div>

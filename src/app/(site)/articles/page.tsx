@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/public-bank";
 import { allArticles, arDate, articleCourse } from "@/lib/articles";
 import { ArticleCard, Crumbs, Tile, WithSidebar } from "@/components/site/Blocks";
+import CatChips from "@/components/site/CatChips";
 
 export const metadata: Metadata = {
   title: "مقالات تربوية: قضايا التعليم وإدارة الصف وتطوير المعلم | تربوي",
@@ -16,6 +17,7 @@ export default function ArticlesIndex() {
       <Crumbs items={[{ label: "مقالات تربوية" }]} />
       <h1 className="font-display text-[28px] font-extrabold">مقالات تربوية</h1>
       <p className="mt-2 leading-8 text-[#4D635A]">قضايا يعيشها المعلم كل يوم: في الصف، ومع الطلاب وأولياء الأمور، وفي الاستعداد لاختبارات المهنة.</p>
+      <div className="mt-4"><CatChips /></div>
       <div className="mt-6 space-y-5">
         <ArticleCard a={first} wide />
         <div className="grid gap-3 sm:grid-cols-2">
