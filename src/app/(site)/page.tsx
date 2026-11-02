@@ -96,6 +96,16 @@ export default function Home() {
         </div>
       </section>
 
+      {/* أحدث المقالات */}
+      <section>
+        <SectionTitle title="أحدث المقالات" color="#B4532A" more={{ href: "/articles", label: "كل المقالات" }} />
+        <div className="mb-4"><CatChips /></div>
+        <div className="space-y-5">
+          <ArticleCard a={articles[0]} wide />
+          <Rail>{articles.slice(1, 7).map((a) => <Tile key={a.slug} card href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={a.category} />)}</Rail>
+        </div>
+      </section>
+
       {/* أرقام المحتوى */}
       <section className="grid grid-cols-3 gap-3">
         {stats.map((s) => (
@@ -145,16 +155,6 @@ export default function Home() {
               <span className="mt-1 block text-[14px] leading-7 text-white/85">{x.d}</span>
             </Link>
           ))}
-        </div>
-      </section>
-
-      {/* أحدث المقالات */}
-      <section>
-        <SectionTitle title="أحدث المقالات" color="#B4532A" more={{ href: "/articles", label: "كل المقالات" }} />
-        <div className="mb-4"><CatChips /></div>
-        <div className="space-y-5">
-          <ArticleCard a={articles[0]} wide />
-          <Rail>{articles.slice(1, 7).map((a) => <Tile key={a.slug} card href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={a.category} />)}</Rail>
         </div>
       </section>
 
