@@ -4,7 +4,7 @@ import { Search, Clock, Smartphone, ChevronLeft } from "lucide-react";
 import type { Concept } from "@/lib/types";
 import { chapterLabel, courseList, SITE_URL } from "@/lib/public-bank";
 import { APP_SECTIONS, courseMeta, excerpt, pickedConcepts, readMinutes } from "@/lib/site-nav";
-import { ad } from "@/lib/arabic";
+import { ad, arCount, MINUTE_FORMS } from "@/lib/arabic";
 import AdSlot from "./AdSlot";
 import ShareBar from "./ShareBar";
 import SearchBox from "./SearchBox";
@@ -35,7 +35,7 @@ export function PostCard({ c, big = false }: { c: Concept; big?: boolean }) {
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-center justify-between gap-2">
           <CatBadge id={c.courseId} />
-          <span className="flex items-center gap-1 text-[12px] text-[#6B8077]"><Clock className="h-3.5 w-3.5" /> {ad(readMinutes(c))} د قراءة</span>
+          <span className="flex items-center gap-1 text-[12px] text-[#6B8077]"><Clock className="h-3.5 w-3.5" /> {arCount(readMinutes(c), MINUTE_FORMS)} للقراءة</span>
         </div>
         <h3 className={`mt-2 font-display font-bold leading-[1.55] text-[#14302A] ${big ? "text-[22px]" : "text-[17px]"}`}>
           <Link href={href(c)} className="hover:text-[#136F5C]">{c.title}</Link>
@@ -57,18 +57,21 @@ export function PostRow({ c, showExcerpt = false }: { c: Concept; showExcerpt?: 
         {showExcerpt ? (
           <p className="mt-1 line-clamp-2 text-[14px] leading-6 text-[#4D635A]">{excerpt(c, 120)}</p>
         ) : (
-          <p className="mt-0.5 flex items-center gap-1 text-[12px] text-[#6B8077]"><Clock className="h-3 w-3" /> {ad(readMinutes(c))} د قراءة</p>
+          <p className="mt-0.5 flex items-center gap-1 text-[12px] text-[#6B8077]"><Clock className="h-3 w-3" /> {arCount(readMinutes(c), MINUTE_FORMS)} للقراءة</p>
         )}
       </div>
     </article>
   );
 }
 
-export function SectionTitle({ title, more }: { title: string; more?: { href: string; label: string } }) {
+export function SectionTitle({ title, more, color = "#136F5C" }: { title: string; more?: { href: string; label: string }; color?: string }) {
   return (
     <div className="mb-4 flex items-center justify-between gap-3 border-b-2 border-[#E2ECE6]">
-      <h2 className="-mb-0.5 border-b-2 border-[#136F5C] pb-2 font-display text-[20px] font-extrabold text-[#14302A]">{title}</h2>
-      {more && <Link href={more.href} className="pb-2 text-[14px] font-bold text-[#136F5C]">{more.label}</Link>}
+      <h2 className="-mb-0.5 flex items-center gap-2 border-b-2 pb-2 font-display text-[20px] font-extrabold text-[#14302A]" style={{ borderColor: color }}>
+        <span className="h-3 w-3 rounded-full" style={{ background: color }} />
+        {title}
+      </h2>
+      {more && <Link href={more.href} className="flex items-center gap-1 rounded-full px-3 py-1 text-[13px] font-bold" style={{ color, background: `${color}14` }}>{more.label} <ChevronLeft className="h-3.5 w-3.5" /></Link>}
     </div>
   );
 }
@@ -197,28 +200,31 @@ export function Tile({ href, id, title, courseId, meta, card = false }: { href: 
   // card: بطاقة عمودية للشرائط التي تُسحب جانبيًا. وبدونها: بطاقة أفقية، الصورة بجانب العنوان
   if (card)
     return (
-      <Link href={href} className="group flex w-[68%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white transition hover:border-[#136F5C] sm:w-auto">
-        <MiniCover id={id} courseId={courseId} className="h-32 sm:h-36" />
+      <Link href={href} className="group flex w-[68%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white sm:w-auto">
+        <span className="relative block">
+          <MiniCover id={id} courseId={courseId} className="h-32 sm:h-36" />
+          <span className="absolute inset-x-0 bottom-0 h-1.5" style={{ background: courseMeta(courseId).color }} />
+        </span>
         <span className="flex flex-1 flex-col p-3">
-          <span className="line-clamp-2 text-[15px] font-bold leading-6 text-[#14302A] group-hover:text-[#136F5C]">{title}</span>
-          {meta && <span className="mt-auto pt-1.5 text-[12px] text-[#6B8077]">{meta}</span>}
+          <span className="line-clamp-2 text-[15px] font-bold leading-6 text-[#14302A]">{title}</span>
+          {meta && <span className="mt-auto flex items-center gap-1.5 pt-1.5 text-[12px] font-bold" style={{ color: courseMeta(courseId).color }}><span className="h-1.5 w-1.5 rounded-full bg-current" />{meta}</span>}
         </span>
       </Link>
     );
   return (
-    <Link href={href} className="group flex items-stretch gap-3 overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white p-2.5 transition hover:border-[#136F5C]">
+    <Link href={href} className="group flex items-stretch gap-3 overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white p-2.5 transition hover:shadow-[0_0_0_2px_var(--c)]" style={{ ["--c" as string]: courseMeta(courseId).color }}>
       <MiniCover id={id} courseId={courseId} className="h-[84px] w-[104px] shrink-0 rounded-xl" />
       <span className="flex min-w-0 flex-1 flex-col justify-center py-0.5">
-        <span className="line-clamp-2 text-[15px] font-bold leading-6 text-[#14302A] group-hover:text-[#136F5C]">{title}</span>
-        {meta && <span className="mt-1 text-[12px] text-[#6B8077]">{meta}</span>}
+        <span className="line-clamp-2 text-[15px] font-bold leading-6 text-[#14302A]">{title}</span>
+        {meta && <span className="mt-1 flex items-center gap-1.5 text-[12px] font-bold" style={{ color: courseMeta(courseId).color }}><span className="h-1.5 w-1.5 rounded-full bg-current" />{meta}</span>}
       </span>
     </Link>
   );
 }
 
 export const conceptTile = (c: Concept) => (
-  <Tile key={c.id} href={href(c)} id={c.id} title={c.title} courseId={c.courseId} meta={`${courseMeta(c.courseId).short}، ${ad(readMinutes(c))} د قراءة`} />
+  <Tile key={c.id} href={href(c)} id={c.id} title={c.title} courseId={c.courseId} meta={`${courseMeta(c.courseId).short}، ${arCount(readMinutes(c), MINUTE_FORMS)} للقراءة`} />
 );
 export const conceptCard = (c: Concept) => (
-  <Tile key={c.id} card href={href(c)} id={c.id} title={c.title} courseId={c.courseId} meta={`${courseMeta(c.courseId).short}، ${ad(readMinutes(c))} د قراءة`} />
+  <Tile key={c.id} card href={href(c)} id={c.id} title={c.title} courseId={c.courseId} meta={`${courseMeta(c.courseId).short}، ${arCount(readMinutes(c), MINUTE_FORMS)} للقراءة`} />
 );
