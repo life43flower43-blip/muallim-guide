@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL, publicBank } from "@/lib/public-bank";
 import { APP_SECTIONS } from "@/lib/site-nav";
-import { allArticles } from "@/lib/articles";
+import { allArticles, articleCats } from "@/lib/articles";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const b = publicBank();
@@ -9,5 +9,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const courses = Object.keys(b.courses).map((id) => ({ url: `${SITE_URL}/learn/${id}`, changeFrequency: "monthly" as const, priority: 0.8 }));
   const concepts = b.concepts.map((c) => ({ url: `${SITE_URL}/learn/${c.courseId}/${c.id}`, changeFrequency: "monthly" as const, priority: 0.7 }));
   const articles = allArticles().map((a) => ({ url: `${SITE_URL}/articles/${a.slug}`, lastModified: a.date, changeFrequency: "monthly" as const, priority: 0.8 }));
-  return [...fixed, ...articles, ...courses, ...concepts];
+  const cats = articleCats().map((c) => ({ url: `${SITE_URL}/articles/c/${c.slug}`, changeFrequency: "weekly" as const, priority: 0.6 }));
+  return [...fixed, ...articles, ...cats, ...courses, ...concepts];
 }

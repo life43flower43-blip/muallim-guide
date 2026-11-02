@@ -6,6 +6,7 @@ import { SITE_URL, publicBank } from "@/lib/public-bank";
 import { allArticles } from "@/lib/articles";
 import { APP_SECTIONS, courseMeta } from "@/lib/site-nav";
 import SearchBox from "@/components/site/SearchBox";
+import CatChips from "@/components/site/CatChips";
 import { ArticleCard, SectionTitle, Tile, WithSidebar, conceptCard } from "@/components/site/Blocks";
 import { articleCourse } from "@/lib/articles";
 import { ad } from "@/lib/arabic";
@@ -108,6 +109,7 @@ export default function Home() {
       {/* أحدث المقالات */}
       <section>
         <SectionTitle title="أحدث المقالات" color="#B4532A" more={{ href: "/articles", label: "كل المقالات" }} />
+        <div className="mb-4"><CatChips /></div>
         <div className="space-y-5">
           <ArticleCard a={articles[0]} wide />
           <Rail>{articles.slice(1, 7).map((a) => <Tile key={a.slug} card href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={a.category} />)}</Rail>
