@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE_URL } from "@/lib/public-bank";
 import { APP_SECTIONS } from "@/lib/site-nav";
-import { Crumbs, WithSidebar } from "@/components/site/Blocks";
+import { Crumbs, WithSidebar, PageHero } from "@/components/site/Blocks";
 
 export const metadata: Metadata = {
   title: "أقسام تطبيق تربوي | اختبارات محاكية ومواقف صفية وأدوات للمعلم",
@@ -14,8 +14,7 @@ export default function Sections() {
   return (
     <WithSidebar>
       <Crumbs items={[{ label: "أقسام التطبيق" }]} />
-      <h1 className="font-display text-[28px] font-extrabold">أقسام تطبيق تربوي</h1>
-      <p className="mt-2 leading-8 text-[#4D635A]">كل ما في التطبيق مجاني ويفتح من المتصفح. اختر القسم لتعرف ما فيه، ثم افتحه مباشرة.</p>
+      <PageHero kicker="تطبيق تربوي" title="أقسام التطبيق" color="#3A55A4" sub="كل ما في التطبيق مجاني ويفتح من المتصفح. اختر القسم لتعرف ما فيه، ثم افتحه مباشرة." />
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         {APP_SECTIONS.map((s) => (
           <article key={s.slug} className="flex flex-col overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">

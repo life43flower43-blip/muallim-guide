@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SITE_URL, courseChapters, courseList } from "@/lib/public-bank";
 import { arCount, CHAPTER_FORMS, CONCEPT_FORMS } from "@/lib/arabic";
 import { courseMeta } from "@/lib/site-nav";
-import { Crumbs, WithSidebar } from "@/components/site/Blocks";
+import { Crumbs, WithSidebar, PageHero } from "@/components/site/Blocks";
 
 export const metadata: Metadata = {
   title: "محاور إعداد المعلم | تربوي",
@@ -16,10 +16,7 @@ export default function LearnIndex() {
   return (
     <WithSidebar>
       <Crumbs items={[{ label: "المحاور" }]} />
-      <h1 className="font-display text-[28px] font-extrabold">محاور إعداد المعلم</h1>
-      <p className="mt-2 leading-8 text-[#4D635A]">
-        شرح مبسط لكل مفهوم تربوي مع أمثلة من الصف، مرتب في محاور وفصول كما في مقررات كليات التربية واختبارات التوظيف.
-      </p>
+      <PageHero kicker="المكتبة التربوية" title="محاور إعداد المعلم" color="#1F6FA8" sub="شرح مبسط لكل مفهوم تربوي مع أمثلة من الصف، مرتب في محاور وفصول كما في مقررات كليات التربية واختبارات التوظيف." />
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         {courses.map((c) => {
           const m = courseMeta(c.id);

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import AdSlot from "@/components/site/AdSlot";
 import ReadProgress from "@/components/site/ReadProgress";
+import { problemsForConcept } from "@/lib/site-problems";
 import { Clock } from "lucide-react";
 import { ad, arCount, MINUTE_FORMS } from "@/lib/arabic";
 import { courseMeta, readMinutes } from "@/lib/site-nav";
@@ -111,6 +112,34 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
           <ConceptDiagram conceptId={c.id} pageTitle={c.title} />
 
           <AdSlot />
+
+          {problemsForConcept(c.id).slice(0, 2).map((p) => {
+            const poor = p.options.find((o) => o.rating === "poor");
+            const good = p.options.find((o) => o.rating === "good");
+            if (!poor || !good) return null;
+            return (
+              <section key={p.id} className="overflow-hidden rounded-2xl border border-[#E2ECE6]">
+                <div className="bg-[#14302A] px-4 py-3 text-white">
+                  <p className="text-[12px] font-bold text-white/70">المفهوم في الصف: من التطبيق التقليدي إلى المتقدم</p>
+                  <p className="mt-0.5 font-display text-[17px] font-extrabold">{p.title}</p>
+                </div>
+                <p className="bg-[#F7FAF8] px-4 py-3 text-[15px] leading-7 text-[#3A5249]">{p.intro}</p>
+                <div className="grid sm:grid-cols-2">
+                  <div className="border-t border-[#F2D2CD] bg-[#FDEDEB] p-4">
+                    <p className="text-[13px] font-extrabold text-[#C0392B]">التطبيق التقليدي</p>
+                    <p className="mt-1 font-bold leading-7 text-[#14302A]">«{poor.text}»</p>
+                    <p className="mt-1 text-[14px] leading-7 text-[#5A3A35]">{poor.outcome}</p>
+                  </div>
+                  <div className="border-t border-[#CFE6D8] bg-[#EAF6EF] p-4 sm:border-s">
+                    <p className="text-[13px] font-extrabold text-[#1E7B4A]">التطبيق المتقدم</p>
+                    <p className="mt-1 font-bold leading-7 text-[#14302A]">«{good.text}»</p>
+                    <p className="mt-1 text-[14px] leading-7 text-[#2E4A3A]">{good.outcome}</p>
+                  </div>
+                </div>
+                <Link href={`/classroom-problems/${p.slug}`} className="block border-t border-[#E2ECE6] px-4 py-3 text-[14px] font-bold text-[#B4532A]">اقرأ التحليل الكامل للموقف ←</Link>
+              </section>
+            );
+          })}
 
           <section>
             <h2 className="mb-3 font-display text-[21px] font-extrabold">أمثلة من الصف</h2>

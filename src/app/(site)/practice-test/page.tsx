@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE_URL } from "@/lib/public-bank";
 import { pickQuestions } from "@/lib/site-nav";
-import { Crumbs, WithSidebar } from "@/components/site/Blocks";
+import { Crumbs, WithSidebar, PageHero } from "@/components/site/Blocks";
 import QuizRunner from "@/components/site/QuizRunner";
 
 export const metadata: Metadata = {
@@ -18,15 +18,13 @@ export default function PracticeTest() {
   return (
     <WithSidebar>
       <Crumbs items={[{ label: "نموذج اختبار تربوي" }]} />
-      <h1 className="font-display text-[28px] font-extrabold leading-[1.5]">نموذج اختبار تربوي تفاعلي مع الحل</h1>
-      <p className="mt-2 leading-8 text-[#4D635A]">
-        عشرون سؤالًا من محاور الجزء التربوي العام في اختبارات الرخصة المهنية والتوظيف. اختر إجابتك، وسترى فورًا إن كانت صحيحة، ولماذا.
-      </p>
-      <ul className="mt-4 flex flex-wrap gap-2 text-[13px] font-bold">
-        {["٢٠ سؤالًا", "تصحيح فوري", "تفسير لكل إجابة", "دون تسجيل"].map((t) => (
-          <li key={t} className="rounded-full bg-[#EEF5F1] px-3 py-1 text-[#136F5C]">{t}</li>
-        ))}
-      </ul>
+      <PageHero kicker="اختبر نفسك" title="نموذج اختبار تربوي تفاعلي مع الحل" color="#1F6FA8" sub="عشرون سؤالًا من محاور الجزء التربوي العام في اختبارات الرخصة المهنية والتوظيف. اختر إجابتك، وسترى فورًا إن كانت صحيحة، ولماذا.">
+        <ul className="mt-4 flex flex-wrap gap-2 text-[13px] font-bold">
+          {["٢٠ سؤالًا", "تصحيح فوري", "تفسير لكل إجابة", "دون تسجيل"].map((t) => (
+            <li key={t} className="rounded-full bg-white/15 px-3 py-1">{t}</li>
+          ))}
+        </ul>
+      </PageHero>
       <div className="mt-6">
         <QuizRunner questions={questions} title="نتيجة نموذج الاختبار" />
       </div>

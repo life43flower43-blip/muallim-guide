@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Newspaper, Layers, School, AlertTriangle, SearchX } from "lucide-react";
 import { courseMeta, normalizeAr, searchConcepts } from "@/lib/site-nav";
 import { allArticles, arDate, articleCourse } from "@/lib/articles";
-import { SIM_SCENARIOS } from "@/lib/sim";
+import { PROBLEMS } from "@/lib/site-problems";
 import { MISCONCEPTIONS } from "@/lib/misconceptions";
 import { ad } from "@/lib/arabic";
 import { Crumbs, Tile, WithSidebar, conceptTile } from "@/components/site/Blocks";
@@ -34,7 +34,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
   const concepts = q ? searchConcepts(q, 60) : [];
   const arts = q ? allArticles().filter((a) => has([a.title, a.description, a.tags.join(" "), a.body].join(" "))) : [];
-  const probs = q ? SIM_SCENARIOS.filter((s) => has(`${s.title} ${s.intro}`)) : [];
+  const probs = q ? PROBLEMS.filter((s) => has(`${s.title} ${s.intro}`)) : [];
   const myths = q ? MISCONCEPTIONS.filter((m) => has(`${m.claim} ${m.fact}`)) : [];
   const total = concepts.length + arts.length + probs.length + myths.length;
 
@@ -71,7 +71,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         <Group icon={School} title="مشكلات صفية" count={probs.length} color="#A0466B">
           <div className="grid gap-3 sm:grid-cols-2">
             {probs.map((s) => (
-              <Link key={s.id} href={`/classroom-problems/${s.id.toLowerCase()}`} className="rounded-2xl border border-[#E2ECE6] bg-white p-4 hover:border-[#A0466B]">
+              <Link key={s.id} href={`/classroom-problems/${s.slug}`} className="rounded-2xl border border-[#E2ECE6] bg-white p-4 hover:border-[#A0466B]">
                 <span className="text-[12px] font-bold text-[#A0466B]">{s.stage}</span>
                 <span className="mt-1 block font-bold text-[#14302A]">{s.title}</span>
               </Link>

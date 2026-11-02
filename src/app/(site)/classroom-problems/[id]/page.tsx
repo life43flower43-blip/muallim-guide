@@ -4,14 +4,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AlertTriangle, CheckCircle2, CircleDot, Smartphone } from "lucide-react";
 import { SITE_URL, publicBank } from "@/lib/public-bank";
-import { SIM_SCENARIOS, type SimOption, type SimRating } from "@/lib/sim";
+import { PROBLEMS, problemBySlug, type ProblemOption } from "@/lib/site-problems";
 import { Crumbs, ShareRow, WithSidebar } from "@/components/site/Blocks";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return SIM_SCENARIOS.map((s) => ({ id: s.id.toLowerCase() }));
+  return PROBLEMS.map((s) => ({ id: s.slug }));
 }
-const find = (id: string) => SIM_SCENARIOS.find((s) => s.id.toLowerCase() === id);
+const find = (id: string) => problemBySlug(id);
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const s = find((await params).id);
@@ -19,22 +19,22 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return {
     title: `${s.title}: كيف يتصرف المعلم؟ | تربوي`,
     description: s.intro.slice(0, 150),
-    alternates: { canonical: `${SITE_URL}/classroom-problems/${s.id.toLowerCase()}` },
+    alternates: { canonical: `${SITE_URL}/classroom-problems/${s.slug}` },
   };
 }
 
-const GROUPS: { r: SimRating; title: string; sub: string; color: string; bg: string; Icon: typeof CheckCircle2 }[] = [
+const GROUPS: { r: ProblemOption["rating"]; title: string; sub: string; color: string; bg: string; Icon: typeof CheckCircle2 }[] = [
   { r: "poor", title: "التصرف التقليدي الشائع", sub: "ما يفعله كثيرون، وماذا يحدث بعده", color: "#C0392B", bg: "#FDEDEB", Icon: AlertTriangle },
   { r: "ok", title: "تصرف مقبول", sub: "يحل جزءًا من المشكلة", color: "#B7791F", bg: "#FFF6E5", Icon: CircleDot },
   { r: "good", title: "التصرف المتقدم", sub: "ما يفعله المعلم المتمكن، ولماذا ينجح", color: "#1E7B4A", bg: "#EAF6EF", Icon: CheckCircle2 },
 ];
 
-function Option({ o, color }: { o: SimOption; color: string }) {
+function Option({ o, color }: { o: ProblemOption; color: string }) {
   return (
     <div className="rounded-xl bg-white p-4">
       <p className="font-bold leading-7" style={{ color }}>«{o.text}»</p>
       <p className="mt-2 text-[15px] leading-7 text-[#24403A]"><b>ماذا حدث: </b>{o.outcome}</p>
-      <p className="mt-2 text-[15px] leading-7 text-[#3A5249]"><b>التحليل: </b>{o.insight}</p>
+      {o.insight && <p className="mt-2 text-[15px] leading-7 text-[#3A5249]"><b>التحليل: </b>{o.insight}</p>}
       {o.risks && <p className="mt-2 text-[14px] leading-7 text-[#6B5A3A]">{o.risks}</p>}
     </div>
   );
@@ -43,9 +43,8 @@ function Option({ o, color }: { o: SimOption; color: string }) {
 export default async function Problem({ params }: { params: Promise<{ id: string }> }) {
   const s = find((await params).id);
   if (!s) notFound();
-  const start = s.nodes.start ?? Object.values(s.nodes)[0];
   const concepts = s.conceptIds.map((id) => publicBank().concepts.find((c) => c.id === id)).filter(Boolean);
-  const others = SIM_SCENARIOS.filter((x) => x.id !== s.id).slice(0, 4);
+  const others = PROBLEMS.filter((x) => x.id !== s.id && x.kind === s.kind).slice(0, 4);
   return (
     <WithSidebar>
       <Crumbs items={[{ href: "/classroom-problems", label: "مشكلات صفية" }, { label: s.title }]} />
@@ -58,11 +57,11 @@ export default async function Problem({ params }: { params: Promise<{ id: string
           <section>
             <h2 className="font-display text-[19px] font-extrabold">الموقف</h2>
             <p className="mt-2 text-[17px] leading-9 text-[#24403A]">{s.intro}</p>
-            <p className="mt-3 rounded-xl border-s-4 border-[#B4532A] bg-[#FBF1EC] p-4 font-bold leading-8 text-[#5A2A14]">{start.text}</p>
+            <p className="mt-3 rounded-xl border-s-4 border-[#B4532A] bg-[#FBF1EC] p-4 font-bold leading-8 text-[#5A2A14]">{s.startText}</p>
           </section>
 
           {GROUPS.map((g) => {
-            const opts = start.options.filter((o) => o.rating === g.r);
+            const opts = s.options.filter((o) => o.rating === g.r);
             if (!opts.length) return null;
             return (
               <section key={g.r} className="rounded-2xl p-4" style={{ background: g.bg }}>
@@ -92,9 +91,9 @@ export default async function Problem({ params }: { params: Promise<{ id: string
           <div className="rounded-xl bg-[#B4532A] p-5 text-white">
             <p className="font-display text-[19px] font-extrabold">عِش الموقف كاملًا</p>
             <p className="mt-1 text-[14px] leading-7 text-white/85">في التطبيق يتغير الموقف بعد كل قرار، وتحصل على تقرير بكفاءاتك الخمس.</p>
-            <Link href="/app?open=sim" className="mt-3 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 font-bold text-[#B4532A]"><Smartphone className="h-5 w-5" /> جرّب في التطبيق</Link>
+            <Link href={s.kind === "skill" ? "/app?open=lab" : "/app?open=sim"} className="mt-3 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 font-bold text-[#B4532A]"><Smartphone className="h-5 w-5" /> جرّب في التطبيق</Link>
           </div>
-          <div className="border-t border-[#EEF3F0] pt-5"><ShareRow path={`/classroom-problems/${s.id.toLowerCase()}`} title={`${s.title}: كيف يتصرف المعلم؟`} /></div>
+          <div className="border-t border-[#EEF3F0] pt-5"><ShareRow path={`/classroom-problems/${s.slug}`} title={`${s.title}: كيف يتصرف المعلم؟`} /></div>
         </div>
       </article>
 
@@ -102,7 +101,7 @@ export default async function Problem({ params }: { params: Promise<{ id: string
         <h2 className="mb-3 font-display text-[19px] font-extrabold">مواقف أخرى</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {others.map((o) => (
-            <Link key={o.id} href={`/classroom-problems/${o.id.toLowerCase()}`} className="rounded-2xl border border-[#E2ECE6] bg-white p-4 hover:border-[#B4532A]">
+            <Link key={o.id} href={`/classroom-problems/${o.slug}`} className="rounded-2xl border border-[#E2ECE6] bg-white p-4 hover:border-[#B4532A]">
               <span className="text-[12px] font-bold text-[#8AA095]">{o.stage}</span>
               <span className="mt-1 block font-bold text-[#14302A]">{o.title}</span>
             </Link>
