@@ -30,7 +30,7 @@ export default function AppBar() {
           <p className="truncate text-[14px] font-extrabold text-[#14302A]">تطبيق تربوي</p>
           <p className="truncate text-[12px] text-[#6B8077]">آلاف الأسئلة واختبارات محاكية، مجانًا</p>
         </div>
-        <Link href="/tatbeeq" className="shrink-0 rounded-full bg-[#136F5C] px-4 py-2 text-[13px] font-bold text-white">احصل عليه</Link>
+        <Link prefetch={false} href="/tatbeeq" className="shrink-0 rounded-full bg-[#136F5C] px-4 py-2 text-[13px] font-bold text-white">احصل عليه</Link>
       </div>
     </div>
   );

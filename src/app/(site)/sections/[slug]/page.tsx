@@ -41,7 +41,7 @@ export default async function SectionPage({ params }: { params: Promise<{ slug: 
           <div className="rounded-xl bg-[#136F5C] p-5 text-white">
             <p className="font-display text-[19px] font-extrabold">جرّب {s.title} الآن</p>
             <p className="mt-1 text-[14px] leading-7 text-white/85">مجانًا ومن المتصفح، ودون تسجيل.</p>
-            <Link href={`/app?open=${s.open}`} className="mt-3 inline-block rounded-xl bg-[#E8A317] px-5 py-2.5 font-bold text-[#2B1D00]">افتح {s.title}</Link>
+            <Link prefetch={false} href={`/app?open=${s.open}`} className="mt-3 inline-block rounded-xl bg-[#E8A317] px-5 py-2.5 font-bold text-[#2B1D00]">افتح {s.title}</Link>
           </div>
           <div className="border-t border-[#EEF3F0] pt-5"><ShareRow path={`/sections/${s.slug}`} title={`${s.title} في تطبيق تربوي`} /></div>
         </div>

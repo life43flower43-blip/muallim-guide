@@ -76,7 +76,7 @@ export default async function CoursePage({ params }: { params: Promise<{ course:
       <div className="mt-10 rounded-2xl bg-[#EEF5F1] p-5">
         <p className="font-display text-[18px] font-extrabold">تدرّب على أسئلة هذا المحور</p>
         <p className="mt-1 leading-7 text-[#4D635A]">أسئلة بمستوى اختبارات التوظيف مع تفسير كل خيار، ومراجعة لأخطائك.</p>
-        <Link href="/app?tab=practice" className="mt-3 inline-block rounded-xl bg-[#136F5C] px-5 py-2.5 font-bold text-white">ابدأ التدريب</Link>
+        <Link prefetch={false} href="/app?tab=practice" className="mt-3 inline-block rounded-xl bg-[#136F5C] px-5 py-2.5 font-bold text-white">ابدأ التدريب</Link>
       </div>
     </WithSidebar>
   );

@@ -39,7 +39,7 @@ export function SiteHeader() {
           <nav className="flex items-center gap-4">
             <Link href="/contact" className="hidden hover:text-white sm:inline">اتصل بنا</Link>
             <Link href="/privacy" className="hidden hover:text-white sm:inline">الخصوصية</Link>
-            <Link href="/app" className="flex items-center gap-1 font-bold text-[#F2C94C] hover:text-white">
+            <Link prefetch={false} href="/app" className="flex items-center gap-1 font-bold text-[#F2C94C] hover:text-white">
               <Smartphone className="h-3.5 w-3.5" /> التطبيق
             </Link>
           </nav>
@@ -57,7 +57,7 @@ export function SiteHeader() {
             </span>
           </Link>
           <div className="ms-auto hidden max-w-md flex-1 md:block"><SearchBox /></div>
-          <Link href="/app" className="ms-auto hidden whitespace-nowrap rounded-xl bg-[#E8A317] px-5 py-2.5 text-[15px] font-bold text-[#2B1D00] md:ms-0 md:inline-block">
+          <Link prefetch={false} href="/app" className="ms-auto hidden whitespace-nowrap rounded-xl bg-[#E8A317] px-5 py-2.5 text-[15px] font-bold text-[#2B1D00] md:ms-0 md:inline-block">
             ابدأ التدريب مجانًا
           </Link>
           {/* أزرار الهاتف: بحث وقائمة */}
@@ -74,7 +74,7 @@ export function SiteHeader() {
           {MAIN_NAV.map((n) =>
             n.drop ? (
               <li key={n.href} className="group relative shrink-0">
-                <Link href={n.href} className="flex h-12 items-center gap-1 px-3.5 hover:bg-white/10">
+                <Link prefetch={false} href={n.href} className="flex h-12 items-center gap-1 px-3.5 hover:bg-white/10">
                   {n.label} <ChevronDown className="hidden h-4 w-4 md:block" />
                 </Link>
                 <div className="invisible absolute start-0 top-12 z-30 hidden w-[460px] grid-cols-2 gap-1 rounded-b-2xl border border-t-0 border-[#D4E3DA] bg-white p-3 opacity-0 transition group-hover:visible group-hover:opacity-100 md:grid">
@@ -82,7 +82,7 @@ export function SiteHeader() {
                     ? courses.map((c) => ({ href: `/learn/${c.id}`, label: courseMeta(c.id).short, color: courseMeta(c.id).color }))
                     : RESOURCES
                   ).map((x) => (
-                    <Link key={x.href} href={x.href} className="flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-[#1E3A32] hover:bg-[#EEF5F1]">
+                    <Link prefetch={false} key={x.href} href={x.href} className="flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-[#1E3A32] hover:bg-[#EEF5F1]">
                       <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: x.color }} />
                       {x.label}
                     </Link>
@@ -91,7 +91,7 @@ export function SiteHeader() {
               </li>
             ) : (
               <li key={n.href} className="shrink-0">
-                <Link href={n.href} className="flex h-12 items-center px-3.5 hover:bg-white/10">{n.label}</Link>
+                <Link prefetch={false} href={n.href} className="flex h-12 items-center px-3.5 hover:bg-white/10">{n.label}</Link>
               </li>
             )
           )}
@@ -136,7 +136,7 @@ export function SiteFooter() {
           <h3 className="mb-3 font-display text-[16px] font-bold text-white">روابط مهمة</h3>
           <ul className="space-y-2">
             <li><Link href="/about" className="hover:text-white">عن تربوي</Link></li>
-            <li><Link href="/glossary" className="hover:text-white">مصطلحات تربوية</Link></li>
+            <li><Link prefetch={false} href="/glossary" className="hover:text-white">مصطلحات تربوية</Link></li>
             <li><Link href="/privacy" className="hover:text-white">سياسة الخصوصية</Link></li>
             <li><Link href="/terms" className="hover:text-white">شروط الاستخدام</Link></li>
             <li><Link href="/contact" className="flex items-center gap-1.5 hover:text-white"><Mail className="h-4 w-4" /> اتصل بنا</Link></li>
