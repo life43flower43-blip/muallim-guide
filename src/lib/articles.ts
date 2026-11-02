@@ -67,7 +67,12 @@ function parse(slug: string, raw: string): Article {
   const m = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
   const meta: Record<string, string> = {};
   const head = m ? m[1] : "";
-  const body = (m ? m[2] : raw).trim();
+  // صندوق التنبيه المكتوب بين سطرين ::: يُعرض اقتباسًا ملونًا
+  const body = (m ? m[2] : raw)
+    .trim()
+    .replace(/^:::[ \t]*\n([\s\S]*?)\n\s*:::[ \t]*$/gm, (_, inner: string) =>
+      inner.split("\n").filter((l) => l.trim()).map((l) => `> ${l}`).join("\n>\n"),
+    );
   for (const line of head.split("\n")) {
     const i = line.indexOf(":");
     if (i > 0) meta[line.slice(0, i).trim()] = line.slice(i + 1).trim();
