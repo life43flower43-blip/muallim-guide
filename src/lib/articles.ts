@@ -87,13 +87,26 @@ function parse(slug: string, raw: string): Article {
 
 let cache: Article[] | null = null;
 
-/** كل المقالات، الأحدث أولًا */
-export function allArticles(): Article[] {
+/** كل ملفات المقالات، ومنها المجدولة التي لم يحن موعدها */
+function everyArticle(): Article[] {
   cache ??= readdirSync(DIR)
     .filter((f) => f.endsWith(".md"))
     .map((f) => parse(f.replace(/\.md$/, ""), readFileSync(path.join(DIR, f), "utf8")))
     .sort((a, b) => b.date.localeCompare(a.date));
   return cache;
+}
+
+/** تاريخ اليوم بتوقيت مكة، بصيغة YYYY-MM-DD */
+export function todayISO() {
+  // للمعاينة المحلية فقط: ARTICLES_PREVIEW_DATE=2027-02-01 يُظهر المجدولة حتى هذا التاريخ
+  if (process.env.ARTICLES_PREVIEW_DATE) return process.env.ARTICLES_PREVIEW_DATE;
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Riyadh", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+}
+
+/** المقالات المنشورة فقط، الأحدث أولًا. المقال المجدول يظهر وحده صباح يوم تاريخه (الصفحات تُحدَّث كل ساعة) */
+export function allArticles(): Article[] {
+  const today = todayISO();
+  return everyArticle().filter((a) => a.date <= today);
 }
 
 export const articleBySlug = (slug: string) => allArticles().find((a) => a.slug === slug);

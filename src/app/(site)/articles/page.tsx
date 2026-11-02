@@ -4,6 +4,9 @@ import { allArticles, arDate, articleCourse } from "@/lib/articles";
 import { ArticleCard, Crumbs, Tile, WithSidebar, PageHero } from "@/components/site/Blocks";
 import CatChips from "@/components/site/CatChips";
 
+// المقالات المجدولة تظهر في موعدها دون إعادة بناء
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "مقالات تربوية: قضايا التعليم وإدارة الصف وتطوير المعلم | تربوي",
   description: "مقالات عربية عملية للمعلمين: التنمر المدرسي، والذكاء الاصطناعي في الواجبات، والاحتراق الوظيفي، والتعلم النشط، والتواصل مع أولياء الأمور، والاستعداد لاختبار الرخصة المهنية.",

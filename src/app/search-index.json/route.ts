@@ -3,7 +3,7 @@ import { publicBank } from "@/lib/public-bank";
 import { allArticles } from "@/lib/articles";
 import { courseMeta } from "@/lib/site-nav";
 
-export const dynamic = "force-static";
+export const revalidate = 3600;
 
 export function GET() {
   const items = [
