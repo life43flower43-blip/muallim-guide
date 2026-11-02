@@ -4,6 +4,8 @@ import { Search, Menu, ChevronDown, Smartphone, Mail } from "lucide-react";
 import { courseList } from "@/lib/public-bank";
 import { APP_SECTIONS, courseMeta } from "@/lib/site-nav";
 import TodayDate from "./TodayDate";
+import SearchBox from "./SearchBox";
+import MobileBar from "./MobileBar";
 
 const MAIN_NAV = [
   { href: "/", label: "الرئيسية" },
@@ -34,7 +36,7 @@ export function SiteHeader() {
       </div>
 
       {/* الشعار والبحث */}
-      <div className="border-b border-[#E2ECE6] bg-white">
+      <div className="relative border-b border-[#E2ECE6] bg-white">
         <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-4">
           <Link href="/" className="flex shrink-0 items-center gap-2.5">
             <img src="/icons/logo-128.png" alt="" className="h-12 w-12 object-contain max-[359px]:h-10 max-[359px]:w-10" />
@@ -43,36 +45,15 @@ export function SiteHeader() {
               <span className="block text-[12px] leading-4 text-[#5B7268] max-[359px]:hidden">دليل المعلم إلى اختبار الرخصة والتوظيف</span>
             </span>
           </Link>
-          <form action="/search" className="ms-auto hidden max-w-sm flex-1 md:flex">
-            <input name="q" placeholder="ابحث عن مفهوم أو مصطلح تربوي" className="h-11 min-w-0 flex-1 rounded-s-xl border border-e-0 border-[#D4E3DA] bg-[#F7FAF8] px-4 text-[15px] outline-none focus:border-[#136F5C]" />
-            <button aria-label="بحث" className="flex h-11 w-12 items-center justify-center rounded-e-xl bg-[#136F5C] text-white"><Search className="h-5 w-5" /></button>
-          </form>
+          <div className="ms-auto hidden max-w-md flex-1 md:block"><SearchBox /></div>
           <Link href="/app" className="ms-auto hidden whitespace-nowrap rounded-xl bg-[#E8A317] px-5 py-2.5 text-[15px] font-bold text-[#2B1D00] md:ms-0 md:inline-block">
             ابدأ التدريب مجانًا
           </Link>
-          {/* قائمة الهاتف */}
-          <details className="group relative ms-auto md:hidden">
-            <summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-xl border border-[#D4E3DA] text-[#136F5C]" aria-label="القائمة">
-              <Menu className="h-6 w-6" />
-            </summary>
-            <div className="absolute end-0 top-12 z-30 w-[min(86vw,320px)] rounded-2xl border border-[#D4E3DA] bg-white p-3">
-              <form action="/search" className="mb-2 flex">
-                <input name="q" placeholder="ابحث في الموقع" className="h-10 min-w-0 flex-1 rounded-s-lg border border-e-0 border-[#D4E3DA] px-3 text-sm outline-none" />
-                <button aria-label="بحث" className="flex h-10 w-10 items-center justify-center rounded-e-lg bg-[#136F5C] text-white"><Search className="h-4 w-4" /></button>
-              </form>
-              <ul className="text-[15px]">
-                {MAIN_NAV.map((n) => (
-                  <li key={n.href}><Link href={n.href} className="block rounded-lg px-3 py-2.5 font-bold text-[#1E3A32] hover:bg-[#EEF5F1]">{n.label}</Link></li>
-                ))}
-              </ul>
-              <p className="mt-2 border-t border-[#E2ECE6] px-3 pt-2 text-[12px] font-bold text-[#5B7268]">المحاور</p>
-              <ul className="grid grid-cols-2 text-[14px]">
-                {courses.map((c) => (
-                  <li key={c.id}><Link href={`/learn/${c.id}`} className="block truncate rounded-lg px-3 py-2 text-[#1E3A32] hover:bg-[#EEF5F1]">{courseMeta(c.id).short}</Link></li>
-                ))}
-              </ul>
-            </div>
-          </details>
+          {/* أزرار الهاتف: بحث وقائمة */}
+          <MobileBar
+            nav={MAIN_NAV.map((n) => ({ href: n.href, label: n.label }))}
+            courses={courses.map((c) => ({ href: `/learn/${c.id}`, label: courseMeta(c.id).short }))}
+          />
         </div>
       </div>
 

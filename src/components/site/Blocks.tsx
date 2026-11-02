@@ -7,6 +7,7 @@ import { APP_SECTIONS, courseMeta, excerpt, pickedConcepts, readMinutes } from "
 import { ad } from "@/lib/arabic";
 import AdSlot from "./AdSlot";
 import ShareBar from "./ShareBar";
+import SearchBox from "./SearchBox";
 import { Cover, MiniCover } from "./Cover";
 import { type Article, allArticles, arDate, articleCourse } from "@/lib/articles";
 
@@ -101,10 +102,7 @@ export function Sidebar() {
   return (
     <aside className="space-y-5">
       <Widget title="ابحث في الموقع">
-        <form action="/search" className="flex">
-          <input name="q" placeholder="مثال: التعزيز، بياجيه" className="h-11 min-w-0 flex-1 rounded-s-xl border border-e-0 border-[#D4E3DA] bg-[#F7FAF8] px-3 text-[15px] outline-none focus:border-[#136F5C]" />
-          <button aria-label="بحث" className="flex h-11 w-11 items-center justify-center rounded-e-xl bg-[#136F5C] text-white"><Search className="h-5 w-5" /></button>
-        </form>
+        <SearchBox />
       </Widget>
 
       <section className="rounded-2xl bg-[#136F5C] p-5 text-white">
