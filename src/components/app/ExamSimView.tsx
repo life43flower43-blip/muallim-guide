@@ -20,6 +20,7 @@ import {
   Dumbbell,
   Award,
   History,
+  ListOrdered,
   Trash2,
 } from "lucide-react";
 import {
@@ -48,7 +49,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Callout, Card, Chip, Divided, IconTile, OptionButton, PrimaryButton, ProgressBar, Ring, ScreenShell, SecondaryButton, SectionHeader, SkillBar } from "./ui-kit";
+import { Callout, Card, Chip, DifficultyChip, Divided, OptionButton, PrimaryButton, ProgressBar, Ring, ScreenShell, SecondaryButton, SectionHeader, SkillBar } from "./ui-kit";
 
 type Phase = "home" | "brief" | "run" | "result";
 
@@ -179,29 +180,34 @@ export default function ExamSimView() {
   const current = items[idx] ? questionById(items[idx].qid) : undefined;
   const answeredCount = Object.keys(answers).length;
   const totalSec = bp ? bp.minutes * 60 : 0;
-  const lowTime = phase === "run" && remaining <= Math.min(120, totalSec * 0.2);
+  // التحذير في الدقائق العشر الأخيرة، أو في آخر خُمس الوقت إن كان الاختبار قصيرًا
+  const lowTime = phase === "run" && remaining <= Math.min(600, totalSec * 0.2);
+  const samePass = BLUEPRINTS.every((b) => b.passPct === BLUEPRINTS[0].passPct);
+  const answeredTotal = Object.keys(answers).length;
 
   // ============ الرئيسية: نماذج الاختبار والسجل ============
   if (phase === "home") {
     return (
-      <ScreenShell title="محاكي الاختبار الرسمي" sub="أقسام ووقت ومحك نجاح، والتحليل بعد التسليم" onClose={close}>
+      <ScreenShell title="محاكي الاختبار الرسمي" sub={samePass ? `اختر نموذجًا، وحد النجاح ${ad(BLUEPRINTS[0].passPct)}٪ في كل النماذج` : "اختر نموذجًا للبدء"} onClose={close}>
         <div className="space-y-6">
-          <Divided>
+          <div className="space-y-2.5">
             {BLUEPRINTS.map((b) => (
-              <button key={b.id} type="button" onClick={() => startExam(b)} className="flex w-full min-w-0 items-center gap-3 px-4 py-3.5 text-right transition-colors hover:bg-muted/60">
-                <IconTile icon={Award} />
+              <button key={b.id} type="button" onClick={() => startExam(b)} className="flex w-full min-w-0 items-center gap-3 rounded-[20px] border border-border bg-card px-3.5 py-3.5 text-right transition-colors hover:border-primary/60 active:scale-[0.99]">
+                {/* عدد الأسئلة نفسه يميّز النموذج بدل رمز متكرر */}
+                <span className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-[14px] bg-accent text-accent-foreground">
+                  <span className="text-[17px] font-extrabold leading-5">{ad(b.total)}</span>
+                  <span className="text-[10px] font-bold leading-3">سؤالًا</span>
+                </span>
                 <span className="min-w-0 flex-1">
                   <FitText max={17} min={12} className="font-bold leading-7">{b.name}</FitText>
-                  <span className="mt-2 flex flex-wrap gap-1.5">
-                    <Chip>{arCount(b.total, QUESTION_FORMS)}</Chip>
-                    <Chip>{ad(b.minutes)} دقيقة</Chip>
-                    <Chip>النجاح {ad(b.passPct)}٪</Chip>
+                  <span className="block text-[13px] leading-5 text-secondary-foreground">
+                    {ad(b.minutes)} دقيقة{samePass ? "" : `، النجاح ${ad(b.passPct)}٪`}
                   </span>
                 </span>
-                <ChevronLeft className="mt-2 h-4 w-4 shrink-0 text-[#C99A06]" />
+                <ChevronLeft className="h-5 w-5 shrink-0 text-primary" />
               </button>
             ))}
-          </Divided>
+          </div>
 
           <section>
             <SectionHeader
@@ -222,7 +228,12 @@ export default function ExamSimView() {
               }
             />
             {runs.length === 0 ? (
-              <p className="text-sm leading-6 text-muted-foreground">تُحفظ كل محاولة هنا بدرجتها وتحليل أقسامها.</p>
+              <div className="flex items-center gap-3 rounded-[20px] border border-dashed border-border px-4 py-5">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
+                  <History className="h-5 w-5" />
+                </span>
+                <span className="text-[14px] leading-6 text-secondary-foreground">لا محاولات بعد. اختر نموذجًا من الأعلى، وستظهر هنا درجتك وتحليل أقسامك بعد التسليم.</span>
+              </div>
             ) : (
               <Divided>
                 {runs.slice(0, 8).map((r) => (
@@ -232,7 +243,7 @@ export default function ExamSimView() {
                         r.passed ? "bg-success-soft text-success" : "bg-danger-soft text-destructive"
                       }`}
                     >
-                      {ad(r.scorePct)}٪
+                      <bdi dir="rtl">{ad(r.scorePct)}٪</bdi>
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-base">{r.bpName}</span>
@@ -265,23 +276,7 @@ export default function ExamSimView() {
       >
         <div className="space-y-5">
           <p className="text-base leading-7 text-secondary-foreground">{bp.desc}</p>
-          <div className="grid grid-cols-3 gap-3">
-            <BriefStat icon={LayoutGrid} label="سؤالًا" value={ad(bp.total)} />
-            <BriefStat icon={Timer} label="دقيقة" value={ad(bp.minutes)} />
-            <BriefStat icon={Award} label="للنجاح" value={`${ad(bp.passPct)}٪`} />
-          </div>
-          <Card className="p-5">
-            <SectionHeader title="أقسام الاختبار" />
-            <ul className="divide-y divide-border">
-              {bp.sections.map((x) => (
-                <li key={x.courseId} className="flex items-center gap-3 py-2.5">
-                  <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: COURSE_COLOR[x.courseId] ?? "var(--primary)" }} />
-                  <span className="flex-1 text-base">{COURSE_SHORT[x.courseId] ?? x.courseId}</span>
-                  <span className="text-sm text-muted-foreground">{arCount(x.quota, QUESTION_FORMS)}</span>
-                </li>
-              ))}
-            </ul>
-          </Card>
+          {/* القواعد أولًا حتى تُقرأ قبل البدء */}
           <Callout tone="warning" icon={CircleAlert} title="قواعد الاختبار">
             <ul className="list-disc space-y-1 pr-5">
               <li>لا يظهر التصحيح أثناء الحل، كالاختبار الحقيقي.</li>
@@ -290,6 +285,22 @@ export default function ExamSimView() {
               <li>تُضاف أخطاؤك بعد التسليم إلى «أخطائي».</li>
             </ul>
           </Callout>
+          <div className="grid grid-cols-3 gap-3">
+            <BriefStat icon={ListOrdered} label="سؤالًا" value={ad(bp.total)} />
+            <BriefStat icon={Timer} label="دقيقة" value={ad(bp.minutes)} />
+            <BriefStat icon={Award} label="للنجاح" value={`${ad(bp.passPct)}٪`} />
+          </div>
+          <Card className="p-5">
+            <SectionHeader title="أقسام الاختبار" />
+            <ul className="divide-y divide-border">
+              {bp.sections.map((x) => (
+                <li key={x.courseId} className="flex items-center gap-3 py-2.5">
+                  <span className="flex-1 text-base">{COURSE_SHORT[x.courseId] ?? x.courseId}</span>
+                  <span className="text-sm text-secondary-foreground">{arCount(x.quota, QUESTION_FORMS)}</span>
+                </li>
+              ))}
+            </ul>
+          </Card>
         </div>
       </ScreenShell>
     );
@@ -302,22 +313,17 @@ export default function ExamSimView() {
       <>
         <ScreenShell
           title={bp.name}
-          sub={`السؤال ${ad(idx + 1)} من ${ad(items.length)}، أجبت عن ${ad(answeredCount)}`}
+          sub={`أجبت عن ${ad(answeredCount)} من ${ad(items.length)}`}
           onClose={() => setSubmitOpen(true)}
           actions={
-            <>
-              <span className={`flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-sm font-semibold tabular-nums ${lowTime ? "bg-danger-soft text-destructive" : "bg-black/5"}`}>
-                <Timer className="h-4 w-4" /> {fmtTime(remaining)}
-              </span>
-              <button type="button" onClick={() => setPaletteOpen(true)} aria-label="خريطة الأسئلة" className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
-                <LayoutGrid className="h-5 w-5" />
-              </button>
-            </>
+            <button type="button" onClick={() => setPaletteOpen(true)} aria-label="خريطة الأسئلة: المُجاب والمتروك والمعلَّم" className="flex h-10 items-center gap-1.5 rounded-full border border-border px-3 text-sm font-bold">
+              <LayoutGrid className="h-4 w-4" /> الأسئلة
+            </button>
           }
           footer={
             <>
               <SecondaryButton onClick={() => setIdx((i) => Math.max(0, i - 1))} disabled={idx === 0} className="flex-1">
-                <ChevronRight className="h-4 w-4" /> السابق
+                <ChevronRight className="h-5 w-5" /> السابق
               </SecondaryButton>
               {isLast ? (
                 <PrimaryButton onClick={() => setSubmitOpen(true)} className="flex-1">
@@ -325,13 +331,23 @@ export default function ExamSimView() {
                 </PrimaryButton>
               ) : (
                 <PrimaryButton onClick={() => setIdx((i) => Math.min(items.length - 1, i + 1))} className="flex-1">
-                  التالي <ChevronLeft className="h-4 w-4" />
+                  التالي <ChevronLeft className="h-5 w-5" />
                 </PrimaryButton>
               )}
             </>
           }
         >
-          <ProgressBar value={((idx + 1) / items.length) * 100} className="mb-5" />
+          {/* المؤقت أبرز ما في الشاشة، ويتحول إلى تحذير في الدقائق العشر الأخيرة */}
+          <div className={`mb-3 flex items-center justify-between rounded-[18px] px-4 py-2.5 ${lowTime ? "bg-danger-soft text-destructive" : "bg-accent text-accent-foreground"}`} role="timer" aria-live={lowTime ? "polite" : "off"}>
+            <span className="flex items-center gap-2 text-[14px] font-bold">
+              <Timer className="h-5 w-5" /> {lowTime ? "اقترب الوقت من النهاية" : "الوقت المتبقي"}
+            </span>
+            <span className="font-display text-[22px] font-extrabold tabular-nums" dir="ltr">{fmtTime(remaining)}</span>
+          </div>
+          <div className="mb-5 flex items-center gap-3">
+            <ProgressBar value={((idx + 1) / items.length) * 100} className="flex-1" />
+            <span className="shrink-0 text-sm font-bold text-secondary-foreground"><bdi>{ad(idx + 1)} من {ad(items.length)}</bdi></span>
+          </div>
           {current && (
             <motion.div key={current.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
               <div className="flex flex-wrap items-center gap-2">
@@ -339,7 +355,7 @@ export default function ExamSimView() {
                   <span className="h-2 w-2 rounded-full" style={{ background: COURSE_COLOR[items[idx].courseId] ?? "var(--primary)" }} />
                   {COURSE_SHORT[items[idx].courseId] ?? ""}
                 </Chip>
-                <Chip>{current.difficulty}</Chip>
+                <DifficultyChip level={current.difficulty} />
                 <button
                   type="button"
                   aria-pressed={!!flagged[current.id]}
@@ -352,7 +368,7 @@ export default function ExamSimView() {
                   {flagged[current.id] ? "معلَّم للمراجعة" : "علّم للمراجعة"}
                 </button>
               </div>
-              <h2 className="font-display text-lg font-semibold leading-9">{current.question}</h2>
+              <h2 className="font-display text-[17px] font-semibold leading-8">{current.question}</h2>
               <div className="space-y-3">
                 {current.options.map((o, i) => (
                   <OptionButton
@@ -387,7 +403,12 @@ export default function ExamSimView() {
                 className="w-full max-w-xl rounded-t-2xl bg-card p-5 pb-8"
               >
                 <div className="mb-4 flex items-center justify-between">
-                  <p className="font-display text-base font-semibold">خريطة الأسئلة</p>
+                  <div>
+                    <p className="font-display text-base font-semibold">خريطة الأسئلة</p>
+                    <p className="text-[13px] text-secondary-foreground">
+                      أجبت عن {ad(answeredCount)}، وبقي {ad(items.length - answeredCount)}، وعلّمت {ad(Object.values(flagged).filter(Boolean).length)} للمراجعة
+                    </p>
+                  </div>
                   <button type="button" onClick={() => setPaletteOpen(false)} aria-label="إغلاق" className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-muted">
                     <X className="h-5 w-5" />
                   </button>
@@ -454,10 +475,10 @@ export default function ExamSimView() {
           result.wrongQids.length > 0 ? (
             <>
               <SecondaryButton onClick={beginRun} className="flex-1">
-                <RotateCcw className="h-4 w-4" /> اختبار جديد
+                <RotateCcw className="h-4 w-4 max-[359px]:hidden" /> اختبار جديد
               </SecondaryButton>
               <PrimaryButton onClick={() => startQuiz({ mode: "redo", label: "التدرب على أخطاء الاختبار", qids: result.wrongQids })} className="flex-1">
-                <Dumbbell className="h-4 w-4" /> تدرّب على أخطائك
+                <Dumbbell className="h-4 w-4 max-[359px]:hidden" /> تدرّب على أخطائك
               </PrimaryButton>
             </>
           ) : (
@@ -470,14 +491,20 @@ export default function ExamSimView() {
         <div className="space-y-5">
           <Card className="flex flex-col items-center p-6 text-center">
             <Ring value={result.scorePct} size={128} stroke={10}>
-              <span className="font-display text-3xl font-bold text-primary">{ad(result.scorePct)}٪</span>
+              <span className="font-display text-3xl font-bold text-primary"><bdi dir="rtl">{ad(result.scorePct)}٪</bdi></span>
             </Ring>
             <Chip tone={result.passed ? "success" : "danger"} className="mt-4">
               {result.passed ? "ناجح" : "دون المحك"}
             </Chip>
             <p className="mt-3 text-base text-secondary-foreground">
-              {ad(result.correctCount)} من {ad(result.total)} صحيحة، وحد النجاح {ad(bp.passPct)}٪
+              إجابات صحيحة: <bdi className="font-bold text-foreground">{ad(result.correctCount)} من {ad(result.total)}</bdi>
             </p>
+            <p className="text-sm text-secondary-foreground">
+              حد النجاح: <bdi dir="rtl">{ad(bp.passPct)}٪</bdi>
+            </p>
+            {answeredTotal === 0 && (
+              <p className="mt-3 rounded-[14px] bg-muted px-3 py-2 text-sm leading-6 text-secondary-foreground">سُلّم الاختبار دون أي إجابة، فكل الأسئلة محسوبة خطأً. ابدأ اختبارًا جديدًا حين تكون مستعدًا.</p>
+            )}
           </Card>
 
           <Card className="p-5">
@@ -485,7 +512,7 @@ export default function ExamSimView() {
             <div className="space-y-4">
               {result.sections.map((x) => {
                 const v = x.total ? Math.round((x.correct / x.total) * 100) : 0;
-                return <SkillBar key={x.courseId} label={x.label} value={v} status={`${ad(x.correct)} من ${ad(x.total)}، ${ad(v)}٪`} tone={v >= bp.passPct ? "success" : "warning"} />;
+                return <SkillBar key={x.courseId} label={x.label} value={v} status={`${ad(x.correct)} من ${ad(x.total)} (${ad(v)}٪)`} tone={v >= bp.passPct ? "success" : "warning"} />;
               })}
             </div>
           </Card>

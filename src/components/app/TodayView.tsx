@@ -113,7 +113,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 transition={{ delay: 0.2, duration: 0.9, ease: "easeOut" }}
               />}
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-[26px] font-extrabold text-[var(--t900)] max-[359px]:text-[21px] dark:text-foreground"><bdi>{ad(readiness)}٪</bdi></span>
+            <span className="absolute inset-0 flex items-center justify-center text-[26px] font-extrabold text-[var(--t900)] max-[359px]:text-[21px] dark:text-foreground"><bdi dir="rtl">{ad(readiness)}٪</bdi></span>
           </span>
           <span className="min-w-0 flex-1">
             <span className="block whitespace-nowrap text-[17px] font-extrabold leading-7 max-[359px]:text-[16px] text-[var(--t900)] dark:text-foreground">مستوى استعدادك</span>
