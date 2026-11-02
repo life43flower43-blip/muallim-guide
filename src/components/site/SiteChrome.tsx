@@ -11,6 +11,7 @@ import MobileBar from "./MobileBar";
 export const RESOURCES = [
   { href: "/classroom-problems", label: "مشكلات صفية", color: "#B4532A" },
   { href: "/misconceptions", label: "مفاهيم خاطئة شائعة", color: "#7A4E9C" },
+  { href: "/comparisons", label: "مقارنات تربوية", color: "#3A55A4" },
   { href: "/mind-maps", label: "خرائط ذهنية تفاعلية", color: "#1F6FA8" },
   { href: "/glossary", label: "معجم المصطلحات", color: "#136F5C" },
   { href: "/license-guide", label: "دليل اختبار الرخصة", color: "#8A6A12" },
