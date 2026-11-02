@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://turbawy.pages.dev/sitemap.xml
