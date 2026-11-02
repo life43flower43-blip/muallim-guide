@@ -335,27 +335,31 @@ export default function AppShell() {
     } catch {}
   }, []);
 
-  // رابط مفهوم من الموقع العام: يُفتح المفهوم بعد تحميل البنك
+  // روابط الموقع العام (?concept= لمفهوم، و?open= لقسم): يُحفظ الطلب أولًا،
+  // ثم يُنفَّذ بعد أن يكمل الزائر الجديد شاشة البداية، حتى لا يضيع ما ضغطه في الموقع
+  const PENDING = "turbawy-pending-open";
   useEffect(() => {
-    const id = new URLSearchParams(window.location.search).get("concept");
-    if (!id) return;
-    ui.openConcept(id);
+    const q = new URLSearchParams(window.location.search);
+    const what = q.get("open");
+    const concept = q.get("concept");
+    if (!what && !concept) return;
+    try { sessionStorage.setItem(PENDING, JSON.stringify({ what, concept })); } catch {}
     window.history.replaceState(null, "", window.location.pathname);
   }, []);
-
-  // رابط قسم من الموقع العام (?open=examsim مثلًا): يفتح القسم مباشرة
   useEffect(() => {
-    const what = new URLSearchParams(window.location.search).get("open");
-    if (!what) return;
+    if (!hydrated || !onboarded) return;
+    let req: { what?: string | null; concept?: string | null } | null = null;
+    try { req = JSON.parse(sessionStorage.getItem(PENDING) || "null"); sessionStorage.removeItem(PENDING); } catch {}
+    if (!req) return;
     const s = useUi.getState();
+    if (req.concept) { s.openConcept(req.concept); return; }
     const open: Record<string, () => void> = {
       examsim: s.startExamsim, placement: s.startPlacement, learn: s.startLearn, sim: s.startSim, lab: s.startLab,
       studio: s.startStudio, scenarios: s.startScenarios, measure: s.startMeasure, mind: s.startMind, myths: s.startMyths,
       flash: s.startFlash, challenges: s.startChallenges, field: s.startField,
     };
-    open[what]?.();
-    window.history.replaceState(null, "", window.location.pathname);
-  }, []);
+    if (req.what) open[req.what]?.();
+  }, [hydrated, onboarded]);
 
   // العودة من Google: رسالة، ثم نقل بيانات الجهاز إلى الحساب
   useEffect(() => {

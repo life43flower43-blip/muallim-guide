@@ -124,7 +124,7 @@ export default function Home() {
           <DailyQuestion pool={pickQuestions(60, 3)} />
         </div>
         <div className="flex flex-col gap-4">
-          <SectionTitle title="اختبر نفسك" color="#1F6FA8" />
+          <SectionTitle title="اختبر نفسك" color="#1F6FA8" more={{ href: "/practice-test", label: "ابدأ" }} />
           <Link href="/practice-test" className="group flex flex-1 flex-col justify-between rounded-2xl bg-[linear-gradient(135deg,#1F6FA8,#3A55A4)] p-5 text-white">
             <span>
               <span className="block font-display text-[22px] font-extrabold">نموذج اختبار تربوي تفاعلي</span>
