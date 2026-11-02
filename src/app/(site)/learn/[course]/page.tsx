@@ -67,7 +67,7 @@ export default async function CoursePage({ params }: { params: Promise<{ course:
         {chapters.map((ch, i) => (
           <section key={ch.chapter} id={`ch-${i + 1}`} className="scroll-mt-16">
             <SectionTitle title={`${ad(i + 1)}. ${chapterLabel(ch.chapter)}`} />
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{ch.concepts.map(conceptTile)}</div>
+            <div className="grid gap-3 sm:grid-cols-2">{ch.concepts.map(conceptTile)}</div>
             {i === 1 && <AdSlot />}
           </section>
         ))}

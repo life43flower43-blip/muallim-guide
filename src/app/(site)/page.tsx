@@ -5,7 +5,7 @@ import { BookOpenText, ChevronDown, FileQuestion, Layers, Search } from "lucide-
 import { SITE_URL, publicBank } from "@/lib/public-bank";
 import { allArticles } from "@/lib/articles";
 import { APP_SECTIONS, courseMeta } from "@/lib/site-nav";
-import { ArticleCard, SectionTitle, Tile, WithSidebar, conceptTile } from "@/components/site/Blocks";
+import { ArticleCard, SectionTitle, Tile, WithSidebar, conceptCard } from "@/components/site/Blocks";
 import { articleCourse } from "@/lib/articles";
 import { ad } from "@/lib/arabic";
 import type { Concept } from "@/lib/types";
@@ -41,7 +41,11 @@ const FAQ = [
 
 /** صف بطاقات يمرّ أفقيًا في الهاتف، وشبكة في الشاشات الكبيرة */
 function Rail({ children }: { children: React.ReactNode }) {
-  return <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3">{children}</div>;
+  return (
+    <div className="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 xl:grid-cols-3">
+      {children}
+    </div>
+  );
 }
 
 export default function Home() {
@@ -106,7 +110,7 @@ export default function Home() {
         <SectionTitle title="أحدث المقالات" more={{ href: "/articles", label: "كل المقالات" }} />
         <div className="space-y-5">
           <ArticleCard a={articles[0]} wide />
-          <Rail>{articles.slice(1, 7).map((a) => <Tile key={a.slug} href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={a.category} />)}</Rail>
+          <Rail>{articles.slice(1, 7).map((a) => <Tile key={a.slug} card href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={a.category} />)}</Rail>
         </div>
       </section>
 
@@ -127,13 +131,13 @@ export default function Home() {
         <div className="space-y-12">
           <section>
             <SectionTitle title="مفاهيم مختارة" more={{ href: "/learn", label: "كل المحاور" }} />
-            <Rail>{picks.map(conceptTile)}</Rail>
+            <Rail>{picks.map(conceptCard)}</Rail>
           </section>
 
           {HOME_COURSES.map((id) => (
             <section key={id}>
               <SectionTitle title={courseMeta(id).short} more={{ href: `/learn/${id}`, label: "المزيد" }} />
-              <Rail>{spread(id, 4, 1).map(conceptTile)}</Rail>
+              <Rail>{spread(id, 4, 1).map(conceptCard)}</Rail>
             </section>
           ))}
 

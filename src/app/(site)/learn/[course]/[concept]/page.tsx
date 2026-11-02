@@ -179,7 +179,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
       {related.length > 0 && (
         <section className="mt-8">
           <SectionTitle title="مقالات ذات صلة" />
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{related.map(conceptTile)}</div>
+          <div className="grid gap-3 sm:grid-cols-2">{related.map(conceptTile)}</div>
         </section>
       )}
     </WithSidebar>

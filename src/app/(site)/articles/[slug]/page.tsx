@@ -106,7 +106,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
       <section className="mt-8">
         <SectionTitle title="مقالات قد تهمك" more={{ href: "/articles", label: "كل المقالات" }} />
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{related.map((r) => <Tile key={r.slug} href={`/articles/${r.slug}`} id={r.slug} title={r.title} courseId={articleCourse(r)} meta={r.category} />)}</div>
+        <div className="grid gap-3 sm:grid-cols-2">{related.map((r) => <Tile key={r.slug} href={`/articles/${r.slug}`} id={r.slug} title={r.title} courseId={articleCourse(r)} meta={r.category} />)}</div>
       </section>
     </WithSidebar>
   );
