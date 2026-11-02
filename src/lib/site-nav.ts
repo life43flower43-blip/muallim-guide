@@ -121,3 +121,34 @@ export function readMinutes(c: Concept) {
   const words = [c.explanation, ...(c.examples ?? [c.example]), c.rule ?? ""].join(" ").split(/\s+/).length;
   return Math.max(1, Math.round(words / 180));
 }
+
+/** أسئلة اختيار من متعدد موزعة على المحاور، لنموذج الاختبار وسؤال اليوم في الموقع */
+export type SiteQ = { id: string; q: string; options: string[]; correct: number; reason: string; course: string; href: string; concept: string };
+
+export function pickQuestions(n: number, offset = 0): SiteQ[] {
+  const b = publicBank();
+  const byId = new Map(b.concepts.map((c) => [c.id, c]));
+  const courses = ["M1", "M2", "M3", "M4", "M5", "SE1", "F1"];
+  const pools = courses.map((cid) =>
+    b.questions.filter((q) => q.type === "mcq" && q.options.length >= 3 && !q.fixedOrder && byId.get(q.conceptId)?.courseId === cid)
+  );
+  const out: SiteQ[] = [];
+  for (let i = 0; out.length < n && i < 10000; i++) {
+    const pool = pools[i % pools.length];
+    if (!pool.length) continue;
+    const q = pool[(Math.floor(i / pools.length) * 37 + offset * 13) % pool.length];
+    if (out.some((x) => x.id === q.id)) continue;
+    const c = byId.get(q.conceptId)!;
+    out.push({
+      id: q.id,
+      q: q.question,
+      options: q.options.map((o) => o.text),
+      correct: q.options.findIndex((o) => o.isCorrect),
+      reason: q.reason,
+      course: courseMeta(c.courseId).short,
+      href: `/learn/${c.courseId}/${c.id}`,
+      concept: c.title,
+    });
+  }
+  return out;
+}

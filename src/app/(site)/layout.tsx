@@ -2,6 +2,7 @@
 import Script from "next/script";
 import { SiteFooter, SiteHeader } from "@/components/site/SiteChrome";
 import { SITE_URL } from "@/lib/public-bank";
+import AppBar from "@/components/site/AppBar";
 
 const ADS = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 
@@ -34,8 +35,9 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       />
       {ADS && <Script async strategy="afterInteractive" crossOrigin="anonymous" src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADS}`} />}
       <SiteHeader />
-      <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
+      <main className="mx-auto max-w-6xl px-4 pb-24 pt-6 md:pb-6">{children}</main>
       <SiteFooter />
+      <AppBar />
     </div>
   );
 }

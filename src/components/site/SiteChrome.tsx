@@ -12,8 +12,9 @@ const MAIN_NAV = [
   { href: "/articles", label: "مقالات تربوية" },
   { href: "/learn", label: "المحاور", drop: true },
   { href: "/glossary", label: "مصطلحات تربوية" },
-  { href: "/sections/exam-simulator", label: "اختبار المحاكاة" },
-  { href: "/sections", label: "أقسام التطبيق" },
+  { href: "/practice-test", label: "نموذج اختبار" },
+  { href: "/license-guide", label: "دليل الرخصة" },
+  { href: "/tatbeeq", label: "التطبيق" },
   { href: "/about", label: "عن تربوي" },
 ];
 
