@@ -343,6 +343,20 @@ export default function AppShell() {
     window.history.replaceState(null, "", window.location.pathname);
   }, []);
 
+  // رابط قسم من الموقع العام (?open=examsim مثلًا): يفتح القسم مباشرة
+  useEffect(() => {
+    const what = new URLSearchParams(window.location.search).get("open");
+    if (!what) return;
+    const s = useUi.getState();
+    const open: Record<string, () => void> = {
+      examsim: s.startExamsim, placement: s.startPlacement, learn: s.startLearn, sim: s.startSim, lab: s.startLab,
+      studio: s.startStudio, scenarios: s.startScenarios, measure: s.startMeasure, mind: s.startMind, myths: s.startMyths,
+      flash: s.startFlash, challenges: s.startChallenges, field: s.startField,
+    };
+    open[what]?.();
+    window.history.replaceState(null, "", window.location.pathname);
+  }, []);
+
   // العودة من Google: رسالة، ثم نقل بيانات الجهاز إلى الحساب
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
