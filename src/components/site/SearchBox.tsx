@@ -44,9 +44,9 @@ export default function SearchBox({ autoFocus = false, onDone }: { autoFocus?: b
     <div className="relative">
       <form
         onSubmit={(e) => { e.preventDefault(); if (q.trim()) go(`/search?q=${encodeURIComponent(q.trim())}`); }}
-        className="flex h-12 items-center gap-2 rounded-2xl border-2 border-[#D4E3DA] bg-white px-3 focus-within:border-[#136F5C]"
+        className="flex h-[52px] items-stretch overflow-hidden rounded-xl border-2 border-[#E8A317] bg-[#FFF4DE] focus-within:border-[#C98A0A]"
       >
-        <Search className="h-5 w-5 shrink-0 text-[#6B8077]" />
+        <span className="flex items-center ps-3 text-[#C98A0A]"><Search className="h-5 w-5" strokeWidth={2.4} /></span>
         <input
           ref={ref}
           value={q}
@@ -55,9 +55,10 @@ export default function SearchBox({ autoFocus = false, onDone }: { autoFocus?: b
           onBlur={() => setTimeout(() => setOpen(false), 150)}
           enterKeyHint="search"
           placeholder="ابحث عن مفهوم أو مقال تربوي"
-          className="h-full min-w-0 flex-1 bg-transparent text-[16px] text-[#14302A] outline-none placeholder:text-[#8AA095]"
+          className="h-full min-w-0 flex-1 bg-transparent px-2 text-[16px] font-medium text-[#3B2A05] outline-none placeholder:text-[#A9874A]"
         />
-        {q && <button type="button" aria-label="مسح" onClick={() => { setQ(""); ref.current?.focus(); }} className="text-[#8AA095]"><X className="h-5 w-5" /></button>}
+        {q && <button type="button" aria-label="مسح" onClick={() => { setQ(""); ref.current?.focus(); }} className="px-2 text-[#A9874A]"><X className="h-5 w-5" /></button>}
+        <button type="submit" className="shrink-0 bg-[#E8A317] px-4 text-[15px] font-extrabold text-[#2B1D00] hover:bg-[#D9950C]">بحث</button>
       </form>
 
       {open && (

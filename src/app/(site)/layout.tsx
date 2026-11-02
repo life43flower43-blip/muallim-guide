@@ -9,7 +9,7 @@ const ADS = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-dvh bg-[#F4F7F5] text-[#14302A]">
+    <div className="min-h-dvh w-full max-w-[100vw] overflow-x-clip bg-[#F4F7F5] text-[#14302A]">
       {/* التطبيق المثبّت على الهاتف يفتح دائمًا على التطبيق لا على الموقع، حتى لو ثُبّت قديمًا على الرابط الرئيسي */}
       <script
         dangerouslySetInnerHTML={{

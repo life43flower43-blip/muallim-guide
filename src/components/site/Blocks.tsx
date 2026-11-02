@@ -228,3 +228,19 @@ export const conceptTile = (c: Concept) => (
 export const conceptCard = (c: Concept) => (
   <Tile key={c.id} card href={href(c)} id={c.id} title={c.title} courseId={c.courseId} meta={`${courseMeta(c.courseId).short}، ${arCount(readMinutes(c), MINUTE_FORMS)} للقراءة`} />
 );
+
+/** رأس صفحة موحّد: خلفية متدرجة بلون القسم، وسطر صغير، وعنوان، ووصف */
+export function PageHero({ title, sub, kicker, color = "#136F5C", children }: { title: string; sub?: string; kicker?: string; color?: string; children?: React.ReactNode }) {
+  return (
+    <header className="relative overflow-hidden rounded-2xl p-6 text-white" style={{ background: `linear-gradient(135deg, ${color}, ${color}CC)` }}>
+      <span className="pointer-events-none absolute -end-10 -top-10 h-40 w-40 rounded-full bg-white/10" aria-hidden="true" />
+      <span className="pointer-events-none absolute -bottom-12 end-24 h-28 w-28 rounded-full bg-white/5" aria-hidden="true" />
+      <div className="relative">
+        {kicker && <p className="text-[13px] font-bold text-white/80">{kicker}</p>}
+        <h1 className="mt-1 font-display text-[27px] font-extrabold leading-[1.5]">{title}</h1>
+        {sub && <p className="mt-2 leading-8 text-white/85">{sub}</p>}
+        {children}
+      </div>
+    </header>
+  );
+}

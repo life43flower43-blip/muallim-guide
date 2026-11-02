@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { SITE_URL, publicBank } from "@/lib/public-bank";
 import { APP_SECTIONS } from "@/lib/site-nav";
 import { allArticles, articleCats } from "@/lib/articles";
-import { SIM_SCENARIOS } from "@/lib/sim";
+import { PROBLEMS } from "@/lib/site-problems";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const b = publicBank();
@@ -11,6 +11,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const concepts = b.concepts.map((c) => ({ url: `${SITE_URL}/learn/${c.courseId}/${c.id}`, changeFrequency: "monthly" as const, priority: 0.7 }));
   const articles = allArticles().map((a) => ({ url: `${SITE_URL}/articles/${a.slug}`, lastModified: a.date, changeFrequency: "monthly" as const, priority: 0.8 }));
   const cats = articleCats().map((c) => ({ url: `${SITE_URL}/articles/c/${c.slug}`, changeFrequency: "weekly" as const, priority: 0.6 }));
-  const problems = SIM_SCENARIOS.map((x) => ({ url: `${SITE_URL}/classroom-problems/${x.id.toLowerCase()}`, changeFrequency: "monthly" as const, priority: 0.7 }));
+  const problems = PROBLEMS.map((x) => ({ url: `${SITE_URL}/classroom-problems/${x.slug}`, changeFrequency: "monthly" as const, priority: 0.7 }));
   return [...fixed, ...articles, ...cats, ...problems, ...courses, ...concepts];
 }

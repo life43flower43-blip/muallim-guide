@@ -4,7 +4,7 @@ import Link from "next/link";
 import { SITE_URL, publicBank } from "@/lib/public-bank";
 import { courseMeta, normalizeAr } from "@/lib/site-nav";
 import { ad } from "@/lib/arabic";
-import { Crumbs, WithSidebar } from "@/components/site/Blocks";
+import { Crumbs, WithSidebar, PageHero } from "@/components/site/Blocks";
 
 export const metadata: Metadata = {
   title: "معجم المصطلحات التربوية من الألف إلى الياء | تربوي",
@@ -39,10 +39,7 @@ export default function Glossary() {
   return (
     <WithSidebar>
       <Crumbs items={[{ label: "مصطلحات تربوية" }]} />
-      <h1 className="font-display text-[28px] font-extrabold">معجم المصطلحات التربوية</h1>
-      <p className="mt-2 leading-8 text-[#4D635A]">
-        المصطلحات التربوية والنفسية في الموقع مرتبة على حروف الهجاء (عددها {ad(seen.size)}). اضغط المصطلح لتقرأ شرحه وأمثلته من الصف.
-      </p>
+      <PageHero kicker="من الألف إلى الياء" title="معجم المصطلحات التربوية" color="#136F5C" sub={`المصطلحات التربوية والنفسية في الموقع مرتبة على حروف الهجاء (عددها ${ad(seen.size)}). اضغط المصطلح لتقرأ شرحه وأمثلته من الصف.`} />
 
       {/* أزرار الحروف */}
       <nav className="z-10 mt-5 flex flex-wrap gap-1.5 md:sticky md:top-12 rounded-2xl border border-[#E2ECE6] bg-white p-3">

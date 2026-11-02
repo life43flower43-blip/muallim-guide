@@ -2,8 +2,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SITE_URL } from "@/lib/public-bank";
-import { allArticles, arDate, articleCats, articleCourse, catBySlug } from "@/lib/articles";
-import { ArticleCard, Crumbs, Tile, WithSidebar } from "@/components/site/Blocks";
+import { ARTICLE_CATS, allArticles, arDate, articleCats, articleCourse, catBySlug } from "@/lib/articles";
+import { courseMeta } from "@/lib/site-nav";
+import { ArticleCard, Crumbs, Tile, WithSidebar, PageHero } from "@/components/site/Blocks";
 import CatChips from "@/components/site/CatChips";
 
 export const dynamicParams = false;
@@ -29,7 +30,7 @@ export default async function ArticleCategory({ params }: { params: Promise<{ ca
   return (
     <WithSidebar>
       <Crumbs items={[{ href: "/articles", label: "مقالات تربوية" }, { label: name }]} />
-      <h1 className="font-display text-[28px] font-extrabold">{name}</h1>
+      <PageHero kicker="تصنيف" title={name} color={courseMeta(ARTICLE_CATS[name] ?? "M5").color} />
       <div className="mt-4"><CatChips active={name} /></div>
       <div className="mt-6 space-y-5">
         <ArticleCard a={first} wide />
