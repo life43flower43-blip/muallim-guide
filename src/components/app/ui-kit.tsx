@@ -486,11 +486,43 @@ export function MasteryDot({ level, size = 14 }: { level: 0 | 1 | 2 | 3; size?: 
   );
 }
 
-/** كان زخرفة موجات ذهبية خلف العناوين؛ أُزيلت ليبقى الشريط العلوي هادئًا وموحّدًا في كل الشاشات */
+/** زخرفة شريط العنوان: موجات خضراء متراكبة تنساب من الزاوية، وخيطان ذهبيان، ونجوم ذهبية تومض */
 export function HeaderArt() {
-  return null;
+  const star = "M0 -6 C0.8 -1.2 1.2 -0.8 6 0 C1.2 0.8 0.8 1.2 0 6 C-0.8 1.2 -1.2 0.8 -6 0 C-1.2 -0.8 -0.8 -1.2 0 -6Z";
+  return (
+    <svg className="head-art pointer-events-none absolute inset-0 h-full w-full -scale-y-100" viewBox="0 0 400 130" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="ha1" x1="0" y1="0" x2="1" y2="0.5">
+          <stop offset="0" stopColor="var(--t800)" stopOpacity="0.95" />
+          <stop offset="0.6" stopColor="var(--t850)" stopOpacity="0.35" />
+          <stop offset="1" stopColor="var(--t600)" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id="ha2" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="var(--t600)" stopOpacity="0.55" />
+          <stop offset="1" stopColor="var(--t100)" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id="ha3" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="var(--t200)" />
+          <stop offset="1" stopColor="var(--t100)" stopOpacity="0.3" />
+        </linearGradient>
+        <linearGradient id="hag" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#F4C430" stopOpacity="0.2" />
+          <stop offset="0.35" stopColor="#E3B23C" />
+          <stop offset="0.75" stopColor="#FFE27A" />
+          <stop offset="1" stopColor="#F4C430" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path className="w3" d="M-20 0H420V6C340 16 280 2 215 16C145 32 80 58 -20 118Z" fill="url(#ha3)" />
+      <path className="w2" d="M-20 0H330C280 16 225 8 170 28C115 48 60 78 -20 104Z" fill="url(#ha2)" />
+      <path className="w1" d="M-20 0H240C200 12 160 12 118 30C78 48 40 70 -20 90Z" fill="url(#ha1)" />
+      <path className="w2" d="M-20 108C40 62 92 44 140 28C205 8 290 4 420 2" stroke="url(#hag)" strokeWidth="1.8" fill="none" />
+      <path className="w1" d="M-20 98C38 58 88 40 132 25C190 6 270 2 420 -1" stroke="url(#hag)" strokeWidth="0.9" fill="none" opacity="0.7" />
+      <g transform="translate(150 22) scale(1.6)"><path className="sp" d={star} fill="#F4C430" /></g>
+      <g transform="translate(212 12) scale(1.1)"><path className="sp" style={{ animationDelay: "1s" }} d={star} fill="#FFE27A" /></g>
+      <g transform="translate(96 46) scale(1.3)"><path className="sp" style={{ animationDelay: "2s" }} d={star} fill="#E3B23C" /></g>
+    </svg>
+  );
 }
-
 
 /** أدوات مرتبطة داخل القسم: مربعات صغيرة متساوية برمز ذهبي واسم في سطر واحد */
 export function ToolTiles({ items }: { items: { icon: React.ElementType; title: string; onClick: () => void }[] }) {
