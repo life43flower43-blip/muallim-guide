@@ -2,13 +2,15 @@ import type { MetadataRoute } from "next";
 import { SITE_URL, publicBank } from "@/lib/public-bank";
 import { APP_SECTIONS } from "@/lib/site-nav";
 import { allArticles, articleCats } from "@/lib/articles";
+import { SIM_SCENARIOS } from "@/lib/sim";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const b = publicBank();
-  const fixed = ["", "/learn", "/articles", "/glossary", "/sections", ...APP_SECTIONS.map((s) => `/sections/${s.slug}`), "/about", "/privacy", "/terms", "/contact"].map((p) => ({ url: `${SITE_URL}${p}`, changeFrequency: "monthly" as const, priority: p === "/learn" ? 0.9 : 0.5 }));
+  const fixed = ["", "/learn", "/articles", "/practice-test", "/license-guide", "/tatbeeq", "/misconceptions", "/classroom-problems", "/mind-maps", "/glossary", "/sections", ...APP_SECTIONS.map((s) => `/sections/${s.slug}`), "/about", "/privacy", "/terms", "/contact"].map((p) => ({ url: `${SITE_URL}${p}`, changeFrequency: "monthly" as const, priority: p === "/learn" ? 0.9 : 0.5 }));
   const courses = Object.keys(b.courses).map((id) => ({ url: `${SITE_URL}/learn/${id}`, changeFrequency: "monthly" as const, priority: 0.8 }));
   const concepts = b.concepts.map((c) => ({ url: `${SITE_URL}/learn/${c.courseId}/${c.id}`, changeFrequency: "monthly" as const, priority: 0.7 }));
   const articles = allArticles().map((a) => ({ url: `${SITE_URL}/articles/${a.slug}`, lastModified: a.date, changeFrequency: "monthly" as const, priority: 0.8 }));
   const cats = articleCats().map((c) => ({ url: `${SITE_URL}/articles/c/${c.slug}`, changeFrequency: "weekly" as const, priority: 0.6 }));
-  return [...fixed, ...articles, ...cats, ...courses, ...concepts];
+  const problems = SIM_SCENARIOS.map((x) => ({ url: `${SITE_URL}/classroom-problems/${x.id.toLowerCase()}`, changeFrequency: "monthly" as const, priority: 0.7 }));
+  return [...fixed, ...articles, ...cats, ...problems, ...courses, ...concepts];
 }

@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, ChevronDown, ChevronLeft, Home, Info, Layers, Library, Newspaper, Search, Smartphone, Timer, X } from "lucide-react";
+import { AlertTriangle, BookOpen, ChevronDown, ChevronLeft, ClipboardCheck, Compass, Home, Info, Layers, LayoutGrid, Library, Network, Newspaper, School, Search, Smartphone, X } from "lucide-react";
 import SearchBox from "./SearchBox";
 
 type L = { href: string; label: string };
@@ -14,8 +14,13 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   "/articles": Newspaper,
   "/learn": Layers,
   "/glossary": Library,
-  "/sections/exam-simulator": Timer,
-  "/sections": Smartphone,
+  "/practice-test": ClipboardCheck,
+  "/classroom-problems": School,
+  "/misconceptions": AlertTriangle,
+  "/mind-maps": Network,
+  "/sections": LayoutGrid,
+  "/license-guide": Compass,
+  "/tatbeeq": Smartphone,
   "/about": Info,
 };
 

@@ -1,10 +1,11 @@
 // الصفحة الرئيسية للموقع: ترحيب وبحث، ثم أحدث المقالات، ومفاهيم مختارة، وأقسام التطبيق، ثم التصنيفات مع شريط جانبي
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BookOpenText, ChevronDown, FileQuestion, Layers, Search } from "lucide-react";
+import { AlertTriangle, BookOpenText, ChevronDown, FileQuestion, Layers, Network, School, Search } from "lucide-react";
 import { SITE_URL, publicBank } from "@/lib/public-bank";
 import { allArticles } from "@/lib/articles";
-import { APP_SECTIONS, courseMeta } from "@/lib/site-nav";
+import { APP_SECTIONS, courseMeta, pickQuestions } from "@/lib/site-nav";
+import DailyQuestion from "@/components/site/DailyQuestion";
 import SearchBox from "@/components/site/SearchBox";
 import CatChips from "@/components/site/CatChips";
 import { ArticleCard, SectionTitle, Tile, WithSidebar, conceptCard } from "@/components/site/Blocks";
@@ -104,6 +105,46 @@ export default function Home() {
             <p className="text-[12px] leading-5 text-[#5B7268] sm:text-[13px]">{s.l}</p>
           </div>
         ))}
+      </section>
+
+      {/* سؤال اليوم ونموذج الاختبار */}
+      <section className="grid gap-5 lg:grid-cols-2">
+        <div>
+          <SectionTitle title="سؤال اليوم" color="#7A4E9C" />
+          <DailyQuestion pool={pickQuestions(60, 3)} />
+        </div>
+        <div className="flex flex-col gap-4">
+          <SectionTitle title="اختبر نفسك" color="#1F6FA8" />
+          <Link href="/practice-test" className="group flex flex-1 flex-col justify-between rounded-2xl bg-[linear-gradient(135deg,#1F6FA8,#3A55A4)] p-5 text-white">
+            <span>
+              <span className="block font-display text-[22px] font-extrabold">نموذج اختبار تربوي تفاعلي</span>
+              <span className="mt-1 block text-[15px] leading-7 text-white/85">عشرون سؤالًا بمستوى اختبارات الرخصة والتوظيف، مع التصحيح والتفسير فورًا.</span>
+            </span>
+            <span className="mt-4 inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2.5 font-bold text-[#1F6FA8]">ابدأ النموذج</span>
+          </Link>
+          <Link href="/license-guide" className="flex items-center justify-between rounded-2xl border border-[#E2ECE6] bg-white p-4 font-bold text-[#14302A] hover:border-[#136F5C]">
+            دليل الاستعداد لاختبار الرخصة المهنية
+            <span className="text-[#136F5C]">←</span>
+          </Link>
+        </div>
+      </section>
+
+      {/* مصادر تفاعلية */}
+      <section>
+        <SectionTitle title="تعلّم من الصف مباشرة" color="#A0466B" />
+        <div className="grid gap-3 sm:grid-cols-3">
+          {[
+            { href: "/classroom-problems", t: "مشكلات صفية", d: "مواقف حقيقية: التصرف التقليدي وأثره، والتصرف المتقدم ولماذا ينجح.", c: "#B4532A", Icon: School },
+            { href: "/misconceptions", t: "مفاهيم خاطئة شائعة", d: "أفكار يتداولها المعلمون عن التعلم. صحيحة أم خاطئة؟ اختبر نفسك.", c: "#7A4E9C", Icon: AlertTriangle },
+            { href: "/mind-maps", t: "خرائط ذهنية تفاعلية", d: "كل محور في خريطة تتفرع بالضغط، لمراجعة فصل كامل في دقائق.", c: "#1F6FA8", Icon: Network },
+          ].map((x) => (
+            <Link key={x.href} href={x.href} className="group rounded-2xl p-5 text-white transition hover:-translate-y-0.5" style={{ background: `linear-gradient(135deg, ${x.c}, ${x.c}CC)` }}>
+              <x.Icon className="h-8 w-8 text-white/90" />
+              <span className="mt-3 block font-display text-[19px] font-extrabold">{x.t}</span>
+              <span className="mt-1 block text-[14px] leading-7 text-white/85">{x.d}</span>
+            </Link>
+          ))}
+        </div>
       </section>
 
       {/* أحدث المقالات */}
