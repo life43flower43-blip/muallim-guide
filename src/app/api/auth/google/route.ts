@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET
   const origin = requestOrigin(request)
   if (!clientId || !clientSecret) {
-    return NextResponse.redirect(`${origin}/?login=error&reason=no_config`, { status: 302 })
+    return NextResponse.redirect(`${origin}/app?login=error&reason=no_config`, { status: 302 })
   }
 
   const state = Array.from(crypto.getRandomValues(new Uint8Array(32)), (b) =>

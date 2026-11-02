@@ -1,9 +1,9 @@
 // عامل خدمة: شبكة أولاً للتنقل والأصول، كاش أولاً لبنك البيانات الكبير
 // v32 — الواجهة الجديدة: الحسابات والجواهر والتدريب والأخطاء منقولة من أوريندو
-const CACHE = "turbawy-v204";
+const CACHE = "turbawy-v205";
 // كاش مستقل لبنك البيانات: لا يُحذف عند تحديث الواجهة، فلا يُعاد تنزيل البنك الكبير مع كل تحديث
 const DATA_CACHE = "turbawy-data";
-const SHELL = ["/", "/manifest.json", "/icons/icon-192-v3.png", "/icons/icon-512-v3.png"];
+const SHELL = ["/app", "/manifest.json", "/icons/icon-192-v3.png", "/icons/icon-512-v3.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
@@ -30,13 +30,16 @@ self.addEventListener("fetch", (e) => {
       fetch(e.request)
         .then((res) => {
           // الصفحات المضمّنة (كالخرائط الذهنية) لا تحلّ محل هيكل التطبيق المحفوظ
-          if (!url.pathname.startsWith("/tools/")) {
+          // التطبيق يُحفظ هيكلًا واحدًا، وصفحات الموقع تُحفظ كل واحدة باسمها
+          if (!url.pathname.startsWith("/tools/") && res.ok) {
             const copy = res.clone();
-            caches.open(CACHE).then((c) => c.put("/", copy));
+            caches.open(CACHE).then((c) => c.put(url.pathname.startsWith("/app") ? "/app" : e.request, copy));
           }
           return res;
         })
-        .catch(() => caches.match("/").then((hit) => hit || Response.error()))
+        .catch(() =>
+          caches.match(url.pathname.startsWith("/app") ? "/app" : e.request).then((hit) => hit || caches.match("/app")).then((hit) => hit || Response.error())
+        )
     );
     return;
   }
@@ -83,7 +86,7 @@ self.addEventListener("fetch", (e) => {
 
 // ٤) الإشعارات: التذكير اليومي وموعد مراجعة الأخطاء
 self.addEventListener("push", (e) => {
-  let data = { title: "تربوي", body: "حان وقت درسك اليوم", url: "/" };
+  let data = { title: "تربوي", body: "حان وقت درسك اليوم", url: "/app" };
   try {
     data = { ...data, ...e.data.json() };
   } catch {}
@@ -95,14 +98,14 @@ self.addEventListener("push", (e) => {
       dir: "rtl",
       lang: "ar",
       tag: data.tag || "turbawy",
-      data: { url: data.url || "/" },
+      data: { url: data.url || "/app" },
     })
   );
 });
 
 self.addEventListener("notificationclick", (e) => {
   e.notification.close();
-  const url = (e.notification.data && e.notification.data.url) || "/";
+  const url = (e.notification.data && e.notification.data.url) || "/app";
   e.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
       for (const c of list) {
