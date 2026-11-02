@@ -1,4 +1,5 @@
 // قالب صفحات الموقع العامة بالنمط المعتاد للمواقع، وسكربت الإعلانات هنا وحده لا في التطبيق
+import type { Viewport } from "next";
 import Script from "next/script";
 import { SiteFooter, SiteHeader } from "@/components/site/SiteChrome";
 import { SITE_URL } from "@/lib/public-bank";
@@ -6,6 +7,9 @@ import AppBar from "@/components/site/AppBar";
 import CopyGuard from "@/components/site/CopyGuard";
 
 const ADS = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+
+// صفحات الموقع تسمح بالتكبير للقراءة، بخلاف التطبيق
+export const viewport: Viewport = { width: "device-width", initialScale: 1, maximumScale: 5, userScalable: true, themeColor: "#136F5C" };
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (

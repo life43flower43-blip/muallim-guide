@@ -18,6 +18,7 @@ export const metadata: Metadata = {
       (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "https://turbawy.app")
   ),
   title: "تربوي | الإعداد المهني للمعلم",
+  alternates: { types: { "application/rss+xml": "/feed.xml" } },
   // صورة تظهر عند مشاركة أي رابط من الموقع في لينكدإن وإكس وواتساب
   openGraph: { siteName: "تربوي", locale: "ar_AR", type: "website", images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "تربوي: استعد لاختبار المعلمين وأنت تفهم" }] },
   twitter: { card: "summary_large_image", images: ["/og.jpg"] },

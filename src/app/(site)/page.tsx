@@ -188,7 +188,7 @@ export default function Home() {
           <section className="rounded-2xl border border-[#E2ECE6] bg-white p-5">
             <h2 className="font-display text-[20px] font-extrabold">معجم المصطلحات التربوية</h2>
             <p className="mt-1 leading-7 text-[#4D635A]">كل المصطلحات التربوية في الموقع مرتبة على حروف الهجاء، ولكل مصطلح صفحة بشرحه وأمثلته.</p>
-            <Link href="/glossary" className="mt-3 inline-block rounded-xl bg-[#136F5C] px-5 py-2.5 font-bold text-white">تصفّح المصطلحات</Link>
+            <Link prefetch={false} href="/glossary" className="mt-3 inline-block rounded-xl bg-[#136F5C] px-5 py-2.5 font-bold text-white">تصفّح المصطلحات</Link>
           </section>
 
           <section>

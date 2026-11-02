@@ -111,7 +111,7 @@ export default function MobileBar({ nav, courses }: { nav: L[]; courses: L[] }) 
           </nav>
 
           <div className="border-t border-[#E2ECE6] p-4">
-            <Link href="/app" className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#E8A317] font-bold text-[#2B1D00]">
+            <Link prefetch={false} href="/app" className="flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#E8A317] font-bold text-[#2B1D00]">
               <Smartphone className="h-5 w-5" /> ابدأ التدريب مجانًا
             </Link>
           </div>

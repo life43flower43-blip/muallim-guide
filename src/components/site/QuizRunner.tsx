@@ -41,7 +41,7 @@ export default function QuizRunner({ questions, title }: { questions: SiteQ[]; t
         <div className="mt-5 rounded-2xl bg-[#136F5C] p-5 text-white">
           <p className="font-display text-[18px] font-extrabold">تابع في تطبيق تربوي</p>
           <p className="mt-1 text-[14px] leading-7 text-white/85">اختبار محاكٍ كامل بزمن حقيقي، وتحليل لكل محور، ومراجعة لأخطائك في موعدها. مجانًا.</p>
-          <Link href="/app?open=examsim" className="mt-3 inline-flex items-center gap-2 rounded-xl bg-[#E8A317] px-5 py-2.5 font-bold text-[#2B1D00]"><Smartphone className="h-5 w-5" /> ابدأ اختبار المحاكاة</Link>
+          <Link prefetch={false} href="/app?open=examsim" className="mt-3 inline-flex items-center gap-2 rounded-xl bg-[#E8A317] px-5 py-2.5 font-bold text-[#2B1D00]"><Smartphone className="h-5 w-5" /> ابدأ اختبار المحاكاة</Link>
         </div>
         <button type="button" onClick={restart} className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-bold text-[#136F5C]"><RotateCcw className="h-4 w-4" /> أعد المحاولة</button>
       </div>
@@ -86,7 +86,7 @@ export default function QuizRunner({ questions, title }: { questions: SiteQ[]; t
           <p className="mt-1 text-[14px] leading-7 text-[#3A5249]">{q.reason}</p>
           <Link href={q.href} className="mt-2 inline-flex items-center gap-1 text-[13px] font-bold text-[#136F5C]">اقرأ شرح «{q.concept}» <ChevronLeft className="h-4 w-4" /></Link>
           {questions.length === 1 ? (
-            <Link href="/app?tab=practice" className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#136F5C] py-3 font-bold text-white"><Smartphone className="h-5 w-5" /> تدرّب على أسئلة أكثر في التطبيق</Link>
+            <Link prefetch={false} href="/app?tab=practice" className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#136F5C] py-3 font-bold text-white"><Smartphone className="h-5 w-5" /> تدرّب على أسئلة أكثر في التطبيق</Link>
           ) : (
             <button type="button" onClick={next} className="mt-3 block w-full rounded-xl bg-[#136F5C] py-3 font-bold text-white">{i + 1 === questions.length ? "اعرض النتيجة" : "السؤال التالي"}</button>
           )}

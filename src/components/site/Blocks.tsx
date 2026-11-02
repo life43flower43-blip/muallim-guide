@@ -112,7 +112,7 @@ export function Sidebar() {
         <Smartphone className="h-7 w-7 text-[#F2C94C]" />
         <h2 className="mt-2 font-display text-[19px] font-extrabold">تدرّب في تطبيق تربوي</h2>
         <p className="mt-1 text-[14px] leading-7 text-white/85">آلاف الأسئلة مع تفسير كل خيار، واختبارات محاكية، ومراجعة لأخطائك. مجانًا ومن المتصفح.</p>
-        <Link href="/tatbeeq" className="mt-3 inline-block rounded-xl bg-[#E8A317] px-5 py-2.5 text-[15px] font-bold text-[#2B1D00]">تعرّف على التطبيق</Link>
+        <Link prefetch={false} href="/tatbeeq" className="mt-3 inline-block rounded-xl bg-[#E8A317] px-5 py-2.5 text-[15px] font-bold text-[#2B1D00]">تعرّف على التطبيق</Link>
       </section>
 
       <Widget title="التصنيفات">

@@ -55,7 +55,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         <div className="mt-6 rounded-2xl border border-[#E2ECE6] bg-white p-6 text-center">
           <SearchX className="mx-auto h-10 w-10 text-[#8AA095]" />
           <p className="mt-2 font-bold text-[#14302A]">لم نجد نتيجة بهذه الكلمات</p>
-          <p className="mt-1 text-[14px] text-[#6B8077]">جرّب كلمة أقصر، أو مرادفًا، أو تصفح <Link href="/glossary" className="font-bold text-[#136F5C]">معجم المصطلحات</Link>.</p>
+          <p className="mt-1 text-[14px] text-[#6B8077]">جرّب كلمة أقصر، أو مرادفًا، أو تصفح <Link prefetch={false} href="/glossary" className="font-bold text-[#136F5C]">معجم المصطلحات</Link>.</p>
         </div>
       )}
 
