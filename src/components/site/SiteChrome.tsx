@@ -7,15 +7,24 @@ import TodayDate from "./TodayDate";
 import SearchBox from "./SearchBox";
 import MobileBar from "./MobileBar";
 
-const MAIN_NAV = [
+/** قسم «المصادر»: صفحات المحتوى التفاعلي */
+export const RESOURCES = [
+  { href: "/classroom-problems", label: "مشكلات صفية", color: "#B4532A" },
+  { href: "/misconceptions", label: "مفاهيم خاطئة شائعة", color: "#7A4E9C" },
+  { href: "/mind-maps", label: "خرائط ذهنية تفاعلية", color: "#1F6FA8" },
+  { href: "/glossary", label: "معجم المصطلحات", color: "#136F5C" },
+  { href: "/license-guide", label: "دليل اختبار الرخصة", color: "#8A6A12" },
+  { href: "/sections", label: "أقسام التطبيق", color: "#3A55A4" },
+];
+
+const MAIN_NAV: { href: string; label: string; drop?: "courses" | "resources" }[] = [
   { href: "/", label: "الرئيسية" },
   { href: "/articles", label: "مقالات تربوية" },
-  { href: "/learn", label: "المحاور", drop: true },
-  { href: "/glossary", label: "مصطلحات تربوية" },
+  { href: "/learn", label: "المحاور", drop: "courses" },
+  { href: "/classroom-problems", label: "المصادر", drop: "resources" },
   { href: "/practice-test", label: "نموذج اختبار" },
-  { href: "/license-guide", label: "دليل الرخصة" },
+  { href: "/misconceptions", label: "مفاهيم خاطئة" },
   { href: "/tatbeeq", label: "التطبيق" },
-  { href: "/about", label: "عن تربوي" },
 ];
 
 export function SiteHeader() {
@@ -52,7 +61,7 @@ export function SiteHeader() {
           </Link>
           {/* أزرار الهاتف: بحث وقائمة */}
           <MobileBar
-            nav={MAIN_NAV.map((n) => ({ href: n.href, label: n.label }))}
+            nav={[...MAIN_NAV.filter((n) => n.drop !== "resources").map((n) => ({ href: n.href, label: n.label })), ...RESOURCES.map((r) => ({ href: r.href, label: r.label }))].filter((v, i, a) => a.findIndex((x) => x.href === v.href) === i)}
             courses={courses.map((c) => ({ href: `/learn/${c.id}`, label: courseMeta(c.id).short }))}
           />
         </div>
@@ -68,10 +77,13 @@ export function SiteHeader() {
                   {n.label} <ChevronDown className="hidden h-4 w-4 md:block" />
                 </Link>
                 <div className="invisible absolute start-0 top-12 z-30 hidden w-[460px] grid-cols-2 gap-1 rounded-b-2xl border border-t-0 border-[#D4E3DA] bg-white p-3 opacity-0 transition group-hover:visible group-hover:opacity-100 md:grid">
-                  {courses.map((c) => (
-                    <Link key={c.id} href={`/learn/${c.id}`} className="flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-[#1E3A32] hover:bg-[#EEF5F1]">
-                      <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: courseMeta(c.id).color }} />
-                      {courseMeta(c.id).short}
+                  {(n.drop === "courses"
+                    ? courses.map((c) => ({ href: `/learn/${c.id}`, label: courseMeta(c.id).short, color: courseMeta(c.id).color }))
+                    : RESOURCES
+                  ).map((x) => (
+                    <Link key={x.href} href={x.href} className="flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-[#1E3A32] hover:bg-[#EEF5F1]">
+                      <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: x.color }} />
+                      {x.label}
                     </Link>
                   ))}
                 </div>
