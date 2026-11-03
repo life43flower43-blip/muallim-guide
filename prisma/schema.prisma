@@ -128,3 +128,9 @@ model PushSubscription {
 
   @@index([userId])
 }
+
+/// ما نشره بوت تيليجرام: مفتاح واحد لكل يوم وموعد، فلا يُنشر الموعد نفسه مرتين
+model TelegramPost {
+  key       String   @id // مثل 2026-11-04:tip
+  createdAt DateTime @default(now())
+}

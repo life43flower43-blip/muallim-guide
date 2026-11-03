@@ -53,56 +53,60 @@ export function tipOfDay(day = dayNumber()) {
 
 const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-export function buildPosts(iso = todayISO()) {
+export const SLOTS = ["tip", "q1", "q2"] as const;
+export type Slot = (typeof SLOTS)[number];
+
+/** منشورات موعد واحد من اليوم: الصباح معلومة اليوم ومقال اليوم، والظهر السؤال الأول، والمساء السؤال الثاني */
+export function buildPosts(iso = todayISO(), slot: Slot = "tip") {
   const day = dayNumber(iso);
   const posts: { method: string; body: Record<string, unknown> }[] = [];
 
-  const tip = tipOfDay(day);
-  if (tip) {
-    const text = `💡 <b>معلومة اليوم</b>\n\n<b>${esc(tip.title)}</b>\n${esc(tip.text)}\n\n📚 ${esc(tip.course)}\n<a href="${SITE_URL}${tip.href}">اقرأ الشرح كاملًا</a>`;
-    // إن كان للمفهوم صورة تعليمية تُرسل الصورة والمعلومة تحتها، وإلا تُرسل المعلومة نصًا
-    posts.push(
-      tip.image
-        ? { method: "sendPhoto", body: { photo: `${SITE_URL}${tip.image}`, caption: text, parse_mode: "HTML" } }
-        : { method: "sendMessage", body: { text, parse_mode: "HTML", link_preview_options: { is_disabled: true } } }
-    );
+  if (slot === "tip") {
+    const tip = tipOfDay(day);
+    if (tip) {
+      const text = `💡 <b>معلومة اليوم</b>\n\n<b>${esc(tip.title)}</b>\n${esc(tip.text)}\n\n📚 ${esc(tip.course)}\n<a href="${SITE_URL}${tip.href}">اقرأ الشرح كاملًا</a>`;
+      // إن كان للمفهوم صورة تعليمية تُرسل الصورة والمعلومة تحتها، وإلا تُرسل المعلومة نصًا
+      posts.push(
+        tip.image
+          ? { method: "sendPhoto", body: { photo: `${SITE_URL}${tip.image}`, caption: text, parse_mode: "HTML" } }
+          : { method: "sendMessage", body: { text, parse_mode: "HTML", link_preview_options: { is_disabled: true } } }
+      );
+    }
+    // مقال اليوم إن نُشر مقال جديد في هذا التاريخ
+    for (const a of allArticles().filter((x) => x.date === iso).slice(0, 1)) {
+      posts.push({
+        method: "sendMessage",
+        body: {
+          text: `🆕 <b>مقال جديد:</b> ${esc(a.title)}\n\n${esc(clip(a.description, 220))}\n\n<a href="${SITE_URL}/articles/${a.slug}">اقرأ المقال</a>`,
+          parse_mode: "HTML",
+        },
+      });
+    }
+    return posts;
   }
 
-  const qs = questionsOfDay(day);
-  qs.forEach((q, n) => {
-    posts.push({
-      method: "sendPoll",
-      body: {
-        question: clip(`${n === 0 ? "السؤال الأول" : "السؤال الثاني"}: ${q.q}`, MAX_Q),
-        options: q.options.map((text) => ({ text })),
-        type: "quiz",
-        correct_option_id: q.correct,
-        explanation: clip(q.reason, MAX_EXPL),
-        is_anonymous: true,
-      },
-    });
+  const n = slot === "q1" ? 0 : 1;
+  const q = questionsOfDay(day)[n];
+  if (!q) return posts;
+  posts.push({
+    method: "sendPoll",
+    body: {
+      question: `${n === 0 ? "سؤال الظهر" : "سؤال المساء"}: ${q.q}`,
+      options: q.options.map((text) => ({ text })),
+      type: "quiz",
+      correct_option_id: q.correct,
+      explanation: clip(q.reason, MAX_EXPL),
+      is_anonymous: true,
+    },
   });
-  if (qs.length) {
-    posts.push({
-      method: "sendMessage",
-      body: {
-        text: `📘 <b>شرح سؤالَي اليوم:</b>\n${qs.map((q) => `• <a href="${SITE_URL}${q.href}">${esc(q.concept)}</a>`).join("\n")}\n\n✍️ اختبار الأسبوع: <a href="${SITE_URL}/weekly-test">٢٠ سؤالًا جديدة كل أحد</a>`,
-        parse_mode: "HTML",
-        link_preview_options: { is_disabled: true },
-      },
-    });
-  }
-
-  // مقال اليوم إن نُشر مقال جديد في هذا التاريخ
-  for (const a of allArticles().filter((x) => x.date === iso).slice(0, 1)) {
-    posts.push({
-      method: "sendMessage",
-      body: {
-        text: `🆕 <b>مقال جديد:</b> ${esc(a.title)}\n\n${esc(clip(a.description, 220))}\n\n<a href="${SITE_URL}/articles/${a.slug}">اقرأ المقال</a>`,
-        parse_mode: "HTML",
-      },
-    });
-  }
+  posts.push({
+    method: "sendMessage",
+    body: {
+      text: `📘 <b>شرح السؤال:</b> <a href="${SITE_URL}${q.href}">${esc(q.concept)}</a>${n === 1 ? `\n\n✍️ اختبار الأسبوع: <a href="${SITE_URL}/weekly-test">٢٠ سؤالًا جديدة كل أحد</a>` : ""}`,
+      parse_mode: "HTML",
+      link_preview_options: { is_disabled: true },
+    },
+  });
   return posts;
 }
 
