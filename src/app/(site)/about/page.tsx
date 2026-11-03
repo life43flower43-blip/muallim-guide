@@ -73,7 +73,7 @@ export default function About() {
       <section className="mt-12 grid gap-8 md:grid-cols-[1fr_1.4fr]">
         <div>
           <h2 className="font-display text-[23px] font-extrabold text-[#14302A]">كيف نكتب المحتوى</h2>
-          <p className="mt-3 text-[15.5px] leading-8 text-[#4A6158]">المحتوى التربوي الجيد ليس قائمة تعريفات. هذه المبادئ التي نلتزم بها في كل ما ننشره في الموقع والتطبيق.</p>
+          <p className="mt-3 text-[15.5px] leading-8 text-[#4A6158]">المحتوى التربوي الجيد ليس قائمة تعريفات. هذه المبادئ التي نلتزم بها في كل ما ننشره في الموقع والتطبيق. <Link href="/editorial-policy" className="font-bold text-[#136F5C]">التفاصيل في سياسة التحرير</Link>.</p>
         </div>
         <ul className="divide-y divide-[#EEF3F0] rounded-2xl border border-[#E2ECE6] bg-white">
           {PRINCIPLES.map(({ icon: Icon, t, d }) => (
