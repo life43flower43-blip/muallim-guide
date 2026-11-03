@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AlertTriangle, BookOpen, ChevronDown, ChevronLeft, ClipboardCheck, Compass, Home, Info, Layers, LayoutGrid, Library, Network, Newspaper, School, Search, Smartphone, X, Scale, ListChecks, Calculator } from "lucide-react";
+import { AlertTriangle, BookOpen, ChevronDown, ChevronLeft, ClipboardCheck, Compass, Home, Info, Layers, LayoutGrid, Library, Network, Newspaper, School, Search, Smartphone, X, Scale, ListChecks, Calculator, CalendarDays } from "lucide-react";
 import SearchBox from "./SearchBox";
 
 type L = { href: string; label: string };
@@ -21,6 +21,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   "/comparisons": Scale,
   "/standards": ListChecks,
   "/license-calculator": Calculator,
+  "/weekly-test": CalendarDays,
   "/sections": LayoutGrid,
   "/license-guide": Compass,
   "/tatbeeq": Smartphone,
