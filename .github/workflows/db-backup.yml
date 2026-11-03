@@ -1,0 +1,154 @@
+# النسخ الاحتياطي اليومي لقاعدة البيانات (الطبقتان الثانية والثالثة من الحماية)
+# 1. نسخة كاملة من قاعدة PostgreSQL (Neon) كل ليلة
+# 2. اختبار استعادة فعلي في قاعدة مؤقتة، ومقارنة عدد السجلات في كل جدول بالأصل
+# 3. تشفير النسخة بكلمة سر (AES-256) ثم حفظها في GitHub Artifacts لمدة 30 يومًا
+# 4. نسخة طوارئ خارجية في تخزين S3 متوافق (Cloudflare R2 أو Backblaze B2 أو AWS) إن أُضيفت أسراره
+# الأسرار المطلوبة: DATABASE_URL وBACKUP_PASSPHRASE. والاختيارية للنسخة الخارجية:
+# BACKUP_S3_ENDPOINT وBACKUP_S3_BUCKET وBACKUP_S3_ACCESS_KEY وBACKUP_S3_SECRET_KEY
+name: نسخ احتياطي لقاعدة البيانات
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # منتصف الليل UTC = الثالثة فجرًا بتوقيت مكة
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: db-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      restore:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: restore
+          POSTGRES_DB: restore
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+      RESTORE_URL: postgres://postgres:restore@localhost:5432/restore
+    steps:
+      - name: التحقق من الأسرار
+        run: |
+          if [ -z "$DATABASE_URL" ] || [ -z "$BACKUP_PASSPHRASE" ]; then
+            echo "::error::أضف السرّين DATABASE_URL وBACKUP_PASSPHRASE في Settings > Secrets and variables > Actions"
+            exit 1
+          fi
+
+      - name: تثبيت أدوات PostgreSQL 17
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -fsSo /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client-17
+          echo "/usr/lib/postgresql/17/bin" >> "$GITHUB_PATH"
+
+      - name: أخذ نسخة كاملة من قاعدة البيانات
+        run: |
+          STAMP=$(date -u +%Y-%m-%dT%H%MZ)
+          echo "STAMP=$STAMP" >> "$GITHUB_ENV"
+          pg_dump "$DATABASE_URL" --format=custom --no-owner --no-privileges --file=db.dump
+          ls -l db.dump
+
+      - name: عدّ السجلات في القاعدة الأصلية
+        run: |
+          for t in $(psql "$DATABASE_URL" -At -c "SELECT tablename FROM pg_tables WHERE schemaname='public' ORDER BY tablename"); do
+            echo "$t=$(psql "$DATABASE_URL" -At -c "SELECT count(*) FROM \"$t\"")"
+          done > source-counts.txt
+          cat source-counts.txt
+
+      - name: اختبار الاستعادة الفعلي في قاعدة مؤقتة
+        run: |
+          pg_restore --no-owner --no-privileges --exit-on-error --dbname="$RESTORE_URL" db.dump
+          for t in $(psql "$RESTORE_URL" -At -c "SELECT tablename FROM pg_tables WHERE schemaname='public' ORDER BY tablename"); do
+            echo "$t=$(psql "$RESTORE_URL" -At -c "SELECT count(*) FROM \"$t\"")"
+          done > restored-counts.txt
+          cat restored-counts.txt
+          if ! diff -u source-counts.txt restored-counts.txt; then
+            echo "::error::عدد السجلات بعد الاستعادة لا يطابق الأصل"
+            exit 1
+          fi
+          echo "الاستعادة نجحت وكل الجداول مطابقة"
+
+      - name: تشفير النسخة
+        run: |
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$BACKUP_PASSPHRASE" \
+            --symmetric --cipher-algo AES256 --output "db-$STAMP.dump.gpg" db.dump
+          sha256sum "db-$STAMP.dump.gpg" > "db-$STAMP.sha256"
+          cp restored-counts.txt "db-$STAMP.counts.txt"
+          rm -f db.dump
+
+      - name: حفظ النسخة في GitHub (30 يومًا)
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ env.STAMP }}
+          path: |
+            db-${{ env.STAMP }}.dump.gpg
+            db-${{ env.STAMP }}.sha256
+            db-${{ env.STAMP }}.counts.txt
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: نسخة الطوارئ الخارجية (S3 متوافق)
+        env:
+          S3_ENDPOINT: ${{ secrets.BACKUP_S3_ENDPOINT }}
+          S3_BUCKET: ${{ secrets.BACKUP_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.BACKUP_S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.BACKUP_S3_SECRET_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          if [ -z "$S3_BUCKET" ]; then
+            echo "::warning::لم تُضف أسرار التخزين الخارجي بعد، فحُفظت النسخة في GitHub فقط"
+            exit 0
+          fi
+          for f in "db-$STAMP.dump.gpg" "db-$STAMP.sha256" "db-$STAMP.counts.txt"; do
+            aws s3 cp "$f" "s3://$S3_BUCKET/db/$f" --endpoint-url "$S3_ENDPOINT"
+          done
+          echo "EXTERNAL=yes" >> "$GITHUB_ENV"
+
+      - name: ملخص النسخة
+        if: always()
+        run: |
+          {
+            echo "## نسخة قاعدة البيانات: ${STAMP:-لم تكتمل}"
+            echo ""
+            echo "| الجدول | عدد السجلات بعد الاستعادة |"
+            echo "|---|---|"
+            [ -f restored-counts.txt ] && sed 's/=/ | /; s/^/| /; s/$/ |/' restored-counts.txt
+            echo ""
+            [ -f "db-$STAMP.sha256" ] && echo "البصمة: \`$(cut -d' ' -f1 "db-$STAMP.sha256")\`"
+            echo ""
+            echo "النسخة الخارجية: ${EXTERNAL:-لا}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # نسخة أسبوعية من المستودع كله (الكود والمحتوى) في التخزين الخارجي، فلا يعتمد المحتوى على GitHub وحده
+  repo-snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: نسخة المستودع الكاملة (أسبوعية، يوم الأحد)
+        env:
+          S3_ENDPOINT: ${{ secrets.BACKUP_S3_ENDPOINT }}
+          S3_BUCKET: ${{ secrets.BACKUP_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.BACKUP_S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.BACKUP_S3_SECRET_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          if [ -z "$S3_BUCKET" ]; then echo "لا تخزين خارجي بعد"; exit 0; fi
+          if [ "$(date -u +%u)" != "7" ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then echo "ليس يوم الأحد"; exit 0; fi
+          F="repo-$(date -u +%Y-%m-%d).bundle"
+          git bundle create "$F" --all
+          git bundle verify "$F"
+          aws s3 cp "$F" "s3://$S3_BUCKET/repo/$F" --endpoint-url "$S3_ENDPOINT"

@@ -15,6 +15,7 @@ export const LICENSE = [
   { href: "/practice-test", label: "نموذج اختبار" },
   { href: "/weekly-test", label: "اختبار الأسبوع" },
   { href: "/license-calculator", label: "حاسبة مستوى الرخصة" },
+  { href: "/teacher-exams", label: "اختبارات المعلمين عربيًا" },
 ];
 
 /** قائمة «مصادر التعلم»: صفحات المحتوى التفاعلي */
