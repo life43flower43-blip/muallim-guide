@@ -45,9 +45,9 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   return (
     <WithSidebar>
       <Crumbs items={[{ label: "البحث" }]} />
-      <header className="relative z-20 rounded-2xl bg-[linear-gradient(135deg,#0E4F42,#136F5C)] p-5 text-white sm:p-6">
-        <h1 className="font-display text-[24px] font-extrabold leading-[1.5]">{q ? <>نتائج البحث عن «{q}»</> : "ابحث في تربوي"}</h1>
-        <p className="mt-1 text-[14px] text-white/80">{q ? (total ? `وجدنا ${ad(total)} نتيجة في المقالات والمفاهيم والمواقف` : "لا نتائج مطابقة") : "مقالات، ومفاهيم، ومواقف صفية، ومفاهيم خاطئة"}</p>
+      <header className="relative z-20 border-b border-[#E2ECE6] pb-6">
+        <h1 className="font-display text-[28px] font-extrabold leading-[1.45] text-[#14302A] sm:text-[34px]">{q ? <>نتائج البحث عن «{q}»</> : "ابحث في تربوي"}</h1>
+        <p className="mt-1 text-[15px] text-[#4A6158]">{q ? (total ? `وجدنا ${ad(total)} نتيجة في المقالات والمفاهيم والمواقف` : "لا نتائج مطابقة") : "مقالات، ومفاهيم، ومواقف صفية، ومفاهيم خاطئة"}</p>
         <div className="mt-4 text-right"><SearchBox /></div>
       </header>
 

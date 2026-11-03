@@ -66,7 +66,7 @@ export default function Comparisons() {
         ))}
       </div>
 
-      <div className="mt-8 rounded-2xl bg-[#3A55A4] p-5 text-white">
+      <div className="mt-8 rounded-2xl bg-[#0E3B32] p-5 text-white">
         <p className="font-display text-[19px] font-extrabold">اختبر تمييزك</p>
         <p className="mt-1 text-[14px] leading-7 text-white/85">أسئلة المواقف في اختبارات المعلمين تقيس هذه الفروق بالضبط. جرّب نموذج الاختبار التفاعلي.</p>
         <Link href="/practice-test" className="mt-3 inline-block rounded-xl bg-[#E8A317] px-5 py-2.5 font-bold text-[#2B1D00]">ابدأ نموذج الاختبار</Link>

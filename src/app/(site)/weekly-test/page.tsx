@@ -35,7 +35,7 @@ export default function WeeklyTest() {
     <WithSidebar>
       <Crumbs items={[{ href: "/license-guide", label: "دليل الرخصة" }, { label: "اختبار الأسبوع" }]} />
       <PageHero kicker="يتجدد كل أحد" title="اختبار الأسبوع" color="#7A4E9C" sub="عشرون سؤالًا تربويًا جديدة كل أسبوع من محاور الاختبار التربوي العام. حلّها، واعرف نقاط ضعفك، وعُد الأحد القادم لاختبار جديد.">
-        <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[13px] font-bold">
+        <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#EEF5F1] px-3 py-1 text-[#136F5C] text-[13px] font-bold">
           <CalendarDays className="h-4 w-4" /> أسبوع {arDate(w.from)}، والاختبار التالي {arDate(w.next)}
         </p>
       </PageHero>

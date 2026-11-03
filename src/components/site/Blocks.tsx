@@ -230,17 +230,14 @@ export const conceptCard = (c: Concept) => (
 );
 
 /** رأس صفحة موحّد: خلفية متدرجة بلون القسم، وسطر صغير، وعنوان، ووصف */
-export function PageHero({ title, sub, kicker, color = "#136F5C", children }: { title: string; sub?: string; kicker?: string; color?: string; children?: React.ReactNode }) {
+export function PageHero({ title, sub, kicker, children }: { title: string; sub?: string; kicker?: string; color?: string; children?: React.ReactNode }) {
+  // رأس موحد لكل صفحات الموقع: عنوان كبير ووصف على خلفية الصفحة، دون مربع ملون يختلف من صفحة لأخرى
   return (
-    <header className="relative overflow-hidden rounded-2xl p-6 text-white" style={{ background: `linear-gradient(135deg, ${color}, ${color}CC)` }}>
-      <span className="pointer-events-none absolute -end-10 -top-10 h-40 w-40 rounded-full bg-white/10" aria-hidden="true" />
-      <span className="pointer-events-none absolute -bottom-12 end-24 h-28 w-28 rounded-full bg-white/5" aria-hidden="true" />
-      <div className="relative">
-        {kicker && <p className="text-[13px] font-bold text-white/80">{kicker}</p>}
-        <h1 className="mt-1 font-display text-[27px] font-extrabold leading-[1.5]">{title}</h1>
-        {sub && <p className="mt-2 leading-8 text-white/85">{sub}</p>}
-        {children}
-      </div>
+    <header className="border-b border-[#E2ECE6] pb-6">
+      {kicker && <p className="text-[13px] font-bold text-[#136F5C]">{kicker}</p>}
+      <h1 className="mt-1 font-display text-[28px] font-extrabold leading-[1.45] text-[#14302A] sm:text-[34px]">{title}</h1>
+      {sub && <p className="mt-2 max-w-3xl text-[16px] leading-8 text-[#4A6158]">{sub}</p>}
+      {children}
     </header>
   );
 }

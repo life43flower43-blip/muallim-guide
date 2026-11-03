@@ -19,17 +19,17 @@ export default function Problems() {
   return (
     <WithSidebar>
       <Crumbs items={[{ label: "مشكلات صفية" }]} />
-      <header className="rounded-2xl bg-[linear-gradient(135deg,#8A3B1F,#B4532A)] p-6 text-white">
-        <p className="text-[13px] font-bold text-white/80">من الصف مباشرة</p>
-        <h1 className="mt-1 font-display text-[27px] font-extrabold leading-[1.5]">مشكلات صفية وكيف يتصرف المعلم فيها</h1>
-        <p className="mt-2 leading-8 text-white/85">
+      <header className="border-b border-[#E2ECE6] pb-6">
+        <p className="text-[13px] font-bold text-[#136F5C]">من الصف مباشرة</p>
+        <h1 className="mt-1 font-display text-[28px] font-extrabold leading-[1.45] text-[#14302A] sm:text-[34px]">مشكلات صفية وكيف يتصرف المعلم فيها</h1>
+        <p className="mt-2 max-w-3xl text-[16px] leading-8 text-[#4A6158]">
           {ad(PROBLEMS.length)} موقفًا حقيقيًا في إدارة الصف ومهارات التدريس. في كل موقف: ما الذي يفعله كثير من المعلمين وماذا يحدث بعده، وما الذي يفعله المعلم المتمكن ولماذا ينجح.
         </p>
       </header>
       {([["class", "مواقف إدارة الصف والتعامل مع الطلاب", "#B4532A"], ["skill", "مهارات التدريس: الأداء الضعيف والأداء المتقن", "#3A55A4"]] as const).map(([kind, title, color]) => (
         <section key={kind} className="mt-8">
-          <h2 className="mb-3 flex items-center gap-2 font-display text-[20px] font-extrabold" style={{ color }}>
-            <span className="h-3 w-3 rounded-full" style={{ background: color }} />{title}
+          <h2 className="mb-3 font-display text-[20px] font-extrabold text-[#14302A]">
+            {title}
           </h2>
           <div className="grid gap-3 sm:grid-cols-2">
             {PROBLEMS.filter((p) => p.kind === kind).map((s) => (

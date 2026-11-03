@@ -49,9 +49,9 @@ export default async function Problem({ params }: { params: Promise<{ id: string
     <WithSidebar>
       <Crumbs items={[{ href: "/classroom-problems", label: "مشكلات صفية" }, { label: s.title }]} />
       <article className="overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
-        <header className="bg-[linear-gradient(135deg,#8A3B1F,#B4532A)] p-6 text-white">
-          <p className="text-[13px] font-bold text-white/80">{s.stage}</p>
-          <h1 className="mt-1 font-display text-[28px] font-extrabold leading-[1.5]">{s.title}</h1>
+        <header className="border-b border-[#E2ECE6] pb-6">
+          <p className="text-[13px] font-bold text-[#136F5C]">{s.stage}</p>
+          <h1 className="mt-1 font-display text-[28px] font-extrabold leading-[1.45] text-[#14302A] sm:text-[34px]">{s.title}</h1>
         </header>
         <div className="space-y-6 p-5 sm:p-7">
           <section>
