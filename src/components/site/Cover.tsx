@@ -1,5 +1,6 @@
 // غلاف خاص بكل مقال: لون المحور، وزخرفة تختلف بحسب المقال، وأيقونة من موضوعه، وعنوانه
 import { ARTICLE_COVERS } from "@/lib/article-covers";
+import { conceptImage } from "@/lib/concept-images";
 import {
   Accessibility, Activity, Baby, BookOpen, Brain, BrainCircuit, ChartBar, ClipboardCheck, Compass, Cpu, Ear, Eye, FileQuestion,
   Flame, Gauge, GraduationCap, Hand, HeartHandshake, Heart, Lightbulb, ListChecks, Map, MessageCircle, Mic, Network, Palette,
@@ -111,7 +112,7 @@ function Pattern({ seed }: { seed: number }) {
 
 /** الصورة الحقيقية للمقال فقط، وما سواه غلاف مرسوم بلون محوره حتى لا تتكرر صورة */
 export function photoFor(id: string) {
-  return ARTICLE_COVERS.has(id) ? `/covers/${id}.jpg` : null;
+  return ARTICLE_COVERS.has(id) ? `/covers/${id}.jpg` : conceptImage(id);
 }
 
 /** غلاف مرسوم: لون المحور، وزخرفة وموضع يختلفان بحسب المفهوم، وأيقونة من موضوعه */
