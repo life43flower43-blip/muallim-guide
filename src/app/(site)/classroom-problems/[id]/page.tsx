@@ -88,7 +88,7 @@ export default async function Problem({ params }: { params: Promise<{ id: string
             </section>
           )}
 
-          <div className="rounded-xl bg-[#B4532A] p-5 text-white">
+          <div className="rounded-xl bg-[#0E3B32] p-5 text-white">
             <p className="font-display text-[19px] font-extrabold">عِش الموقف كاملًا</p>
             <p className="mt-1 text-[14px] leading-7 text-white/85">في التطبيق يتغير الموقف بعد كل قرار، وتحصل على تقرير بكفاءاتك الخمس.</p>
             <Link prefetch={false} href={s.kind === "skill" ? "/app?open=lab" : "/app?open=sim"} className="mt-3 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 font-bold text-[#B4532A]"><Smartphone className="h-5 w-5" /> جرّب في التطبيق</Link>

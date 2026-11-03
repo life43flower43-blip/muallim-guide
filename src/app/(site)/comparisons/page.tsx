@@ -26,8 +26,8 @@ export default function Comparisons() {
         <ol className="grid sm:grid-cols-2">
           {COMPARISONS.map((c, i) => (
             <li key={c.slug} className="border-b border-[#EEF3F0] sm:odd:border-e">
-              <a href={`#${c.slug}`} className="flex items-center gap-3 px-4 py-3 transition hover:bg-[#F5F7FC]">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#EEF1F9] text-[12.5px] font-extrabold text-[#3A55A4]">{ad(i + 1)}</span>
+              <a href={`#${c.slug}`} className="flex items-center gap-3 px-4 py-3 transition hover:bg-[#F3F7F5]">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#EEF5F1] text-[12.5px] font-extrabold text-[#136F5C]">{ad(i + 1)}</span>
                 <span className="min-w-0 flex-1 text-[14.5px] font-bold leading-6 text-[#14302A]">
                   {c.a} <span className="mx-1 font-normal text-[#8AA095]">أم</span> {c.b}
                 </span>
@@ -43,9 +43,9 @@ export default function Comparisons() {
           <section key={c.slug} id={c.slug} className="scroll-mt-16 overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
             <p className="px-4 pt-4 text-[12.5px] font-bold text-[#8AA095]">المقارنة {ad(i + 1)}</p>
             <h2 className="relative grid grid-cols-2 gap-3 px-4 pb-4 pt-2 text-center font-display text-[16px] font-extrabold leading-7 text-[#14302A] sm:text-[18px]">
-              <span className="flex items-center justify-center rounded-xl bg-[#F3F5FB] px-3 py-3">{c.a}</span>
-              <span className="flex items-center justify-center rounded-xl bg-[#F3F5FB] px-3 py-3">{c.b}</span>
-              <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#3A55A4] text-[12px] font-bold text-white ring-4 ring-white">أم</span>
+              <span className="flex items-center justify-center rounded-xl bg-[#F3F7F5] px-3 py-3">{c.a}</span>
+              <span className="flex items-center justify-center rounded-xl bg-[#F3F7F5] px-3 py-3">{c.b}</span>
+              <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#136F5C] text-[12px] font-bold text-white ring-4 ring-white">أم</span>
             </h2>
             <div className="divide-y divide-[#EEF3F0] border-t border-[#EEF3F0]">
               {c.rows.map((r) => (
@@ -58,9 +58,9 @@ export default function Comparisons() {
                 </div>
               ))}
             </div>
-            <p className="flex gap-2 border-t border-[#EEF3F0] bg-[#F5F7FC] p-4 text-[15px] leading-7 text-[#24403A]">
-              <KeyRound className="mt-1 h-4 w-4 shrink-0 text-[#3A55A4]" />
-              <span><b className="text-[#3A55A4]">مفتاح التمييز: </b>{c.tip}</span>
+            <p className="flex gap-2 border-t border-[#EEF3F0] bg-[#F3F7F5] p-4 text-[15px] leading-7 text-[#24403A]">
+              <KeyRound className="mt-1 h-4 w-4 shrink-0 text-[#136F5C]" />
+              <span><b className="text-[#136F5C]">مفتاح التمييز: </b>{c.tip}</span>
             </p>
           </section>
         ))}
