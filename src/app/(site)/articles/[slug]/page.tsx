@@ -11,7 +11,7 @@ import { CAT_SLUGS, allArticles, arDate, articleBySlug, articleCourse } from "@/
 import { courseMeta } from "@/lib/site-nav";
 import { ad, arCount, MINUTE_FORMS } from "@/lib/arabic";
 import { Cover, MiniCover } from "@/components/site/Cover";
-import { Tile, Crumbs, SectionTitle, ShareRow, WithSidebar } from "@/components/site/Blocks";
+import { Tile, Crumbs, SectionTitle, ShareRow, WithSidebar, TelegramCard } from "@/components/site/Blocks";
 import AdSlot from "@/components/site/AdSlot";
 import { ARTICLE_COVERS } from "@/lib/article-covers";
 import ReadProgress from "@/components/site/ReadProgress";
@@ -132,6 +132,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           )}
 
           <div className="mt-6 border-t border-[#EEF3F0] pt-5"><ShareRow path={path} title={a.title} /></div>
+          <TelegramCard className="mt-5" />
 
           <div className="mt-6 rounded-xl bg-[#136F5C] p-5 text-white">
             <p className="font-display text-[19px] font-extrabold">حوّل القراءة إلى استعداد</p>

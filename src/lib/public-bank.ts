@@ -13,6 +13,8 @@ export function publicBank(): Bank {
 
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "https://turbawy.app")).replace(/\/$/, "");
 export const SITE_NAME = "تربوي";
+/** قناة تيليجرام العامة (يمكن تغييرها من NEXT_PUBLIC_TELEGRAM_URL) */
+export const TELEGRAM_URL = process.env.NEXT_PUBLIC_TELEGRAM_URL || "https://t.me/MuallimExam";
 
 export const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
 

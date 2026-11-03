@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Search, Clock, Smartphone, ChevronLeft } from "lucide-react";
 import type { Concept } from "@/lib/types";
-import { chapterLabel, courseList, SITE_URL } from "@/lib/public-bank";
+import { chapterLabel, courseList, SITE_URL, TELEGRAM_URL } from "@/lib/public-bank";
 import { APP_SECTIONS, courseMeta, excerpt, pickedConcepts, readMinutes } from "@/lib/site-nav";
 import { ad, arCount, MINUTE_FORMS } from "@/lib/arabic";
 import AdSlot from "./AdSlot";
@@ -284,4 +284,20 @@ export function paragraphs(text: string, max = 260): string[] {
     if (cur) out.push(cur);
   }
   return out;
+}
+
+/** دعوة للانضمام إلى قناة تيليجرام: معلومة وسؤالان كل يوم */
+export function TelegramCard({ className = "" }: { className?: string }) {
+  return (
+    <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className={`flex items-center gap-4 rounded-2xl border border-[#CFE3EF] bg-[#F2F8FC] p-4 transition hover:border-[#229ED9] ${className}`}>
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#229ED9] text-white">
+        <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1.1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.3 13.1 1.5 11.6c-1-.3-1.1-1 .2-1.5L20.6 2.8c.9-.3 1.6.2 1.3 1.5Z" /></svg>
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block font-display text-[16px] font-extrabold text-[#14302A]">قناة تربوي على تيليجرام</span>
+        <span className="mt-0.5 block text-[13.5px] leading-6 text-[#4D635A]">معلومة وسؤالان كل يوم، وخطة مذاكرة أسبوعية للرخصة، مجانًا.</span>
+      </span>
+      <span className="shrink-0 rounded-xl bg-[#229ED9] px-3 py-2 text-[13.5px] font-bold text-white">انضم</span>
+    </a>
+  );
 }

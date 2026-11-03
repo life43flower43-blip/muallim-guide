@@ -1,7 +1,7 @@
 // رأس الموقع وتذييله بالنمط المعتاد للمواقع: شريط علوي، ثم الشعار والبحث، ثم قائمة الأقسام
 import Link from "next/link";
 import { Search, Menu, ChevronDown, Smartphone, Rss, Send } from "lucide-react";
-import { courseList } from "@/lib/public-bank";
+import { courseList, TELEGRAM_URL } from "@/lib/public-bank";
 import { courseMeta } from "@/lib/site-nav";
 import TodayDate from "./TodayDate";
 import SearchBox from "./SearchBox";
@@ -153,8 +153,8 @@ export function SiteFooter() {
           <div className="col-span-2 sm:col-span-1">
             <h3 className="mb-3 text-[13px] font-bold text-white">تابع الجديد</h3>
             <p className="text-[13.5px] leading-7">مقالات جديدة كل أحد وثلاثاء وخميس.</p>
-            {process.env.NEXT_PUBLIC_TELEGRAM_URL && (
-              <a href={process.env.NEXT_PUBLIC_TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="mt-2 flex items-center gap-1.5 text-[13.5px] font-bold text-[#A7F3D0] hover:text-white"><Send className="h-4 w-4" /> قناتنا على تيليجرام: سؤال كل يوم</a>
+            {TELEGRAM_URL && (
+              <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="mt-2 flex items-center gap-1.5 text-[13.5px] font-bold text-[#A7F3D0] hover:text-white"><Send className="h-4 w-4" /> قناتنا على تيليجرام: سؤال كل يوم</a>
             )}
             <a href="/feed.xml" className="mt-2 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#A7F3D0] hover:text-white"><Rss className="h-4 w-4" /> اشترك عبر RSS</a>
           </div>

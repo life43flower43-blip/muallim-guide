@@ -8,7 +8,7 @@ import { courseMeta, pickQuestions } from "@/lib/site-nav";
 import DailyQuestion from "@/components/site/DailyQuestion";
 import SearchBox from "@/components/site/SearchBox";
 import CatChips from "@/components/site/CatChips";
-import { ArticleCard, SectionTitle, Tile } from "@/components/site/Blocks";
+import { ArticleCard, SectionTitle, TelegramCard, Tile } from "@/components/site/Blocks";
 import { RotateOne, Shuffle } from "@/components/site/Rotate";
 import { articleCourse } from "@/lib/articles";
 import { ad } from "@/lib/arabic";
@@ -96,6 +96,8 @@ export default function Home() {
           <Rail><Shuffle show={6}>{articles.slice(0, 24).map((a) => <Tile key={a.slug} card href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={a.category} />)}</Shuffle></Rail>
         </div>
       </section>
+
+      <TelegramCard />
 
       {/* سؤال اليوم ونموذج الاختبار */}
       <section className="grid gap-5 lg:grid-cols-2">
