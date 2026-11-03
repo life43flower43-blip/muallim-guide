@@ -6,6 +6,7 @@ import { SITE_URL, publicBank } from "@/lib/public-bank";
 import { conceptImage } from "@/lib/concept-images";
 import { PROMOS } from "@/lib/telegram-promos";
 import schedule from "../../content/telegram-schedule.json";
+import themes from "../../content/telegram-themes.json";
 
 // حدود تيليجرام لاستطلاع الاختبار
 const MAX_Q = 300;
@@ -58,7 +59,7 @@ const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 export const SLOTS = ["tip", "q1", "promo", "q2"] as const;
 export type Slot = (typeof SLOTS)[number];
 
-type Day = { date: string; tip: string; q1: string; q2: string; promo: number };
+type Day = { date: string; theme: number; tip: string; q1: string; q2: string; promo: number };
 const SCHEDULE = new Map((schedule as Day[]).map((d) => [d.date, d]));
 
 /** سؤال من البنك برقمه، بالشكل الذي يُنشر به */
@@ -92,9 +93,18 @@ export function buildPosts(iso = todayISO(), slot: Slot = "tip") {
   const posts: { method: string; body: Record<string, unknown> }[] = [];
   const msg = (text: string, preview = false) => ({ method: "sendMessage", body: { text, parse_mode: "HTML", link_preview_options: { is_disabled: !preview } } });
 
+  // موضوع اليوم من أيام الأسبوع (الأحد = ٠)
+  const wd = (new Date(iso + "T12:00:00Z").getUTCDay()) % 7;
+  const theme = themes[wd];
+
+  if (slot === "tip" && wd === 0) {
+    // صباح الأحد: خطة مذاكرة الأسبوع
+    posts.push(msg(`🗓 <b>خطة مذاكرة الأسبوع</b>\n\n${themes.map((t) => `• <b>${t.day}:</b> ${t.title}`).join("\n")}\n\nكل يوم: معلومة صباحًا، وسؤال ظهرًا، وسؤال مساءً من موضوع اليوم.\n\n<a href="${SITE_URL}/weekly-test">اختبار الأسبوع الجديد ←</a>`));
+  }
+
   if (slot === "tip" && plan.tip) {
     const t = plan.tip;
-    const text = `💡 <b>${esc(t.title)}</b>\n\n${esc(t.text)}\n\n<a href="${SITE_URL}${t.href}">الشرح كاملًا ←</a>`;
+    const text = `💡 <b>${esc(t.title)}</b>\n<i>${theme.day}: ${theme.title}</i>\n\n${esc(t.text)}\n\n<a href="${SITE_URL}${t.href}">الشرح كاملًا ←</a>`;
     // إن كان للمفهوم صورة تعليمية تُرسل الصورة والمعلومة تحتها
     posts.push(t.image ? { method: "sendPhoto", body: { photo: `${SITE_URL}${t.image}`, caption: text, parse_mode: "HTML" } } : msg(text));
     // ومقال اليوم إن نُشر مقال جديد في هذا التاريخ
@@ -102,7 +112,10 @@ export function buildPosts(iso = todayISO(), slot: Slot = "tip") {
       posts.push(msg(`🆕 <b>مقال جديد:</b> ${esc(a.title)}\n\n${esc(clip(a.description, 220))}\n\n<a href="${SITE_URL}/articles/${a.slug}">اقرأ المقال ←</a>`, true));
   }
 
-  if (slot === "promo" && plan.promo) {
+  if (slot === "promo" && wd === 6) {
+    // السبت: تذكير باختبار الأسبوع قبل أن يتجدد غدًا
+    posts.push(msg(`⏳ <b>آخر يوم لاختبار هذا الأسبوع</b>\n\n٢٠ سؤالًا من مواضيع الأسبوع، مع التصحيح والتفسير فورًا. غدًا يُنشر اختبار جديد.\n\n<a href="${SITE_URL}/weekly-test">ابدأ الاختبار ←</a>`));
+  } else if (slot === "promo" && plan.promo) {
     const p = plan.promo;
     const tag = p.kind === "app" ? "📱 تطبيق تربوي" : "🌐 موقع تربوي";
     posts.push(msg(`${tag}\n\n${esc(p.text)}\n\n<a href="${SITE_URL}${p.href}">${esc(p.cta)} ←</a>`));
