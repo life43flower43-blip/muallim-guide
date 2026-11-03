@@ -9,6 +9,7 @@ import DailyQuestion from "@/components/site/DailyQuestion";
 import SearchBox from "@/components/site/SearchBox";
 import CatChips from "@/components/site/CatChips";
 import { ArticleCard, SectionTitle, Tile } from "@/components/site/Blocks";
+import { RotateOne, Shuffle } from "@/components/site/Rotate";
 import { articleCourse } from "@/lib/articles";
 import { ad } from "@/lib/arabic";
 
@@ -90,8 +91,9 @@ export default function Home() {
         <SectionTitle title="أحدث المقالات" more={{ href: "/articles", label: "كل المقالات" }} />
         <div className="mb-4"><CatChips /></div>
         <div className="space-y-5">
-          <ArticleCard a={articles[0]} wide />
-          <Rail>{articles.slice(1, 7).map((a) => <Tile key={a.slug} card href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={a.category} />)}</Rail>
+          {/* مقال مميز مختلف في كل زيارة من أحدث ١٢ مقالًا، وبقية الشريط مخلوطة */}
+          <RotateOne ids={articles.slice(0, 12).map((a) => a.slug)}>{articles.slice(0, 12).map((a) => <ArticleCard key={a.slug} a={a} wide />)}</RotateOne>
+          <Rail><Shuffle show={6}>{articles.slice(0, 24).map((a) => <Tile key={a.slug} card href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={a.category} />)}</Shuffle></Rail>
         </div>
       </section>
 
