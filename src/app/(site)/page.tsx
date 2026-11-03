@@ -135,10 +135,25 @@ export default function Home() {
             </span>
             <span className="mt-4 inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2.5 font-bold text-[#1F6FA8]">ابدأ النموذج</span>
           </Link>
-          <Link href="/license-guide" className="flex items-center justify-between rounded-2xl border border-[#E2ECE6] bg-white p-4 font-bold text-[#14302A] hover:border-[#136F5C]">
-            دليل الاستعداد لاختبار الرخصة المهنية
-            <span className="text-[#136F5C]">←</span>
-          </Link>
+          {/* أدوات الاستعداد للرخصة */}
+          <ul className="divide-y divide-[#EEF3F0] overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
+            {[
+              { href: "/weekly-test", t: "اختبار الأسبوع", d: "عشرون سؤالًا جديدة كل أحد" },
+              { href: "/standards", t: "المعايير العشرة", d: "ما يقيسه الاختبار التربوي العام" },
+              { href: "/license-calculator", t: "حاسبة مستوى الرخصة", d: "ممارس أم متقدم أم خبير؟" },
+              { href: "/license-guide", t: "دليل الاستعداد للرخصة", d: "خطة المذاكرة والأسئلة الشائعة" },
+            ].map((x) => (
+              <li key={x.href}>
+                <Link href={x.href} className="flex items-center gap-3 px-4 py-3 hover:bg-[#F7FAF8]">
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-bold text-[#14302A]">{x.t}</span>
+                    <span className="block text-[13px] text-[#6B8077]">{x.d}</span>
+                  </span>
+                  <span className="text-[#136F5C]">←</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
