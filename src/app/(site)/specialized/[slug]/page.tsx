@@ -33,7 +33,7 @@ export default async function SpecialtyPage({ params }: { params: Promise<{ slug
   return (
     <WithSidebar>
       <Crumbs items={[{ href: "/specialized", label: "الاختبارات التخصصية" }, { label: s.name }]} />
-      <PageHero kicker="الاختبار التخصصي" title={`دليل اختبار ${s.name}`} color={s.color} sub={s.who} />
+      <PageHero kicker="الرخصة المهنية في السعودية" title={`دليل اختبار ${s.name}`} color={s.color} sub={s.who} />
 
       <p className="mt-5 rounded-2xl border border-[#E2ECE6] bg-white p-5 text-[15px] leading-8 text-[#3A5249]">{s.levels}</p>
 

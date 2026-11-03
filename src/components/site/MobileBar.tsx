@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AlertTriangle, BookOpen, ChevronDown, ChevronLeft, ClipboardCheck, Compass, Home, Info, Layers, LayoutGrid, Library, Network, Newspaper, School, Search, Smartphone, X, Scale, ListChecks, Calculator, CalendarDays, GraduationCap } from "lucide-react";
+import { AlertTriangle, BookOpen, ChevronDown, ChevronLeft, ClipboardCheck, Compass, Home, Info, Layers, LayoutGrid, Library, Network, Newspaper, School, Search, Smartphone, X, Scale, ListChecks, Calculator, CalendarDays, GraduationCap, Mail } from "lucide-react";
 import SearchBox from "./SearchBox";
 
 type L = { href: string; label: string };
@@ -27,6 +27,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   "/license-guide": Compass,
   "/tatbeeq": Smartphone,
   "/about": Info,
+  "/contact": Mail,
 };
 
 function Burger({ open }: { open: boolean }) {
@@ -40,7 +41,7 @@ function Burger({ open }: { open: boolean }) {
   );
 }
 
-export default function MobileBar({ nav, courses }: { nav: L[]; courses: L[] }) {
+export default function MobileBar({ nav, groups = [], courses }: { nav: L[]; groups?: { title: string; items: L[] }[]; courses: L[] }) {
   const [panel, setPanel] = useState<"none" | "search" | "menu">("none");
   const [showCourses, setShowCourses] = useState(false);
   const path = usePathname();
@@ -112,6 +113,21 @@ export default function MobileBar({ nav, courses }: { nav: L[]; courses: L[] }) 
                 </Link>
               );
             })}
+            {groups.map((g) => (
+              <div key={g.title} className="mt-2 border-t border-[#EEF3F0] pt-2">
+                <p className="px-5 pb-1 pt-2 text-[12.5px] font-bold text-[#8AA095]">{g.title}</p>
+                {g.items.map((n) => {
+                  const Icon = ICONS[n.href] ?? BookOpen;
+                  const active = path.startsWith(n.href);
+                  return (
+                    <Link key={n.href} href={n.href} className={`flex items-center gap-3 px-5 py-3 text-[15px] font-bold ${active ? "bg-[#EEF5F1] text-[#136F5C]" : "text-[#14302A]"}`}>
+                      <Icon className="h-[18px] w-[18px] text-[#136F5C]" />
+                      <span className="flex-1">{n.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            ))}
           </nav>
 
           <div className="border-t border-[#E2ECE6] p-4">
