@@ -102,6 +102,7 @@
 ## مواضيع لم تُطبق بعد (محفوظة بطلب المستخدم، نوفمبر 2026)
 
 ### يحتاج خطوة من صاحب الموقع أولًا
+- **صور تعليمية للمفاهيم** (تذكير بطلب صاحب الموقع): البرمجة جاهزة. ضع الصورة في public/concepts/<رقم المفهوم>.jpg وأضف الرقم في src/lib/concept-images.ts، فتظهر في الموقع، ويرسلها بوت تيليجرام مع «معلومة اليوم» حين يحين دور ذلك المفهوم.
 - **الدخول بحساب Google** (مؤجل بطلب صاحب الموقع): الدخول بالبريد وكلمة المرور يعمل الآن. لتفعيل Google: مشروع جديد في Google Cloud باسم turbawy (لا تعدّل عميل «Manhaji Web» فهو لتطبيق منهجي)، ثم OAuth consent screen، ثم OAuth client ID من نوع Web application، ورابط العودة https://muallim-guide.vercel.app/api/auth/google/callback، ثم GOOGLE_CLIENT_ID وGOOGLE_CLIENT_SECRET في Vercel وRedeploy. يظهر الزر تلقائيًا بعدها.
 - **تفعيل النسخ الاحتياطي** (أولوية قصوى): إضافة الأسرار DATABASE_URL وBACKUP_PASSPHRASE في GitHub، واختياريًا تخزين R2 للنسخة الخارجية، ثم تشغيل المهمة يدويًا مرة والتأكد من نجاحها. التفاصيل في docs/BACKUP.md.
 - **نطاق خاص** (مقترحات: turbawy.app، turbawy.com، tarbawy.app، tarbawiapp.com): يشتريه صاحب الموقع، ثم نربطه بـ Vercel ونحوّل رابط vercel.app إليه.

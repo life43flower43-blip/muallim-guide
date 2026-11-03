@@ -3,6 +3,7 @@
 import { pickQuestions, type SiteQ } from "@/lib/site-nav";
 import { allArticles, todayISO } from "@/lib/articles";
 import { SITE_URL, publicBank } from "@/lib/public-bank";
+import { conceptImage } from "@/lib/concept-images";
 
 // حدود تيليجرام لاستطلاع الاختبار
 const MAX_Q = 300;
@@ -47,7 +48,7 @@ export function tipOfDay(day = dayNumber()) {
   if (!list.length) return null;
   const step = 389; // عدد أولي: يمر على القائمة كلها قبل أن يعود
   const c = list[(day * step) % list.length];
-  return { title: c.title, text: c.rule!, href: `/learn/${c.courseId}/${c.id}`, course: publicBank().courses[c.courseId] };
+  return { title: c.title, text: c.rule!, href: `/learn/${c.courseId}/${c.id}`, course: publicBank().courses[c.courseId], image: conceptImage(c.id) };
 }
 
 const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -58,14 +59,13 @@ export function buildPosts(iso = todayISO()) {
 
   const tip = tipOfDay(day);
   if (tip) {
-    posts.push({
-      method: "sendMessage",
-      body: {
-        text: `💡 <b>معلومة اليوم</b>\n\n<b>${esc(tip.title)}</b>\n${esc(tip.text)}\n\n📚 ${esc(tip.course)}\n<a href="${SITE_URL}${tip.href}">اقرأ الشرح كاملًا</a>`,
-        parse_mode: "HTML",
-        link_preview_options: { is_disabled: true },
-      },
-    });
+    const text = `💡 <b>معلومة اليوم</b>\n\n<b>${esc(tip.title)}</b>\n${esc(tip.text)}\n\n📚 ${esc(tip.course)}\n<a href="${SITE_URL}${tip.href}">اقرأ الشرح كاملًا</a>`;
+    // إن كان للمفهوم صورة تعليمية تُرسل الصورة والمعلومة تحتها، وإلا تُرسل المعلومة نصًا
+    posts.push(
+      tip.image
+        ? { method: "sendPhoto", body: { photo: `${SITE_URL}${tip.image}`, caption: text, parse_mode: "HTML" } }
+        : { method: "sendMessage", body: { text, parse_mode: "HTML", link_preview_options: { is_disabled: true } } }
+    );
   }
 
   const qs = questionsOfDay(day);
