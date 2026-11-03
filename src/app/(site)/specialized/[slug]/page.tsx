@@ -80,7 +80,7 @@ export default async function SpecialtyPage({ params }: { params: Promise<{ slug
       </section>
 
       {s.guides.length === 0 && (
-        <p className="mt-8 rounded-xl bg-[#FFF8E6] p-4 text-[14px] leading-7 text-[#5A4A1E]">الدليل الرسمي لهذا التخصص ومعاييره وأوزانه متاح لدى <a href="https://www.etec.gov.sa" target="_blank" rel="noopener noreferrer" className="font-bold underline">هيئة تقويم التعليم والتدريب</a>. والمجالات أعلاه تقريب منا لأبرز ما يغطيه الاختبار، فراجع الدليل الرسمي قبل أن تبني خطتك.</p>
+        <p className="mt-8 rounded-xl bg-[#F1F5F9] p-4 text-[14px] leading-7 text-[#334155]">الدليل الرسمي لهذا التخصص ومعاييره وأوزانه متاح لدى <a href="https://www.etec.gov.sa" target="_blank" rel="noopener noreferrer" className="font-bold underline">هيئة تقويم التعليم والتدريب</a>. والمجالات أعلاه تقريب منا لأبرز ما يغطيه الاختبار، فراجع الدليل الرسمي قبل أن تبني خطتك.</p>
       )}
 
       {s.guides.length > 0 && (

@@ -31,7 +31,7 @@ export default function Misconceptions() {
       <div className="mt-8 rounded-2xl bg-[#0E3B32] p-5 text-white">
         <p className="font-display text-[19px] font-extrabold">تدرّب عليها في التطبيق</p>
         <p className="mt-1 text-[14px] leading-7 text-white/85">قسم «مفاهيم خاطئة شائعة» في تطبيق تربوي يحفظ إجاباتك ويعيد عليك ما أخطأت فيه.</p>
-        <Link prefetch={false} href="/app?open=myths" className="mt-3 inline-block rounded-xl bg-[#E8A317] px-5 py-2.5 font-bold text-[#2B1D00]">افتح القسم في التطبيق</Link>
+        <Link prefetch={false} href="/app?open=myths" className="mt-3 inline-block rounded-xl bg-[#7C5CFF] px-5 py-2.5 font-bold text-white">افتح القسم في التطبيق</Link>
       </div>
     </WithSidebar>
   );

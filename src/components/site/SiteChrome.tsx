@@ -48,7 +48,7 @@ export function SiteHeader() {
           <nav className="flex items-center gap-4">
             <Link href="/contact" className="hidden hover:text-white sm:inline">اتصل بنا</Link>
             <Link href="/privacy" className="hidden hover:text-white sm:inline">الخصوصية</Link>
-            <Link prefetch={false} href="/app" className="flex items-center gap-1 font-bold text-[#F2C94C] hover:text-white">
+            <Link prefetch={false} href="/app" className="flex items-center gap-1 font-bold text-[#A7F3D0] hover:text-white">
               <Smartphone className="h-3.5 w-3.5" /> التطبيق
             </Link>
           </nav>
@@ -66,7 +66,7 @@ export function SiteHeader() {
             </span>
           </Link>
           <div className="ms-auto hidden max-w-md flex-1 md:block"><SearchBox /></div>
-          <Link prefetch={false} href="/app" className="ms-auto hidden whitespace-nowrap rounded-xl bg-[#E8A317] px-5 py-2.5 text-[15px] font-bold text-[#2B1D00] md:ms-0 md:inline-block">
+          <Link prefetch={false} href="/app" className="ms-auto hidden whitespace-nowrap rounded-xl bg-[#7C5CFF] px-5 py-2.5 text-[15px] font-bold text-white md:ms-0 md:inline-block">
             ابدأ التدريب مجانًا
           </Link>
           {/* أزرار الهاتف: بحث وقائمة */}
@@ -127,7 +127,7 @@ export function SiteFooter() {
             </div>
             <p className="mt-2 text-[13.5px] leading-7">دليل عربي مجاني للمعلمين وطلاب كليات التربية، للاستعداد لاختبار الرخصة المهنية والتوظيف.</p>
           </div>
-          <Link prefetch={false} href="/tatbeeq" className="inline-flex h-11 shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[#E8A317] px-5 text-[14px] font-bold text-[#2B1D00] md:self-auto">
+          <Link prefetch={false} href="/tatbeeq" className="inline-flex h-11 shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[#7C5CFF] px-5 text-[14px] font-bold text-white md:self-auto">
             <Smartphone className="h-4 w-4" /> حمّل تطبيق تربوي
           </Link>
         </div>
@@ -154,9 +154,9 @@ export function SiteFooter() {
             <h3 className="mb-3 text-[13px] font-bold text-white">تابع الجديد</h3>
             <p className="text-[13.5px] leading-7">مقالات جديدة كل أحد وثلاثاء وخميس.</p>
             {process.env.NEXT_PUBLIC_TELEGRAM_URL && (
-              <a href={process.env.NEXT_PUBLIC_TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="mt-2 flex items-center gap-1.5 text-[13.5px] font-bold text-[#F2C94C] hover:text-white"><Send className="h-4 w-4" /> قناتنا على تيليجرام: سؤال كل يوم</a>
+              <a href={process.env.NEXT_PUBLIC_TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="mt-2 flex items-center gap-1.5 text-[13.5px] font-bold text-[#A7F3D0] hover:text-white"><Send className="h-4 w-4" /> قناتنا على تيليجرام: سؤال كل يوم</a>
             )}
-            <a href="/feed.xml" className="mt-2 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#F2C94C] hover:text-white"><Rss className="h-4 w-4" /> اشترك عبر RSS</a>
+            <a href="/feed.xml" className="mt-2 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#A7F3D0] hover:text-white"><Rss className="h-4 w-4" /> اشترك عبر RSS</a>
           </div>
         </div>
       </div>

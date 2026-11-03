@@ -108,12 +108,12 @@ export default function Standards() {
           <span><span className="block font-extrabold">نموذج اختبار تفاعلي</span><span className="text-[13.5px] text-white/80">أسئلة مواقف من المعايير كلها</span></span>
         </Link>
         <Link href="/license-calculator" className="flex items-center gap-3 rounded-2xl border border-[#E2ECE6] bg-white p-5">
-          <Calculator className="h-7 w-7 shrink-0 text-[#8A6A12]" />
+          <Calculator className="h-7 w-7 shrink-0 text-[#136F5C]" />
           <span><span className="block font-extrabold text-[#14302A]">حاسبة مستوى الرخصة</span><span className="text-[13.5px] text-[#4A6158]">ممارس أم متقدم أم خبير؟</span></span>
         </Link>
       </div>
 
-      <p className="mt-6 flex gap-2 rounded-xl bg-[#FFF8E6] p-4 text-[13.5px] leading-7 text-[#5A4A1E]">
+      <p className="mt-6 flex gap-2 rounded-xl bg-[#F1F5F9] p-4 text-[13.5px] leading-7 text-[#334155]">
         <ExternalLink className="mt-1 h-4 w-4 shrink-0" />
         <span>الصياغة هنا شرح مبسط منا، والنص الرسمي للمعايير وأوزانها في دليل المعايير المهنية الصادر عن <a href="https://www.etec.gov.sa" target="_blank" rel="noopener noreferrer" className="font-bold underline">هيئة تقويم التعليم والتدريب</a>. عدد المعايير في هذه الصفحة: {ad(ALL_STANDARDS.length)}.</span>
       </p>

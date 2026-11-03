@@ -33,7 +33,7 @@ export default function InstallApp({ className = "" }: { className?: string }) {
   return (
     <div className={className}>
       <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={install} className="inline-flex items-center gap-2 rounded-xl bg-[#E8A317] px-5 py-3 font-bold text-[#2B1D00]">
+        <button type="button" onClick={install} className="inline-flex items-center gap-2 rounded-xl bg-[#7C5CFF] px-5 py-3 font-bold text-white">
           <Download className="h-5 w-5" /> {can ? "ثبّت التطبيق على هاتفك" : "كيف أثبّت التطبيق؟"}
         </button>
         <Link prefetch={false} href="/app" className="inline-flex items-center gap-2 rounded-xl border-2 border-white/40 px-5 py-3 font-bold text-white">

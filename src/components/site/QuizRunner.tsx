@@ -131,7 +131,7 @@ export default function QuizRunner({ questions, title, onConceptPage = false }: 
         <div className="mt-5 rounded-2xl bg-[#136F5C] p-5 text-white">
           <p className="font-display text-[18px] font-extrabold">تابع في تطبيق تربوي</p>
           <p className="mt-1 text-[14px] leading-7 text-white/85">اختبار محاكٍ كامل بزمن حقيقي، وتحليل لكل محور، ومراجعة لأخطائك في موعدها. مجانًا.</p>
-          <Link prefetch={false} href="/app?open=examsim" className="mt-3 inline-flex items-center gap-2 rounded-xl bg-[#E8A317] px-5 py-2.5 font-bold text-[#2B1D00]"><Smartphone className="h-5 w-5" /> ابدأ اختبار المحاكاة</Link>
+          <Link prefetch={false} href="/app?open=examsim" className="mt-3 inline-flex items-center gap-2 rounded-xl bg-[#7C5CFF] px-5 py-2.5 font-bold text-white"><Smartphone className="h-5 w-5" /> ابدأ اختبار المحاكاة</Link>
         </div>
         <button type="button" onClick={restart} className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-bold text-[#136F5C]"><RotateCcw className="h-4 w-4" /> أعد المحاولة</button>
       </div>
