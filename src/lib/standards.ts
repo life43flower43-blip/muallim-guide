@@ -61,7 +61,7 @@ export const DOMAINS: Domain[] = [
         about: "يقيس سلامة لغة المعلم وفهمه للنصوص، وقدرته على التعامل مع الأرقام والبيانات البسيطة التي يحتاجها في عمله، مثل قراءة النتائج وتفسيرها.",
         asks: ["فهم نص تربوي واستنتاج فكرته", "قراءة جدول أو رسم بياني لنتائج طلاب", "حسابات بسيطة: نسب ومتوسطات"],
         courses: ["M4"],
-        articles: ["interpreting-scores", "test-item-analysis", "reading-comprehension-strategies"],
+        articles: ["language-skills-teacher-exam", "quantitative-skills-teacher-exam", "interpreting-scores", "test-item-analysis", "reading-comprehension-strategies"],
       },
       {
         n: 5,
