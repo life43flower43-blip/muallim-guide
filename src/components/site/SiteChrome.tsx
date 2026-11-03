@@ -1,8 +1,8 @@
 // رأس الموقع وتذييله بالنمط المعتاد للمواقع: شريط علوي، ثم الشعار والبحث، ثم قائمة الأقسام
 import Link from "next/link";
-import { Search, Menu, ChevronDown, Smartphone, Mail } from "lucide-react";
+import { Search, Menu, ChevronDown, Smartphone, Rss } from "lucide-react";
 import { courseList } from "@/lib/public-bank";
-import { APP_SECTIONS, courseMeta } from "@/lib/site-nav";
+import { courseMeta } from "@/lib/site-nav";
 import TodayDate from "./TodayDate";
 import SearchBox from "./SearchBox";
 import MobileBar from "./MobileBar";
@@ -102,49 +102,57 @@ export function SiteHeader() {
 }
 
 export function SiteFooter() {
-  const courses = courseList().filter((c) => c.concepts.length > 0);
+  // تذييل مختصر كالمواقع المعروفة: تعريف وزر التطبيق، وروابط قليلة في عمودين، وشريط الحقوق. الأقسام موجودة في القائمة العلوية فلا تُكرر هنا
+  const year = new Intl.DateTimeFormat("ar-u-nu-arab", { year: "numeric" }).format(new Date());
+  const col = "space-y-2.5 text-[14px]";
   return (
-    <footer className="mt-12 bg-[#0E3B32] text-[14px] text-white/75">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <img src="/icons/logo-128.png" alt="" className="h-10 w-10 rounded-xl bg-white object-contain p-0.5" />
-            <span className="font-display text-[22px] font-extrabold text-white">تربوي</span>
+    <footer className="mt-12 bg-[#0E3B32] text-white/75">
+      <div className="mx-auto max-w-6xl px-4 py-9">
+        <div className="flex flex-col gap-6 border-b border-white/10 pb-7 md:flex-row md:items-center md:justify-between">
+          <div className="max-w-md">
+            <div className="flex items-center gap-2">
+              <img src="/icons/logo-128.png" alt="" className="h-9 w-9 rounded-xl bg-white object-contain p-0.5" />
+              <span className="font-display text-[20px] font-extrabold text-white">تربوي</span>
+            </div>
+            <p className="mt-2 text-[13.5px] leading-7">دليل عربي مجاني للمعلمين وطلاب كليات التربية، للاستعداد لاختبار الرخصة المهنية والتوظيف.</p>
           </div>
-          <p className="mt-3 leading-7">
-            موقع عربي مجاني لإعداد المعلمين وطلاب كليات التربية لاختبارات الرخصة المهنية والتوظيف: مفاهيم مشروحة، وأسئلة مع التفسير، واختبارات محاكية.
-          </p>
+          <Link prefetch={false} href="/tatbeeq" className="inline-flex h-11 shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[#E8A317] px-5 text-[14px] font-bold text-[#2B1D00] md:self-auto">
+            <Smartphone className="h-4 w-4" /> حمّل تطبيق تربوي
+          </Link>
         </div>
-        <div>
-          <h3 className="mb-3 font-display text-[16px] font-bold text-white">المحاور</h3>
-          <ul className="space-y-2">
-            {courses.slice(0, 6).map((c) => (
-              <li key={c.id}><Link href={`/learn/${c.id}`} className="hover:text-white">{courseMeta(c.id).short}</Link></li>
-            ))}
-            <li><Link href="/learn" className="font-bold text-[#F2C94C] hover:text-white">كل المحاور</Link></li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="mb-3 font-display text-[16px] font-bold text-white">أقسام التطبيق</h3>
-          <ul className="space-y-2">
-            {APP_SECTIONS.slice(0, 6).map((s) => (
-              <li key={s.slug}><Link href={`/sections/${s.slug}`} className="hover:text-white">{s.title}</Link></li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h3 className="mb-3 font-display text-[16px] font-bold text-white">روابط مهمة</h3>
-          <ul className="space-y-2">
-            <li><Link href="/about" className="hover:text-white">عن تربوي</Link></li>
-            <li><Link prefetch={false} href="/glossary" className="hover:text-white">مصطلحات تربوية</Link></li>
-            <li><Link href="/privacy" className="hover:text-white">سياسة الخصوصية</Link></li>
-            <li><Link href="/terms" className="hover:text-white">شروط الاستخدام</Link></li>
-            <li><Link href="/contact" className="flex items-center gap-1.5 hover:text-white"><Mail className="h-4 w-4" /> اتصل بنا</Link></li>
-          </ul>
+
+        <div className="grid grid-cols-2 gap-6 pt-7 sm:grid-cols-3">
+          <div>
+            <h3 className="mb-3 text-[13px] font-bold text-white">تربوي</h3>
+            <ul className={col}>
+              <li><Link href="/about" className="hover:text-white">من نحن</Link></li>
+              <li><Link href="/contact" className="hover:text-white">اتصل بنا</Link></li>
+              <li><Link href="/articles" className="hover:text-white">المقالات</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="mb-3 text-[13px] font-bold text-white">للمتقدمين للاختبار</h3>
+            <ul className={col}>
+              <li><Link href="/license-guide" className="hover:text-white">دليل الرخصة المهنية</Link></li>
+              <li><Link href="/practice-test" className="hover:text-white">نموذج اختبار</Link></li>
+              <li><Link prefetch={false} href="/glossary" className="hover:text-white">معجم المصطلحات</Link></li>
+            </ul>
+          </div>
+          <div className="col-span-2 sm:col-span-1">
+            <h3 className="mb-3 text-[13px] font-bold text-white">تابع الجديد</h3>
+            <p className="text-[13.5px] leading-7">مقالات جديدة كل أحد وثلاثاء وخميس.</p>
+            <a href="/feed.xml" className="mt-2 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#F2C94C] hover:text-white"><Rss className="h-4 w-4" /> اشترك عبر RSS</a>
+          </div>
         </div>
       </div>
       <div className="border-t border-white/10">
-        <p className="mx-auto max-w-6xl px-4 py-4 text-center text-[13px]">جميع الحقوق محفوظة لموقع تربوي</p>
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-4 text-[12.5px] text-white/60">
+          <p>© {year} تربوي. جميع الحقوق محفوظة.</p>
+          <p className="flex gap-4">
+            <Link href="/privacy" className="hover:text-white">الخصوصية</Link>
+            <Link href="/terms" className="hover:text-white">شروط الاستخدام</Link>
+          </p>
+        </div>
       </div>
     </footer>
   );
