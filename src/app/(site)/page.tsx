@@ -103,12 +103,12 @@ export default function Home() {
         </div>
         <div className="flex flex-col gap-4">
           <SectionTitle title="اختبر نفسك" more={{ href: "/practice-test", label: "ابدأ" }} />
-          <Link href="/practice-test" className="group flex flex-1 flex-col justify-between rounded-2xl bg-[linear-gradient(135deg,#1F6FA8,#3A55A4)] p-5 text-white">
+          <Link href="/practice-test" className="group flex flex-1 flex-col justify-between rounded-2xl bg-[#136F5C] p-5 text-white">
             <span>
               <span className="block font-display text-[22px] font-extrabold">نموذج اختبار تربوي تفاعلي</span>
               <span className="mt-1 block text-[15px] leading-7 text-white/85">عشرون سؤالًا بمستوى اختبارات الرخصة والتوظيف، مع التصحيح والتفسير فورًا.</span>
             </span>
-            <span className="mt-4 inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2.5 font-bold text-[#1F6FA8]">ابدأ النموذج</span>
+            <span className="mt-4 inline-flex w-fit items-center gap-2 rounded-xl bg-white px-4 py-2.5 font-bold text-[#136F5C]">ابدأ النموذج</span>
           </Link>
           {/* أدوات الاستعداد للرخصة */}
           <ul className="divide-y divide-[#EEF3F0] overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">

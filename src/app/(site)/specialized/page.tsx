@@ -37,7 +37,7 @@ export default function Specialized() {
           </li>
         ))}
       </ul>
-      <p className="mt-6 rounded-xl bg-[#F5F7FC] p-4 text-[14px] leading-7 text-[#3A5249]">
+      <p className="mt-6 rounded-xl bg-[#F3F7F5] p-4 text-[14px] leading-7 text-[#3A5249]">
         نضيف تخصصات أخرى تباعًا. وعدد أسئلة الاختبار التخصصي يختلف من تخصص لآخر، وتذكر المصادر المنشورة أنه بين ٦٠ و٨٨ سؤالًا. والمرجع الرسمي هو <a href="https://www.etec.gov.sa" target="_blank" rel="noopener noreferrer" className="font-bold text-[#136F5C] underline">هيئة تقويم التعليم والتدريب</a>.
       </p>
     </WithSidebar>
