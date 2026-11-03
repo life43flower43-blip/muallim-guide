@@ -1,4 +1,6 @@
 // صفحة مقال تربوي: غلاف، وبيانات، ونص منسق، ووسوم، ومشاركة، ومقالات ذات صلة
+import { ARTICLE_REFS } from "@/lib/article-refs";
+import { REVIEWER } from "@/lib/editorial";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -51,6 +53,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       headline: a.title,
       description: a.description,
       datePublished: a.date,
+      dateModified: a.date,
+      ...(ARTICLE_REFS[a.slug] ? { citation: ARTICLE_REFS[a.slug] } : {}),
       inLanguage: "ar",
       keywords: a.tags.join("، "),
       articleSection: a.category,
@@ -101,6 +105,20 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="mt-7 text-[17.5px] leading-[2.05] text-[#24403A] [&_h2]:mb-3 [&_h2]:mt-9 [&_h2]:font-display [&_h2]:text-[22px] [&_h2]:font-extrabold [&_h2]:leading-[1.5] [&_h2]:text-[#14302A] [&_li]:mb-2 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:ps-6 [&_p]:my-4 [&_strong]:text-[#14302A] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:ps-6 [&_li::marker]:text-[#136F5C] [&_a]:font-bold [&_a]:text-[#136F5C] [&_a]:underline [&_blockquote]:my-4 [&_blockquote]:rounded-xl [&_blockquote]:border-s-4 [&_blockquote]:border-[#136F5C] [&_blockquote]:bg-[#EEF5F1] [&_blockquote]:px-4 [&_blockquote]:py-1">
             <ReactMarkdown components={{ h2: ({ children }) => <h2 id={`s-${++hi}`} className="scroll-mt-20">{children}</h2> }}>{a.body}</ReactMarkdown>
           </div>
+
+          {/* المراجع ومن راجع المحتوى */}
+          {(ARTICLE_REFS[a.slug]?.length ?? 0) > 0 && (
+            <section className="mt-8 rounded-2xl bg-[#F7FAF8] p-5">
+              <h2 className="font-display text-[17px] font-extrabold text-[#14302A]">المراجع</h2>
+              <ol className="mt-2 list-decimal space-y-1.5 ps-5 text-[13.5px] leading-7 text-[#4A6158]">
+                {ARTICLE_REFS[a.slug].map((r) => <li key={r} dir="auto" className="text-start">{r}</li>)}
+              </ol>
+            </section>
+          )}
+          <p className="mt-4 text-[13px] leading-7 text-[#6B8077]">
+            {REVIEWER ? <>راجعه: {REVIEWER.name}، {REVIEWER.title}. </> : null}
+            <Link href="/editorial-policy" className="font-bold text-[#136F5C]">كيف نعد المحتوى ونراجعه</Link>. لاحظت خطأ؟ <Link href="/contact" className="font-bold text-[#136F5C]">أخبرنا</Link>.
+          </p>
 
           <AdSlot />
 

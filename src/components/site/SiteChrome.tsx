@@ -131,6 +131,7 @@ export function SiteFooter() {
             <ul className={col}>
               <li><Link href="/about" className="hover:text-white">من نحن</Link></li>
               <li><Link href="/contact" className="hover:text-white">اتصل بنا</Link></li>
+              <li><Link href="/editorial-policy" className="hover:text-white">كيف نعد المحتوى</Link></li>
               <li><Link href="/articles" className="hover:text-white">المقالات</Link></li>
             </ul>
           </div>
