@@ -11,7 +11,7 @@ import { problemsForConcept } from "@/lib/site-problems";
 import { ChevronLeft, Clock } from "lucide-react";
 import { ad, arCount, MINUTE_FORMS } from "@/lib/arabic";
 import { courseMeta, readMinutes } from "@/lib/site-nav";
-import { CatBadge, ConceptList, Crumbs, paragraphs, SectionTitle, ShareRow, Thumb, WithSidebar } from "@/components/site/Blocks";
+import { CatBadge, ConceptList, Crumbs, paragraphs, SectionTitle, ShareRow, TelegramCard, Thumb, WithSidebar } from "@/components/site/Blocks";
 import { photoFor } from "@/components/site/Cover";
 import { SITE_URL, SITE_NAME, chapterLabel, conceptQuestions, courseChapters, publicBank, summary } from "@/lib/public-bank";
 
@@ -204,6 +204,8 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
           <span className="mt-3 inline-flex items-center gap-1 rounded-xl bg-[#136F5C] px-4 py-2 text-[15px] font-bold text-white">تابع القراءة <ChevronLeft className="h-4 w-4" /></span>
         </Link>
       )}
+      <TelegramCard className="mt-3" />
+
       {prev && (
         <Link href={`/learn/${course}/${prev.id}`} className="mt-3 flex items-center gap-2 px-1 text-[14px] text-[#6B8077] hover:text-[#136F5C]">
           <span>السابق:</span><span className="font-bold">{prev.title}</span>
