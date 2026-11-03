@@ -8,7 +8,7 @@ import { ad } from "@/lib/arabic";
 import { Crumbs, PageHero, WithSidebar } from "@/components/site/Blocks";
 
 export const metadata: Metadata = {
-  title: "أدلة الاختبار التخصصي للرخصة المهنية: الرياضيات واللغة العربية والعلوم والإنجليزي ورياض الأطفال | تربوي",
+  title: "أدلة الاختبار التخصصي للرخصة المهنية: ١٢ تخصصًا بمجالاتها وخطة مذاكرتها | تربوي",
   description: "دليل لكل اختبار تخصصي في الرخصة المهنية للمعلمين: مجالات التخصص، وما تركز عليه في المذاكرة، وأخطاء شائعة، وروابط للأدلة المنشورة.",
   alternates: { canonical: `${SITE_URL}/specialized` },
 };

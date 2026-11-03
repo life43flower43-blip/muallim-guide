@@ -66,7 +66,7 @@ export default function LicenseGuide() {
         <Link href="/specialized" className="flex items-center justify-between rounded-2xl border border-[#E2ECE6] bg-white p-5 hover:border-[#136F5C]">
           <span>
             <span className="block font-display text-[18px] font-extrabold text-[#14302A]">أدلة الاختبار التخصصي</span>
-            <span className="mt-1 block text-[14px] leading-7 text-[#4D635A]">الرياضيات، واللغة العربية، والعلوم، والإنجليزي، ورياض الأطفال.</span>
+            <span className="mt-1 block text-[14px] leading-7 text-[#4D635A]">اثنا عشر تخصصًا: الرياضيات، والعربية، والعلوم، والإنجليزي، ورياض الأطفال، وغيرها.</span>
           </span>
           <ChevronLeft className="h-5 w-5 shrink-0 text-[#136F5C]" />
         </Link>
