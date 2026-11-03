@@ -2,7 +2,7 @@
 // يعمل فقط حين يُضاف TELEGRAM_BOT_TOKEN وTELEGRAM_CHANNEL في إعدادات Vercel، والبوت مشرف في القناة.
 import { pickQuestions, type SiteQ } from "@/lib/site-nav";
 import { allArticles, todayISO } from "@/lib/articles";
-import { SITE_URL } from "@/lib/public-bank";
+import { SITE_URL, publicBank } from "@/lib/public-bank";
 
 // حدود تيليجرام لاستطلاع الاختبار
 const MAX_Q = 300;
@@ -24,24 +24,56 @@ function clip(t: string, max: number) {
   return (end > max * 0.6 ? cut.slice(0, end) : cut).trim() + "…";
 }
 
-/** سؤال اليوم: أول سؤال يناسب حدود تيليجرام، بدءًا من موضع اليوم في البنك */
-export function questionOfDay(day = dayNumber()): SiteQ | null {
-  for (let k = 0; k < 40; k++) {
-    const [q] = pickQuestions(1, day * 7 + k);
-    if (!q) continue;
-    if (q.q.length <= MAX_Q && q.options.length >= 2 && q.options.length <= 10 && q.options.every((o) => o.length <= MAX_OPT) && q.correct >= 0) return q;
+/** سؤال صالح لحدود تيليجرام، بدءًا من موضع محدد في البنك، ولا يكرر ما في skip */
+function fitQuestion(seed: number, skip: string[] = []): SiteQ | null {
+  for (let k = 0; k < 60; k++) {
+    const [q] = pickQuestions(1, seed + k);
+    if (!q || skip.includes(q.id)) continue;
+    if (q.q.length <= MAX_Q - 16 && q.options.length >= 2 && q.options.length <= 10 && q.options.every((o) => o.length <= MAX_OPT) && q.correct >= 0) return q;
   }
   return null;
 }
 
+/** سؤالا اليوم: مختلفان دائمًا، ويتغيران كل يوم */
+export function questionsOfDay(day = dayNumber()): SiteQ[] {
+  const a = fitQuestion(day * 14);
+  const b = fitQuestion(day * 14 + 7, a ? [a.id] : []);
+  return [a, b].filter((x): x is SiteQ => !!x);
+}
+
+/** معلومة اليوم: القاعدة المختصرة لمفهوم، تدور على كل المفاهيم بخطوة ثابتة فلا تتكرر قبل أن تمر عليها كلها */
+export function tipOfDay(day = dayNumber()) {
+  const list = publicBank().concepts.filter((c) => c.rule && c.rule.length >= 40 && c.rule.length <= 320);
+  if (!list.length) return null;
+  const step = 389; // عدد أولي: يمر على القائمة كلها قبل أن يعود
+  const c = list[(day * step) % list.length];
+  return { title: c.title, text: c.rule!, href: `/learn/${c.courseId}/${c.id}`, course: publicBank().courses[c.courseId] };
+}
+
+const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
 export function buildPosts(iso = todayISO()) {
-  const q = questionOfDay(dayNumber(iso));
+  const day = dayNumber(iso);
   const posts: { method: string; body: Record<string, unknown> }[] = [];
-  if (q) {
+
+  const tip = tipOfDay(day);
+  if (tip) {
+    posts.push({
+      method: "sendMessage",
+      body: {
+        text: `💡 <b>معلومة اليوم</b>\n\n<b>${esc(tip.title)}</b>\n${esc(tip.text)}\n\n📚 ${esc(tip.course)}\n<a href="${SITE_URL}${tip.href}">اقرأ الشرح كاملًا</a>`,
+        parse_mode: "HTML",
+        link_preview_options: { is_disabled: true },
+      },
+    });
+  }
+
+  const qs = questionsOfDay(day);
+  qs.forEach((q, n) => {
     posts.push({
       method: "sendPoll",
       body: {
-        question: q.q,
+        question: clip(`${n === 0 ? "السؤال الأول" : "السؤال الثاني"}: ${q.q}`, MAX_Q),
         options: q.options.map((text) => ({ text })),
         type: "quiz",
         correct_option_id: q.correct,
@@ -49,21 +81,24 @@ export function buildPosts(iso = todayISO()) {
         is_anonymous: true,
       },
     });
+  });
+  if (qs.length) {
     posts.push({
       method: "sendMessage",
       body: {
-        text: `📘 <b>الشرح الكامل:</b> <a href="${SITE_URL}${q.href}">${q.concept}</a>\n\n✍️ اختبار الأسبوع: <a href="${SITE_URL}/weekly-test">٢٠ سؤالًا جديدة كل أحد</a>`,
+        text: `📘 <b>شرح سؤالَي اليوم:</b>\n${qs.map((q) => `• <a href="${SITE_URL}${q.href}">${esc(q.concept)}</a>`).join("\n")}\n\n✍️ اختبار الأسبوع: <a href="${SITE_URL}/weekly-test">٢٠ سؤالًا جديدة كل أحد</a>`,
         parse_mode: "HTML",
         link_preview_options: { is_disabled: true },
       },
     });
   }
-  // مقال اليوم إن نُشر مقال جديد في هذا التاريخ (واحد فقط حتى لا تمتلئ القناة)
+
+  // مقال اليوم إن نُشر مقال جديد في هذا التاريخ
   for (const a of allArticles().filter((x) => x.date === iso).slice(0, 1)) {
     posts.push({
       method: "sendMessage",
       body: {
-        text: `🆕 <b>مقال جديد:</b> ${a.title}\n\n${clip(a.description, 220)}\n\n<a href="${SITE_URL}/articles/${a.slug}">اقرأ المقال</a>`,
+        text: `🆕 <b>مقال جديد:</b> ${esc(a.title)}\n\n${esc(clip(a.description, 220))}\n\n<a href="${SITE_URL}/articles/${a.slug}">اقرأ المقال</a>`,
         parse_mode: "HTML",
       },
     });
