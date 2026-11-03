@@ -10,7 +10,7 @@ const AR = "٠١٢٣٤٥٦٧٨٩";
 const ad = (n: number) => String(n).replace(/\d/g, (d) => AR[+d]);
 const LETTERS = ["أ", "ب", "ج", "د", "هـ"];
 
-export default function QuizRunner({ questions, title }: { questions: SiteQ[]; title?: string }) {
+export default function QuizRunner({ questions, title, onConceptPage = false }: { questions: SiteQ[]; title?: string; onConceptPage?: boolean }) {
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [answers, setAnswers] = useState<boolean[]>([]);
@@ -84,7 +84,7 @@ export default function QuizRunner({ questions, title }: { questions: SiteQ[]; t
         <div className={`mt-4 rounded-xl p-4 ${picked === q.correct ? "bg-[#EAF6EF]" : "bg-[#FFF6E5]"}`}>
           <p className="font-bold text-[#14302A]">{picked === q.correct ? "إجابة صحيحة" : "إجابة غير صحيحة، والصحيحة مظللة بالأخضر"}</p>
           <p className="mt-1 text-[14px] leading-7 text-[#3A5249]">{q.reason}</p>
-          <Link href={q.href} className="mt-2 inline-flex items-center gap-1 text-[13px] font-bold text-[#136F5C]">اقرأ شرح «{q.concept}» <ChevronLeft className="h-4 w-4" /></Link>
+          {!onConceptPage && <Link href={q.href} className="mt-2 inline-flex items-center gap-1 text-[13px] font-bold text-[#136F5C]">اقرأ شرح «{q.concept}» <ChevronLeft className="h-4 w-4" /></Link>}
           {questions.length === 1 ? (
             <Link prefetch={false} href="/app?tab=practice" className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#136F5C] py-3 font-bold text-white"><Smartphone className="h-5 w-5" /> تدرّب على أسئلة أكثر في التطبيق</Link>
           ) : (

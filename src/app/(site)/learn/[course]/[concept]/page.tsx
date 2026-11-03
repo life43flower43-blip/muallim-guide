@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import QuizRunner from "@/components/site/QuizRunner";
+import type { SiteQ } from "@/lib/site-nav";
 import { ConceptDiagram } from "@/components/app/Diagrams";
 import { referencesFor } from "@/lib/references";
 import Link from "next/link";
@@ -44,6 +46,18 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
   const prev = siblings[pos - 1];
   const next = siblings[pos + 1];
   const sample = conceptQuestions(c.id).slice(0, 5);
+  const quiz: SiteQ[] = sample
+    .filter((q) => q.options.length >= 2 && q.options.some((o) => o.isCorrect))
+    .map((q) => ({
+      id: q.id,
+      q: q.question,
+      options: q.options.map((o) => o.text),
+      correct: q.options.findIndex((o) => o.isCorrect),
+      reason: q.reason,
+      course: courseMeta(c.courseId).short,
+      href: `/learn/${c.courseId}/${c.id}`,
+      concept: c.title,
+    }));
   const examples = c.examples?.length ? c.examples : [c.example];
 
   const jsonLd = {
@@ -151,26 +165,11 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
             </ul>
           </section>
 
-          {sample.length > 0 && (
+          {quiz.length > 0 && (
             <section>
               <h2 className="mb-3 font-display text-[21px] font-extrabold">اختبر فهمك</h2>
-              <div className="space-y-4">
-                {sample.map((q) => (
-                  <div key={q.id} className="rounded-xl border border-[#E2ECE6] p-4">
-                    <p className="font-bold leading-8">{q.question}</p>
-                    <ul className="mt-3 space-y-1.5 text-[15px] text-[#4D635A]">
-                      {q.options.map((o) => (
-                        <li key={o.text} className="flex gap-2"><span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#9DB5AA]" />{o.text}</li>
-                      ))}
-                    </ul>
-                    <details className="mt-3">
-                      <summary className="cursor-pointer text-[14px] font-bold text-[#136F5C]">اعرض الإجابة والشرح</summary>
-                      <p className="mt-2 text-[14px] font-bold text-[#1E7B4A]">الإجابة: {q.correct}</p>
-                      <p className="mt-1 text-[14px] leading-7 text-[#4D635A]">{q.reason}</p>
-                    </details>
-                  </div>
-                ))}
-              </div>
+              {/* اختبار تفاعلي: يختار الطالب إجابته فيُصحَّح فورًا مع الشرح */}
+              <QuizRunner questions={quiz} title="اختبر فهمك" onConceptPage />
             </section>
           )}
 
