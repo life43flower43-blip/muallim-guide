@@ -1,14 +1,17 @@
+import { MORE_COMPARISONS } from "./comparisons-more";
+
 // مقارنات بين مفاهيم تربوية يكثر الخلط بينها في الصف وفي اختبارات المعلمين
 export type Comparison = {
   slug: string;
   a: string;
   b: string;
-  color: string;
+  color?: string;
+  group?: string;
   rows: { k: string; a: string; b: string }[];
   tip: string;
 };
 
-export const COMPARISONS: Comparison[] = [
+const BASE: Comparison[] = [
   {
     slug: "negative-reinforcement-vs-punishment",
     a: "التعزيز السلبي",
@@ -158,3 +161,27 @@ export const COMPARISONS: Comparison[] = [
     tip: "طالب ذكي في النقاش ومتفوق في العلوم لكنه يتعثر بشدة في القراءة وحدها: هذا يشير إلى صعوبة تعلم، لا إلى بطء تعلم. والتشخيص للمختصين.",
   },
 ];
+
+const BASE_GROUP: Record<string, string> = {
+  "negative-reinforcement-vs-punishment": "التعلم والسلوك",
+  "classical-vs-operant": "التعلم والسلوك",
+  "short-vs-long-term-memory": "التعلم والسلوك",
+  "piaget-vs-vygotsky": "النمو والدافعية",
+  "intrinsic-vs-extrinsic": "النمو والدافعية",
+  "formative-vs-summative": "التقويم والقياس",
+  "validity-vs-reliability": "التقويم والقياس",
+  "norm-vs-criterion": "التقويم والقياس",
+  "general-vs-behavioral-objectives": "التدريس والمناهج",
+  "cooperative-vs-group-work": "التدريس والمناهج",
+  "inclusive-vs-special-education": "التربية الخاصة",
+  "learning-difficulty-vs-slow-learner": "التربية الخاصة",
+};
+
+/** ترتيب المجموعات في صفحة المقارنات */
+export const COMPARISON_GROUPS = ["التعلم والسلوك", "النمو والدافعية", "التقويم والقياس", "التدريس والمناهج", "التربية الخاصة", "الصف والمهنة"];
+
+const ALL: Comparison[] = [...BASE.map((c) => ({ ...c, group: BASE_GROUP[c.slug] })), ...MORE_COMPARISONS];
+// مرتبة حسب المجموعة، ثم بترتيب الإضافة داخلها
+export const COMPARISONS: Comparison[] = COMPARISON_GROUPS.flatMap((g) => ALL.filter((c) => c.group === g));
+
+export const comparisonBySlug = (slug: string) => COMPARISONS.find((c) => c.slug === slug);

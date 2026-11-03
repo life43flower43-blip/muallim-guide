@@ -8,11 +8,12 @@ import { notFound } from "next/navigation";
 import AdSlot from "@/components/site/AdSlot";
 import ReadProgress from "@/components/site/ReadProgress";
 import { problemsForConcept } from "@/lib/site-problems";
-import { Clock } from "lucide-react";
+import { ChevronLeft, Clock } from "lucide-react";
 import { ad, arCount, MINUTE_FORMS } from "@/lib/arabic";
 import { courseMeta, readMinutes } from "@/lib/site-nav";
-import { CatBadge, Crumbs, conceptTile, SectionTitle, ShareRow, Thumb, WithSidebar } from "@/components/site/Blocks";
-import { SITE_URL, SITE_NAME, chapterLabel, conceptQuestions, publicBank, summary } from "@/lib/public-bank";
+import { CatBadge, ConceptList, Crumbs, paragraphs, SectionTitle, ShareRow, Thumb, WithSidebar } from "@/components/site/Blocks";
+import { photoFor } from "@/components/site/Cover";
+import { SITE_URL, SITE_NAME, chapterLabel, conceptQuestions, courseChapters, publicBank, summary } from "@/lib/public-bank";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -44,7 +45,11 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
   const siblings = bank.concepts.filter((x) => x.courseId === course && x.chapter === c.chapter);
   const pos = siblings.findIndex((x) => x.id === c.id);
   const prev = siblings[pos - 1];
-  const next = siblings[pos + 1];
+  // التالي: المفهوم التالي في الفصل، وإن انتهى الفصل فأول مفهوم في الفصل الذي بعده
+  const chapters = courseChapters(course);
+  const chIdx = chapters.findIndex((ch) => ch.chapter === c.chapter);
+  const next = siblings[pos + 1] ?? chapters[chIdx + 1]?.concepts[0];
+  const nextNewChapter = !siblings[pos + 1] && !!next;
   const sample = conceptQuestions(c.id).slice(0, 5);
   const quiz: SiteQ[] = sample
     .filter((q) => q.options.length >= 2 && q.options.some((o) => o.isCorrect))
@@ -73,7 +78,6 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
   };
 
   const m = courseMeta(course);
-  const related = siblings.filter((x) => x.id !== c.id).slice(0, 6);
   const path = `/learn/${course}/${c.id}`;
 
   return (
@@ -100,29 +104,29 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
       <Crumbs items={[{ href: "/learn", label: "المحاور" }, { href: `/learn/${course}`, label: m.short }, { label: c.title }]} />
 
       <article className="overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
-        <Thumb c={c} className="h-56 sm:h-72" />
-        <div className="space-y-7 p-5 sm:p-7">
+        {photoFor(c.id) && <Thumb c={c} className="h-56 sm:h-72" />}
+        <div className="space-y-7 p-4 sm:p-7">
           <header>
             <div className="flex flex-wrap items-center gap-3 text-[13px] text-[#6B8077]">
               <CatBadge id={course} />
               <span>{chapterLabel(c.chapter)}</span>
               <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {arCount(readMinutes(c), MINUTE_FORMS)} للقراءة</span>
             </div>
-            <h1 className="mt-3 font-display text-[28px] font-extrabold leading-[1.55] sm:text-[32px]">{c.title}</h1>
+            <h1 className="mt-3 font-display text-[26px] font-extrabold leading-[1.55] sm:text-[32px]">{c.title}</h1>
           </header>
 
-          <section className="space-y-5">
-            {c.explanation.split(/\n+/).map((p, i) => (
-              <p key={i} className="text-[18px] leading-[2.05] text-[#24403A]">{p}</p>
+          {c.rule && (
+            <div className="rounded-xl border-s-4 border-[#136F5C] bg-[#EEF5F1] px-4 py-3.5">
+              <p className="text-[13px] font-extrabold text-[#136F5C]">الفكرة باختصار</p>
+              <p className="mt-1 text-[16px] font-bold leading-8 text-[#14302A]">{c.rule}</p>
+            </div>
+          )}
+
+          <section className="space-y-4">
+            {paragraphs(c.explanation).map((p, i) => (
+              <p key={i} className="text-[17px] leading-[1.95] text-[#24403A]">{p}</p>
             ))}
           </section>
-
-          {c.rule && (
-            <blockquote className="rounded-xl border-s-4 border-[#E8A317] bg-[#FFF8E6] p-4 text-[17px] font-bold leading-9 text-[#3B2C05]">
-              <span className="mb-1 block text-[13px] text-[#8A6A12]">القاعدة باختصار</span>
-              {c.rule}
-            </blockquote>
-          )}
 
           <ConceptDiagram conceptId={c.id} pageTitle={c.title} />
 
@@ -187,30 +191,29 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
           <div className="rounded-xl bg-[#136F5C] p-5 text-white">
             <p className="font-display text-[19px] font-extrabold">تدرّب على هذا المفهوم</p>
             <p className="mt-1 text-[14px] leading-7 text-white/85">أسئلة بشرح بعد كل إجابة، ومراجعة لأخطائك في موعدها، مجانًا.</p>
-            <Link prefetch={false} href={`/app?concept=${c.id}`} className="mt-3 inline-block rounded-xl bg-[#E8A317] px-5 py-2.5 font-bold text-[#2B1D00]">ابدأ التدريب</Link>
+            <Link prefetch={false} href={`/app?concept=${c.id}`} className="mt-3 inline-block rounded-xl bg-white px-5 py-2.5 font-bold text-[#136F5C]">ابدأ التدريب</Link>
           </div>
         </div>
       </article>
 
-      <nav className="mt-5 grid gap-3 sm:grid-cols-2">
-        {prev ? (
-          <Link href={`/learn/${course}/${prev.id}`} className="rounded-2xl border border-[#E2ECE6] bg-white p-4 hover:border-[#136F5C]">
-            <span className="text-[12px] text-[#6B8077]">المقال السابق</span>
-            <span className="mt-1 block font-bold leading-7">{prev.title}</span>
-          </Link>
-        ) : <span />}
-        {next && (
-          <Link href={`/learn/${course}/${next.id}`} className="rounded-2xl border border-[#E2ECE6] bg-white p-4 text-left hover:border-[#136F5C]">
-            <span className="text-[12px] text-[#6B8077]">المقال التالي</span>
-            <span className="mt-1 block font-bold leading-7">{next.title}</span>
-          </Link>
-        )}
-      </nav>
+      {next && (
+        <Link href={`/learn/${next.courseId}/${next.id}`} className="group mt-5 block rounded-2xl border-2 border-[#136F5C] bg-white p-5 hover:bg-[#F7FAF8]">
+          <span className="text-[13px] font-extrabold text-[#136F5C]">{nextNewChapter ? `الفصل التالي: ${chapterLabel(next.chapter)}` : "المفهوم التالي"}</span>
+          <span className="mt-1.5 block font-display text-[20px] font-extrabold leading-8 text-[#14302A]">{next.title}</span>
+          {next.rule && <span className="mt-1.5 line-clamp-2 block leading-7 text-[#4D635A]">{next.rule}</span>}
+          <span className="mt-3 inline-flex items-center gap-1 rounded-xl bg-[#136F5C] px-4 py-2 text-[15px] font-bold text-white">تابع القراءة <ChevronLeft className="h-4 w-4" /></span>
+        </Link>
+      )}
+      {prev && (
+        <Link href={`/learn/${course}/${prev.id}`} className="mt-3 flex items-center gap-2 px-1 text-[14px] text-[#6B8077] hover:text-[#136F5C]">
+          <span>السابق:</span><span className="font-bold">{prev.title}</span>
+        </Link>
+      )}
 
-      {related.length > 0 && (
+      {siblings.length > 1 && (
         <section className="mt-8">
-          <SectionTitle title="مقالات ذات صلة" />
-          <div className="grid gap-3 sm:grid-cols-2">{related.map(conceptTile)}</div>
+          <SectionTitle title={`في هذا الفصل: ${chapterLabel(c.chapter)}`} color={m.color} more={{ href: `/learn/${course}`, label: "كل الفصول" }} />
+          <ConceptList concepts={siblings} currentId={c.id} />
         </section>
       )}
     </WithSidebar>
