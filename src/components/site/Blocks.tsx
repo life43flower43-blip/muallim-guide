@@ -289,10 +289,8 @@ export function paragraphs(text: string, max = 260): string[] {
 /** دعوة للانضمام إلى قناة تيليجرام: معلومة وسؤالان كل يوم */
 export function TelegramCard({ className = "" }: { className?: string }) {
   return (
-    <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className={`flex items-center gap-3 rounded-xl border border-[#CFE3EF] bg-[#F2F8FC] px-3 py-2.5 transition hover:border-[#229ED9] ${className}`}>
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#229ED9] text-white">
-        <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1.1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.3 13.1 1.5 11.6c-1-.3-1.1-1 .2-1.5L20.6 2.8c.9-.3 1.6.2 1.3 1.5Z" /></svg>
-      </span>
+    <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className={`flex items-center gap-2.5 rounded-xl border border-[#CFE3EF] bg-[#F2F8FC] px-3 py-2 transition hover:border-[#229ED9] ${className}`}>
+      <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-[#229ED9]" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3 18.7 19.4c-.2 1.1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.3 13.1 1.5 11.6c-1-.3-1.1-1 .2-1.5L20.6 2.8c.9-.3 1.6.2 1.3 1.5Z" /></svg>
       <span className="min-w-0 flex-1">
         <span className="block text-[14.5px] font-extrabold text-[#14302A]">قناتنا على تيليجرام</span>
         <span className="block truncate text-[12.5px] text-[#4D635A]">معلومة وسؤالان كل يوم، مجانًا</span>
