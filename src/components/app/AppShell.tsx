@@ -324,6 +324,31 @@ export default function AppShell() {
     return () => navigator.serviceWorker.removeEventListener("controllerchange", onChange);
   }, []);
 
+  // تحديث تلقائي: إن نُشرت نسخة أحدث والتبويب مفتوح، يُعاد التحميل حين يعود المستخدم إلى التطبيق
+  useEffect(() => {
+    const mine = process.env.NEXT_PUBLIC_BUILD_ID;
+    if (!mine || mine === "dev") return;
+    let busy = false;
+    const check = () => {
+      if (busy || document.visibilityState !== "visible") return;
+      busy = true;
+      fetch("/api/version", { cache: "no-store" })
+        .then((r) => r.json())
+        .then((j: { v?: string }) => {
+          if (j.v && j.v !== mine && sessionStorage.getItem("turbawy-reloaded-for") !== j.v) {
+            sessionStorage.setItem("turbawy-reloaded-for", j.v);
+            window.location.reload();
+          }
+        })
+        .catch(() => {})
+        .finally(() => { busy = false; });
+    };
+    check();
+    document.addEventListener("visibilitychange", check);
+    const t = window.setInterval(check, 10 * 60 * 1000);
+    return () => { document.removeEventListener("visibilitychange", check); window.clearInterval(t); };
+  }, []);
+
   // تحدٍّ وصل عبر رابط
   useEffect(() => {
     const p = readPeerHash();
