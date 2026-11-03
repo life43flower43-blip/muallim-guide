@@ -62,7 +62,7 @@ export default function AuthPanel({ label = "المتابعة بحساب Google"
     }
   };
 
-  const field = "min-h-[48px] w-full rounded-[16px] border border-[#E3D3A0] bg-white px-4 text-base outline-none focus:border-[var(--t700,#136F5C)] dark:bg-card";
+  const field = "min-h-[48px] w-full rounded-[16px] border border-[#E2DDF5] bg-white px-4 text-base outline-none focus:border-[var(--t700,#136F5C)] dark:bg-card";
 
   return (
     <div className="space-y-3">
@@ -71,7 +71,7 @@ export default function AuthPanel({ label = "المتابعة بحساب Google"
           <a
             href="/api/auth/google"
             onClick={() => onDone?.()}
-            className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-[20px] border border-[#E3D3A0] bg-white px-4 text-base font-bold text-[var(--t900)] transition-colors hover:bg-[#FBF7EA] dark:bg-card dark:text-foreground"
+            className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-[20px] border border-[#E2DDF5] bg-white px-4 text-base font-bold text-[var(--t900)] transition-colors hover:bg-[#F7F4FF] dark:bg-card dark:text-foreground"
           >
             <GoogleIcon className="h-5 w-5 shrink-0" />
             <FitText max={16} min={11} className="shrink">{label}</FitText>

@@ -586,7 +586,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               className={`mx-auto w-full max-w-[640px] px-4 pb-6 pt-4 ${wrongShake && instantFeedback ? "shake" : ""}`}
             >
               {combo >= 3 && !answered && (
-                <p className="mb-3 text-base font-bold text-[#E3A93B]">{ad(combo)} إجابات صحيحة متتالية!</p>
+                <p className="mb-3 text-base font-bold text-[#FF5C8A]">{ad(combo)} إجابات صحيحة متتالية!</p>
               )}
               <div className="flex flex-wrap items-center gap-1.5">
                 {/* الوضع: في التدريب يظهر التصحيح بعد كل سؤال، وفي الاختبار بعد التسليم */}
@@ -638,8 +638,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   <div className="min-w-0 flex-1">
                     <p className={`text-base font-extrabold leading-7 ${graded ? "text-[var(--t800)]" : "text-[#C0392B]"}`}>{graded ? PRAISE[idx % PRAISE.length] : "إجابة غير صحيحة"}</p>
                     {!graded && <p className="text-[14px] font-semibold leading-6 text-secondary-foreground">الإجابة الصحيحة مظلّلة بالأخضر في الأعلى.</p>}
-                    {!graded && conf === "sure" && <p className="text-sm font-bold leading-6 text-[#9A6A12]">كنت متأكدًا، فهذا تصور خاطئ. سيعود إليك السؤال قريبًا.</p>}
-                    {graded && conf === "guess" && <p className="text-sm font-bold leading-6 text-[#9A6A12]">أصبت بالتخمين، فسيعود إليك غدًا.</p>}
+                    {!graded && conf === "sure" && <p className="text-sm font-bold leading-6 text-[#D9467A]">كنت متأكدًا، فهذا تصور خاطئ. سيعود إليك السؤال قريبًا.</p>}
+                    {graded && conf === "guess" && <p className="text-sm font-bold leading-6 text-[#D9467A]">أصبت بالتخمين، فسيعود إليك غدًا.</p>}
                   </div>
                   <button type="button" onClick={handleReport} disabled={reported} aria-label="أبلغ عن خطأ في السؤال" className="flex min-h-[32px] shrink-0 items-center gap-1 rounded-full px-2 text-[12px] font-bold text-muted-foreground disabled:opacity-40">
                     <Flag className="h-3.5 w-3.5" /> {reported ? "أُبلغ" : "إبلاغ"}
@@ -649,7 +649,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   <div className="no-scrollbar mt-3 max-h-[34vh] overflow-y-auto rounded-[18px] bg-[var(--t025)] p-3.5 dark:bg-background">
                     <AcademicReason reason={q.reason} />
                     {concept && (
-                      <button type="button" onClick={() => setReaderId(concept.id)} className="mt-2 flex min-h-[36px] items-center gap-1.5 text-sm font-bold text-[#B8860B]">
+                      <button type="button" onClick={() => setReaderId(concept.id)} className="mt-2 flex min-h-[36px] items-center gap-1.5 text-sm font-bold text-[#7C5CFF]">
                         <BookOpen className="h-4 w-4" /> اقرأ المفهوم
                       </button>
                     )}

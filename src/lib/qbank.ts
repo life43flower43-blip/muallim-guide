@@ -85,14 +85,14 @@ export async function loadQbank(
 // لون كل محور من الهوية: أخضر وذهبي بالتناوب، يُستعمل للأيقونة والشريط فقط
 export const COURSE_COLOR: Record<string, string> = {
   M1: "var(--t800)",
-  M2: "#B8860B",
+  M2: "#8B5CF6",
   M3: "var(--t700)",
-  M4: "#A67C00",
+  M4: "#F97316",
   M5: "var(--t800)",
-  G1: "#B8860B",
+  G1: "#0EA5E9",
   C1: "var(--t700)",
   AI1: "var(--t900)",
-  SE1: "#A67C00",
+  SE1: "#EC4899",
   F1: "var(--t700)",
 };
 

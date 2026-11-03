@@ -13,7 +13,7 @@ import { ArrowDown, ArrowLeft } from "lucide-react";
 // عنوان الصفحة التي يظهر فيها الرسم: لا يتكرر عنوان الرسم إن طابقه
 const PageTitleCtx = createContext("");
 
-const C = ["#C98A1E", "#E3A93B", "#E3A93B", "var(--t700)", "var(--t800)", "var(--t700)", "#14B8A6", "#6366F1"];
+const C = ["#D9467A", "#FF5C8A", "#FF5C8A", "var(--t700)", "var(--t800)", "var(--t700)", "#14B8A6", "#6366F1"];
 const tint = (c: string, p = 14) => `color-mix(in srgb, ${c} ${p}%, var(--card))`;
 
 function Frame({ title, children }: { title: string; children: React.ReactNode }) {
@@ -244,7 +244,7 @@ function Zpd() {
   return (
     <Frame title="منطقة النمو القريب عند فيجوتسكي">
       <div className="mx-auto flex aspect-square max-w-[300px] items-center justify-center rounded-full bg-muted p-[9%] text-center">
-        <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-[#E3A93B] p-[14%] dark:bg-[#E3A93B]/70">
+        <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-[#FF5C8A] p-[14%] dark:bg-[#FF5C8A]/70">
           <div className="flex h-full w-full items-center justify-center rounded-full bg-[var(--t700)] p-2 text-white">
             <p className="text-sm font-bold leading-5">ما يستطيعه وحده</p>
           </div>
@@ -252,7 +252,7 @@ function Zpd() {
       </div>
       <div className="mt-3 space-y-1.5 text-sm">
         <p className="flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-[var(--t700)]" /> ما يؤديه الطالب بمفرده</p>
-        <p className="flex items-start gap-2"><span className="mt-1.5 h-3 w-3 shrink-0 rounded-sm bg-[#E3A93B]" /><span><b>منطقة النمو القريب:</b> ما يؤديه بمساعدة الأكثر خبرة، وفيها يُثمر التدريس</span></p>
+        <p className="flex items-start gap-2"><span className="mt-1.5 h-3 w-3 shrink-0 rounded-sm bg-[#FF5C8A]" /><span><b>منطقة النمو القريب:</b> ما يؤديه بمساعدة الأكثر خبرة، وفيها يُثمر التدريس</span></p>
         <p className="flex items-center gap-2"><span className="h-3 w-3 rounded-sm border border-border bg-muted" /> ما يفوق قدرته حتى بالمساعدة</p>
       </div>
     </Frame>
@@ -393,7 +393,7 @@ function InfoProcessing() {
 function WorkingMemory() {
   return (
     <Frame title="الذاكرة العاملة عند باديلي">
-      <div className="mx-auto w-fit rounded-xl bg-[#C98A1E] px-5 py-2.5 text-center text-white">
+      <div className="mx-auto w-fit rounded-xl bg-[#D9467A] px-5 py-2.5 text-center text-white">
         <p className="text-base font-bold">التنفيذي المركزي</p>
         <p className="text-sm opacity-90">يوزع الانتباه وينسق</p>
       </div>
@@ -513,12 +513,12 @@ function NormalCurve() {
       <svg viewBox="0 0 320 150" className="w-full" role="img" aria-label="منحنى الجرس: أغلب الدرجات قرب المتوسط وتقل كلما ابتعدنا عنه">
         <path d="M10 130 C 70 130, 100 128, 125 80 C 145 38, 150 18, 160 18 C 170 18, 175 38, 195 80 C 220 128, 250 130, 310 130 Z" fill="var(--t100)" stroke="var(--t800)" strokeWidth="3" />
         <path d="M125 80 C 145 38, 150 18, 160 18 C 170 18, 175 38, 195 80 L195 130 L125 130 Z" fill="var(--t800)" opacity="0.35" />
-        <line x1="160" y1="14" x2="160" y2="132" stroke="#C98A1E" strokeWidth="2.5" strokeDasharray="5 4" />
+        <line x1="160" y1="14" x2="160" y2="132" stroke="#D9467A" strokeWidth="2.5" strokeDasharray="5 4" />
         <line x1="10" y1="132" x2="310" y2="132" stroke="var(--border)" strokeWidth="2" />
       </svg>
       <div className="mt-1 grid grid-cols-3 text-center text-sm">
         <span className="text-muted-foreground">درجات منخفضة</span>
-        <span className="font-bold text-[#C98A1E]">المتوسط</span>
+        <span className="font-bold text-[#D9467A]">المتوسط</span>
         <span className="text-muted-foreground">درجات مرتفعة</span>
       </div>
       <div className="mt-3 grid grid-cols-2 gap-2 text-center text-sm">
@@ -604,9 +604,9 @@ function Gestalt() {
     <Frame title="قوانين الجشطالت في الإدراك">
       <div className="grid grid-cols-2 gap-2">
         {law("القرب", "المتقاربات مجموعة واحدة", <>{[10, 22].flatMap((x) => [15, 35].map((y) => dot(x, y)))}{[54, 66].flatMap((x) => [15, 35].map((y) => dot(x, y)))}</>)}
-        {law("الشبه", "المتشابهات تُجمع معًا", <>{[10, 30, 50, 70].map((x, i) => dot(x, 15, i % 2 ? "#E3A93B" : "var(--t800)"))}{[10, 30, 50, 70].map((x, i) => dot(x, 35, i % 2 ? "#E3A93B" : "var(--t800)"))}</>)}
+        {law("الشبه", "المتشابهات تُجمع معًا", <>{[10, 30, 50, 70].map((x, i) => dot(x, 15, i % 2 ? "#FF5C8A" : "var(--t800)"))}{[10, 30, 50, 70].map((x, i) => dot(x, 35, i % 2 ? "#FF5C8A" : "var(--t800)"))}</>)}
         {law("الإغلاق", "يكمل الذهن الشكل الناقص", <circle cx="40" cy="25" r="18" fill="none" stroke="var(--t700)" strokeWidth="4" strokeDasharray="24 8" />)}
-        {law("الشكل والخلفية", "يبرز المهم على محيطه", <><rect x="5" y="3" width="70" height="44" rx="4" fill="var(--muted)" /><rect x="27" y="13" width="26" height="24" rx="4" fill="#C98A1E" /></>)}
+        {law("الشكل والخلفية", "يبرز المهم على محيطه", <><rect x="5" y="3" width="70" height="44" rx="4" fill="var(--muted)" /><rect x="27" y="13" width="26" height="24" rx="4" fill="#D9467A" /></>)}
       </div>
     </Frame>
   );
@@ -620,7 +620,7 @@ function Ausubel() {
         <ArrowDown className="mx-auto h-4 w-4 text-muted-foreground" />
         <div className="grid grid-cols-2 gap-2">
           <p className="rounded-xl border-2 border-[var(--t800)] p-2 text-sm font-bold leading-6" style={{ background: tint("var(--t800)") }}>الاستدلالي: إطار تُشتق منه التفاصيل</p>
-          <p className="rounded-xl border-2 border-[#E3A93B] p-2 text-sm font-bold leading-6" style={{ background: tint("#E3A93B") }}>المقارن: يوازن بالمألوف ليمنع الخلط</p>
+          <p className="rounded-xl border-2 border-[#FF5C8A] p-2 text-sm font-bold leading-6" style={{ background: tint("#FF5C8A") }}>المقارن: يوازن بالمألوف ليمنع الخلط</p>
         </div>
         <ArrowDown className="mx-auto h-4 w-4 text-muted-foreground" />
         <p className="rounded-xl border-2 border-[var(--t700)] p-2.5 text-base font-bold" style={{ background: tint("var(--t700)") }}>المحتوى الجديد يرتبط بالبنية المعرفية السابقة</p>
@@ -635,7 +635,7 @@ function Cpa() {
     <Frame title="من الملموس إلى المجرد">
       <div className="grid grid-cols-[1fr_20px_1fr_20px_1fr] items-center text-center">
         <div className="rounded-xl border-2 p-2" style={{ borderColor: C[1], background: tint(C[1]) }}>
-          <div className="mx-auto mb-1 flex w-fit gap-1">{[0, 1, 2].map((i) => <span key={i} className="h-4 w-4 rounded-[3px] bg-[#E3A93B]" />)}</div>
+          <div className="mx-auto mb-1 flex w-fit gap-1">{[0, 1, 2].map((i) => <span key={i} className="h-4 w-4 rounded-[3px] bg-[#FF5C8A]" />)}</div>
           <p className="text-sm font-bold">ملموس</p>
           <p className="text-xs text-muted-foreground">مكعبات بين اليدين</p>
         </div>

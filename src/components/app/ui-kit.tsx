@@ -25,7 +25,7 @@ export function SectionHeader({ title, action }: { title: string; sub?: string; 
     <div className="mb-3 flex items-center justify-between gap-3">
       {/* عنوان قسم بشَرطة ذهبية قصيرة قبله */}
       <div className="flex min-w-0 items-center gap-2">
-        <span className="h-5 w-[4px] shrink-0 rounded-full bg-gradient-to-b from-[#F4C430] to-[#C99A06]" aria-hidden="true" />
+        <span className="h-5 w-[4px] shrink-0 rounded-full bg-gradient-to-b from-[#FF5C8A] to-[#F25F5C]" aria-hidden="true" />
         <h2 className="truncate font-display text-lg font-extrabold text-[var(--t900)] dark:text-foreground">{title}</h2>
       </div>
       {action}
@@ -162,7 +162,7 @@ export function ListRow({
         <span className="rounded-full bg-danger-soft px-2 py-0.5 text-xs font-semibold text-destructive">{ad(badge)}</span>
       )}
       {meta && <span className="shrink-0 text-sm text-muted-foreground">{meta}</span>}
-      {!disabled && <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" aria-hidden="true" />}
+      {!disabled && <ChevronLeft className="h-4 w-4 shrink-0 text-[#F25F5C]" aria-hidden="true" />}
     </button>
   );
 }
@@ -359,7 +359,7 @@ export function SkillBar({ label, value, status, tone = "primary" }: { label: st
 export function DifficultyChip({ level }: { level?: string }) {
   if (!level) return null;
   const tone =
-    level === "سهل" ? "bg-success-soft text-success" : level === "صعب" ? "bg-danger-soft text-destructive" : "bg-[#FDF3DC] text-[#8A5A00] dark:bg-[#8A5A00]/20 dark:text-[#F2C46D]";
+    level === "سهل" ? "bg-success-soft text-success" : level === "صعب" ? "bg-danger-soft text-destructive" : "bg-[#FDF3DC] text-[#8A5A00] dark:bg-[#8A5A00]/20 dark:text-[#FF8FB1]";
   const bars = level === "سهل" ? 1 : level === "صعب" ? 3 : 2;
   return (
     <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 text-[12px] font-bold leading-6", tone)}>
@@ -506,10 +506,10 @@ export function HeaderArt() {
           <stop offset="1" stopColor="var(--t100)" stopOpacity="0.3" />
         </linearGradient>
         <linearGradient id="hag" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#F4C430" stopOpacity="0.2" />
-          <stop offset="0.35" stopColor="#E3B23C" />
-          <stop offset="0.75" stopColor="#FFE27A" />
-          <stop offset="1" stopColor="#F4C430" stopOpacity="0" />
+          <stop offset="0" stopColor="#FF5C8A" stopOpacity="0.2" />
+          <stop offset="0.35" stopColor="#7C5CFF" />
+          <stop offset="0.75" stopColor="#FFC2D4" />
+          <stop offset="1" stopColor="#FF5C8A" stopOpacity="0" />
         </linearGradient>
       </defs>
       <path className="w3" d="M-20 0H420V6C340 16 280 2 215 16C145 32 80 58 -20 118Z" fill="url(#ha3)" />
@@ -517,9 +517,9 @@ export function HeaderArt() {
       <path className="w1" d="M-20 0H240C200 12 160 12 118 30C78 48 40 70 -20 90Z" fill="url(#ha1)" />
       <path className="w2" d="M-20 108C40 62 92 44 140 28C205 8 290 4 420 2" stroke="url(#hag)" strokeWidth="1.8" fill="none" />
       <path className="w1" d="M-20 98C38 58 88 40 132 25C190 6 270 2 420 -1" stroke="url(#hag)" strokeWidth="0.9" fill="none" opacity="0.7" />
-      <g transform="translate(150 22) scale(1.6)"><path className="sp" d={star} fill="#F4C430" /></g>
-      <g transform="translate(212 12) scale(1.1)"><path className="sp" style={{ animationDelay: "1s" }} d={star} fill="#FFE27A" /></g>
-      <g transform="translate(96 46) scale(1.3)"><path className="sp" style={{ animationDelay: "2s" }} d={star} fill="#E3B23C" /></g>
+      <g transform="translate(150 22) scale(1.6)"><path className="sp" d={star} fill="#FF5C8A" /></g>
+      <g transform="translate(212 12) scale(1.1)"><path className="sp" style={{ animationDelay: "1s" }} d={star} fill="#FFC2D4" /></g>
+      <g transform="translate(96 46) scale(1.3)"><path className="sp" style={{ animationDelay: "2s" }} d={star} fill="#7C5CFF" /></g>
     </svg>
   );
 }
@@ -535,7 +535,7 @@ export function ToolTiles({ items }: { items: { icon: React.ElementType; title: 
           onClick={t.onClick}
           className="flex min-h-[64px] min-w-0 items-center gap-2.5 rounded-[20px] border border-[var(--t075)] bg-white px-3 text-right transition active:scale-[0.97] max-[359px]:flex-col max-[359px]:justify-center max-[359px]:gap-1.5 max-[359px]:py-2.5 max-[359px]:text-center dark:border-border dark:bg-card"
         >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FBF1D6] text-[#B8860B]">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F0EBFF] text-[#7C5CFF]">
             <t.icon className="h-[18px] w-[18px]" strokeWidth={2} />
           </span>
           <FitText max={15} min={10} className="w-full flex-1 font-bold max-[359px]:flex-none">{t.title}</FitText>

@@ -81,7 +81,7 @@ export default function MisconceptionsView() {
                   <p className="leading-8 text-secondary-foreground">{item.why}</p>
                 </section>
                 <section>
-                  <h3 className="mb-1 text-sm font-extrabold text-[#9A6A12]">في الصف</h3>
+                  <h3 className="mb-1 text-sm font-extrabold text-[#D9467A]">في الصف</h3>
                   <p className="leading-8 text-secondary-foreground">{item.classroom}</p>
                 </section>
               </div>

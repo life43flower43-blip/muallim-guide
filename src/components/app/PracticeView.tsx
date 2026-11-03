@@ -56,7 +56,7 @@ function Tile({ icon: Icon, title, meta, small, onClick }: { icon: React.Element
         small ? "min-h-[92px] px-1.5 py-3" : "min-h-[96px] px-2 py-3"
       )}
     >
-      <span className={cn("flex shrink-0 items-center justify-center rounded-full bg-[#FBF1D6] text-[#B8860B]", small ? "h-10 w-10" : "h-11 w-11")}>
+      <span className={cn("flex shrink-0 items-center justify-center rounded-full bg-[#F0EBFF] text-[#7C5CFF]", small ? "h-10 w-10" : "h-11 w-11")}>
         <Icon className={small ? "h-5 w-5" : "h-[22px] w-[22px]"} strokeWidth={2} />
       </span>
       <FitText max={small ? 13 : 15} min={9} group={small ? "tile-sm" : "tile"} className="w-full text-center font-bold">{title}</FitText>
@@ -68,8 +68,8 @@ function Tile({ icon: Icon, title, meta, small, onClick }: { icon: React.Element
 /** زر صغير داخل المحور */
 function MiniBtn({ icon: Icon, title, onClick }: { icon: React.ElementType; title: string; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} className="flex min-h-[42px] items-center justify-center gap-1.5 rounded-[14px] border border-[#E3D3A0] bg-white text-sm font-bold text-[var(--t900)] transition active:scale-[0.97] dark:bg-card dark:text-foreground">
-      <Icon className="h-4 w-4 text-[#C99A06]" />
+    <button type="button" onClick={onClick} className="flex min-h-[42px] items-center justify-center gap-1.5 rounded-[14px] border border-[#E2DDF5] bg-white text-sm font-bold text-[var(--t900)] transition active:scale-[0.97] dark:bg-card dark:text-foreground">
+      <Icon className="h-4 w-4 text-[#F25F5C]" />
       {title}
     </button>
   );
@@ -107,17 +107,17 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
         className="relative block w-full overflow-hidden rounded-[26px] bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] p-4 text-right text-white transition active:scale-[0.98]"
       >
         <span className="flex items-center gap-3">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 text-[#FFE27A]">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 text-[#FFC2D4]">
             <Sparkles className="h-6 w-6" />
           </span>
           <span className="min-w-0 flex-1">
             <FitText max={20} min={15} className="font-extrabold leading-8">تدريب ذكي</FitText>
             <FitText max={14} min={10} className="font-medium text-white/80">عشرة أسئلة مختارة لك</FitText>
           </span>
-          <ChevronLeft className="h-6 w-6 shrink-0 text-[#FFE27A]" />
+          <ChevronLeft className="h-6 w-6 shrink-0 text-[#FFC2D4]" />
         </span>
         <span className="mt-3 block h-1.5 overflow-hidden rounded-full bg-white/20" aria-hidden="true">
-          <span className="block h-full rounded-full bg-gradient-to-l from-[#FFE27A] to-[#E3B23C]" style={{ width: `${bank ? Math.max(2, (answered / bank) * 100) : 0}%` }} />
+          <span className="block h-full rounded-full bg-gradient-to-l from-[#FFC2D4] to-[#7C5CFF]" style={{ width: `${bank ? Math.max(2, (answered / bank) * 100) : 0}%` }} />
         </span>
       </button>
 
@@ -126,21 +126,21 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
         <button
           type="button"
           onClick={() => ui.startQuiz({ mode: "training", label: "مراجعة اليوم", qids: due.slice(0, 15) })}
-          className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[#E3D3A0] bg-white p-3.5 text-right transition active:scale-[0.98] dark:bg-card"
+          className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[#E2DDF5] bg-white p-3.5 text-right transition active:scale-[0.98] dark:bg-card"
         >
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#FBF1D6] text-[#B8860B]">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F0EBFF] text-[#7C5CFF]">
             <RotateCcw className="h-5 w-5" />
           </span>
           <span className="min-w-0 flex-1">
             <FitText max={16} min={12} className="font-extrabold leading-7">مراجعة اليوم</FitText>
             <FitText max={13} min={10} className="text-secondary-foreground">{`حان موعد تذكّر ${arCount(Math.min(due.length, 15), QUESTION_GEN_FORMS)}`}</FitText>
           </span>
-          <ChevronLeft className="h-5 w-5 shrink-0 text-[#C99A06]" />
+          <ChevronLeft className="h-5 w-5 shrink-0 text-[#F25F5C]" />
         </button>
       )}
 
       {/* قسمان فقط، يظهر واحد منهما في كل مرة */}
-      <div role="tablist" aria-label="أقسام التدريب" className="grid grid-cols-2 gap-1 rounded-[22px] border border-[#E3D3A0] bg-white p-1 dark:bg-card">
+      <div role="tablist" aria-label="أقسام التدريب" className="grid grid-cols-2 gap-1 rounded-[22px] border border-[#E2DDF5] bg-white p-1 dark:bg-card">
         {(
           [
             ["tests", "اختبارات"],
@@ -176,8 +176,8 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
               <button key={c.id} type="button" onClick={() => setOpen(c.id)} className="flex min-h-[56px] w-full min-w-0 items-center gap-3 px-4 py-2.5 text-right">
                 <span className="h-7 w-1.5 shrink-0 rounded-full" style={{ background: COURSE_COLOR[c.id] ?? "var(--primary)" }} aria-hidden="true" />
                 <FitText max={16} min={11} className="flex-1 font-bold leading-7">{c.name}</FitText>
-                {stars > 0 && <span className="shrink-0 text-sm font-bold text-[#B8860B]">★ {ad(stars)}</span>}
-                <ChevronLeft className="h-5 w-5 shrink-0 text-[#C99A06]" />
+                {stars > 0 && <span className="shrink-0 text-sm font-bold text-[#7C5CFF]">★ {ad(stars)}</span>}
+                <ChevronLeft className="h-5 w-5 shrink-0 text-[#F25F5C]" />
               </button>
             );
           })}
@@ -202,7 +202,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
                   <button key={ch} type="button" onClick={() => { setOpen(null); startChapter(openCourse.id, ch); }} className="flex min-h-[48px] w-full min-w-0 items-center gap-2 px-3 text-right">
                     <FitText max={15} min={11} className="flex-1 font-medium">{chapterLabel(ch)}</FitText>
                     {b !== undefined && <Stars count={starsFor(b)} />}
-                    <ChevronLeft className="h-4 w-4 shrink-0 text-[#C99A06]" />
+                    <ChevronLeft className="h-4 w-4 shrink-0 text-[#F25F5C]" />
                   </button>
                 );
               })}
