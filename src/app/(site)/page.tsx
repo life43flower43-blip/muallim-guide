@@ -1,17 +1,16 @@
-// الصفحة الرئيسية للموقع: ترحيب وبحث، ثم أحدث المقالات، ومفاهيم مختارة، وأقسام التطبيق، ثم التصنيفات مع شريط جانبي
+// الصفحة الرئيسية: ترحيب وبحث، وأحدث المقالات، وسؤال اليوم والاختبار، والمحاور، ومصادر التعلم، والتطبيق، وأسئلة شائعة
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AlertTriangle, BookOpenText, ChevronDown, FileQuestion, Layers, Network, Scale, School, Search } from "lucide-react";
-import { SITE_URL, publicBank } from "@/lib/public-bank";
+import { SITE_URL, courseList, publicBank } from "@/lib/public-bank";
 import { allArticles } from "@/lib/articles";
-import { APP_SECTIONS, courseMeta, pickQuestions } from "@/lib/site-nav";
+import { courseMeta, pickQuestions } from "@/lib/site-nav";
 import DailyQuestion from "@/components/site/DailyQuestion";
 import SearchBox from "@/components/site/SearchBox";
 import CatChips from "@/components/site/CatChips";
-import { ArticleCard, SectionTitle, Tile, WithSidebar, conceptCard } from "@/components/site/Blocks";
+import { ArticleCard, SectionTitle, Tile } from "@/components/site/Blocks";
 import { articleCourse } from "@/lib/articles";
 import { ad } from "@/lib/arabic";
-import type { Concept } from "@/lib/types";
 
 // المقالات المجدولة تظهر في موعدها دون إعادة بناء
 export const revalidate = 3600;
@@ -23,20 +22,6 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE_URL}/` },
 };
 
-const HOME_COURSES = ["M5", "M3", "M4", "M1", "M2", "SE1"];
-
-/** مقالات من فصول مختلفة في التصنيف نفسه */
-function spread(courseId: string, n: number, skip = 0): Concept[] {
-  const all = publicBank().concepts.filter((c) => c.courseId === courseId);
-  const seen = new Set<string>();
-  const out: Concept[] = [];
-  for (const c of all) {
-    if (seen.has(c.chapter)) continue;
-    seen.add(c.chapter);
-    out.push(c);
-  }
-  return out.slice(skip, skip + n);
-}
 
 const FAQ = [
   { q: "هل موقع تربوي مجاني؟", a: "نعم. المقالات والأسئلة والاختبارات المحاكية والأدوات كلها مجانية، ويمكنك أن تبدأ دون تسجيل." },
@@ -57,7 +42,7 @@ function Rail({ children }: { children: React.ReactNode }) {
 export default function Home() {
   const b = publicBank();
   const articles = allArticles();
-  const picks = [spread("M5", 1)[0], spread("M3", 1, 1)[0], spread("M4", 1)[0], spread("M2", 1, 2)[0], spread("SE1", 1)[0], spread("M1", 1)[0]].filter(Boolean);
+  const courses = courseList().filter((c) => c.concepts.length > 0);
   const stats = [
     { icon: BookOpenText, v: ad(b.concepts.length), l: "مفهوم مشروح" },
     { icon: FileQuestion, v: ad(b.questions.length), l: "سؤال مع التفسير" },
@@ -96,12 +81,13 @@ export default function Home() {
               <Link key={t} href={`/search?q=${encodeURIComponent(t)}`} className="rounded-full border border-white/30 px-3 py-1 font-bold text-white/90 hover:bg-white/10">{t}</Link>
             ))}
           </div>
+          <p className="mt-5 text-[13.5px] font-bold text-white/75">{stats.map((x) => `${x.v} ${x.l}`).join(" · ")}</p>
         </div>
       </section>
 
       {/* أحدث المقالات */}
       <section>
-        <SectionTitle title="أحدث المقالات" color="#B4532A" more={{ href: "/articles", label: "كل المقالات" }} />
+        <SectionTitle title="أحدث المقالات" more={{ href: "/articles", label: "كل المقالات" }} />
         <div className="mb-4"><CatChips /></div>
         <div className="space-y-5">
           <ArticleCard a={articles[0]} wide />
@@ -109,25 +95,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* أرقام المحتوى */}
-      <section className="grid grid-cols-3 gap-3">
-        {stats.map((s) => (
-          <div key={s.l} className="rounded-2xl border border-[#E2ECE6] bg-white px-2 py-4 text-center">
-            <s.icon className="mx-auto h-6 w-6 text-[#E8A317]" />
-            <p className="mt-1.5 font-display text-[22px] font-extrabold text-[#136F5C] sm:text-[26px]">{s.v}</p>
-            <p className="text-[12px] leading-5 text-[#5B7268] sm:text-[13px]">{s.l}</p>
-          </div>
-        ))}
-      </section>
-
       {/* سؤال اليوم ونموذج الاختبار */}
       <section className="grid gap-5 lg:grid-cols-2">
         <div>
-          <SectionTitle title="سؤال اليوم" color="#7A4E9C" />
+          <SectionTitle title="سؤال اليوم" />
           <DailyQuestion pool={pickQuestions(60, 3)} />
         </div>
         <div className="flex flex-col gap-4">
-          <SectionTitle title="اختبر نفسك" color="#1F6FA8" more={{ href: "/practice-test", label: "ابدأ" }} />
+          <SectionTitle title="اختبر نفسك" more={{ href: "/practice-test", label: "ابدأ" }} />
           <Link href="/practice-test" className="group flex flex-1 flex-col justify-between rounded-2xl bg-[linear-gradient(135deg,#1F6FA8,#3A55A4)] p-5 text-white">
             <span>
               <span className="block font-display text-[22px] font-extrabold">نموذج اختبار تربوي تفاعلي</span>
@@ -157,76 +132,82 @@ export default function Home() {
         </div>
       </section>
 
-      {/* مصادر تفاعلية */}
+      {/* المحاور: كل محاور الإعداد التربوي في شبكة واحدة */}
       <section>
-        <SectionTitle title="تعلّم من الصف مباشرة" color="#A0466B" />
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <SectionTitle title="تصفّح المحاور" more={{ href: "/learn", label: "كل المحاور" }} />
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          {courses.map((c) => (
+            <li key={c.id}>
+              <Link href={`/learn/${c.id}`} className="flex h-full flex-col rounded-2xl border border-[#E2ECE6] bg-white p-4 hover:border-[#136F5C]">
+                <span className="font-display text-[16px] font-extrabold leading-7 text-[#14302A]">{courseMeta(c.id).short}</span>
+                <span className="mt-auto pt-1 text-[13px] text-[#6B8077]">{ad(c.concepts.length)} مفهومًا</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* مصادر التعلم */}
+      <section>
+        <SectionTitle title="مصادر التعلم" />
+        <ul className="grid gap-3 sm:grid-cols-2">
           {[
-            { href: "/classroom-problems", t: "مشكلات صفية", d: "مواقف حقيقية: التصرف التقليدي وأثره، والتصرف المتقدم ولماذا ينجح.", c: "#B4532A", Icon: School },
-            { href: "/misconceptions", t: "مفاهيم خاطئة شائعة", d: "أفكار يتداولها المعلمون عن التعلم. صحيحة أم خاطئة؟ اختبر نفسك.", c: "#7A4E9C", Icon: AlertTriangle },
-            { href: "/mind-maps", t: "خرائط ذهنية تفاعلية", d: "كل محور في خريطة تتفرع بالضغط، لمراجعة فصل كامل في دقائق.", c: "#1F6FA8", Icon: Network },
-            { href: "/comparisons", t: "مقارنات تربوية", d: "مفاهيم يكثر الخلط بينها جنبًا إلى جنب، مع مفتاح للتمييز في الاختبار.", c: "#3A55A4", Icon: Scale },
+            { href: "/classroom-problems", t: "مشكلات صفية", d: "مواقف حقيقية: التصرف التقليدي وأثره، والتصرف الأفضل ولماذا ينجح.", Icon: School },
+            { href: "/misconceptions", t: "مفاهيم خاطئة شائعة", d: "أفكار يتداولها المعلمون عن التعلم. صحيحة أم خاطئة؟", Icon: AlertTriangle },
+            { href: "/comparisons", t: "مقارنات تربوية", d: "مفاهيم يكثر الخلط بينها جنبًا إلى جنب، مع مفتاح للتمييز.", Icon: Scale },
+            { href: "/mind-maps", t: "خرائط ذهنية تفاعلية", d: "كل محور في خريطة تتفرع بالضغط، لمراجعة فصل كامل في دقائق.", Icon: Network },
+            { href: "/glossary", t: "معجم المصطلحات", d: "المصطلحات التربوية مرتبة على حروف الهجاء، لكل منها شرح وأمثلة.", Icon: BookOpenText },
           ].map((x) => (
-            <Link key={x.href} href={x.href} className="group rounded-2xl p-5 text-white transition hover:-translate-y-0.5" style={{ background: `linear-gradient(135deg, ${x.c}, ${x.c}CC)` }}>
-              <x.Icon className="h-8 w-8 text-white/90" />
-              <span className="mt-3 block font-display text-[19px] font-extrabold">{x.t}</span>
-              <span className="mt-1 block text-[14px] leading-7 text-white/85">{x.d}</span>
-            </Link>
+            <li key={x.href}>
+              <Link href={x.href} className="flex h-full items-start gap-4 rounded-2xl border border-[#E2ECE6] bg-white p-4 hover:border-[#136F5C]">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EEF5F1]"><x.Icon className="h-5 w-5 text-[#136F5C]" /></span>
+                <span>
+                  <span className="block font-extrabold text-[#14302A]">{x.t}</span>
+                  <span className="mt-0.5 block text-[14px] leading-7 text-[#4D635A]">{x.d}</span>
+                </span>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
-      {/* أقسام التطبيق */}
-      <section>
-        <SectionTitle title="تدرّب في تطبيق تربوي" color="#3A55A4" more={{ href: "/sections", label: "كل الأقسام" }} />
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {APP_SECTIONS.slice(0, 5).map((s, i) => (
-            <Link key={s.slug} href={`/sections/${s.slug}`} className={`group overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white ${i === 0 ? "col-span-2 sm:col-span-1" : ""}`}>
-              <img src={s.img} alt="" loading="lazy" className="h-28 w-full object-cover transition group-hover:scale-105" />
-              <p className="truncate px-3 py-2.5 text-center text-[15px] font-bold text-[#14302A]">{s.title}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <WithSidebar>
-        <div className="space-y-12">
-          <section>
-            <SectionTitle title="مفاهيم مختارة" color="#7A4E9C" more={{ href: "/learn", label: "كل المحاور" }} />
-            <Rail>{picks.map(conceptCard)}</Rail>
-          </section>
-
-          {HOME_COURSES.map((id) => (
-            <section key={id}>
-              <SectionTitle title={courseMeta(id).short} color={courseMeta(id).color} more={{ href: `/learn/${id}`, label: "المزيد" }} />
-              <Rail>{spread(id, 4, 1).map(conceptCard)}</Rail>
-            </section>
-          ))}
-
-          <section className="rounded-2xl border border-[#E2ECE6] bg-white p-5">
-            <h2 className="font-display text-[20px] font-extrabold">معجم المصطلحات التربوية</h2>
-            <p className="mt-1 leading-7 text-[#4D635A]">كل المصطلحات التربوية في الموقع مرتبة على حروف الهجاء، ولكل مصطلح صفحة بشرحه وأمثلته.</p>
-            <Link prefetch={false} href="/glossary" className="mt-3 inline-block rounded-xl bg-[#136F5C] px-5 py-2.5 font-bold text-white">تصفّح المصطلحات</Link>
-          </section>
-
-          <section>
-            <SectionTitle title="أسئلة شائعة" color="#8A6A12" />
-            <div className="divide-y divide-[#EEF3F0] overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
-              {FAQ.map((f) => (
-                <details key={f.q} className="group px-5 py-4 open:bg-[#F7FAF8]">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-bold [&::-webkit-details-marker]:hidden">
-                    {f.q}
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#EEF5F1] text-[#136F5C] transition group-open:rotate-180 group-open:bg-[#136F5C] group-open:text-white">
-                      <ChevronDown className="h-5 w-5" />
-                    </span>
-                  </summary>
-                  <p className="mt-3 leading-8 text-[#4D635A]">{f.a}</p>
-                </details>
-              ))}
+      {/* التطبيق */}
+      <section className="overflow-hidden rounded-[28px] bg-[#0E3B32] text-white">
+        <div className="grid items-center gap-6 p-6 sm:p-9 md:grid-cols-[1.3fr_1fr]">
+          <div>
+            <p className="text-[13px] font-bold text-[#F2C94C]">تطبيق تربوي، مجاني</p>
+            <h2 className="mt-2 font-display text-[24px] font-extrabold leading-[1.45] sm:text-[30px]">تدرّب كأنك في الاختبار</h2>
+            <ul className="mt-3 space-y-1.5 text-[15px] leading-7 text-white/85">
+              <li>آلاف الأسئلة مع تفسير كل خيار</li>
+              <li>اختبار محاكاة بزمن حقيقي وتحليل لكل محور</li>
+              <li>مراجعة أخطائك في موعدها حتى تثبت</li>
+            </ul>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link prefetch={false} href="/app" className="inline-flex h-11 items-center rounded-xl bg-[#E8A317] px-5 font-bold text-[#2B1D00]">ابدأ التدريب مجانًا</Link>
+              <Link prefetch={false} href="/tatbeeq" className="inline-flex h-11 items-center rounded-xl border border-white/30 px-5 font-bold text-white">تعرّف على التطبيق</Link>
             </div>
-          </section>
+          </div>
+          <img src="/shots/home.jpg" alt="الشاشة الرئيسية في تطبيق تربوي" loading="lazy" className="mx-auto hidden w-56 rounded-[22px] border-4 border-white/10 md:block" />
         </div>
-      </WithSidebar>
+      </section>
+
+      {/* أسئلة شائعة */}
+      <section>
+        <SectionTitle title="أسئلة شائعة" />
+        <div className="divide-y divide-[#EEF3F0] overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
+          {FAQ.map((f) => (
+            <details key={f.q} className="group px-5 py-4 open:bg-[#F7FAF8]">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-bold [&::-webkit-details-marker]:hidden">
+                {f.q}
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#EEF5F1] text-[#136F5C] transition group-open:rotate-180 group-open:bg-[#136F5C] group-open:text-white">
+                  <ChevronDown className="h-5 w-5" />
+                </span>
+              </summary>
+              <p className="mt-3 leading-8 text-[#4D635A]">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
