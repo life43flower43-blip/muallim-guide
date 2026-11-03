@@ -8,7 +8,7 @@ import { ad, arCount, MINUTE_FORMS } from "@/lib/arabic";
 import AdSlot from "./AdSlot";
 import ShareBar from "./ShareBar";
 import SearchBox from "./SearchBox";
-import { Cover, MiniCover } from "./Cover";
+import { Cover, MiniCover, photoFor } from "./Cover";
 import { type Article, allArticles, arDate, articleCourse } from "@/lib/articles";
 
 const href = (c: Concept) => `/learn/${c.courseId}/${c.id}`;
@@ -213,8 +213,8 @@ export function Tile({ href, id, title, courseId, meta, card = false }: { href: 
     );
   return (
     <Link href={href} className="group flex items-stretch gap-3 overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white p-2.5 transition hover:shadow-[0_0_0_2px_var(--c)]" style={{ ["--c" as string]: courseMeta(courseId).color }}>
-      <MiniCover id={id} title={title} courseId={courseId} className="h-[84px] w-[104px] shrink-0 rounded-xl" />
-      <span className="flex min-w-0 flex-1 flex-col justify-center py-0.5">
+      {photoFor(id) ? <MiniCover id={id} title={title} courseId={courseId} className="h-[84px] w-[104px] shrink-0 rounded-xl" /> : <span className="w-1 shrink-0 rounded-full" style={{ background: courseMeta(courseId).color }} />}
+      <span className="flex min-w-0 flex-1 flex-col justify-center py-1.5">
         <span className="line-clamp-2 text-[15px] font-bold leading-6 text-[#14302A]">{title}</span>
         {meta && <span className="mt-1 flex items-center gap-1.5 text-[12px] font-bold" style={{ color: courseMeta(courseId).color }}><span className="h-1.5 w-1.5 rounded-full bg-current" />{meta}</span>}
       </span>
@@ -233,11 +233,55 @@ export const conceptCard = (c: Concept) => (
 export function PageHero({ title, sub, kicker, children }: { title: string; sub?: string; kicker?: string; color?: string; children?: React.ReactNode }) {
   // رأس موحد لكل صفحات الموقع: عنوان كبير ووصف على خلفية الصفحة، دون مربع ملون يختلف من صفحة لأخرى
   return (
-    <header className="border-b border-[#E2ECE6] pb-6">
-      {kicker && <p className="text-[13px] font-bold text-[#136F5C]">{kicker}</p>}
-      <h1 className="mt-1 font-display text-[28px] font-extrabold leading-[1.45] text-[#14302A] sm:text-[34px]">{title}</h1>
-      {sub && <p className="mt-2 max-w-3xl text-[16px] leading-8 text-[#4A6158]">{sub}</p>}
+    <header className="rounded-2xl border border-[#D6E6DE] bg-gradient-to-l from-[#EEF5F1] to-white p-5 sm:p-7">
+      {kicker && <p className="inline-block rounded-full bg-[#136F5C] px-3 py-1 text-[12.5px] font-bold text-white">{kicker}</p>}
+      <h1 className="mt-3 font-display text-[26px] font-extrabold leading-[1.5] text-[#0E3B32] sm:text-[34px]">{title}</h1>
+      {sub && <p className="mt-2 max-w-3xl text-[15.5px] leading-8 text-[#5B7268]">{sub}</p>}
       {children}
     </header>
   );
+}
+
+/** قائمة مفاهيم مرقمة داخل بطاقة واحدة، كفهرس الدرس: رقم، عنوان، مدة القراءة */
+export function ConceptList({ concepts, currentId, start = 1 }: { concepts: Concept[]; currentId?: string; start?: number }) {
+  return (
+    <ol className="divide-y divide-[#EEF3F0] overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
+      {concepts.map((c, i) => {
+        const here = c.id === currentId;
+        const color = courseMeta(c.courseId).color;
+        const photo = photoFor(c.id);
+        return (
+          <li key={c.id}>
+            <Link href={href(c)} aria-current={here ? "page" : undefined} className={`flex items-center gap-3 px-4 py-3.5 transition ${here ? "bg-[#EEF5F1]" : "hover:bg-[#F7FAF8]"}`}>
+              {photo ? (
+                <img src={photo} alt="" loading="lazy" className="h-12 w-16 shrink-0 rounded-lg object-cover" />
+              ) : (
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[14px] font-extrabold" style={here ? { background: color, color: "#fff" } : { background: `${color}14`, color }}>{ad(start + i)}</span>
+              )}
+              <span className="min-w-0 flex-1">
+                <span className="line-clamp-2 text-[15px] font-bold leading-6 text-[#14302A]">{c.title}</span>
+                <span className="mt-0.5 block text-[12px] text-[#6B8077]">{here ? "تقرأ الآن" : `${arCount(readMinutes(c), MINUTE_FORMS)} للقراءة`}</span>
+              </span>
+              <ChevronLeft className="h-4 w-4 shrink-0 text-[#9AB0A6]" />
+            </Link>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+/** يقسم الشرح الطويل إلى فقرات قصيرة من جملتين أو ثلاث، ليسهل على العين */
+export function paragraphs(text: string, max = 260): string[] {
+  const out: string[] = [];
+  for (const block of text.split(/\n+/)) {
+    const sentences = block.split(/(?<=[.!؟?])\s+/).filter(Boolean);
+    let cur = "";
+    for (const sn of sentences) {
+      if (cur && cur.length + sn.length > max) { out.push(cur); cur = sn; }
+      else cur = cur ? `${cur} ${sn}` : sn;
+    }
+    if (cur) out.push(cur);
+  }
+  return out;
 }
