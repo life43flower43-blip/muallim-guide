@@ -51,6 +51,17 @@ export default function LicenseGuide() {
           </p>
         </section>
 
+        <section className="grid gap-3 sm:grid-cols-2">
+          <Link href="/standards" className="rounded-2xl border border-[#E2ECE6] bg-white p-5 hover:border-[#136F5C]">
+            <span className="block font-display text-[18px] font-extrabold text-[#14302A]">المعايير العشرة للاختبار التربوي العام</span>
+            <span className="mt-1 block text-[14px] leading-7 text-[#4D635A]">ثلاثة مجالات وعشرة معايير، وما يسأل عنه الاختبار في كل معيار، ودروس تغطيه.</span>
+          </Link>
+          <Link href="/license-calculator" className="rounded-2xl border border-[#E2ECE6] bg-white p-5 hover:border-[#136F5C]">
+            <span className="block font-display text-[18px] font-extrabold text-[#14302A]">حاسبة مستوى الرخصة</span>
+            <span className="mt-1 block text-[14px] leading-7 text-[#4D635A]">اكتب درجتيك، واعرف هل مستواك ممارس أم متقدم أم خبير.</span>
+          </Link>
+        </section>
+
         <section>
           <h2 className="mb-3 font-display text-[21px] font-extrabold">محاور الجزء التربوي</h2>
           <div className="grid gap-3 sm:grid-cols-2">
