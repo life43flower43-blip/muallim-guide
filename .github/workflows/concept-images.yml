@@ -1,0 +1,44 @@
+# صور المفاهيم اليومية: يولّد عددًا من الصور بـ Gemini ويضيفها إلى الموقع
+name: concept-images
+
+on:
+  schedule:
+    - cron: "15 2 * * *" # ٥:١٥ صباحًا بتوقيت مكة، قبل منشور تيليجرام الصباحي
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "عدد الصور"
+        default: "20"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: concept-images
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow
+      - name: Generate images
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          IMAGES_PER_DAY: ${{ github.event.inputs.count || vars.IMAGES_PER_DAY || '20' }}
+        run: python scripts/gen-concept-images.py
+      - name: Commit
+        run: |
+          git config user.name "turbawy-bot"
+          git config user.email "turbawy-bot@users.noreply.github.com"
+          git add public/concepts src/lib/concept-images.ts
+          if git diff --cached --quiet; then echo "لا صور جديدة"; exit 0; fi
+          git commit -m "Concept images: daily batch"
+          git push origin HEAD:main
