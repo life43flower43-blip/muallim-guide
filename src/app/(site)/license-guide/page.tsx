@@ -47,10 +47,10 @@ export default function LicenseGuide() {
     <WithSidebar>
       <Crumbs items={[{ label: "دليل اختبار الرخصة" }]} />
       <article className="space-y-8">
-        <header className="rounded-2xl bg-[linear-gradient(135deg,#0E4F42,#136F5C)] p-6 text-white">
-          <p className="text-[13px] font-bold text-white/80">دليل شامل</p>
-          <h1 className="mt-1 font-display text-[28px] font-extrabold leading-[1.5]">كيف تستعد لاختبار الرخصة المهنية للمعلمين؟</h1>
-          <p className="mt-2 leading-8 text-white/85">ما الذي يقيسه الجزء التربوي، وكيف تذاكره بخطة واضحة، وكيف تتدرب عليه.</p>
+        <header className="border-b border-[#E2ECE6] pb-6">
+          <p className="text-[13px] font-bold text-[#136F5C]">دليل شامل</p>
+          <h1 className="mt-1 font-display text-[28px] font-extrabold leading-[1.45] text-[#14302A] sm:text-[34px]">كيف تستعد لاختبار الرخصة المهنية للمعلمين؟</h1>
+          <p className="mt-2 max-w-3xl text-[16px] leading-8 text-[#4A6158]">ما الذي يقيسه الجزء التربوي، وكيف تذاكره بخطة واضحة، وكيف تتدرب عليه.</p>
         </header>
 
         <section className="rounded-2xl border border-[#E2ECE6] bg-white p-5 leading-8 text-[#3A5249]">

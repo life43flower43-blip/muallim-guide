@@ -43,7 +43,7 @@ export default async function SpecialtyPage({ params }: { params: Promise<{ slug
         <ol className="mt-4 grid gap-3 sm:grid-cols-2">
           {s.domains.map((d, i) => (
             <li key={d.t} className="flex gap-3 rounded-2xl border border-[#E2ECE6] bg-white p-4">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[13px] font-extrabold text-white" style={{ background: s.color }}>{ad(i + 1)}</span>
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#136F5C] text-[13px] font-extrabold text-white">{ad(i + 1)}</span>
               <span>
                 <span className="block font-extrabold text-[#14302A]">{d.t}</span>
                 <span className="mt-1 block text-[14px] leading-7 text-[#4A6158]">{d.d}</span>

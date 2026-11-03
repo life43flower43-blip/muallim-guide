@@ -27,7 +27,7 @@ export default function Specialized() {
         {SPECIALTIES.map((s) => (
           <li key={s.slug}>
             <Link href={`/specialized/${s.slug}`} className="flex h-full items-center gap-4 rounded-2xl border border-[#E2ECE6] bg-white p-5 hover:border-[#136F5C]">
-              <span className="h-12 w-1.5 shrink-0 rounded-full" style={{ background: s.color }} />
+              <span className="h-12 w-1.5 shrink-0 rounded-full bg-[#136F5C]" />
               <span className="min-w-0 flex-1">
                 <span className="block font-display text-[19px] font-extrabold text-[#14302A]">{s.name}</span>
                 <span className="mt-0.5 block text-[13.5px] leading-6 text-[#5B7268]">{ad(s.domains.length)} مجالات، وخطة مذاكرة، وأخطاء شائعة</span>
