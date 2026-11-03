@@ -10,7 +10,7 @@ const toNum = (s: string) => Number(s.replace(/[٠-٩]/g, (d) => String(AR.index
 const LEVELS = [
   { min: 80, t: "معلم خبير", c: "#136F5C", d: "٨٠ فأكثر في الاختبارين" },
   { min: 70, t: "معلم متقدم", c: "#1F6FA8", d: "من ٧٠ إلى ٧٩" },
-  { min: 50, t: "معلم ممارس", c: "#8A6A12", d: "من ٥٠ إلى ٦٩" },
+  { min: 50, t: "معلم ممارس", c: "#7C5CFF", d: "من ٥٠ إلى ٦٩" },
 ];
 
 export default function Calc() {

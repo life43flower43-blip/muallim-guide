@@ -109,10 +109,10 @@ export function Sidebar() {
       </Widget>
 
       <section className="rounded-2xl bg-[#136F5C] p-5 text-white">
-        <Smartphone className="h-7 w-7 text-[#F2C94C]" />
+        <Smartphone className="h-7 w-7 text-[#A7F3D0]" />
         <h2 className="mt-2 font-display text-[19px] font-extrabold">تدرّب في تطبيق تربوي</h2>
         <p className="mt-1 text-[14px] leading-7 text-white/85">آلاف الأسئلة مع تفسير كل خيار، واختبارات محاكية، ومراجعة لأخطائك. مجانًا ومن المتصفح.</p>
-        <Link prefetch={false} href="/tatbeeq" className="mt-3 inline-block rounded-xl bg-[#E8A317] px-5 py-2.5 text-[15px] font-bold text-[#2B1D00]">تعرّف على التطبيق</Link>
+        <Link prefetch={false} href="/tatbeeq" className="mt-3 inline-block rounded-xl bg-[#7C5CFF] px-5 py-2.5 text-[15px] font-bold text-white">تعرّف على التطبيق</Link>
       </section>
 
       <Widget title="التصنيفات">
@@ -178,7 +178,7 @@ export function ArticleCard({ a, wide = false }: { a: Article; wide?: boolean })
   return (
     <article className={`flex overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white ${wide ? "flex-col sm:flex-row" : "flex-col"}`}>
       <Link href={`/articles/${a.slug}`} tabIndex={-1} aria-hidden="true" className={wide ? "sm:w-[46%] sm:shrink-0" : ""}>
-        <Cover id={a.slug} title={a.title} courseId={articleCourse(a)} label={a.category} compact className={wide ? "h-44 sm:h-full sm:min-h-[220px]" : "h-36"} />
+        <Cover id={a.slug} title={a.title} courseId={articleCourse(a)} compact className={wide ? "h-44 sm:h-full sm:min-h-[220px]" : "h-36"} />
       </Link>
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-center justify-between gap-2 text-[12px] text-[#6B8077]">

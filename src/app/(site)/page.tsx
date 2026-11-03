@@ -9,6 +9,7 @@ import DailyQuestion from "@/components/site/DailyQuestion";
 import SearchBox from "@/components/site/SearchBox";
 import CatChips from "@/components/site/CatChips";
 import { ArticleCard, SectionTitle, Tile } from "@/components/site/Blocks";
+import { RotateOne, Shuffle } from "@/components/site/Rotate";
 import { articleCourse } from "@/lib/articles";
 import { ad } from "@/lib/arabic";
 
@@ -69,7 +70,7 @@ export default function Home() {
           <defs><pattern id="hero-dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="2" fill="#fff" /></pattern></defs>
           <rect width="100%" height="100%" fill="url(#hero-dots)" />
         </svg>
-        <span className="absolute -start-16 -top-16 h-56 w-56 rounded-full bg-[#E8A317]/20" aria-hidden="true" />
+        <span className="absolute -start-16 -top-16 h-56 w-56 rounded-full bg-white/10" aria-hidden="true" />
         </div>
         <div className="relative max-w-2xl">
           <p className="inline-block rounded-full bg-white/15 px-3 py-1 text-[13px] font-bold">مجاني للمعلمين وطلاب كليات التربية</p>
@@ -90,8 +91,9 @@ export default function Home() {
         <SectionTitle title="أحدث المقالات" more={{ href: "/articles", label: "كل المقالات" }} />
         <div className="mb-4"><CatChips /></div>
         <div className="space-y-5">
-          <ArticleCard a={articles[0]} wide />
-          <Rail>{articles.slice(1, 7).map((a) => <Tile key={a.slug} card href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={a.category} />)}</Rail>
+          {/* مقال مميز مختلف في كل زيارة من أحدث ١٢ مقالًا، وبقية الشريط مخلوطة */}
+          <RotateOne ids={articles.slice(0, 12).map((a) => a.slug)}>{articles.slice(0, 12).map((a) => <ArticleCard key={a.slug} a={a} wide />)}</RotateOne>
+          <Rail><Shuffle show={6}>{articles.slice(0, 24).map((a) => <Tile key={a.slug} card href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={a.category} />)}</Shuffle></Rail>
         </div>
       </section>
 
@@ -175,7 +177,7 @@ export default function Home() {
       <section className="overflow-hidden rounded-[28px] bg-[#0E3B32] text-white">
         <div className="grid items-center gap-6 p-6 sm:p-9 md:grid-cols-[1.3fr_1fr]">
           <div>
-            <p className="text-[13px] font-bold text-[#F2C94C]">تطبيق تربوي، مجاني</p>
+            <p className="text-[13px] font-bold text-[#A7F3D0]">تطبيق تربوي، مجاني</p>
             <h2 className="mt-2 font-display text-[24px] font-extrabold leading-[1.45] sm:text-[30px]">تدرّب كأنك في الاختبار</h2>
             <ul className="mt-3 space-y-1.5 text-[15px] leading-7 text-white/85">
               <li>آلاف الأسئلة مع تفسير كل خيار</li>
@@ -183,7 +185,7 @@ export default function Home() {
               <li>مراجعة أخطائك في موعدها حتى تثبت</li>
             </ul>
             <div className="mt-5 flex flex-wrap gap-3">
-              <Link prefetch={false} href="/app" className="inline-flex h-11 items-center rounded-xl bg-[#E8A317] px-5 font-bold text-[#2B1D00]">ابدأ التدريب مجانًا</Link>
+              <Link prefetch={false} href="/app" className="inline-flex h-11 items-center rounded-xl bg-[#7C5CFF] px-5 font-bold text-white">ابدأ التدريب مجانًا</Link>
               <Link prefetch={false} href="/tatbeeq" className="inline-flex h-11 items-center rounded-xl border border-white/30 px-5 font-bold text-white">تعرّف على التطبيق</Link>
             </div>
           </div>

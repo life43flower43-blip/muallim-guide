@@ -3,7 +3,7 @@
 // شريط رفيع أعلى الشاشة يمتلئ كلما تقدم القارئ في المقال
 import { useEffect, useState } from "react";
 
-export default function ReadProgress({ color = "#E8A317" }: { color?: string }) {
+export default function ReadProgress({ color = "#136F5C" }: { color?: string }) {
   const [p, setP] = useState(0);
   useEffect(() => {
     const on = () => {

@@ -27,7 +27,7 @@ export default function MythCard({ m, n }: { m: Misconception; n: string }) {
             {right ? "أحسنت." : "ليس تمامًا."} العبارة {m.isTrue ? "صحيحة" : "خاطئة"}
           </p>
           <p className="font-bold leading-8 text-[#14302A]">{m.fact}</p>
-          <p className="flex gap-2 text-[15px] leading-7 text-[#3A5249]"><Lightbulb className="mt-1 h-4 w-4 shrink-0 text-[#E8A317]" />{m.why}</p>
+          <p className="flex gap-2 text-[15px] leading-7 text-[#3A5249]"><Lightbulb className="mt-1 h-4 w-4 shrink-0 text-[#7C5CFF]" />{m.why}</p>
           <p className="flex gap-2 rounded-xl bg-[#F4F8F6] p-3 text-[15px] leading-7 text-[#24403A]"><School className="mt-1 h-4 w-4 shrink-0 text-[#136F5C]" /><span><b>في الصف: </b>{m.classroom}</span></p>
         </div>
       )}

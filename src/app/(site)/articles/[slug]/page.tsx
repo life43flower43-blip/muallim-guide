@@ -136,7 +136,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="mt-6 rounded-xl bg-[#136F5C] p-5 text-white">
             <p className="font-display text-[19px] font-extrabold">حوّل القراءة إلى استعداد</p>
             <p className="mt-1 text-[14px] leading-7 text-white/85">تدرّب على أسئلة بمستوى اختبارات المعلمين مع تفسير كل خيار، مجانًا.</p>
-            <Link prefetch={false} href="/app" className="mt-3 inline-block rounded-xl bg-[#E8A317] px-5 py-2.5 font-bold text-[#2B1D00]">ابدأ التدريب</Link>
+            <Link prefetch={false} href="/app" className="mt-3 inline-block rounded-xl bg-[#7C5CFF] px-5 py-2.5 font-bold text-white">ابدأ التدريب</Link>
           </div>
         </div>
       </article>

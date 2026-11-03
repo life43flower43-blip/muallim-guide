@@ -102,7 +102,7 @@ export default function About() {
         <h2 className="font-display text-[23px] font-extrabold">ابدأ التدريب اليوم</h2>
         <p className="max-w-xl text-[15px] leading-8 text-white/80">التطبيق مجاني، وفيه كل المفاهيم والأسئلة والاختبارات المحاكية.</p>
         <div className="mt-2 flex flex-wrap justify-center gap-3">
-          <Link prefetch={false} href="/tatbeeq" className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#E8A317] px-5 text-[14.5px] font-bold text-[#2B1D00]"><Smartphone className="h-4 w-4" /> تعرّف على التطبيق</Link>
+          <Link prefetch={false} href="/tatbeeq" className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#7C5CFF] px-5 text-[14.5px] font-bold text-white"><Smartphone className="h-4 w-4" /> تعرّف على التطبيق</Link>
           <Link href="/contact" className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/30 px-5 text-[14.5px] font-bold text-white"><Mail className="h-4 w-4" /> تواصل معنا</Link>
         </div>
       </section>
