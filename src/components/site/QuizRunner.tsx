@@ -10,6 +10,95 @@ const AR = "٠١٢٣٤٥٦٧٨٩";
 const ad = (n: number) => String(n).replace(/\d/g, (d) => AR[+d]);
 const LETTERS = ["أ", "ب", "ج", "د", "هـ"];
 
+// كل محور والمعيار الذي يُذاكر به في صفحة المعايير العشرة
+const STD: Record<string, { slug: string; t: string }> = {
+  M1: { slug: "learner-learning", t: "المعرفة بالمتعلم وكيفية تعلمه" },
+  M2: { slug: "learner-learning", t: "المعرفة بالمتعلم وكيفية تعلمه" },
+  M3: { slug: "learner-learning", t: "المعرفة بالمتعلم وكيفية تعلمه" },
+  SE1: { slug: "learning-environment", t: "تهيئة بيئات تعلم تفاعلية وداعمة" },
+  M4: { slug: "assessment", t: "التقويم" },
+  M5: { slug: "teaching-methods", t: "المعرفة بطرق التدريس العامة" },
+  C1: { slug: "planning-teaching", t: "التخطيط للتدريس وتنفيذه" },
+  F1: { slug: "ethics-identity", t: "القيم وأخلاقيات المهنة" },
+};
+const courseOf = (href: string) => href.split("/")[2] ?? "";
+
+/** تقرير المحاور بعد الاختبار: نتيجة كل محور، وروابط لمذاكرة الأضعف، والأسئلة التي أخطأ فيها */
+function Report({ questions, answers }: { questions: SiteQ[]; answers: boolean[] }) {
+  const by = new Map<string, { name: string; cid: string; right: number; total: number }>();
+  questions.forEach((q, k) => {
+    const cid = courseOf(q.href);
+    const r = by.get(cid) ?? { name: q.course, cid, right: 0, total: 0 };
+    r.total += 1;
+    if (answers[k]) r.right += 1;
+    by.set(cid, r);
+  });
+  const rows = [...by.values()].sort((a, b) => a.right / a.total - b.right / b.total);
+  const weak = rows.filter((r) => r.right / r.total < 0.6);
+  const wrong = questions.filter((_, k) => !answers[k]).slice(0, 6);
+  const stds = weak.slice(0, 4).map((r) => STD[r.cid]).filter((x, i, a) => x && a.findIndex((y) => y?.slug === x.slug) === i);
+  if (rows.length < 2) return null;
+  return (
+    <div className="mt-5 text-right">
+      <p className="text-[15px] font-extrabold text-[#14302A]">نتيجتك في كل محور</p>
+      <ul className="mt-2 space-y-2.5">
+        {rows.map((r) => {
+          const pct = Math.round((r.right / r.total) * 100);
+          const color = pct >= 80 ? "#1E7B4A" : pct >= 60 ? "#B7791F" : "#C0392B";
+          return (
+            <li key={r.cid}>
+              <div className="flex items-center justify-between text-[13.5px]">
+                <span className="font-bold text-[#2E4A42]">{r.name}</span>
+                <span className="font-bold" style={{ color }}>{ad(r.right)} من {ad(r.total)}</span>
+              </div>
+              <div className="mt-1 h-2 overflow-hidden rounded-full bg-[#EEF3F0]"><div className="h-full rounded-full" style={{ width: `${Math.max(pct, 4)}%`, background: color }} /></div>
+            </li>
+          );
+        })}
+      </ul>
+
+      {weak.length > 0 && (
+        <div className="mt-5 rounded-xl bg-[#FFF6E5] p-4">
+          <p className="text-[14.5px] font-extrabold text-[#5A3A0A]">ابدأ مذاكرتك من هنا</p>
+          <p className="mt-2 text-[12.5px] font-bold text-[#8A6A3A]">المحاور الأضعف</p>
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
+            {weak.slice(0, 4).map((r) => (
+              <Link key={r.cid} href={`/learn/${r.cid}`} className="rounded-lg bg-white px-2.5 py-1 text-[13.5px] font-bold text-[#136F5C]">{r.name}</Link>
+            ))}
+          </div>
+          {stds.length > 0 && (
+            <>
+              <p className="mt-3 text-[12.5px] font-bold text-[#8A6A3A]">المعايير التي تذاكر بها</p>
+              <ul className="mt-1 space-y-1">
+                {stds.map((x) => (
+                  <li key={x.slug}><Link href={`/standards#${x.slug}`} className="flex items-center gap-1 text-[14px] font-bold leading-7 text-[#136F5C]"><ChevronLeft className="h-4 w-4 shrink-0" />{x.t}</Link></li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      )}
+
+      {wrong.length > 0 && (
+        <div className="mt-5">
+          <p className="text-[14.5px] font-extrabold text-[#14302A]">راجع شرح ما أخطأت فيه</p>
+          <ul className="mt-1 divide-y divide-[#EEF3F0]">
+            {wrong.map((q) => (
+              <li key={q.id}>
+                <Link href={q.href} className="flex items-center gap-2 py-2.5 text-[14px] text-[#14302A] hover:text-[#136F5C]">
+                  <XCircle className="h-4 w-4 shrink-0 text-[#C0392B]" />
+                  <span className="min-w-0 flex-1">{q.concept}</span>
+                  <ChevronLeft className="h-4 w-4 shrink-0 text-[#B5C6BE]" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function QuizRunner({ questions, title, onConceptPage = false }: { questions: SiteQ[]; title?: string; onConceptPage?: boolean }) {
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -38,6 +127,7 @@ export default function QuizRunner({ questions, title, onConceptPage = false }: 
         <p className="mt-2 font-display text-[48px] font-extrabold text-[#136F5C]"><bdi dir="rtl">{ad(pct)}٪</bdi></p>
         <p className="text-[15px] text-[#4D635A]">أجبت إجابة صحيحة عن {ad(right)} من {ad(questions.length)}</p>
         <p className="mt-3 font-bold text-[#14302A]">{msg}</p>
+        <Report questions={questions} answers={answers} />
         <div className="mt-5 rounded-2xl bg-[#136F5C] p-5 text-white">
           <p className="font-display text-[18px] font-extrabold">تابع في تطبيق تربوي</p>
           <p className="mt-1 text-[14px] leading-7 text-white/85">اختبار محاكٍ كامل بزمن حقيقي، وتحليل لكل محور، ومراجعة لأخطائك في موعدها. مجانًا.</p>
