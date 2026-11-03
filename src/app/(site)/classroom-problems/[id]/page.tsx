@@ -49,9 +49,9 @@ export default async function Problem({ params }: { params: Promise<{ id: string
     <WithSidebar>
       <Crumbs items={[{ href: "/classroom-problems", label: "مشكلات صفية" }, { label: s.title }]} />
       <article className="overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
-        <header className="border-b border-[#E2ECE6] pb-6">
-          <p className="text-[13px] font-bold text-[#136F5C]">{s.stage}</p>
-          <h1 className="mt-1 font-display text-[28px] font-extrabold leading-[1.45] text-[#14302A] sm:text-[34px]">{s.title}</h1>
+        <header className="border-b border-[#E2ECE6] p-5 sm:p-7">
+          <h1 className="font-display text-[26px] font-extrabold leading-[1.5] text-[#14302A] sm:text-[34px]">{s.title}</h1>
+          <p className="mt-2 text-[14px] text-[#6B8077]">{s.stage}</p>
         </header>
         <div className="space-y-6 p-5 sm:p-7">
           <section>
@@ -102,8 +102,8 @@ export default async function Problem({ params }: { params: Promise<{ id: string
         <div className="grid gap-3 sm:grid-cols-2">
           {others.map((o) => (
             <Link key={o.id} href={`/classroom-problems/${o.slug}`} className="rounded-2xl border border-[#E2ECE6] bg-white p-4 hover:border-[#B4532A]">
-              <span className="text-[12px] font-bold text-[#8AA095]">{o.stage}</span>
-              <span className="mt-1 block font-bold text-[#14302A]">{o.title}</span>
+              <span className="block font-bold text-[#14302A]">{o.title}</span>
+              <span className="mt-1 block text-[12.5px] text-[#8AA095]">{o.stage}</span>
             </Link>
           ))}
         </div>
