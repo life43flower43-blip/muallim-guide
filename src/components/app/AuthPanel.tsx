@@ -1,12 +1,13 @@
 "use client";
 
 // ============================================================================
-// الدخول بحساب Google وحده — كما في أوريندو: زر واحد، بلا نماذج ولا كلمات مرور
+// الدخول بالبريد وكلمة المرور، أو بحساب Google إن كان مفعّلًا على الخادم
 // ============================================================================
 // الخادم يتولى كل شيء عبر /api/auth/google، ويُنشئ الحساب في أول دخول
 // ومعه جواهر الترحيب، وينقل تقدم الضيف من هذا الجهاز تلقائيًا.
 // ============================================================================
 
+import { useEffect, useState } from "react";
 import { FitText } from "./FitText";
 
 export function GoogleIcon({ className = "h-5 w-5" }: { className?: string }) {
@@ -21,16 +22,83 @@ export function GoogleIcon({ className = "h-5 w-5" }: { className?: string }) {
 }
 
 
-/** onDone يُستدعى قبل الانتقال إلى Google (مثلًا لإنهاء شاشة البداية فلا تعود بعد الدخول) */
-export default function AuthPanel({ label = "المتابعة بحساب Google", onDone }: { label?: string; onDone?: () => void }) {
+/** onDone يُستدعى قبل الدخول (مثلًا لإنهاء شاشة البداية فلا تعود بعد الدخول) */
+export default function AuthPanel({ label = "المتابعة بحساب Google", onDone, initialMode = "signup" }: { label?: string; onDone?: () => void; initialMode?: "signup" | "login" }) {
+  const [google, setGoogle] = useState(false);
+  const [mode, setMode] = useState<"signup" | "login">(initialMode);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  // زر Google يظهر فقط إن كان مفعّلًا على الخادم، حتى لا يضغط المستخدم زرًا لا يعمل
+  useEffect(() => {
+    fetch("/api/auth/providers").then((r) => r.json()).then((j) => setGoogle(!!j.google)).catch(() => {});
+  }, []);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setBusy(true);
+    try {
+      const res = await fetch(mode === "signup" ? "/api/auth/register" : "/api/auth/login", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(mode === "signup" ? { name, email, password } : { email, password }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(j.error || "حدث خطأ، حاول مرة أخرى");
+        setBusy(false);
+        return;
+      }
+      onDone?.();
+      // العودة نفسها التي تتبع دخول Google: رسالة، ثم نقل بيانات الجهاز إلى الحساب
+      window.location.href = "/app?login=success";
+    } catch {
+      setError("تعذّر الاتصال، تحقق من الإنترنت");
+      setBusy(false);
+    }
+  };
+
+  const field = "min-h-[48px] w-full rounded-[16px] border border-[#E3D3A0] bg-white px-4 text-base outline-none focus:border-[var(--t700,#136F5C)] dark:bg-card";
+
   return (
-    <a
-      href="/api/auth/google"
-      onClick={() => onDone?.()}
-      className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-[20px] border border-[#E3D3A0] bg-white px-4 text-base font-bold text-[var(--t900)] transition-colors hover:bg-[#FBF7EA] dark:bg-card dark:text-foreground"
-    >
-      <GoogleIcon className="h-5 w-5 shrink-0" />
-      <FitText max={16} min={11} className="shrink">{label}</FitText>
-    </a>
+    <div className="space-y-3">
+      {google && (
+        <>
+          <a
+            href="/api/auth/google"
+            onClick={() => onDone?.()}
+            className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-[20px] border border-[#E3D3A0] bg-white px-4 text-base font-bold text-[var(--t900)] transition-colors hover:bg-[#FBF7EA] dark:bg-card dark:text-foreground"
+          >
+            <GoogleIcon className="h-5 w-5 shrink-0" />
+            <FitText max={16} min={11} className="shrink">{label}</FitText>
+          </a>
+          <p className="text-center text-sm text-muted-foreground">أو بالبريد الإلكتروني</p>
+        </>
+      )}
+
+      <div className="grid grid-cols-2 rounded-[16px] bg-muted p-1 text-sm font-bold">
+        {(["signup", "login"] as const).map((m) => (
+          <button key={m} type="button" onClick={() => { setMode(m); setError(""); }} className={`min-h-[40px] rounded-[12px] ${mode === m ? "bg-white text-[var(--t900)] shadow-sm dark:bg-card dark:text-foreground" : "text-muted-foreground"}`}>
+            {m === "signup" ? "حساب جديد" : "دخول"}
+          </button>
+        ))}
+      </div>
+
+      <form onSubmit={submit} className="space-y-2.5">
+        {mode === "signup" && (
+          <input className={field} value={name} onChange={(e) => setName(e.target.value)} placeholder="اسمك" autoComplete="name" required minLength={2} maxLength={60} />
+        )}
+        <input className={field} type="email" dir="ltr" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="البريد الإلكتروني" autoComplete="email" required />
+        <input className={field} type="password" dir="ltr" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={mode === "signup" ? "كلمة مرور (٨ أحرف على الأقل)" : "كلمة المرور"} autoComplete={mode === "signup" ? "new-password" : "current-password"} required minLength={8} />
+        {error && <p role="alert" className="text-sm font-bold text-red-600">{error}</p>}
+        <button type="submit" disabled={busy} className="min-h-[48px] w-full rounded-[20px] bg-[var(--t700,#136F5C)] px-4 text-base font-bold text-white disabled:opacity-60">
+          {busy ? "لحظة..." : mode === "signup" ? "إنشاء الحساب" : "دخول"}
+        </button>
+      </form>
+    </div>
   );
 }

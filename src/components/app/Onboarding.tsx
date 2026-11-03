@@ -45,7 +45,7 @@ export default function Onboarding() {
         {signIn ? (
           <Card className="p-5">
             <h1 className="mb-4 font-display text-xl font-bold">ادخل إلى حسابك</h1>
-            <AuthPanel onDone={setOnboarded} />
+            <AuthPanel onDone={setOnboarded} initialMode="login" />
             <button type="button" onClick={() => setSignIn(false)} className="mt-4 min-h-[44px] w-full text-sm font-medium text-primary">
               رجوع
             </button>
