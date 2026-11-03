@@ -56,6 +56,7 @@ import {
 import type { Tab } from "./AppShell";
 import { OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
 import { disablePush, enablePush, usePushState } from "@/lib/push-client";
+import DefaultAvatar from "./DefaultAvatar";
 import AuthPanel from "./AuthPanel";
 import PastTests from "./PastTests";
 import { Card, IconTile, PageTitle, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, pct } from "./ui-kit";
@@ -222,15 +223,15 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
         <Card className="p-5">
           <div className="flex items-center gap-4">
             {user?.avatar ? (
-              <img src={user.avatar} alt="" className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-[#F4D27A]" referrerPolicy="no-referrer" />
+              <img src={user.avatar} alt="" className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-[#B9A7FF]" referrerPolicy="no-referrer" />
             ) : (
-              <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[var(--t100)] font-display text-2xl font-bold text-[var(--t800)] ring-2 ring-[#F4D27A]">
-                {user ? user.name.charAt(0) : <UserRound className="h-8 w-8" />}
+              <span className="shrink-0 rounded-full ring-2 ring-[#B9A7FF] ring-offset-2 ring-offset-white dark:ring-offset-card">
+                <DefaultAvatar seed={user?.email ?? user?.name ?? "guest"} />
               </span>
             )}
             <div className="min-w-0 flex-1">
               <FitText max={20} min={14} className="font-display font-extrabold">{user ? user.name : "ضيف"}</FitText>
-              <FitText max={14} min={10} className="mt-0.5 font-bold text-[#9A6A12]">{`المستوى ${ad(levelFromXp(xp))} · ${levelTitle(levelFromXp(xp))}`}</FitText>
+              <FitText max={14} min={10} className="mt-0.5 font-bold text-[#D9467A]">{`المستوى ${ad(levelFromXp(xp))} · ${levelTitle(levelFromXp(xp))}`}</FitText>
               <ProgressBar value={(xpInLevel(xp) / LEVEL_XP) * 100} className="mt-2" />
             </div>
           </div>
@@ -242,12 +243,12 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           )}
           {st.examDate && (
             <button type="button" onClick={() => setSettingsOpen(true)} className="mt-4 flex min-h-[44px] w-full items-center gap-3 border-t border-border pt-4 text-right text-sm">
-              <CalendarClock className="h-5 w-5 shrink-0 text-[#C99A06]" />
+              <CalendarClock className="h-5 w-5 shrink-0 text-[#F25F5C]" />
               <span className="min-w-0 flex-1">
                 <FitText max={14} min={10} className="font-bold">{daysLeft !== null && daysLeft >= 0 ? `اختبارك بعد ${arCount(daysLeft, DAY_FORMS)}` : "موعد اختبارك"}</FitText>
                 <FitText max={12} min={9} className="text-muted-foreground">{dateFmt.format(new Date(st.examDate))}</FitText>
               </span>
-              <ChevronLeft className="h-4 w-4 text-[#C99A06]" />
+              <ChevronLeft className="h-4 w-4 text-[#F25F5C]" />
             </button>
           )}
         </Card>
@@ -256,13 +257,13 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
       {/* أرقامك */}
       <div className="grid grid-cols-4 gap-2">
         {[
-          { icon: Flame, label: "أيام متتالية", value: ad(wallet.streak) },
-          { icon: Target, label: "سؤالًا", value: ad(stats.answered) },
-          { icon: CheckCircle2, label: "الدقة", value: pct(stats.accuracy) },
-          { icon: Gem, label: "جوهرة", value: ad(wallet.gems) },
+          { icon: Flame, label: "أيام متتالية", value: ad(wallet.streak), c: "#F25F5C", bg: "#FFE9E8" },
+          { icon: Target, label: "سؤالًا", value: ad(stats.answered), c: "#0EA5E9", bg: "#E0F2FE" },
+          { icon: CheckCircle2, label: "الدقة", value: pct(stats.accuracy), c: "#10B981", bg: "#DCFCE7" },
+          { icon: Gem, label: "جوهرة", value: ad(wallet.gems), c: "#7C5CFF", bg: "#F0EBFF" },
         ].map((s) => (
           <Card key={s.label} className="flex min-w-0 flex-col items-center gap-1 px-1.5 py-3 text-center">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#FBF1D6] text-[#B8860B]">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full" style={{ background: s.bg, color: s.c }}>
               <s.icon className="h-[18px] w-[18px]" />
             </span>
             <FitText max={18} min={12} group="pf-val" className="w-full font-display font-extrabold">{s.value}</FitText>
@@ -289,7 +290,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
                 <span className="relative flex h-12 w-12 items-center justify-center">
                   <svg viewBox="0 0 48 48" className="absolute inset-0 -rotate-90" aria-hidden="true">
                     <circle cx="24" cy="24" r="21" fill="none" stroke="var(--t100)" strokeWidth="3" />
-                    {frac > 0 && <circle cx="24" cy="24" r="21" fill="none" stroke="#E3B23C" strokeWidth="3" strokeLinecap="round" strokeDasharray={`${frac * C} ${C}`} />}
+                    {frac > 0 && <circle cx="24" cy="24" r="21" fill="none" stroke="#7C5CFF" strokeWidth="3" strokeLinecap="round" strokeDasharray={`${frac * C} ${C}`} />}
                   </svg>
                   <a.icon className={cn("h-5 w-5", level === 0 ? "text-muted-foreground" : "text-[var(--t700)]")} />
                 </span>
@@ -342,11 +343,11 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
                 onClick={() => st.setTheme(th.id)}
                 className={cn(
                   "flex flex-col items-center gap-1.5 rounded-[18px] border bg-white py-2.5 text-sm font-bold transition dark:bg-card",
-                  (st.theme ?? "emerald") === th.id ? "border-[#E3B23C] ring-2 ring-[#F4D27A]" : "border-border"
+                  (st.theme ?? "emerald") === th.id ? "border-[#7C5CFF] ring-2 ring-[#B9A7FF]" : "border-border"
                 )}
               >
                 <span className="relative h-8 w-8 rounded-full" style={{ background: th.color }}>
-                  <span className="absolute -bottom-0.5 -left-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-[#E3B23C]" aria-hidden="true" />
+                  <span className="absolute -bottom-0.5 -left-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-[#7C5CFF]" aria-hidden="true" />
                 </span>
                 {th.label}
               </button>

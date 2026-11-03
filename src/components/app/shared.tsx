@@ -138,7 +138,7 @@ export function NewBadge({ tone = "amber" }: { tone?: "amber" | "violet" }) {
     <span
       className={`flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${
         tone === "amber"
-          ? "bg-amber-400 text-gem"
+          ? "bg-violet-400 text-gem"
           : "bg-primary text-white"
       }`}
     >
@@ -172,7 +172,7 @@ export function ToolRow({
       <span
         className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-white ${
           tone === "amber"
-            ? "bg-gradient-to-br from-amber-500 to-orange-500"
+            ? "bg-gradient-to-br from-violet-500 to-pink-500"
             : "bg-gradient-to-br from-[var(--t600)] to-[var(--t850)]"
         }`}
       >
@@ -187,7 +187,7 @@ export function ToolRow({
           {desc}
         </span>
       </span>
-      <ChevronLeft className="h-4.5 w-4.5 shrink-0 text-[#C99A06]" />
+      <ChevronLeft className="h-4.5 w-4.5 shrink-0 text-[#F25F5C]" />
     </motion.button>
   );
 }

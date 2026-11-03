@@ -358,7 +358,7 @@ export default function StudioView() {
   }
 
   const tabs = (
-    <div role="tablist" aria-label="أقسام الاستوديو" className="mb-5 grid grid-cols-2 gap-1 rounded-[22px] border border-[#E3D3A0] bg-white p-1 dark:bg-card">
+    <div role="tablist" aria-label="أقسام الاستوديو" className="mb-5 grid grid-cols-2 gap-1 rounded-[22px] border border-[#E2DDF5] bg-white p-1 dark:bg-card">
       {(
         [
           ["templates", "خطط جاهزة", LayoutTemplate],
@@ -529,7 +529,7 @@ export default function StudioView() {
                 onClick={() => setPreview(m)}
                 className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[var(--t075)] bg-white p-3.5 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
               >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#FBF1D6] text-[#B8860B]">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F0EBFF] text-[#7C5CFF]">
                   <NotebookPen className="h-5 w-5" />
                 </span>
                 <span className="min-w-0 flex-1">
@@ -569,7 +569,7 @@ export default function StudioView() {
                   <Chip>{planMaturityWord(p)}</Chip>
                 </span>
               </span>
-              <ChevronLeft className="mt-2 h-4 w-4 shrink-0 text-[#C99A06]" />
+              <ChevronLeft className="mt-2 h-4 w-4 shrink-0 text-[#F25F5C]" />
             </button>
           ))}
         </Divided>

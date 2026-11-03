@@ -57,14 +57,14 @@ function ToolRow({ t, onClick }: { t: ToolDef; onClick: () => void }) {
       onClick={onClick}
       className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[var(--t075)] bg-white p-3 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
     >
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#FBF1D6] text-[#B8860B]">
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F0EBFF] text-[#7C5CFF]">
         <Icon className="h-5 w-5" />
       </span>
       <span className="min-w-0 flex-1">
         <FitText max={16} min={12} className="font-bold leading-7">{t.label}</FitText>
         <FitText max={13} min={9} className="leading-5 text-muted-foreground">{t.desc}</FitText>
       </span>
-      <ChevronLeft className="h-5 w-5 shrink-0 text-[#C99A06]" />
+      <ChevronLeft className="h-5 w-5 shrink-0 text-[#F25F5C]" />
     </button>
   );
 }

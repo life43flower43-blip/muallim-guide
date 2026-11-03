@@ -34,7 +34,7 @@ export function Splash() {
           aria-hidden="true"
         >
           <motion.div
-            className="relative h-28 w-28 overflow-hidden rounded-[30px] bg-white p-2 ring-1 ring-[#F4C430]/70"
+            className="relative h-28 w-28 overflow-hidden rounded-[30px] bg-white p-2 ring-1 ring-[#FF5C8A]/70"
             initial={booted ? false : { scale: 0.6, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 240, damping: 18 }}
@@ -43,7 +43,7 @@ export function Splash() {
             <img src="/icons/logo-128.png" alt="" className="h-full w-full object-contain" />
             {/* لمعة ذهبية تعبر الشعار */}
             <motion.span
-              className="absolute inset-y-0 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-[#FFF3B0]/80 to-transparent"
+              className="absolute inset-y-0 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-[#FFD6E3]/80 to-transparent"
               initial={{ left: "-60%" }}
               animate={{ left: "130%" }}
               transition={{ delay: 0.35, duration: 0.6, ease: "easeInOut" }}

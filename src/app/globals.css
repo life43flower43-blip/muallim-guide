@@ -56,18 +56,18 @@
   --destructive: #B42318;
   --input: #C3D9CD;
   --success: #067647;
-  --warning: #A67C00;
-  --amber: #A67C00;
+  --warning: #F97316;
+  --amber: #F97316;
   --rose: #B42318;
   --violet: #1F7A63;
   --mint: #067647;
-  --gem: #B8860B;
-  --gem-soft: #FBF1D6;
+  --gem: #7C5CFF;
+  --gem-soft: #F0EBFF;
   --success-soft: #ECFDF3;
   --danger-soft: #FEF3F2;
 }
 
-/* ألوان التطبيق: درجات اللون الأساسي تتغير بحسب النمط المختار من الإعدادات، والذهبي ثابت في كل الأنماط */
+/* ألوان التطبيق: درجات اللون الأساسي تتغير بحسب النمط المختار، ولون الإبراز الحيوي (بنفسجي ووردي ومرجاني) ثابت في كل الأنماط */
 :root {
   --t950: #0D5848;
   --t900: #174D41;
@@ -391,10 +391,10 @@ body {
   --input: #2A443C;
   --ring: #5CCFA6;
   --success: #47CD89;
-  --warning: #FDB022;
+  --warning: #FB923C;
   --destructive: #F97066;
-  --gem: #FDB022;
-  --gem-soft: rgba(253, 176, 34, 0.12);
+  --gem: #A78BFA;
+  --gem-soft: rgba(167, 139, 250, 0.14);
   --success-soft: rgba(71, 205, 137, 0.12);
   --danger-soft: rgba(249, 112, 102, 0.12);
 }
@@ -517,28 +517,28 @@ body {
 }
 
 .dark .bg-amber-50 {
-  background-color: rgba(245, 158, 11, 0.1);
+  background-color: rgba(124, 92, 255, 0.1);
 }
 .dark .bg-amber-100 {
-  background-color: rgba(245, 158, 11, 0.16);
+  background-color: rgba(124, 92, 255, 0.16);
 }
 .dark .border-amber-200 {
-  border-color: rgba(245, 158, 11, 0.28);
+  border-color: rgba(124, 92, 255, 0.28);
 }
 .dark .border-amber-300 {
-  border-color: rgba(245, 158, 11, 0.4);
+  border-color: rgba(124, 92, 255, 0.4);
 }
 .dark .text-amber-950 {
-  color: #fde9b8;
+  color: #FFE1EA;
 }
 .dark .text-amber-900 {
-  color: #fbdda0;
+  color: #FFD6E3;
 }
 .dark .text-amber-800 {
-  color: #fad28a;
+  color: #FFC2D4;
 }
 .dark .text-amber-700 {
-  color: #f8c15c;
+  color: #FF8FB1;
 }
 
 .dark .bg-sky-50 {
@@ -588,7 +588,7 @@ body {
   inset-inline: 0;
   bottom: 0;
   height: 3px;
-  background: linear-gradient(90deg, #D4AF37, #F7D774 20%, #FFF8DC 35%, #F4C430 50%, #D4AF37 65%, #FFE88A 80%, #D4AF37);
+  background: linear-gradient(90deg, #7C5CFF, #FF8A65 20%, #FFE3EC 35%, #FF5C8A 50%, #7C5CFF 65%, #FFB199 80%, #7C5CFF);
   background-size: 200% 100%;
   
   animation: gold-shine 6s linear infinite;
@@ -614,13 +614,13 @@ body {
   border-radius: 22px;
   background:
     linear-gradient(var(--t025), var(--t025)) padding-box,
-    conic-gradient(from var(--gold-angle), #D4AF37, #F4C430 16%, #FFFFFF 25%, #FFF3B0 29%, #F4C430 36%, #C9A227 55%, #F4C430 75%, #D4AF37) border-box;
+    conic-gradient(from var(--gold-angle), #7C5CFF, #FF5C8A 16%, #FFFFFF 25%, #FFD6E3 29%, #FF5C8A 36%, #7C5CFF 55%, #FF5C8A 75%, #7C5CFF) border-box;
   animation: gold-spin 4s linear infinite;
 }
 .dark .gold-frame {
   background:
     linear-gradient(var(--card), var(--card)) padding-box,
-    conic-gradient(from var(--gold-angle), #D4AF37, #F4C430 16%, #FFFFFF 25%, #FFF3B0 29%, #F4C430 36%, #C9A227 55%, #F4C430 75%, #D4AF37) border-box;
+    conic-gradient(from var(--gold-angle), #7C5CFF, #FF5C8A 16%, #FFFFFF 25%, #FFD6E3 29%, #FF5C8A 36%, #7C5CFF 55%, #FF5C8A 75%, #7C5CFF) border-box;
 }
 @keyframes gold-spin {
   to { --gold-angle: 360deg; }
@@ -641,12 +641,12 @@ body {
   border: 1.5px solid transparent;
   background:
     linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(90deg, #D4AF37, #FFE680 25%, #F4C430 50%, #FFE680 75%, #D4AF37) border-box;
+    linear-gradient(90deg, #7C5CFF, #FF8FB1 25%, #FF5C8A 50%, #FF8FB1 75%, #7C5CFF) border-box;
 }
 .dark .nav-gold {
   background:
     linear-gradient(var(--card), var(--card)) padding-box,
-    linear-gradient(90deg, #D4AF37, #FFE680 25%, #F4C430 50%, #FFE680 75%, #D4AF37) border-box;
+    linear-gradient(90deg, #7C5CFF, #FF8FB1 25%, #FF5C8A 50%, #FF8FB1 75%, #7C5CFF) border-box;
 }
 
 /* شريط العنوان متصل بأعلى الشاشة وجانبيها، بلون شريط حالة الهاتف نفسه، وحوافه السفلى مستديرة */
@@ -734,13 +734,13 @@ body {
 
 /* شريط اختبار المحاكاة: لمعة ذهبية تعبره كل بضع ثوانٍ، وعقرب الساعة يدور */
 .exam-cta {
-  border: 1.5px solid #E3B23C;
+  border: 1.5px solid #7C5CFF;
 }
 .exam-cta::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 40%, rgba(255, 226, 122, 0.28) 50%, transparent 60%);
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 143, 177, 0.28) 50%, transparent 60%);
   background-size: 250% 100%;
   animation: exam-shine 4s ease-in-out infinite;
   pointer-events: none;
@@ -764,8 +764,8 @@ body {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  border: 2.5px solid rgba(201, 154, 6, 0.85);
-  background: radial-gradient(circle, transparent 55%, rgba(255, 226, 122, 0.35) 75%, transparent 76%);
+  border: 2.5px solid rgba(124, 92, 255, 0.85);
+  background: radial-gradient(circle, transparent 55%, rgba(255, 143, 177, 0.35) 75%, transparent 76%);
   animation: gold-wave 3.3s ease-out infinite;
   pointer-events: none;
 }

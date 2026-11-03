@@ -46,7 +46,7 @@ export const BLUEPRINTS: ExamBlueprint[] = [
     minutes: 30,
     passPct: 60,
     sections: [{ courseId: "M5", quota: 30 }],
-    color: "#B8860B",
+    color: "#7C5CFF",
   },
   {
     id: "cadre",
@@ -196,7 +196,7 @@ export const PLACEMENT_LEVELS: Record<
   seed: {
     title: "بادئ في المسار",
     desc: "أنت في بداية الطريق — أساسك التربوي يحتاج بناءً من دليل المعلم قبل خوض المحاكاة الصارمة",
-    color: "#B8860B",
+    color: "#7C5CFF",
   },
   growing: {
     title: "نامٍ ومتقدم",

@@ -43,7 +43,7 @@ export function GoalBurst({ done }: { done: boolean }) {
                 animate={{ x: Math.cos(a) * r, y: Math.sin(a) * r, scale: 1, opacity: 0, rotate: 90 }}
                 transition={{ duration: 1.1, ease: "easeOut" }}
               >
-                <path d="M0 -6C.8 -1.2 1.2 -.8 6 0C1.2 .8 .8 1.2 0 6C-.8 1.2 -1.2 .8 -6 0C-1.2 -.8 -.8 -1.2 0 -6Z" fill={i % 2 ? "#F4C430" : "#FFE27A"} />
+                <path d="M0 -6C.8 -1.2 1.2 -.8 6 0C1.2 .8 .8 1.2 0 6C-.8 1.2 -1.2 .8 -6 0C-1.2 -.8 -.8 -1.2 0 -6Z" fill={i % 2 ? "#FF5C8A" : "#FFC2D4"} />
               </motion.svg>
             );
           })}
