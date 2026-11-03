@@ -4,6 +4,8 @@ import { pickQuestions, type SiteQ } from "@/lib/site-nav";
 import { allArticles, todayISO } from "@/lib/articles";
 import { SITE_URL, publicBank } from "@/lib/public-bank";
 import { conceptImage } from "@/lib/concept-images";
+import { PROMOS } from "@/lib/telegram-promos";
+import schedule from "../../content/telegram-schedule.json";
 
 // حدود تيليجرام لاستطلاع الاختبار
 const MAX_Q = 300;
@@ -53,60 +55,76 @@ export function tipOfDay(day = dayNumber()) {
 
 const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-export const SLOTS = ["tip", "q1", "q2"] as const;
+export const SLOTS = ["tip", "q1", "promo", "q2"] as const;
 export type Slot = (typeof SLOTS)[number];
 
-/** منشورات موعد واحد من اليوم: الصباح معلومة اليوم ومقال اليوم، والظهر السؤال الأول، والمساء السؤال الثاني */
-export function buildPosts(iso = todayISO(), slot: Slot = "tip") {
-  const day = dayNumber(iso);
-  const posts: { method: string; body: Record<string, unknown> }[] = [];
+type Day = { date: string; tip: string; q1: string; q2: string; promo: number };
+const SCHEDULE = new Map((schedule as Day[]).map((d) => [d.date, d]));
 
-  if (slot === "tip") {
-    const tip = tipOfDay(day);
-    if (tip) {
-      const text = `💡 <b>معلومة اليوم</b>\n\n<b>${esc(tip.title)}</b>\n${esc(tip.text)}\n\n📚 ${esc(tip.course)}\n<a href="${SITE_URL}${tip.href}">اقرأ الشرح كاملًا</a>`;
-      // إن كان للمفهوم صورة تعليمية تُرسل الصورة والمعلومة تحتها، وإلا تُرسل المعلومة نصًا
-      posts.push(
-        tip.image
-          ? { method: "sendPhoto", body: { photo: `${SITE_URL}${tip.image}`, caption: text, parse_mode: "HTML" } }
-          : { method: "sendMessage", body: { text, parse_mode: "HTML", link_preview_options: { is_disabled: true } } }
-      );
-    }
-    // مقال اليوم إن نُشر مقال جديد في هذا التاريخ
-    for (const a of allArticles().filter((x) => x.date === iso).slice(0, 1)) {
-      posts.push({
-        method: "sendMessage",
-        body: {
-          text: `🆕 <b>مقال جديد:</b> ${esc(a.title)}\n\n${esc(clip(a.description, 220))}\n\n<a href="${SITE_URL}/articles/${a.slug}">اقرأ المقال</a>`,
-          parse_mode: "HTML",
-        },
-      });
-    }
-    return posts;
+/** سؤال من البنك برقمه، بالشكل الذي يُنشر به */
+function questionById(id: string): SiteQ | null {
+  const b = publicBank();
+  const q = b.questions.find((x) => x.id === id);
+  const c = q && b.concepts.find((x) => x.id === q.conceptId);
+  if (!q || !c) return null;
+  return { id: q.id, q: q.question, options: q.options.map((o) => o.text), correct: q.options.findIndex((o) => o.isCorrect), reason: q.reason, course: c.courseId, href: `/learn/${c.courseId}/${c.id}`, concept: c.title };
+}
+
+function tipById(id: string) {
+  const b = publicBank();
+  const c = b.concepts.find((x) => x.id === id);
+  if (!c?.rule) return null;
+  return { title: c.title, text: c.rule, href: `/learn/${c.courseId}/${c.id}`, course: b.courses[c.courseId], image: conceptImage(c.id) };
+}
+
+/** محتوى اليوم: من الجدول السنوي (content/telegram-schedule.json)، وبعد انتهائه يُختار بالحساب */
+export function dayPlan(iso = todayISO()) {
+  const d = SCHEDULE.get(iso);
+  const day = dayNumber(iso);
+  if (d) return { tip: tipById(d.tip), qs: [questionById(d.q1), questionById(d.q2)], promo: PROMOS[d.promo % PROMOS.length] };
+  const qs = questionsOfDay(day);
+  return { tip: tipOfDay(day), qs: [qs[0] ?? null, qs[1] ?? null], promo: PROMOS[day % PROMOS.length] };
+}
+
+/** منشورات موعد واحد: الصباح معلومة، والظهر سؤال، والعصر تعريف بالتطبيق أو الموقع، والمساء سؤال */
+export function buildPosts(iso = todayISO(), slot: Slot = "tip") {
+  const plan = dayPlan(iso);
+  const posts: { method: string; body: Record<string, unknown> }[] = [];
+  const msg = (text: string, preview = false) => ({ method: "sendMessage", body: { text, parse_mode: "HTML", link_preview_options: { is_disabled: !preview } } });
+
+  if (slot === "tip" && plan.tip) {
+    const t = plan.tip;
+    const text = `💡 <b>${esc(t.title)}</b>\n\n${esc(t.text)}\n\n<a href="${SITE_URL}${t.href}">الشرح كاملًا ←</a>`;
+    // إن كان للمفهوم صورة تعليمية تُرسل الصورة والمعلومة تحتها
+    posts.push(t.image ? { method: "sendPhoto", body: { photo: `${SITE_URL}${t.image}`, caption: text, parse_mode: "HTML" } } : msg(text));
+    // ومقال اليوم إن نُشر مقال جديد في هذا التاريخ
+    for (const a of allArticles().filter((x) => x.date === iso).slice(0, 1))
+      posts.push(msg(`🆕 <b>مقال جديد:</b> ${esc(a.title)}\n\n${esc(clip(a.description, 220))}\n\n<a href="${SITE_URL}/articles/${a.slug}">اقرأ المقال ←</a>`, true));
   }
 
-  const n = slot === "q1" ? 0 : 1;
-  const q = questionsOfDay(day)[n];
-  if (!q) return posts;
-  posts.push({
-    method: "sendPoll",
-    body: {
-      question: `${n === 0 ? "سؤال الظهر" : "سؤال المساء"}: ${q.q}`,
-      options: q.options.map((text) => ({ text })),
-      type: "quiz",
-      correct_option_id: q.correct,
-      explanation: clip(q.reason, MAX_EXPL),
-      is_anonymous: true,
-    },
-  });
-  posts.push({
-    method: "sendMessage",
-    body: {
-      text: `📘 <b>شرح السؤال:</b> <a href="${SITE_URL}${q.href}">${esc(q.concept)}</a>${n === 1 ? `\n\n✍️ اختبار الأسبوع: <a href="${SITE_URL}/weekly-test">٢٠ سؤالًا جديدة كل أحد</a>` : ""}`,
-      parse_mode: "HTML",
-      link_preview_options: { is_disabled: true },
-    },
-  });
+  if (slot === "promo" && plan.promo) {
+    const p = plan.promo;
+    const tag = p.kind === "app" ? "📱 تطبيق تربوي" : "🌐 موقع تربوي";
+    posts.push(msg(`${tag}\n\n${esc(p.text)}\n\n<a href="${SITE_URL}${p.href}">${esc(p.cta)} ←</a>`));
+  }
+
+  if (slot === "q1" || slot === "q2") {
+    const q = plan.qs[slot === "q1" ? 0 : 1];
+    if (q) {
+      posts.push({
+        method: "sendPoll",
+        body: {
+          question: clip(`${slot === "q1" ? "سؤال الظهر" : "سؤال المساء"}: ${q.q}`, MAX_Q),
+          options: q.options.map((text) => ({ text })),
+          type: "quiz",
+          correct_option_id: q.correct,
+          explanation: clip(q.reason, MAX_EXPL),
+          is_anonymous: true,
+        },
+      });
+      posts.push(msg(`📘 شرح السؤال: <a href="${SITE_URL}${q.href}">${esc(q.concept)}</a>`));
+    }
+  }
   return posts;
 }
 

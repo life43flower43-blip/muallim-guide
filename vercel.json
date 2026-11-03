@@ -10,11 +10,15 @@
     },
     {
       "path": "/api/cron/telegram?slot=q1",
-      "schedule": "30 10 * * *"
+      "schedule": "30 9 * * *"
+    },
+    {
+      "path": "/api/cron/telegram?slot=promo",
+      "schedule": "30 13 * * *"
     },
     {
       "path": "/api/cron/telegram?slot=q2",
-      "schedule": "30 16 * * *"
+      "schedule": "30 17 * * *"
     }
   ],
   "git": {
