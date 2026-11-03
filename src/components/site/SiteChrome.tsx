@@ -16,6 +16,7 @@ export const RESOURCES = [
   { href: "/glossary", label: "معجم المصطلحات", color: "#136F5C" },
   { href: "/license-guide", label: "دليل اختبار الرخصة", color: "#8A6A12" },
   { href: "/standards", label: "المعايير العشرة", color: "#14302A" },
+  { href: "/weekly-test", label: "اختبار الأسبوع", color: "#7A4E9C" },
   { href: "/license-calculator", label: "حاسبة مستوى الرخصة", color: "#8A6A12" },
   { href: "/sections", label: "أقسام التطبيق", color: "#3A55A4" },
 ];

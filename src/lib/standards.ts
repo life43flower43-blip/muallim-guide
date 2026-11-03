@@ -26,7 +26,7 @@ export const DOMAINS: Domain[] = [
         about: "يقيس التزام المعلم بالقيم الإسلامية الوسطية، وبأخلاقيات مهنة التعليم، ودوره في تعزيز الانتماء والهوية الوطنية عند طلابه.",
         asks: ["التصرف المهني في مواقف فيها تعارض مصالح أو ضغط", "العدل بين الطلاب واحترام خصوصيتهم وكرامتهم", "غرس القيم والمواطنة في الدرس العادي"],
         courses: ["F1"],
-        articles: ["teaching-ethics", "dealing-with-cheating", "digital-citizenship", "kohlberg-moral"],
+        articles: ["teacher-ethics-situations", "national-identity-classroom", "teaching-ethics", "dealing-with-cheating", "digital-citizenship", "kohlberg-moral"],
       },
       {
         n: 2,
@@ -35,7 +35,7 @@ export const DOMAINS: Domain[] = [
         about: "يقيس وعي المعلم بأن مهنته تحتاج تعلمًا لا يتوقف: التأمل في ممارسته، والبحث الإجرائي، والاستفادة من الملاحظة والتغذية الراجعة.",
         asks: ["كيف يحسّن المعلم أداءه بعد حصة لم تنجح", "مصادر النمو المهني ومجتمعات التعلم", "الاستفادة من زيارة المشرف أو الزميل"],
         courses: ["F1"],
-        articles: ["reflective-teaching", "action-research", "professional-learning-communities", "mentor-teacher", "educational-supervision"],
+        articles: ["professional-development-plan", "reflective-teaching", "action-research", "professional-learning-communities", "mentor-teacher", "educational-supervision"],
       },
       {
         n: 3,
@@ -44,7 +44,7 @@ export const DOMAINS: Domain[] = [
         about: "يقيس قدرة المعلم على العمل مع زملائه وإدارته، والتواصل مع الأسر، والشراكة مع المجتمع لخدمة تعلم الطلاب.",
         asks: ["التواصل مع ولي أمر غاضب أو غير متعاون", "العمل ضمن فريق في المدرسة", "إشراك الأسرة في دعم تعلم ابنها"],
         courses: ["F1"],
-        articles: ["parents-communication", "professional-learning-communities", "student-absenteeism"],
+        articles: ["school-community-partnership", "parents-communication", "professional-learning-communities", "student-absenteeism"],
       },
     ],
   },

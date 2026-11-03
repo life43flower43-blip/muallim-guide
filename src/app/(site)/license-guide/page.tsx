@@ -51,7 +51,11 @@ export default function LicenseGuide() {
           </p>
         </section>
 
-        <section className="grid gap-3 sm:grid-cols-2">
+        <section className="grid gap-3 sm:grid-cols-3">
+          <Link href="/weekly-test" className="rounded-2xl border border-[#E2ECE6] bg-white p-5 hover:border-[#136F5C]">
+            <span className="block font-display text-[18px] font-extrabold text-[#14302A]">اختبار الأسبوع</span>
+            <span className="mt-1 block text-[14px] leading-7 text-[#4D635A]">عشرون سؤالًا جديدة كل أحد، مع تقرير لنقاط ضعفك.</span>
+          </Link>
           <Link href="/standards" className="rounded-2xl border border-[#E2ECE6] bg-white p-5 hover:border-[#136F5C]">
             <span className="block font-display text-[18px] font-extrabold text-[#14302A]">المعايير العشرة للاختبار التربوي العام</span>
             <span className="mt-1 block text-[14px] leading-7 text-[#4D635A]">ثلاثة مجالات وعشرة معايير، وما يسأل عنه الاختبار في كل معيار، ودروس تغطيه.</span>
