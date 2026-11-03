@@ -1,7 +1,7 @@
 // مقارنات تربوية: مفاهيم يكثر الخلط بينها، جنبًا إلى جنب مع مفتاح للتمييز في الاختبار
 import type { Metadata } from "next";
 import Link from "next/link";
-import { KeyRound } from "lucide-react";
+import { ChevronLeft, KeyRound } from "lucide-react";
 import { SITE_URL } from "@/lib/public-bank";
 import { COMPARISONS } from "@/lib/comparisons";
 import { ad } from "@/lib/arabic";
@@ -20,35 +20,47 @@ export default function Comparisons() {
       <Crumbs items={[{ label: "مقارنات تربوية" }]} />
       <PageHero kicker="لا تخلط بعد اليوم" title="مقارنات تربوية" color="#3A55A4" sub={`${ad(COMPARISONS.length)} مقارنة بين مفاهيم يكثر الخلط بينها في الصف وفي أسئلة الاختبارات، ومع كل مقارنة مفتاح يساعدك على التمييز بسرعة.`} />
 
-      <nav className="mt-5 flex flex-wrap gap-2" aria-label="المقارنات">
-        {COMPARISONS.map((c) => (
-          <a key={c.slug} href={`#${c.slug}`} className="rounded-full px-3 py-1.5 text-[13px] font-bold" style={{ color: c.color, background: `${c.color}14` }}>
-            {c.a} × {c.b}
-          </a>
-        ))}
+      {/* فهرس مرقّم بلون واحد هادئ */}
+      <nav aria-label="المقارنات" className="mt-5 overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
+        <p className="border-b border-[#EEF3F0] px-4 py-3 text-[14px] font-extrabold text-[#14302A]">فهرس المقارنات</p>
+        <ol className="grid sm:grid-cols-2">
+          {COMPARISONS.map((c, i) => (
+            <li key={c.slug} className="border-b border-[#EEF3F0] sm:odd:border-e">
+              <a href={`#${c.slug}`} className="flex items-center gap-3 px-4 py-3 transition hover:bg-[#F5F7FC]">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#EEF1F9] text-[12.5px] font-extrabold text-[#3A55A4]">{ad(i + 1)}</span>
+                <span className="min-w-0 flex-1 text-[14.5px] font-bold leading-6 text-[#14302A]">
+                  {c.a} <span className="mx-1 font-normal text-[#8AA095]">أم</span> {c.b}
+                </span>
+                <ChevronLeft className="h-4 w-4 shrink-0 text-[#B5C6BE]" />
+              </a>
+            </li>
+          ))}
+        </ol>
       </nav>
 
       <div className="mt-6 space-y-6">
-        {COMPARISONS.map((c) => (
+        {COMPARISONS.map((c, i) => (
           <section key={c.slug} id={c.slug} className="scroll-mt-16 overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
-            <h2 className="grid grid-cols-2 text-center font-display text-[17px] font-extrabold text-white sm:text-[19px]">
-              <span className="px-3 py-3" style={{ background: c.color }}>{c.a}</span>
-              <span className="px-3 py-3" style={{ background: `${c.color}B3` }}>{c.b}</span>
+            <p className="px-4 pt-4 text-[12.5px] font-bold text-[#8AA095]">المقارنة {ad(i + 1)}</p>
+            <h2 className="relative grid grid-cols-2 gap-3 px-4 pb-4 pt-2 text-center font-display text-[16px] font-extrabold leading-7 text-[#14302A] sm:text-[18px]">
+              <span className="flex items-center justify-center rounded-xl bg-[#F3F5FB] px-3 py-3">{c.a}</span>
+              <span className="flex items-center justify-center rounded-xl bg-[#F3F5FB] px-3 py-3">{c.b}</span>
+              <span aria-hidden="true" className="absolute left-1/2 top-1/2 flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#3A55A4] text-[12px] font-bold text-white ring-4 ring-white">أم</span>
             </h2>
-            <div className="divide-y divide-[#EEF3F0]">
+            <div className="divide-y divide-[#EEF3F0] border-t border-[#EEF3F0]">
               {c.rows.map((r) => (
                 <div key={r.k}>
-                  <p className="bg-[#F7FAF8] px-4 py-1.5 text-center text-[12.5px] font-extrabold text-[#5B7268]">{r.k}</p>
+                  <p className="px-4 pt-3 text-center text-[12.5px] font-extrabold text-[#5B7268]">{r.k}</p>
                   <div className="grid grid-cols-2">
                     <p className="p-3 text-[14.5px] leading-7 text-[#24403A]">{r.a}</p>
-                    <p className="border-s-2 border-[#EEF3F0] p-3 text-[14.5px] leading-7 text-[#24403A]">{r.b}</p>
+                    <p className="border-s border-[#EEF3F0] p-3 text-[14.5px] leading-7 text-[#24403A]">{r.b}</p>
                   </div>
                 </div>
               ))}
             </div>
-            <p className="flex gap-2 border-t border-[#EEF3F0] p-4 text-[15px] leading-7" style={{ background: `${c.color}0D` }}>
-              <KeyRound className="mt-1 h-4 w-4 shrink-0" style={{ color: c.color }} />
-              <span><b style={{ color: c.color }}>مفتاح التمييز: </b>{c.tip}</span>
+            <p className="flex gap-2 border-t border-[#EEF3F0] bg-[#F5F7FC] p-4 text-[15px] leading-7 text-[#24403A]">
+              <KeyRound className="mt-1 h-4 w-4 shrink-0 text-[#3A55A4]" />
+              <span><b className="text-[#3A55A4]">مفتاح التمييز: </b>{c.tip}</span>
             </p>
           </section>
         ))}
