@@ -49,7 +49,7 @@ function Label({ children }: { children: React.ReactNode }) {
 }
 
 function Note({ children, tone = "neutral" }: { children: React.ReactNode; tone?: "neutral" | "good" | "fair" | "weak" }) {
-  const cls = { neutral: "bg-[var(--t050)] text-secondary-foreground", good: "bg-[#E3F4EA] text-[#1F5B3C]", fair: "bg-[#F0EBFF] text-[#7A5410]", weak: "bg-danger-soft text-destructive" }[tone];
+  const cls = { neutral: "bg-[var(--t050)] text-secondary-foreground", good: "bg-[#E3F4EA] text-[#1F5B3C]", fair: "bg-[#FBF3DA] text-[#7A5410]", weak: "bg-danger-soft text-destructive" }[tone];
   return <p className={cn("rounded-[16px] px-3.5 py-3 text-[15px] leading-7", cls)}>{children}</p>;
 }
 
@@ -80,7 +80,7 @@ function DelBtn({ onClick, label }: { onClick: () => void; label: string }) {
 
 function ActionBtn({ icon: Icon, onClick, children }: { icon: React.ElementType; onClick: () => void; children: React.ReactNode }) {
   return (
-    <button type="button" onClick={onClick} className="flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-[16px] border border-[#E2DDF5] text-sm font-bold text-[#D9467A]">
+    <button type="button" onClick={onClick} className="flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-[16px] border border-[#ECE3C4] text-sm font-bold text-[#A87B12]">
       <Icon className="h-4 w-4" /> {children}
     </button>
   );
@@ -145,7 +145,7 @@ export function BlueprintTool() {
             </label>
           ))}
         </div>
-        {pSum !== 100 && <p className="mt-1.5 text-xs font-bold text-[#D9467A]">مجموع النسب {ad(pSum)}٪، والأفضل أن يكون ١٠٠٪.</p>}
+        {pSum !== 100 && <p className="mt-1.5 text-xs font-bold text-[#A87B12]">مجموع النسب {ad(pSum)}٪، والأفضل أن يكون ١٠٠٪.</p>}
       </div>
 
       {table ? (
@@ -225,7 +225,7 @@ export function RubricTool() {
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-2 gap-1 rounded-[18px] border border-[#E2DDF5] p-1" role="tablist">
+      <div className="grid grid-cols-2 gap-1 rounded-[18px] border border-[#ECE3C4] p-1" role="tablist">
         {(
           [
             ["build", "بناء السلّم"],
@@ -510,7 +510,7 @@ export function DistractorTool() {
   const [lo, setLo] = useState(["", "", "", ""]);
   const num = (a: string[]) => a.map((x) => parseSingle(x) ?? 0);
   const res = distractorsOf(key, num(up), num(lo));
-  const toneCls = { good: "text-[#1F7A4D]", fair: "text-[#D9467A]", weak: "text-destructive" };
+  const toneCls = { good: "text-[#1F7A4D]", fair: "text-[#A87B12]", weak: "text-destructive" };
 
   return (
     <div className="space-y-4">

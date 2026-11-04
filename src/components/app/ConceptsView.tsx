@@ -449,7 +449,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
           </header>
 
           {c.rule && (
-            <p className="rounded-2xl border-[1.5px] border-[#FF5C8A] bg-[#FFF0F5] p-4 text-lg font-bold leading-9 dark:bg-[#FF5C8A]/10">
+            <p className="rounded-2xl border-[1.5px] border-[#D4A017] bg-[#FFFBEF] p-4 text-lg font-bold leading-9 dark:bg-[#D4A017]/10">
               {c.rule}
             </p>
           )}
@@ -508,7 +508,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
                 <span className="block text-base font-medium">تدرّب على هذا المفهوم</span>
                 <span className="text-sm text-muted-foreground">{arCount(qs.length, QUESTION_FORMS)} بشرح كامل</span>
               </span>
-              <ChevronLeft className="h-4 w-4 shrink-0 text-[#F25F5C]" />
+              <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C]" />
             </button>
             <Disclosure icon={StickyNote} title="ملاحظاتي" count={(notes[c.id] ?? []).length}>
               <MyNotes conceptId={c.id} />
@@ -624,7 +624,7 @@ function ChapterPage({ courseId, chapter, onBack, onOpen }: { courseId: string; 
                       </span>
                     )}
                   </span>
-                  <ChevronLeft className="h-4 w-4 shrink-0 text-[#F25F5C]" />
+                  <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C]" />
                 </button>
               );
             })}
@@ -712,14 +712,14 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
                   onClick={() => onChapter(ch)}
                   className="flex min-h-[64px] w-full min-w-0 items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
                 >
-                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${done ? "bg-gradient-to-br from-[#FFC2D4] to-[#F25F5C] text-white" : "bg-[var(--t100)] text-[var(--t800)]"}`}>
+                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${done ? "bg-gradient-to-br from-[#F3DC8E] to-[#C9971C] text-white" : "bg-[var(--t100)] text-[var(--t800)]"}`}>
                     {done ? <CheckCircle2 className="h-5 w-5" /> : <BookOpen className="h-4 w-4" />}
                   </span>
                   <span className="min-w-0 flex-1">
                     <FitText max={18} min={12} className="font-bold leading-7">{chapterLabel(ch)}</FitText>
                     <MasteryBar counts={m} height={5} className="mt-1.5 max-w-[220px]" />
                   </span>
-                  <ChevronLeft className="h-4 w-4 shrink-0 text-[#F25F5C]" />
+                  <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C]" />
                 </button>
               );
             })}
@@ -848,14 +848,14 @@ export default function ConceptsView() {
                 onClick={() => openConceptHere(resume.id)}
                 className="flex w-full min-w-0 items-center gap-3 rounded-[24px] bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] p-3.5 text-right text-white transition active:scale-[0.98]"
               >
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] bg-white/15 text-[#FFC2D4]">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] bg-white/15 text-[#F3DC8E]">
                   <CourseIcon id={resume.courseId} className="h-6 w-6" />
                 </span>
                 <span className="min-w-0 flex-1">
                   <FitText max={17} min={12} className="font-extrabold leading-7">{resume.title}</FitText>
                   <span className="mt-1.5 flex items-center gap-2">
                     <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/20">
-                      <span className="block h-full rounded-full bg-[#FFC2D4]" style={{ width: `${resumeSiblings.length ? Math.max(4, (resumeRead / resumeSiblings.length) * 100) : 0}%` }} />
+                      <span className="block h-full rounded-full bg-[#F3DC8E]" style={{ width: `${resumeSiblings.length ? Math.max(4, (resumeRead / resumeSiblings.length) * 100) : 0}%` }} />
                     </span>
                     <span className="shrink-0 text-xs font-bold text-white/85">{ad(resumeRead)} من {ad(resumeSiblings.length)}</span>
                   </span>
@@ -885,7 +885,7 @@ export default function ConceptsView() {
               <FitText max={16} min={11} className="font-bold leading-7">مفاهيم خاطئة شائعة</FitText>
               <FitText max={13} min={9} className="leading-5 text-muted-foreground">صحيحة أم خاطئة؟ مع التصحيح</FitText>
             </span>
-            <ChevronLeft className="h-5 w-5 shrink-0 text-[#F25F5C]" />
+            <ChevronLeft className="h-5 w-5 shrink-0 text-[#C9971C]" />
           </button>
 
           {/* المحاور: قائمة موحّدة، لكل محور اسمه في سطر واحد ووصفه وتقدّمه */}

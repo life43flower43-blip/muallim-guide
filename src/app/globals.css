@@ -61,8 +61,8 @@
   --rose: #B42318;
   --violet: #1F7A63;
   --mint: #067647;
-  --gem: #7C5CFF;
-  --gem-soft: #F0EBFF;
+  --gem: #C9971C;
+  --gem-soft: #FBF3DA;
   --success-soft: #ECFDF3;
   --danger-soft: #FEF3F2;
 }
@@ -517,28 +517,28 @@ body {
 }
 
 .dark .bg-amber-50 {
-  background-color: rgba(124, 92, 255, 0.1);
+  background-color: rgba(201, 151, 28, 0.1);
 }
 .dark .bg-amber-100 {
-  background-color: rgba(124, 92, 255, 0.16);
+  background-color: rgba(201, 151, 28, 0.16);
 }
 .dark .border-amber-200 {
-  border-color: rgba(124, 92, 255, 0.28);
+  border-color: rgba(201, 151, 28, 0.28);
 }
 .dark .border-amber-300 {
-  border-color: rgba(124, 92, 255, 0.4);
+  border-color: rgba(201, 151, 28, 0.4);
 }
 .dark .text-amber-950 {
   color: #FFE1EA;
 }
 .dark .text-amber-900 {
-  color: #FFD6E3;
+  color: #FCEBB6;
 }
 .dark .text-amber-800 {
-  color: #FFC2D4;
+  color: #F3DC8E;
 }
 .dark .text-amber-700 {
-  color: #FF8FB1;
+  color: #E8C766;
 }
 
 .dark .bg-sky-50 {
@@ -588,7 +588,7 @@ body {
   inset-inline: 0;
   bottom: 0;
   height: 3px;
-  background: linear-gradient(90deg, #7C5CFF, #FF8A65 20%, #FFE3EC 35%, #FF5C8A 50%, #7C5CFF 65%, #FFB199 80%, #7C5CFF);
+  background: linear-gradient(90deg, #C9971C, #FF8A65 20%, #FFE3EC 35%, #D4A017 50%, #C9971C 65%, #FFB199 80%, #C9971C);
   background-size: 200% 100%;
   
   animation: gold-shine 6s linear infinite;
@@ -614,13 +614,13 @@ body {
   border-radius: 22px;
   background:
     linear-gradient(var(--t025), var(--t025)) padding-box,
-    conic-gradient(from var(--gold-angle), #7C5CFF, #FF5C8A 16%, #FFFFFF 25%, #FFD6E3 29%, #FF5C8A 36%, #7C5CFF 55%, #FF5C8A 75%, #7C5CFF) border-box;
+    conic-gradient(from var(--gold-angle), #C9971C, #D4A017 16%, #FFFFFF 25%, #FCEBB6 29%, #D4A017 36%, #C9971C 55%, #D4A017 75%, #C9971C) border-box;
   animation: gold-spin 4s linear infinite;
 }
 .dark .gold-frame {
   background:
     linear-gradient(var(--card), var(--card)) padding-box,
-    conic-gradient(from var(--gold-angle), #7C5CFF, #FF5C8A 16%, #FFFFFF 25%, #FFD6E3 29%, #FF5C8A 36%, #7C5CFF 55%, #FF5C8A 75%, #7C5CFF) border-box;
+    conic-gradient(from var(--gold-angle), #C9971C, #D4A017 16%, #FFFFFF 25%, #FCEBB6 29%, #D4A017 36%, #C9971C 55%, #D4A017 75%, #C9971C) border-box;
 }
 @keyframes gold-spin {
   to { --gold-angle: 360deg; }
@@ -641,7 +641,7 @@ body {
   border: 1.5px solid transparent;
   background:
     linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(#DCE8E2, #DCE8E2) border-box;
+    linear-gradient(90deg, #E8C766, #C9971C 50%, #E8C766) border-box;
   box-shadow: 0 6px 20px rgba(14, 59, 50, 0.08);
 }
 .dark .nav-gold {
@@ -735,7 +735,7 @@ body {
 
 /* شريط اختبار المحاكاة: لمعة ذهبية تعبره كل بضع ثوانٍ، وعقرب الساعة يدور */
 .exam-cta {
-  border: 1px solid var(--t150);
+  border: 1.5px solid #D4A017;
 }
 .exam-cta::after {
   content: "";
@@ -765,7 +765,7 @@ body {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  border: 2px solid rgba(19, 111, 92, 0.45);
+  border: 2px solid rgba(212, 160, 23, 0.6);
   background: none;
   animation: gold-wave 3.3s ease-out infinite;
   pointer-events: none;

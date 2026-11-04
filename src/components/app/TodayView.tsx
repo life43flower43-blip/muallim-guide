@@ -62,7 +62,7 @@ function MiniActivity({ sessions }: { sessions: { ts: number; total: number }[] 
             {col.map((c, d) => (
               <span
                 key={d}
-                className={cn("h-[5px] w-[5px] rounded-full", c.today && "ring-[1.5px] ring-[#7C5CFF]")}
+                className={cn("h-[5px] w-[5px] rounded-full", c.today && "ring-[1.5px] ring-[#C9971C]")}
                 style={{ background: c.future ? "transparent" : shade[level(c.n)] }}
               />
             ))}
@@ -181,12 +181,12 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             }}
             className="col-span-4 flex min-w-0 flex-col gap-2"
           >
-            <span className="exam-cta relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-[26px] bg-[var(--t050)] ring-1 ring-[var(--t100)] px-3 text-[var(--t900)]" style={{ height: tileH ?? 120 }}>
+            <span className="exam-cta relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-[26px] bg-gradient-to-l from-[#FFFBEF] to-[#FBF3DA] px-3 text-[var(--t900)]" style={{ height: tileH ?? 120 }}>
               <span className="relative flex h-[46px] w-[46px] shrink-0 items-center justify-center" aria-hidden="true">
                 <span className="gold-wave" />
                 <span className="gold-wave" style={{ animationDelay: "1.1s" }} />
                 <span className="gold-wave" style={{ animationDelay: "2.2s" }} />
-                <span className="exam-pulse relative flex h-full w-full items-center justify-center rounded-full bg-[var(--t700)]">
+                <span className="exam-pulse relative flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-[#E8C766] to-[#C9971C]">
                   <span className="text-[14px] font-extrabold text-white">ابدأ</span>
                 </span>
               </span>
@@ -212,11 +212,11 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               className={cn("flex min-w-0 flex-col items-center gap-2", i === 1 || i === 2 ? "col-span-3" : "col-span-2")}
             >
               {/* صورة القسم بإطار ذهبي رفيع، وخط التقدّم الذهبي أسفلها */}
-              <span className={cn("relative flex w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)]", d.special ? "ring-1 ring-[var(--t300)]" : "ring-1 ring-[var(--t075)]")} style={{ height: tileH ?? 120 }}>
+              <span className={cn("relative flex w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)]", d.special ? "ring-2 ring-[#D4A017]" : "ring-1 ring-[var(--t075)]")} style={{ height: tileH ?? 120 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 {d.special ? <TestArt /> : <img src={d.img} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: d.pos }} />}
                 <span className="absolute inset-x-4 bottom-2.5 h-[3px] overflow-hidden rounded-full bg-white/80" aria-hidden="true">
-                  <span className="block h-full rounded-full bg-[var(--t600)]" style={{ width: `${Math.round(d.progress * 100)}%` }} />
+                  <span className="block h-full rounded-full bg-[#D4A017]" style={{ width: `${Math.round(d.progress * 100)}%` }} />
                 </span>
               </span>
               <FitText max={i === 1 || i === 2 ? 17 : 14} min={10} group={i === 1 || i === 2 ? "door-wide" : "door-small"} className="w-full text-center font-bold leading-[22px] text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
@@ -253,7 +253,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               <span className="text-[11.5px] font-bold text-[var(--t450)]">{Math.round(d.progress * 100)}٪</span>
             </span>
             <span className="mx-1 block h-[3px] overflow-hidden rounded-full bg-[var(--t075)]" aria-hidden="true">
-              <span className="block h-full rounded-full bg-[var(--t600)] transition-[width] duration-700" style={{ width: `${Math.round(d.progress * 100)}%` }} />
+              <span className="block h-full rounded-full bg-[#D4A017] transition-[width] duration-700" style={{ width: `${Math.round(d.progress * 100)}%` }} />
             </span>
           </motion.button>
         ))}
@@ -278,20 +278,20 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 >
                   <defs>
                     <linearGradient id={`leafGold${i}`} x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0" stopColor="var(--t300)" />
-                      <stop offset="1" stopColor="var(--t700)" />
+                      <stop offset="0" stopColor="#F3DC8E" />
+                      <stop offset="1" stopColor="#D4A017" />
                     </linearGradient>
                   </defs>
                   <path
                     d="M12 2C6.5 6 4.5 11.5 6 17c1.2 3.2 4 5 6 5s4.8-1.8 6-5c1.5-5.5-.5-11-6-15Z"
                     fill={d.done ? `url(#leafGold${i})` : d.today ? "var(--t100)" : d.future ? "none" : "var(--t050)"}
-                    stroke={d.done ? "var(--t700)" : d.today ? "var(--t800)" : "var(--t300)"}
+                    stroke={d.done ? "#C9971C" : d.today ? "var(--t800)" : "var(--t300)"}
                     strokeWidth={d.today ? 1.8 : 1.3}
                     strokeDasharray={d.future ? "2.5 2" : undefined}
                   />
                   <path d="M12 6v14M12 11l-3-2.5M12 15l3-2.5" stroke={d.done ? "#FFFFFF" : d.today ? "var(--t800)" : "var(--t300)"} strokeWidth="1.1" strokeLinecap="round" fill="none" />
                 </svg>
-                <span className={cn("text-[12px] leading-none", d.today ? "font-extrabold text-[var(--t800)]" : d.done ? "font-bold text-[var(--t700)]" : "font-bold text-[var(--t450)]")}>{d.label}</span>
+                <span className={cn("text-[12px] leading-none", d.today ? "font-extrabold text-[var(--t800)]" : d.done ? "font-bold text-[#B8860B]" : "font-bold text-[var(--t450)]")}>{d.label}</span>
               </span>
             ))}
           </div>
@@ -347,10 +347,10 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             <span className="flex h-[60px] items-center">
             <span className="relative flex h-[44px] w-[44px] items-center justify-center" aria-hidden="true">
               <svg viewBox="0 0 48 48" className="review-spin absolute -inset-[6px] h-[56px] w-[56px]">
-                <path d="M24 4a20 20 0 0 1 18.3 12" fill="none" stroke={due > 0 ? "#7C5CFF" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" />
-                <path d="M43.6 10.5l-1.3 5.6-5.5-1.6" fill="none" stroke={due > 0 ? "#7C5CFF" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M24 44A20 20 0 0 1 5.7 32" fill="none" stroke={due > 0 ? "#7C5CFF" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" />
-                <path d="M4.4 37.5l1.3-5.6 5.5 1.6" fill="none" stroke={due > 0 ? "#7C5CFF" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M24 4a20 20 0 0 1 18.3 12" fill="none" stroke={due > 0 ? "#C9971C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" />
+                <path d="M43.6 10.5l-1.3 5.6-5.5-1.6" fill="none" stroke={due > 0 ? "#C9971C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M24 44A20 20 0 0 1 5.7 32" fill="none" stroke={due > 0 ? "#C9971C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" />
+                <path d="M4.4 37.5l1.3-5.6 5.5 1.6" fill="none" stroke={due > 0 ? "#C9971C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span className="absolute h-[30px] w-[24px] translate-x-[3px] rotate-[10deg] rounded-[7px] bg-[var(--t150)]" />
               <span className={cn("relative flex h-[30px] w-[24px] -rotate-[6deg] items-center justify-center rounded-[7px] text-[13px] font-extrabold text-white", due > 0 ? "bg-gradient-to-b from-[#E05A4C] to-[#B42318]" : "bg-gradient-to-b from-[var(--t600)] to-[var(--t850)]")}>
@@ -362,8 +362,31 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           </button>
         </div>
       </motion.div>
+
+      {/* تابعنا وشارك: صف صغير هادئ في آخر الرئيسية */}
+      <motion.div {...rise(10)} className="rounded-[20px] border border-[#ECE3C4] bg-white p-3 dark:border-border dark:bg-card">
+        <p className="text-center text-[13px] font-bold text-[var(--t700)]">معلومة وسؤالان كل يوم في قنواتنا</p>
+        <div className="mt-2 grid grid-cols-3 gap-2">
+          <a href="https://t.me/MuallimExam" target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-[var(--t800)]">تيليجرام</a>
+          <a href="https://www.facebook.com/share/1CHdqGvYz5/" target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-[var(--t800)]">فيسبوك</a>
+          <button type="button" onClick={shareApp} className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-gradient-to-br from-[#E8C766] to-[#C9971C] text-[13px] font-extrabold text-[var(--t900)]">شارك التطبيق</button>
+        </div>
+      </motion.div>
     </div>
   );
+}
+
+/** مشاركة التطبيق: قائمة المشاركة في الهاتف، وإلا نسخ الرابط */
+async function shareApp() {
+  const url = `${window.location.origin}/tatbeeq`;
+  const text = "تطبيق تربوي: آلاف الأسئلة بشرح لكل إجابة للاستعداد لاختبار الرخصة المهنية للمعلمين، مجانًا";
+  try {
+    if (navigator.share) await navigator.share({ title: "تطبيق تربوي", text, url });
+    else {
+      await navigator.clipboard.writeText(`${text}\n${url}`);
+      alert("نُسخ رابط التطبيق، الصقه لمن تريد");
+    }
+  } catch {}
 }
 
 /** بطاقة «اختبر نفسك» مرسومة لا مصورة: ورقة إجابة تمتلئ دوائرها واحدة بعد أخرى، ثم يُختم عليها بالذهب */
@@ -407,7 +430,7 @@ function TestArt() {
       {/* الختم الذهبي */}
       <g className="ta-seal">
         <circle cx="152" cy="150" r="31" fill="url(#ta-gold)" />
-        <circle cx="152" cy="150" r="25" fill="none" stroke="#FFE8F0" strokeOpacity="0.8" strokeWidth="1.5" strokeDasharray="2 3" />
+        <circle cx="152" cy="150" r="25" fill="none" stroke="#FFF4D6" strokeOpacity="0.8" strokeWidth="1.5" strokeDasharray="2 3" />
         <path className="ta-check" d="M139 151 l9 9 l18 -20" fill="none" stroke="#173322" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" pathLength={1} />
       </g>
       <path d="M170 34 l2.2 5.6 5.6 2.2 -5.6 2.2 -2.2 5.6 -2.2 -5.6 -5.6 -2.2 5.6 -2.2z" fill="#A7F3D0" className="ta-spark" />

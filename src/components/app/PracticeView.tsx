@@ -21,6 +21,15 @@ import {
   Sparkles,
   Timer,
   Users,
+  Scale,
+  ListChecks,
+  Calculator,
+  CalendarCheck,
+  GraduationCap,
+  Globe,
+  BookA,
+  MessagesSquare,
+  Lightbulb,
 } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
@@ -46,6 +55,18 @@ import { Divided, PageTitle, Stars, pct } from "./ui-kit";
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
 
 /** مربع إجراء موحّد: رمز ذهبي في دائرة، والعنوان تحته في سطر واحد */
+const LICENSE_TOOLS = [
+  { icon: Scale, title: "المقارنات", href: "/comparisons" },
+  { icon: ListChecks, title: "المعايير العشرة", href: "/standards" },
+  { icon: Calculator, title: "حاسبة الرخصة", href: "/license-calculator" },
+  { icon: CalendarCheck, title: "اختبار الأسبوع", href: "/weekly-test" },
+  { icon: GraduationCap, title: "أدلة التخصصات", href: "/specialized" },
+  { icon: Globe, title: "اختبارات الدول", href: "/teacher-exams" },
+  { icon: BookA, title: "المعجم", href: "/glossary" },
+  { icon: MessagesSquare, title: "مشكلات صفية", href: "/classroom-problems" },
+  { icon: Lightbulb, title: "مفاهيم خاطئة", href: "/misconceptions" },
+];
+
 function Tile({ icon: Icon, title, meta, small, onClick }: { icon: React.ElementType; title: string; meta?: string; small?: boolean; onClick: () => void }) {
   return (
     <button
@@ -56,7 +77,7 @@ function Tile({ icon: Icon, title, meta, small, onClick }: { icon: React.Element
         small ? "min-h-[92px] px-1.5 py-3" : "min-h-[96px] px-2 py-3"
       )}
     >
-      <span className={cn("flex shrink-0 items-center justify-center rounded-full bg-[#F0EBFF] text-[#7C5CFF]", small ? "h-10 w-10" : "h-11 w-11")}>
+      <span className={cn("flex shrink-0 items-center justify-center rounded-full bg-[#FBF3DA] text-[#C9971C]", small ? "h-10 w-10" : "h-11 w-11")}>
         <Icon className={small ? "h-5 w-5" : "h-[22px] w-[22px]"} strokeWidth={2} />
       </span>
       <FitText max={small ? 13 : 15} min={9} group={small ? "tile-sm" : "tile"} className="w-full text-center font-bold">{title}</FitText>
@@ -68,8 +89,8 @@ function Tile({ icon: Icon, title, meta, small, onClick }: { icon: React.Element
 /** زر صغير داخل المحور */
 function MiniBtn({ icon: Icon, title, onClick }: { icon: React.ElementType; title: string; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} className="flex min-h-[42px] items-center justify-center gap-1.5 rounded-[14px] border border-[#E2DDF5] bg-white text-sm font-bold text-[var(--t900)] transition active:scale-[0.97] dark:bg-card dark:text-foreground">
-      <Icon className="h-4 w-4 text-[#F25F5C]" />
+    <button type="button" onClick={onClick} className="flex min-h-[42px] items-center justify-center gap-1.5 rounded-[14px] border border-[#ECE3C4] bg-white text-sm font-bold text-[var(--t900)] transition active:scale-[0.97] dark:bg-card dark:text-foreground">
+      <Icon className="h-4 w-4 text-[#C9971C]" />
       {title}
     </button>
   );
@@ -107,17 +128,17 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
         className="relative block w-full overflow-hidden rounded-[26px] bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] p-4 text-right text-white transition active:scale-[0.98]"
       >
         <span className="flex items-center gap-3">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 text-[#FFC2D4]">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 text-[#F3DC8E]">
             <Sparkles className="h-6 w-6" />
           </span>
           <span className="min-w-0 flex-1">
             <FitText max={20} min={15} className="font-extrabold leading-8">تدريب ذكي</FitText>
             <FitText max={14} min={10} className="font-medium text-white/80">عشرة أسئلة مختارة لك</FitText>
           </span>
-          <ChevronLeft className="h-6 w-6 shrink-0 text-[#FFC2D4]" />
+          <ChevronLeft className="h-6 w-6 shrink-0 text-[#F3DC8E]" />
         </span>
         <span className="mt-3 block h-1.5 overflow-hidden rounded-full bg-white/20" aria-hidden="true">
-          <span className="block h-full rounded-full bg-gradient-to-l from-[#FFC2D4] to-[#7C5CFF]" style={{ width: `${bank ? Math.max(2, (answered / bank) * 100) : 0}%` }} />
+          <span className="block h-full rounded-full bg-gradient-to-l from-[#F3DC8E] to-[#C9971C]" style={{ width: `${bank ? Math.max(2, (answered / bank) * 100) : 0}%` }} />
         </span>
       </button>
 
@@ -126,21 +147,21 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
         <button
           type="button"
           onClick={() => ui.startQuiz({ mode: "training", label: "مراجعة اليوم", qids: due.slice(0, 15) })}
-          className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[#E2DDF5] bg-white p-3.5 text-right transition active:scale-[0.98] dark:bg-card"
+          className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[#ECE3C4] bg-white p-3.5 text-right transition active:scale-[0.98] dark:bg-card"
         >
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F0EBFF] text-[#7C5CFF]">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#FBF3DA] text-[#C9971C]">
             <RotateCcw className="h-5 w-5" />
           </span>
           <span className="min-w-0 flex-1">
             <FitText max={16} min={12} className="font-extrabold leading-7">مراجعة اليوم</FitText>
             <FitText max={13} min={10} className="text-secondary-foreground">{`حان موعد تذكّر ${arCount(Math.min(due.length, 15), QUESTION_GEN_FORMS)}`}</FitText>
           </span>
-          <ChevronLeft className="h-5 w-5 shrink-0 text-[#F25F5C]" />
+          <ChevronLeft className="h-5 w-5 shrink-0 text-[#C9971C]" />
         </button>
       )}
 
       {/* قسمان فقط، يظهر واحد منهما في كل مرة */}
-      <div role="tablist" aria-label="أقسام التدريب" className="grid grid-cols-2 gap-1 rounded-[22px] border border-[#E2DDF5] bg-white p-1 dark:bg-card">
+      <div role="tablist" aria-label="أقسام التدريب" className="grid grid-cols-2 gap-1 rounded-[22px] border border-[#ECE3C4] bg-white p-1 dark:bg-card">
         {(
           [
             ["tests", "اختبارات"],
@@ -166,6 +187,13 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
           <Tile icon={Timer} title="اختبار شامل" meta={best["ALL::exam"] !== undefined ? pct(best["ALL::exam"]) : undefined} onClick={() => ui.startQuiz({ mode: "exam", label: "اختبار تجريبي شامل", qids: fullMockExam(), timeLimitSec: EXAM_SECONDS * 2, topicKey: "ALL::exam" })} />
           <Tile icon={Gauge} title="تحديد المستوى" onClick={ui.startPlacement} />
           <Tile icon={Users} title="تحدّي زميل" onClick={ui.startPeer} />
+          {/* أدوات الرخصة من الموقع: تفتح في الصفحة نفسها */}
+          <p className="col-span-2 mt-3 font-extrabold text-[var(--t900)] dark:text-foreground">أدوات الرخصة</p>
+          <div className="col-span-2 grid grid-cols-3 gap-2.5">
+            {LICENSE_TOOLS.map((t) => (
+              <Tile key={t.href} small icon={t.icon} title={t.title} onClick={() => { window.location.href = t.href; }} />
+            ))}
+          </div>
         </div>
       ) : (
         <Divided>
@@ -176,8 +204,8 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
               <button key={c.id} type="button" onClick={() => setOpen(c.id)} className="flex min-h-[56px] w-full min-w-0 items-center gap-3 px-4 py-2.5 text-right">
                 <span className="h-7 w-1.5 shrink-0 rounded-full" style={{ background: COURSE_COLOR[c.id] ?? "var(--primary)" }} aria-hidden="true" />
                 <FitText max={16} min={11} className="flex-1 font-bold leading-7">{c.name}</FitText>
-                {stars > 0 && <span className="shrink-0 text-sm font-bold text-[#7C5CFF]">★ {ad(stars)}</span>}
-                <ChevronLeft className="h-5 w-5 shrink-0 text-[#F25F5C]" />
+                {stars > 0 && <span className="shrink-0 text-sm font-bold text-[#C9971C]">★ {ad(stars)}</span>}
+                <ChevronLeft className="h-5 w-5 shrink-0 text-[#C9971C]" />
               </button>
             );
           })}
@@ -202,7 +230,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
                   <button key={ch} type="button" onClick={() => { setOpen(null); startChapter(openCourse.id, ch); }} className="flex min-h-[48px] w-full min-w-0 items-center gap-2 px-3 text-right">
                     <FitText max={15} min={11} className="flex-1 font-medium">{chapterLabel(ch)}</FitText>
                     {b !== undefined && <Stars count={starsFor(b)} />}
-                    <ChevronLeft className="h-4 w-4 shrink-0 text-[#F25F5C]" />
+                    <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C]" />
                   </button>
                 );
               })}
