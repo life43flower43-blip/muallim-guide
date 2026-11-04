@@ -66,6 +66,7 @@ const COURSE_ICONS: Record<string, React.ElementType> = {
   F1: Landmark,
   AI1: Bot,
   L1: Users,
+  R1: Puzzle,
 };
 function CourseIcon({ id, className }: { id: string; className?: string }) {
   const Icon = COURSE_ICONS[id] ?? BookOpen;
@@ -98,6 +99,7 @@ const COURSE_SUBTITLE: Record<string, string> = {
   F1: "فلسفة التربية وتاريخها والبحث الإجرائي وأخلاقيات المهنة",
   AI1: "تطوره ودوره في العملية التعليمية وأخلاقياته",
   L1: "أنماط القيادة والإشراف التربوي وقيادة المدرسة",
+  R1: "اختبار السمات وأسئلة المواقف والاستدلال المنطقي والمكاني",
 };
 
 const MASTERY_TONE: Record<MasteryLevel, "neutral" | "primary" | "success"> = { 0: "neutral", 1: "neutral", 2: "primary", 3: "success" };
