@@ -134,3 +134,15 @@ model TelegramPost {
   key       String   @id // مثل 2026-11-04:tip
   createdAt DateTime @default(now())
 }
+
+/// حسابات النشر الآلي في المنصات (صفحة فيسبوك، لينكدإن...). صف واحد لكل منصة.
+/// أول من يربط المنصة يصبح مالكها، ولا يستبدل الربطَ غيرُه (ownerId).
+model SocialAccount {
+  platform  String    @id // facebook | linkedin
+  ownerId   String // معرّف المستخدم في المنصة الذي ربطها أول مرة
+  accountId String // معرّف الصفحة أو الحساب الذي يُنشر فيه
+  name      String
+  token     String
+  expiresAt DateTime?
+  updatedAt DateTime  @updatedAt
+}
