@@ -192,9 +192,6 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
         ))}
       </div>
 
-      {/* أرقامك وإنجازاتك */}
-      <ProgressSummary />
-
       {view === "tests" ? (
         <div className="grid grid-cols-2 gap-2.5">
           <Tile tone={0} emoji="🛠️" sub="اختر المحاور والعدد" icon={SlidersHorizontal} title="أنشئ اختبارك" onClick={() => setBuilder(true)} />
@@ -225,6 +222,9 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
           })}
         </Divided>
       )}
+
+      {/* أرقامك وإنجازاتك في آخر الصفحة */}
+      <ProgressSummary />
 
       {/* المحور المختار في ورقة من الأسفل: ثلاثة أزرار ثم فصوله */}
       {openCourse && (
