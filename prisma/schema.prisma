@@ -146,3 +146,13 @@ model SocialAccount {
   expiresAt DateTime?
   updatedAt DateTime  @updatedAt
 }
+
+/// رموز استعادة كلمة المرور: رمز واحد صالح ساعة، يُحذف بعد الاستخدام
+model PasswordReset {
+  token     String   @id
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}

@@ -62,7 +62,7 @@ export default function AuthPanel({ label = "المتابعة بحساب Google"
     }
   };
 
-  const field = "min-h-[48px] w-full rounded-[16px] border border-[#E2DDF5] bg-white px-4 text-base outline-none focus:border-[var(--t700,#136F5C)] dark:bg-card";
+  const field = "min-h-[48px] w-full rounded-[16px] border border-[#D6E6DE] bg-white px-4 text-base outline-none focus:border-[var(--t700,#136F5C)] dark:bg-card";
 
   return (
     <div className="space-y-3">
@@ -71,7 +71,7 @@ export default function AuthPanel({ label = "المتابعة بحساب Google"
           <a
             href="/api/auth/google"
             onClick={() => onDone?.()}
-            className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-[20px] border border-[#E2DDF5] bg-white px-4 text-base font-bold text-[var(--t900)] transition-colors hover:bg-[#F7F4FF] dark:bg-card dark:text-foreground"
+            className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-[20px] border border-[#D6E6DE] bg-white px-4 text-base font-bold text-[var(--t900)] transition-colors hover:bg-[#F3F8F5] dark:bg-card dark:text-foreground"
           >
             <GoogleIcon className="h-5 w-5 shrink-0" />
             <FitText max={16} min={11} className="shrink">{label}</FitText>
@@ -99,6 +99,28 @@ export default function AuthPanel({ label = "المتابعة بحساب Google"
           {busy ? "لحظة..." : mode === "signup" ? "إنشاء الحساب" : "دخول"}
         </button>
       </form>
+      {mode === "login" && <Forgot email={email} />}
+    </div>
+  );
+}
+
+/** نسيت كلمة المرور: يرسل رابط تعيين كلمة جديدة إلى البريد، وفيه اسم المستخدم أيضًا */
+function Forgot({ email }: { email: string }) {
+  const [state, setState] = useState<"idle" | "busy" | "sent" | "off" | "need">("idle");
+  const send = async () => {
+    if (!email.includes("@")) return setState("need");
+    setState("busy");
+    const r = await fetch("/api/auth/forgot", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email }) }).catch(() => null);
+    setState(r && r.status === 503 ? "off" : "sent");
+  };
+  return (
+    <div className="text-center text-sm">
+      <button type="button" onClick={send} disabled={state === "busy"} className="font-bold text-[var(--t700,#136F5C)] underline">
+        نسيت كلمة المرور أو اسمي؟
+      </button>
+      {state === "need" && <p className="mt-1 text-muted-foreground">اكتب بريدك في الخانة أعلاه أولًا، ثم اضغط هنا.</p>}
+      {state === "sent" && <p className="mt-1 text-muted-foreground">إن كان البريد مسجلًا فستصلك رسالة فيها اسمك ورابط لتعيين كلمة مرور جديدة. افحص مجلد الرسائل غير المرغوبة أيضًا.</p>}
+      {state === "off" && <p className="mt-1 text-muted-foreground">الاستعادة بالبريد غير مفعّلة بعد. تواصل معنا من صفحة «اتصل بنا».</p>}
     </div>
   );
 }

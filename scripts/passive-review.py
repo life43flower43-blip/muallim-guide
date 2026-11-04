@@ -68,6 +68,11 @@ def ask():
         print(start, "/", len(sents), flush=True)
         time.sleep(4)
 
+# أفعال اقترحها النموذج خطأً (لازمة أو مبنية للمعلوم في سياقنا)، تُستبعد دائمًا
+BLOCK = set("""تسقط يسقط يحدث تحدث تبقى يبقى ترتبط يرتبط يصح تصح يقوم تقوم يحتاج تحتاج يعتمد تعتمد تكون يكون تدور يدور يصعب تصعب
+يحتمل تحتمل تصمد يصمد تصلح يصلح تركز يركز يرى ترى تمس يمس تظهر يظهر تعكس يعكس يصف تصف تعلم يجعل تجعل يحل تحل يكتمل تكتمل
+ينتقل تنتقل ينتهي تنتهي يستمر تستمر يستقر تستقر يتحقق يتبع""".split())
+
 def apply():
     sents = json.load(open(f"{CACHE}/sentences.json"))
     done = json.load(open(f"{CACHE}/answers.json"))
@@ -82,6 +87,8 @@ def apply():
                 pre = w[0] if w[0] in "وف" and w[1:2] in ("ي", "ت") else ""
                 core = w[len(pre):]
                 if len(core) < 3 or core[0] not in "يت": continue
+                # أفعال «تفعّل وتفاعل» (يتـ/تتـ) لا تأتي مجهولة في نصوصنا، والقائمة المستبعدة
+                if core[1:2] == "ت" or core in BLOCK: continue
                 # الكلمة كما هي في الجملة بلا تشكيل في حرفها الثاني
                 t2 = re.sub(rf"(?<![{L}ً-ْ]){re.escape(pre + core)}(?![{L}ً-ْ])", pre + core[0] + "ُ" + core[1:], t, count=1)
                 t = t2
