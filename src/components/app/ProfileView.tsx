@@ -226,9 +226,9 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
         <Card className="p-5">
           <div className="flex items-center gap-4">
             {user?.avatar ? (
-              <img src={user.avatar} alt="" className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-[#B9A7FF]" referrerPolicy="no-referrer" />
+              <img src={user.avatar} alt="" className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-[#E8C766]" referrerPolicy="no-referrer" />
             ) : (
-              <span className="shrink-0 rounded-full ring-2 ring-[#B9A7FF] ring-offset-2 ring-offset-white dark:ring-offset-card">
+              <span className="shrink-0 rounded-full ring-2 ring-[#E8C766] ring-offset-2 ring-offset-white dark:ring-offset-card">
                 <DefaultAvatar seed={user?.email ?? user?.name ?? "guest"} />
               </span>
             )}
@@ -346,7 +346,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
                 onClick={() => st.setTheme(th.id)}
                 className={cn(
                   "flex flex-col items-center gap-1.5 rounded-[18px] border bg-white py-2.5 text-sm font-bold transition dark:bg-card",
-                  (st.theme ?? "emerald") === th.id ? "border-[#C9971C] ring-2 ring-[#B9A7FF]" : "border-border"
+                  (st.theme ?? "emerald") === th.id ? "border-[#C9971C] ring-2 ring-[#F3DC8E]" : "border-border"
                 )}
               >
                 <span className="relative h-8 w-8 rounded-full" style={{ background: th.color }}>
@@ -394,40 +394,34 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
       </div>
 
       {/* الجواهر */}
-        <Card className="p-5">
-          <div className="flex items-center gap-3">
-            <IconTile icon={Gem} color="var(--gem)" size={48} />
-            <div className="flex-1">
-              <p className="text-sm text-muted-foreground">رصيد الجواهر</p>
-              <p className="font-display text-2xl font-bold">{ad(wallet.gems)}</p>
-            </div>
+        <Card className="p-4">
+          <div className="flex items-center gap-2.5">
+            <IconTile icon={Gem} color="var(--gem)" size={40} />
+            <p className="text-[15px] font-bold">رصيد الجواهر</p>
+            <p className="ms-auto font-display text-2xl font-bold tabular-nums">{ad(wallet.gems)}</p>
           </div>
-          <ul className="mt-4 space-y-2 text-sm text-secondary-foreground">
-            <li className="flex justify-between">
-              <span>جلسة تدريب مكتملة (٥ أسئلة فأكثر)</span>
-              <span className="font-medium text-gem">+{ad(GEM_RULES.session_complete.amount)}</span>
-            </li>
-            <li className="flex justify-between">
-              <span>جلسة بلا أي خطأ</span>
-              <span className="font-medium text-gem">+{ad(GEM_RULES.session_perfect.amount)}</span>
-            </li>
-            <li className="flex justify-between">
-              <span>مراجعة أخطاء مكتملة</span>
-              <span className="font-medium text-gem">+{ad(GEM_RULES.review_complete.amount)}</span>
-            </li>
+          <ul className="mt-3 space-y-1 text-[13.5px] text-secondary-foreground">
+            {[
+              ["جلسة تدريب مكتملة (٥ أسئلة فأكثر)", GEM_RULES.session_complete.amount],
+              ["جلسة بلا أي خطأ", GEM_RULES.session_perfect.amount],
+              ["مراجعة أخطاء مكتملة", GEM_RULES.review_complete.amount],
+            ].map(([t, n]) => (
+              <li key={t as string} className="flex items-center justify-between leading-6">
+                <span>{t}</span>
+                <span className="w-10 text-left font-bold tabular-nums text-gem">+{ad(n as number)}</span>
+              </li>
+            ))}
           </ul>
-          <div className="mt-4 flex items-center gap-3 rounded-xl bg-muted p-3">
+          <div className="mt-3 flex items-center gap-2.5 rounded-xl bg-muted px-3 py-2">
             <Snowflake className="h-5 w-5 shrink-0 text-primary" />
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">تجميد السلسلة</p>
-              <p className="text-sm text-muted-foreground">
-                يحمي سلسلتك يومًا فائتًا، لديك {ad(wallet.streakFreeze)} من {ad(MAX_STREAK_FREEZES)}
-              </p>
+            <div className="min-w-0 flex-1 leading-5">
+              <p className="text-[13.5px] font-bold">تجميد السلسلة</p>
+              <p className="text-[12.5px] text-muted-foreground">يحمي يومًا فائتًا · لديك {ad(wallet.streakFreeze)} من {ad(MAX_STREAK_FREEZES)}</p>
             </div>
             <SecondaryButton
               onClick={buyFreeze}
               disabled={!wallet.signedIn || wallet.gems < GEM_RULES.streak_freeze.amount || wallet.streakFreeze >= MAX_STREAK_FREEZES}
-              className="px-3 text-sm"
+              className="min-h-[36px] px-3 text-[13px]"
             >
               {ad(GEM_RULES.streak_freeze.amount)} جوهرة
             </SecondaryButton>
@@ -453,18 +447,18 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           )}
         </Card>
 
-      {/* البيانات والحساب */}
-      <Card className="divide-y divide-border">
+      {/* البيانات والحساب: مربعات أفقية متساوية */}
+      <div className="grid grid-cols-3 gap-2.5">
         {installEvt && (
-          <button type="button" onClick={() => installEvt.prompt().then(() => setInstallEvt(null))} className="flex min-h-[52px] w-full items-center gap-3 px-5 text-sm">
-            <Smartphone className="h-5 w-5 text-primary" /> أضف التطبيق إلى شاشتك الرئيسية
+          <button type="button" onClick={() => installEvt.prompt().then(() => setInstallEvt(null))} className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card">
+            <Smartphone className="h-5 w-5 text-primary" /> ثبّت التطبيق
           </button>
         )}
-        <button type="button" onClick={exportBackup} className="flex min-h-[52px] w-full items-center gap-3 px-5 text-sm">
-          <Download className="h-5 w-5 text-primary" /> نسخة احتياطية من تقدمي
+        <button type="button" onClick={exportBackup} className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card">
+          <Download className="h-5 w-5 text-primary" /> نسخة احتياطية
         </button>
-        <button type="button" onClick={() => fileRef.current?.click()} className="flex min-h-[52px] w-full items-center gap-3 px-5 text-sm">
-          <Upload className="h-5 w-5 text-primary" /> استعادة نسخة احتياطية
+        <button type="button" onClick={() => fileRef.current?.click()} className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card">
+          <Upload className="h-5 w-5 text-primary" /> استعادة نسخة
         </button>
         <input
           ref={fileRef}
@@ -479,8 +473,8 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
         />
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <button type="button" className="flex min-h-[52px] w-full items-center gap-3 px-5 text-sm text-destructive">
-              <Trash2 className="h-5 w-5" /> تصفير التقدم على هذا الجهاز
+            <button type="button" className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card text-[#C0504D]">
+              <Trash2 className="h-5 w-5" /> تصفير التقدم
             </button>
           </AlertDialogTrigger>
           <AlertDialogContent className="rounded-2xl">
@@ -507,15 +501,15 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
               else { await navigator.clipboard.writeText(`${text}\n${url}`); toast({ title: "نُسخ رابط التطبيق" }); }
             } catch {}
           }}
-          className="flex min-h-[52px] w-full items-center gap-3 px-5 text-sm"
+          className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card"
         >
-          <Share2 className="h-5 w-5 text-primary" /> شارك التطبيق مع زملائك
+          <Share2 className="h-5 w-5 text-primary" /> شارك التطبيق
         </button>
-        <a href="https://t.me/MuallimExam" target="_blank" rel="noopener noreferrer" className="flex min-h-[52px] w-full items-center gap-3 px-5 text-sm">
-          <Send className="h-5 w-5 text-primary" /> قناتنا على تيليجرام
+        <a href="https://t.me/MuallimExam" target="_blank" rel="noopener noreferrer" className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card">
+          <Send className="h-5 w-5 text-primary" /> تيليجرام
         </a>
-        <a href="https://www.facebook.com/share/1CHdqGvYz5/" target="_blank" rel="noopener noreferrer" className="flex min-h-[52px] w-full items-center gap-3 px-5 text-sm">
-          <Users className="h-5 w-5 text-primary" /> صفحتنا على فيسبوك
+        <a href="https://www.facebook.com/share/1CHdqGvYz5/" target="_blank" rel="noopener noreferrer" className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card">
+          <Users className="h-5 w-5 text-primary" /> فيسبوك
         </a>
         {user && (
           <>
@@ -525,14 +519,14 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
                 await signOut(queryClient);
                 toast({ title: "سُجّل الخروج" });
               }}
-              className="flex min-h-[52px] w-full items-center gap-3 px-5 text-sm"
+              className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card"
             >
               <LogOut className="h-5 w-5 text-primary" /> تسجيل الخروج
             </button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <button type="button" className="flex min-h-[52px] w-full items-center gap-3 px-5 text-sm text-destructive">
-                  <ShieldAlert className="h-5 w-5" /> حذف الحساب نهائيًا
+                <button type="button" className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card text-[#C0504D]">
+                  <ShieldAlert className="h-5 w-5" /> حذف الحساب
                 </button>
               </AlertDialogTrigger>
               <AlertDialogContent className="rounded-2xl">
@@ -556,7 +550,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             </AlertDialog>
           </>
         )}
-      </Card>
+      </div>
           </div>
         </ScreenShell>
       )}
