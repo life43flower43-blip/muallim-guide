@@ -14,10 +14,10 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, maxi
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-dvh w-full max-w-[100vw] overflow-x-clip bg-[#F4F7F5] text-[#14302A]">
-      {/* التطبيق المثبّت على الهاتف يفتح دائمًا على التطبيق لا على الموقع، حتى لو ثُبّت قديمًا على الرابط الرئيسي */}
+      {/* التطبيق المثبّت على الهاتف يفتح على التطبيق إذا فُتح على الصفحة الرئيسية للموقع فقط، وتبقى صفحات أدوات الرخصة تعمل من داخله */}
       <script
         dangerouslySetInnerHTML={{
-          __html: `try{var m=function(q){return window.matchMedia&&matchMedia("(display-mode: "+q+")").matches};if(m("standalone")||m("fullscreen")||m("minimal-ui")||navigator.standalone||document.referrer.indexOf("android-app://")===0){location.replace("/app")}}catch(e){}`,
+          __html: `try{var m=function(q){return window.matchMedia&&matchMedia("(display-mode: "+q+")").matches};if((m("standalone")||m("fullscreen")||m("minimal-ui")||navigator.standalone||document.referrer.indexOf("android-app://")===0)&&location.pathname==="/"){location.replace("/app")}}catch(e){}`,
         }}
       />
       {/* بيانات منظمة يقرؤها Google: اسم الموقع، وخانة البحث في نتائج Google، والجهة الناشرة */}

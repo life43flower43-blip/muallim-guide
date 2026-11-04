@@ -33,6 +33,23 @@ export function SectionHeader({ title, action }: { title: string; sub?: string; 
   );
 }
 
+/** زر الرجوع الموحد في كل التطبيق: دائرة كبيرة بيضاء بإطار ذهبي وسهم أخضر */
+export function BackButton({ onClick, className }: { onClick: () => void; className?: string }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label="رجوع"
+      className={cn(
+        "flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-[var(--t800)] shadow-[0_4px_14px_rgba(14,59,50,0.14)] ring-2 ring-[#E8C766] transition active:scale-90 dark:bg-card dark:text-foreground",
+        className
+      )}
+    >
+      <ArrowRight className="h-6 w-6" strokeWidth={2.75} />
+    </button>
+  );
+}
+
 export function PageTitle({ title, action }: { title: string; sub?: string; action?: React.ReactNode }) {
   return (
     // على الجوال يظهر العنوان في الشريط العلوي
@@ -253,14 +270,10 @@ export function ScreenShell({
         <HeaderArt />
         <div className={cn("mx-auto flex min-h-[56px] items-center gap-2 px-1", wide ? "max-w-5xl" : "max-w-3xl")}>
           {onBack ? (
-            <button type="button" onClick={onBack} aria-label="رجوع" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[var(--t900)] hover:bg-black/5 dark:text-foreground">
-              <ArrowRight className="h-6 w-6" strokeWidth={2.5} />
-            </button>
+            <BackButton onClick={onBack} />
           ) : onClose ? (
             // كل شاشة لها زر رجوع واضح في مكانه المعتاد، حتى حين لا يكون فيها إلا الإغلاق
-            <button type="button" onClick={onClose} aria-label="رجوع" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[var(--t900)] hover:bg-black/5 dark:text-foreground">
-              <ArrowRight className="h-6 w-6" strokeWidth={2.5} />
-            </button>
+            <BackButton onClick={onClose} />
           ) : null}
           <div className="min-w-0 flex-1 px-1">
             <h1 className="text-center font-display font-extrabold leading-8">

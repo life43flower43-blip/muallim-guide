@@ -49,7 +49,7 @@ import BootBank from "./BootBank";
 import { ScreenShell } from "./ui-kit";
 import { Splash } from "./Splash";
 import { GoalBurst } from "./GoalBurst";
-import { HeaderArt } from "./ui-kit";
+import { BackButton, HeaderArt } from "./ui-kit";
 
 export type Tab = "today" | "notebook" | "practice" | "mistakes" | "profile";
 
@@ -159,7 +159,7 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
 }
 
 // الشريط العلوي فاتح بلون خلفية التطبيق (ولون شريط حالة الهاتف): في الرئيسية الشعار والترحيب، وفي غيرها اسم الصفحة
-function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
+function MobileTopBar({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => void; due: number; onBack: () => void }) {
   // الشعلة بلا رقم: حلقة هدف اليوم وحدها
   const sessions = useApp((s) => s.sessions);
   const goal = Math.min(1, xpToday(sessions) / DAILY_GOAL_XP);
@@ -173,9 +173,7 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
         <HeaderArt />
         <div className="relative flex h-12 items-center justify-center px-14">
           {/* رجوع إلى الرئيسية */}
-          <button type="button" onClick={() => onTab("today")} aria-label="رجوع" className="absolute right-1.5 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
-            <ArrowRight className="h-6 w-6" strokeWidth={2.5} />
-          </button>
+          <BackButton onClick={onBack} className="absolute right-1" />
           <h1 className="font-display text-lg font-extrabold">{NAV.find((n) => n.id === tab)?.label}</h1>
           {tab === "profile" && (
             <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="absolute left-1.5 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
@@ -257,6 +255,8 @@ export default function AppShell() {
     if (asked && NAV.some((n) => n.id === asked)) return asked as Tab;
     return q.has("login") ? "profile" : "today";
   });
+  // سجل التبويبات التي زارها المستخدم، ليعيده زر الرجوع خطوة واحدة إلى الخلف
+  const tabTrail = useRef<Tab[]>([]);
 
   const [bankLoaded, setBankLoaded] = useState(false);
   const [bankProgress, setBankProgress] = useState(0);
@@ -286,7 +286,8 @@ export default function AppShell() {
         ui.closeOverlays();
         return;
       }
-      setTab("today");
+      setTab(tabTrail.current.pop() ?? "today");
+      document.getElementById("main-scroll")?.scrollTo({ top: 0 });
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
@@ -431,10 +432,16 @@ export default function AppShell() {
   const due = mistakes?.stats.due ?? 0;
   const go = (t: Tab) => {
     ui.closeOverlays();
-    // زر الرجوع في الهاتف يعيد إلى الرئيسية من أي تبويب بدل إغلاق التطبيق
-    if (t !== "today" && tab === "today") window.history.pushState({ turbawyTab: t }, "");
+    if (t === tab) return;
+    // نحفظ التبويب الحالي حتى يعيدنا زر الرجوع إليه (وزر الرجوع في الهاتف كذلك)
+    tabTrail.current.push(tab);
+    window.history.pushState({ turbawyTab: t }, "");
     setTab(t);
     document.getElementById("main-scroll")?.scrollTo({ top: 0 });
+  };
+  const back = () => {
+    if (tabTrail.current.length) window.history.back();
+    else setTab("today");
   };
 
   return (
@@ -442,7 +449,7 @@ export default function AppShell() {
       <Splash />
       <SideNav tab={tab} onTab={go} due={due} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <MobileTopBar tab={tab} onTab={go} due={due} />
+        <MobileTopBar tab={tab} onTab={go} due={due} onBack={back} />
         {!isOnline && (
           <div role="status" className="flex items-center justify-center gap-2 border-b border-border bg-gem-soft px-4 py-1.5 text-xs font-medium text-gem">
             <WifiOff className="h-3.5 w-3.5 shrink-0" />
