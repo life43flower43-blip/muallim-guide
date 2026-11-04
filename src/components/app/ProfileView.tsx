@@ -223,8 +223,8 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
       {isLoading ? (
         <div className="h-28 animate-pulse rounded-[22px] bg-muted" />
       ) : (
-        <Card className="p-5">
-          <div className="flex items-center gap-4">
+        <Card className="p-4">
+          <div className="flex items-center gap-3">
             {user?.avatar ? (
               <img src={user.avatar} alt="" className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-[#E8C766]" referrerPolicy="no-referrer" />
             ) : (
@@ -239,10 +239,13 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             </div>
           </div>
           {!user && (
-            <div className="mt-4 border-t border-border pt-4">
-              <FitText max={14} min={10} className="mb-3 text-muted-foreground">سجّل لتحفظ تقدمك على كل أجهزتك</FitText>
-              <AuthPanel />
-            </div>
+            <details className="group mt-3 border-t border-border pt-3">
+              <summary className="flex min-h-[40px] cursor-pointer list-none items-center justify-between gap-2 text-[14px] font-bold text-[var(--t800)]">
+                <span>سجّل الدخول لتحفظ تقدمك على كل أجهزتك</span>
+                <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C] transition group-open:-rotate-90" />
+              </summary>
+              <div className="pt-2"><AuthPanel /></div>
+            </details>
           )}
           {st.examDate && (
             <button type="button" onClick={() => setSettingsOpen(true)} className="mt-4 flex min-h-[44px] w-full items-center gap-3 border-t border-border pt-4 text-right text-sm">
@@ -257,53 +260,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
         </Card>
       )}
 
-      {/* أرقامك */}
-      <div className="grid grid-cols-4 gap-2">
-        {[
-          { icon: Flame, label: "أيام متتالية", value: ad(wallet.streak), c: "#C9971C", bg: "#FFE9E8" },
-          { icon: Target, label: "سؤالًا", value: ad(stats.answered), c: "#0EA5E9", bg: "#E0F2FE" },
-          { icon: CheckCircle2, label: "الدقة", value: pct(stats.accuracy), c: "#10B981", bg: "#DCFCE7" },
-          { icon: Gem, label: "جوهرة", value: ad(wallet.gems), c: "#C9971C", bg: "#FBF3DA" },
-        ].map((s) => (
-          <Card key={s.label} className="flex min-w-0 flex-col items-center gap-1 px-1.5 py-3 text-center">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full" style={{ background: s.bg, color: s.c }}>
-              <s.icon className="h-[18px] w-[18px]" />
-            </span>
-            <FitText max={18} min={12} group="pf-val" className="w-full font-display font-extrabold">{s.value}</FitText>
-            <FitText max={12} min={9} group="pf-lbl" className="w-full text-muted-foreground">{s.label}</FitText>
-          </Card>
-        ))}
-      </div>
-
       <PastTests />
-
-      {/* الإنجازات */}
-      <section>
-        <SectionHeader title="الإنجازات" />
-        <Card className="grid grid-cols-5 gap-1 px-2 py-4">
-          {achievements.map((a) => {
-            const level = a.tiers.filter((t) => a.value >= t).length;
-            const maxed = level === a.tiers.length;
-            const prev = level === 0 ? 0 : a.tiers[level - 1];
-            const target = maxed ? a.tiers[a.tiers.length - 1] : a.tiers[level];
-            const frac = maxed ? 1 : Math.max(0, Math.min(1, (a.value - prev) / (target - prev)));
-            const C = 2 * Math.PI * 21;
-            return (
-              <div key={a.id} className="flex min-w-0 flex-col items-center gap-1 text-center" title={maxed ? "أعلى مستوى" : `${ad(Math.min(a.value, target))} من ${ad(target)} ${a.unit}`}>
-                <span className="relative flex h-12 w-12 items-center justify-center">
-                  <svg viewBox="0 0 48 48" className="absolute inset-0 -rotate-90" aria-hidden="true">
-                    <circle cx="24" cy="24" r="21" fill="none" stroke="var(--t100)" strokeWidth="3" />
-                    {frac > 0 && <circle cx="24" cy="24" r="21" fill="none" stroke="#C9971C" strokeWidth="3" strokeLinecap="round" strokeDasharray={`${frac * C} ${C}`} />}
-                  </svg>
-                  <a.icon className={cn("h-5 w-5", level === 0 ? "text-muted-foreground" : "text-[var(--t700)]")} />
-                </span>
-                <FitText max={12} min={9} group="pf-ach" className="w-full font-bold">{a.name}</FitText>
-                <span className="text-[11px] text-muted-foreground">{ad(level)}/٥</span>
-              </div>
-            );
-          })}
-        </Card>
-      </section>
 
       {settingsOpen && (
         <ScreenShell title="الإعدادات" onClose={() => setSettingsOpen(false)}>

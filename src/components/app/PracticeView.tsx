@@ -48,6 +48,7 @@ import {
 import { spacedDueIds } from "@/lib/srs";
 import { ad, arCount, QUESTION_GEN_FORMS } from "@/lib/arabic";
 import { cn } from "@/lib/utils";
+import ProgressSummary from "./ProgressSummary";
 import type { Tab } from "./AppShell";
 import TestBuilder from "./TestBuilder";
 import { Divided, PageTitle, Stars, pct } from "./ui-kit";
@@ -56,32 +57,44 @@ const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
 
 /** مربع إجراء موحّد: رمز ذهبي في دائرة، والعنوان تحته في سطر واحد */
 const LICENSE_TOOLS = [
-  { icon: Scale, title: "المقارنات", href: "/comparisons" },
-  { icon: ListChecks, title: "المعايير العشرة", href: "/standards" },
-  { icon: Calculator, title: "حاسبة الرخصة", href: "/license-calculator" },
-  { icon: CalendarCheck, title: "اختبار الأسبوع", href: "/weekly-test" },
-  { icon: GraduationCap, title: "أدلة التخصصات", href: "/specialized" },
-  { icon: Globe, title: "اختبارات الدول", href: "/teacher-exams" },
-  { icon: BookA, title: "المعجم", href: "/glossary" },
-  { icon: MessagesSquare, title: "مشكلات صفية", href: "/classroom-problems" },
-  { icon: Lightbulb, title: "مفاهيم خاطئة", href: "/misconceptions" },
+  { icon: Scale, title: "المقارنات", href: "/comparisons", sub: "مفاهيم يكثر الخلط بينها" },
+  { icon: ListChecks, title: "المعايير العشرة", href: "/standards", sub: "ما يقيسه الاختبار" },
+  { icon: Calculator, title: "حاسبة الرخصة", href: "/license-calculator", sub: "قدّر مستواك" },
+  { icon: CalendarCheck, title: "اختبار الأسبوع", href: "/weekly-test", sub: "٢٠ سؤالًا كل أحد" },
+  { icon: GraduationCap, title: "أدلة التخصصات", href: "/specialized", sub: "اختبار تخصصك" },
+  { icon: Globe, title: "اختبارات الدول", href: "/teacher-exams", sub: "السعودية والإمارات ومصر" },
+  { icon: BookA, title: "المعجم", href: "/glossary", sub: "المصطلحات بإيجاز" },
+  { icon: MessagesSquare, title: "مشكلات صفية", href: "/classroom-problems", sub: "مواقف وحلولها" },
+  { icon: Lightbulb, title: "مفاهيم خاطئة", href: "/misconceptions", sub: "أفكار شائعة خاطئة" },
 ];
 
-function Tile({ icon: Icon, title, meta, small, onClick }: { icon: React.ElementType; title: string; meta?: string; small?: boolean; onClick: () => void }) {
+// ألوان الأيقونات: لكل بطاقة لونها حتى لا تتشابه
+const TONES = [
+  { bg: "#E6F4EF", fg: "#136F5C" },
+  { bg: "#FBF3DA", fg: "#B8860B" },
+  { bg: "#E3F1FB", fg: "#1F6FA8" },
+  { bg: "#FDECE4", fg: "#C2562B" },
+  { bg: "#E8F6F6", fg: "#0F8A8A" },
+  { bg: "#EEF1FB", fg: "#3A55A4" },
+];
+
+/** بطاقة أفقية: أيقونة ملونة، ثم العنوان ووصف قصير تحته */
+function Tile({ icon: Icon, title, sub, meta, tone = 0, onClick }: { icon: React.ElementType; title: string; sub?: string; meta?: string; small?: boolean; tone?: number; onClick: () => void }) {
+  const t = TONES[tone % TONES.length];
   return (
     <button
       type="button"
       onClick={onClick}
-      className={cn(
-        "relative flex min-w-0 flex-col items-center justify-center gap-2 rounded-[22px] border border-[var(--t075)] bg-white text-[var(--t900)] transition active:scale-[0.97] dark:border-border dark:bg-card dark:text-foreground",
-        small ? "min-h-[92px] px-1.5 py-3" : "min-h-[96px] px-2 py-3"
-      )}
+      className="relative flex min-h-[64px] min-w-0 items-center gap-2.5 rounded-[18px] border border-[var(--t075)] border-b-[3px] bg-white px-2.5 py-2 text-right text-[var(--t900)] transition active:translate-y-[1px] active:border-b dark:border-border dark:bg-card dark:text-foreground"
     >
-      <span className={cn("flex shrink-0 items-center justify-center rounded-full bg-[#FBF3DA] text-[#C9971C]", small ? "h-10 w-10" : "h-11 w-11")}>
-        <Icon className={small ? "h-5 w-5" : "h-[22px] w-[22px]"} strokeWidth={2} />
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full" style={{ background: t.bg, color: t.fg }}>
+        <Icon className="h-5 w-5" strokeWidth={2} />
       </span>
-      <FitText max={small ? 13 : 15} min={9} group={small ? "tile-sm" : "tile"} className="w-full text-center font-bold">{title}</FitText>
-      {meta && <span className="absolute left-2 top-2 rounded-full bg-[var(--t100)] px-1.5 text-[10px] font-bold leading-4 text-[var(--t800)]">{meta}</span>}
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-[14px] font-extrabold leading-6">{title}</span>
+        {sub && <span className="block truncate text-[12px] leading-5 text-muted-foreground">{sub}</span>}
+      </span>
+      {meta && <span className="absolute left-2 top-1.5 rounded-full bg-[var(--t100)] px-1.5 text-[10px] font-bold leading-4 text-[var(--t800)]">{meta}</span>}
     </button>
   );
 }
@@ -181,17 +194,20 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
         ))}
       </div>
 
+      {/* أرقامك وإنجازاتك */}
+      <ProgressSummary />
+
       {view === "tests" ? (
         <div className="grid grid-cols-2 gap-3">
-          <Tile icon={SlidersHorizontal} title="أنشئ اختبارك" onClick={() => setBuilder(true)} />
-          <Tile icon={Timer} title="اختبار شامل" meta={best["ALL::exam"] !== undefined ? pct(best["ALL::exam"]) : undefined} onClick={() => ui.startQuiz({ mode: "exam", label: "اختبار تجريبي شامل", qids: fullMockExam(), timeLimitSec: EXAM_SECONDS * 2, topicKey: "ALL::exam" })} />
-          <Tile icon={Gauge} title="تحديد المستوى" onClick={ui.startPlacement} />
-          <Tile icon={Users} title="تحدّي زميل" onClick={ui.startPeer} />
+          <Tile tone={0} sub="اختر المحاور والعدد" icon={SlidersHorizontal} title="أنشئ اختبارك" onClick={() => setBuilder(true)} />
+          <Tile tone={1} sub="كل المحاور بوقت محدد" icon={Timer} title="اختبار شامل" meta={best["ALL::exam"] !== undefined ? pct(best["ALL::exam"]) : undefined} onClick={() => ui.startQuiz({ mode: "exam", label: "اختبار تجريبي شامل", qids: fullMockExam(), timeLimitSec: EXAM_SECONDS * 2, topicKey: "ALL::exam" })} />
+          <Tile tone={2} sub="اعرف من أين تبدأ" icon={Gauge} title="تحديد المستوى" onClick={ui.startPlacement} />
+          <Tile tone={3} sub="نافس زميلك بالأسئلة" icon={Users} title="تحدّي زميل" onClick={ui.startPeer} />
           {/* أدوات الرخصة من الموقع: تفتح في الصفحة نفسها */}
           <p className="col-span-2 mt-3 font-extrabold text-[var(--t900)] dark:text-foreground">أدوات الرخصة</p>
-          <div className="col-span-2 grid grid-cols-3 gap-2.5">
-            {LICENSE_TOOLS.map((t) => (
-              <Tile key={t.href} small icon={t.icon} title={t.title} onClick={() => { window.location.href = t.href; }} />
+          <div className="col-span-2 grid grid-cols-2 gap-2.5">
+            {LICENSE_TOOLS.map((t, k) => (
+              <Tile key={t.href} tone={k + 4} sub={t.sub} icon={t.icon} title={t.title} onClick={() => { window.location.href = t.href; }} />
             ))}
           </div>
         </div>
