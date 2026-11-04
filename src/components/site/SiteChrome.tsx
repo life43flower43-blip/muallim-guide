@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { Search, Menu, ChevronDown, Smartphone, Rss, Send } from "lucide-react";
 import { courseList, FACEBOOK_URL, TELEGRAM_URL } from "@/lib/public-bank";
+import { socialLinks } from "@/lib/social-links";
 import { courseMeta } from "@/lib/site-nav";
 import TodayDate from "./TodayDate";
 import SearchBox from "./SearchBox";
@@ -157,6 +158,9 @@ export function SiteFooter() {
               <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="mt-2 flex items-center gap-1.5 text-[13.5px] font-bold text-[#A7F3D0] hover:text-white"><Send className="h-4 w-4" /> قناتنا على تيليجرام: سؤال كل يوم</a>
             )}
             <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className="mt-2 flex items-center gap-1.5 text-[13.5px] font-bold text-[#A7F3D0] hover:text-white"><Send className="h-4 w-4" /> صفحتنا على فيسبوك</a>
+            {socialLinks().filter((x) => x.id === "linkedin" || x.id === "x").map((x) => (
+              <a key={x.id} href={x.url} target="_blank" rel="noopener noreferrer" className="mt-2 flex items-center gap-1.5 text-[13.5px] font-bold text-[#A7F3D0] hover:text-white"><Send className="h-4 w-4" /> حسابنا على {x.name}</a>
+            ))}
             <a href="/feed.xml" className="mt-2 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#A7F3D0] hover:text-white"><Rss className="h-4 w-4" /> اشترك عبر RSS</a>
           </div>
         </div>

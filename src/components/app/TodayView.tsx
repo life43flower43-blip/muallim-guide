@@ -365,8 +365,10 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
 
       {/* تابعنا وشارك: صف صغير هادئ في آخر الرئيسية */}
       <motion.div {...rise(10)} className="rounded-[20px] border border-[#ECE3C4] bg-white p-3 dark:border-border dark:bg-card">
-        <p className="text-center text-[13px] font-bold text-[var(--t700)]">معلومة وسؤالان كل يوم في قنواتنا</p>
+        <p className="text-center text-[13px] font-bold text-[var(--t700)]">تابع تربوي في كل منصاته: معلومة وسؤالان كل يوم</p>
         <div className="mt-2 grid grid-cols-3 gap-2">
+          {process.env.NEXT_PUBLIC_LINKEDIN_URL && <a href={process.env.NEXT_PUBLIC_LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-[var(--t800)]">لينكدإن</a>}
+          {process.env.NEXT_PUBLIC_X_URL && <a href={process.env.NEXT_PUBLIC_X_URL} target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-[var(--t800)]">X</a>}
           <a href="https://t.me/MuallimExam" target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-[var(--t800)]">تيليجرام</a>
           <a href="https://www.facebook.com/share/1CHdqGvYz5/" target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-[var(--t800)]">فيسبوك</a>
           <button type="button" onClick={shareApp} className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-gradient-to-br from-[#E8C766] to-[#C9971C] text-[13px] font-extrabold text-[var(--t900)]">شارك التطبيق</button>

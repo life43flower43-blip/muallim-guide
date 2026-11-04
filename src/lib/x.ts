@@ -4,6 +4,7 @@ import { createHmac, randomBytes } from "crypto";
 import { SITE_URL } from "@/lib/public-bank";
 import { allArticles, todayISO } from "@/lib/articles";
 import { dayNumber, dayPlan, SLOTS, type Slot } from "@/lib/telegram";
+import { socialLinks } from "@/lib/social-links";
 
 export const xConfigured = () => ["X_API_KEY", "X_API_SECRET", "X_ACCESS_TOKEN", "X_ACCESS_SECRET"].every((k) => !!process.env[k]);
 
@@ -54,6 +55,10 @@ export function buildXPost(iso = todayISO(), slot: Slot): string | null {
     if (art) return fit(`🆕 ${art.title}\n\n`, art.description, `\n${SITE_URL}/articles/${art.slug}${t}`);
     if (!plan.tip) return null;
     return fit(`💡 ${plan.tip.title}\n\n`, plan.tip.text, `\n${SITE_URL}${plan.tip.href}${t}`);
+  }
+  if (slot === "promo" && new Date(iso + "T12:00:00Z").getUTCDay() === 5) {
+    const links = socialLinks().filter((s) => s.id !== "x" && s.id !== "site").slice(0, 3);
+    return fit("🤝 تابع تربوي في كل منصاته:\n", "", `\n${links.map((s) => `${s.emoji} ${s.name} ${s.url}`).join("\n")}${t}`);
   }
   if (slot === "promo" && plan.promo) return fit(plan.promo.kind === "app" ? "📱 " : "🌐 ", plan.promo.text, `\n${SITE_URL}${plan.promo.href}${t}`);
   if (slot === "q1" || slot === "q2") {

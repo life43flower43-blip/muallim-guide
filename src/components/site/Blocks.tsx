@@ -2,13 +2,14 @@
 import Link from "next/link";
 import { Search, Clock, Smartphone, ChevronLeft } from "lucide-react";
 import type { Concept } from "@/lib/types";
-import { chapterLabel, courseList, FACEBOOK_URL, SITE_URL, TELEGRAM_URL } from "@/lib/public-bank";
+import { chapterLabel, courseList, SITE_URL } from "@/lib/public-bank";
 import { APP_SECTIONS, courseMeta, excerpt, pickedConcepts, readMinutes } from "@/lib/site-nav";
 import { ad, arCount, MINUTE_FORMS } from "@/lib/arabic";
 import AdSlot from "./AdSlot";
 import ShareBar from "./ShareBar";
 import SearchBox from "./SearchBox";
 import { Cover, MiniCover, photoFor } from "./Cover";
+import { socialLinks } from "@/lib/social-links";
 import { type Article, allArticles, arDate, articleCourse } from "@/lib/articles";
 
 const href = (c: Concept) => `/learn/${c.courseId}/${c.id}`;
@@ -287,6 +288,8 @@ export function paragraphs(text: string, max = 260): string[] {
 }
 
 /** دعوة للانضمام إلى قناة تيليجرام: معلومة وسؤالان كل يوم */
+const SOCIAL_COLOR: Record<string, string> = { telegram: "#229ED9", facebook: "#1877F2", linkedin: "#0A66C2", x: "#111827" };
+
 export function TelegramCard({ className = "" }: { className?: string }) {
   // تابعنا: قناة تيليجرام وصفحة فيسبوك، معلومة وسؤالان كل يوم
   return (
@@ -295,8 +298,9 @@ export function TelegramCard({ className = "" }: { className?: string }) {
         <span className="block text-[14.5px] font-extrabold text-[#14302A]">تابعنا</span>
         <span className="block truncate text-[12.5px] text-[#4D635A]">معلومة وسؤالان كل يوم، مجانًا</span>
       </span>
-      <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="shrink-0 rounded-lg bg-[#229ED9] px-3 py-1.5 text-[13px] font-bold text-white">تيليجرام</a>
-      <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className="shrink-0 rounded-lg bg-[#1877F2] px-3 py-1.5 text-[13px] font-bold text-white">فيسبوك</a>
+      {socialLinks().filter((x) => x.id !== "site" && x.id !== "app").map((x) => (
+        <a key={x.id} href={x.url} target="_blank" rel="noopener noreferrer" className="shrink-0 rounded-lg px-2.5 py-1.5 text-[13px] font-bold text-white" style={{ background: SOCIAL_COLOR[x.id] }}>{x.name}</a>
+      ))}
     </div>
   );
 }

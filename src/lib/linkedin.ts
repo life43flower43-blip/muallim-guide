@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { SITE_URL } from "@/lib/public-bank";
 import { allArticles, todayISO } from "@/lib/articles";
 import { dayNumber, dayPlan } from "@/lib/telegram";
+import { footerLine } from "@/lib/social-links";
 
 export const LI_SCOPES = "openid profile w_member_social";
 export const liConfigured = () => !!process.env.LINKEDIN_CLIENT_ID && !!process.env.LINKEDIN_CLIENT_SECRET;
@@ -37,10 +38,10 @@ export function buildLinkedInPost(iso = todayISO()): { text: string; url: string
   const n = dayNumber(iso);
   const tags = [0, 3, 5].map((k) => TAGS[(n + k) % TAGS.length]).join(" ");
   const art = allArticles().find((a) => a.date === iso);
-  if (art) return { title: art.title, url: `${SITE_URL}/articles/${art.slug}`, text: `🆕 ${art.title}\n\n${art.description}\n\nاقرأ المقال كاملًا 👇\n\n${tags}` };
+  if (art) return { title: art.title, url: `${SITE_URL}/articles/${art.slug}`, text: `🆕 ${art.title}\n\n${art.description}\n\nاقرأ المقال كاملًا 👇\n\n${footerLine("linkedin")}\n\n${tags}` };
   const t = dayPlan(iso).tip;
   if (!t) return null;
-  return { title: t.title, url: `${SITE_URL}${t.href}`, text: `💡 ${t.title}\n\n${t.text}\n\nالشرح كاملًا مع أمثلة من الصف 👇\n\n${tags}` };
+  return { title: t.title, url: `${SITE_URL}${t.href}`, text: `💡 ${t.title}\n\n${t.text}\n\nالشرح كاملًا مع أمثلة من الصف 👇\n\n${footerLine("linkedin")}\n\n${tags}` };
 }
 
 export async function postToLinkedIn(p: { text: string; url: string; title: string }) {
