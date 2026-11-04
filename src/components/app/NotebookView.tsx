@@ -67,7 +67,7 @@ function Examples({ concepts }: { concepts: Concept[] }) {
       {items.map(({ c, ex }) => (
         <li key={c.id} className="rounded-[20px] border border-[var(--t075)] bg-white px-5 py-4 dark:border-border dark:bg-card">
           <p className="text-[15.5px] font-bold leading-7 text-foreground">{c.title}</p>
-          <p className="mt-1 text-[15px] font-normal leading-7">{ex}</p>
+          <p className="mt-1 text-[15px] font-normal leading-7 text-foreground">{ex}</p>
         </li>
       ))}
     </ul>
@@ -80,7 +80,7 @@ function Rules({ concepts }: { concepts: Concept[] }) {
       {concepts.map((c) => (
         <li key={c.id} className="rounded-[20px] border border-[var(--t075)] border-r-2 border-r-[#D4A017] bg-white px-5 py-4 dark:border-border dark:bg-card">
           <p className="text-[15.5px] font-bold leading-7 text-foreground">{c.title}</p>
-          <p className="mt-1 text-[15px] font-normal leading-7 text-[#33433D] dark:text-foreground/85">{c.rule}</p>
+          <p className="mt-1 text-[15px] font-normal leading-7 text-foreground">{c.rule}</p>
         </li>
       ))}
     </ul>
