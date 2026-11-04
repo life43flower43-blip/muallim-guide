@@ -12,6 +12,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Share2,
+  Users,
+  Send,
   BookOpen,
   CalendarClock,
   CheckCircle2,
@@ -509,6 +511,12 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
         >
           <Share2 className="h-5 w-5 text-primary" /> شارك التطبيق مع زملائك
         </button>
+        <a href="https://t.me/MuallimExam" target="_blank" rel="noopener noreferrer" className="flex min-h-[52px] w-full items-center gap-3 px-5 text-sm">
+          <Send className="h-5 w-5 text-primary" /> قناتنا على تيليجرام
+        </a>
+        <a href="https://www.facebook.com/share/1CHdqGvYz5/" target="_blank" rel="noopener noreferrer" className="flex min-h-[52px] w-full items-center gap-3 px-5 text-sm">
+          <Users className="h-5 w-5 text-primary" /> صفحتنا على فيسبوك
+        </a>
         {user && (
           <>
             <button
