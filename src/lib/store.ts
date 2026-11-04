@@ -44,12 +44,10 @@ export interface SpeechRecord {
 }
 
 /** أنماط ألوان التطبيق: لكل نمط لون أساسي ودرجاته، مع الذهبي في الجميع */
-export type AppTheme = "emerald" | "navy" | "burgundy" | "coffee";
+export type AppTheme = "emerald" | "navy";
 export const THEMES: { id: AppTheme; label: string; color: string }[] = [
   { id: "emerald", label: "زمردي", color: "#136F5C" },
   { id: "navy", label: "كحلي", color: "#1F3B63" },
-  { id: "burgundy", label: "عنابي", color: "#7A2140" },
-  { id: "coffee", label: "بني", color: "#5C4033" },
 ];
 
 export type LearnerGoal = "job" | "university" | "teacher";

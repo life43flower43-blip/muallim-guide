@@ -299,7 +299,8 @@ export default function AppShell() {
   }, [dark]);
   // لون التطبيق المختار، ولون شريط حالة الهاتف معه
   useEffect(() => {
-    const t = theme ?? "emerald";
+    // بقي لونان فقط: الأخضر والكحلي؛ ومن اختار لونًا محذوفًا يعود إلى الأخضر
+    const t = theme === "navy" ? "navy" : "emerald";
     if (t === "emerald") delete document.documentElement.dataset.theme;
     else document.documentElement.dataset.theme = t;
     const bg = getComputedStyle(document.documentElement).getPropertyValue("--background").trim();
