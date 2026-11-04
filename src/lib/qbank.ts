@@ -94,6 +94,7 @@ export const COURSE_COLOR: Record<string, string> = {
   AI1: "var(--t900)",
   SE1: "#EC4899",
   F1: "var(--t700)",
+  L1: "#0EA5A4",
 };
 
 // أسماء مختصرة للمحاور — للشرائح والشارات الصغيرة (بلا أرقام — قرار المستخدم)
@@ -108,6 +109,7 @@ export const COURSE_SHORT: Record<string, string> = {
   AI1: "الذكاء الاصطناعي",
   SE1: "التربية الخاصة",
   F1: "أسس التربية",
+  L1: "القيادة المدرسية",
 };
 
 export const courseById = (id: string) => COURSES.find((c) => c.id === id);
