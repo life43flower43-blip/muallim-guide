@@ -60,7 +60,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       articleSection: a.category,
       image: `${SITE_URL}${ARTICLE_COVERS.has(a.slug) ? `/covers/${a.slug}.jpg` : "/og.jpg"}`,
       author: { "@type": "Organization", name: "تربوي", url: `${SITE_URL}/` },
-      publisher: { "@type": "Organization", name: "تربوي", logo: { "@type": "ImageObject", url: `${SITE_URL}/icons/icon-512-v3.png` } },
+      publisher: { "@type": "Organization", name: "تربوي", logo: { "@type": "ImageObject", url: `${SITE_URL}/icons/icon-512-v4.png` } },
       mainEntityOfPage: `${SITE_URL}${path}`,
     },
     {

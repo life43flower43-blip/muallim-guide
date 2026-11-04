@@ -1,9 +1,9 @@
 // عامل خدمة: شبكة أولاً للتنقل والأصول، كاش أولاً لبنك البيانات الكبير
 // v32 — الواجهة الجديدة: الحسابات والجواهر والتدريب والأخطاء منقولة من أوريندو
-const CACHE = "turbawy-v206";
+const CACHE = "turbawy-v207";
 // كاش مستقل لبنك البيانات: لا يُحذف عند تحديث الواجهة، فلا يُعاد تنزيل البنك الكبير مع كل تحديث
 const DATA_CACHE = "turbawy-data";
-const SHELL = ["/app", "/manifest.json", "/icons/icon-192-v3.png", "/icons/icon-512-v3.png"];
+const SHELL = ["/app", "/manifest.json", "/icons/icon-192-v4.png", "/icons/icon-512-v4.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
@@ -93,8 +93,8 @@ self.addEventListener("push", (e) => {
   e.waitUntil(
     self.registration.showNotification(data.title, {
       body: data.body,
-      icon: "/icons/icon-192-v3.png",
-      badge: "/icons/icon-192-v3.png",
+      icon: "/icons/icon-192-v4.png",
+      badge: "/icons/icon-192-v4.png",
       dir: "rtl",
       lang: "ar",
       tag: data.tag || "turbawy",

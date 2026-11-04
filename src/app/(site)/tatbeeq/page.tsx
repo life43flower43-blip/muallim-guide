@@ -45,7 +45,7 @@ export default function AppPage() {
         <div className="grid items-center gap-8 lg:grid-cols-[1.2fr_1fr]">
           <div>
             <div className="flex items-center gap-3">
-              <img src="/icons/icon-192-v3.png" alt="" className="h-16 w-16 rounded-2xl bg-white" />
+              <img src="/icons/icon-192-v4.png" alt="" className="h-16 w-16 rounded-2xl bg-white" />
               <div>
                 <p className="font-display text-[26px] font-extrabold">تطبيق تربوي</p>
                 <p className="text-[14px] text-white/80">مجاني، بالعربية، لكل المعلمين العرب</p>

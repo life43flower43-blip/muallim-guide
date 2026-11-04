@@ -34,7 +34,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
               inLanguage: "ar",
               potentialAction: { "@type": "SearchAction", target: `${SITE_URL}/search?q={search_term_string}`, "query-input": "required name=search_term_string" },
             },
-            { "@context": "https://schema.org", "@type": "EducationalOrganization", name: "تربوي", url: `${SITE_URL}/`, logo: `${SITE_URL}/icons/icon-512-v3.png` },
+            { "@context": "https://schema.org", "@type": "EducationalOrganization", name: "تربوي", url: `${SITE_URL}/`, logo: `${SITE_URL}/icons/icon-512-v4.png` },
           ]),
         }}
       />
