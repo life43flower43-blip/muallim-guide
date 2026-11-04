@@ -588,13 +588,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               {combo >= 3 && !answered && (
                 <p className="mb-3 text-base font-bold text-[#D4A017]">{ad(combo)} إجابات صحيحة متتالية!</p>
               )}
-              <div className="flex flex-wrap items-center gap-1.5">
-                {/* الوضع: في التدريب يظهر التصحيح بعد كل سؤال، وفي الاختبار بعد التسليم */}
-                <span className="rounded-full bg-[var(--t075)] px-2.5 text-[12px] font-bold leading-6 text-[var(--t800)] dark:bg-muted dark:text-foreground">{instantFeedback ? "تدريب: التصحيح فوري" : "اختبار: التصحيح بعد النهاية"}</span>
-                <DifficultyChip level={q.difficulty} />
-                {concept && <span className="inline-flex min-w-0 max-w-full rounded-full bg-muted px-2.5 text-[12px] font-bold leading-6 text-secondary-foreground"><span className="truncate">{concept.title}</span></span>}
-              </div>
-              <h2 className="mt-3 font-display text-[17px] font-bold leading-8 text-foreground">{q.question}</h2>
+              <h2 className="font-display text-[17px] font-bold leading-8 text-foreground">{q.question}</h2>
 
               <div className={q.type === "tf" ? "mt-6 grid grid-cols-2 gap-3" : "mt-6 space-y-2.5"}>
                 {opts.map((o, i) => (
@@ -656,24 +650,6 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   </div>
                 )}
               </motion.div>
-            )}
-            {!answered && (
-              // ما مدى ثقتك؟ تُختار قبل الإجابة، وهي اختيارية، وتكشف الفرق بين ما تظن أنك تعرفه وما تعرفه فعلًا
-              <div className="mb-3 flex items-center gap-2" role="radiogroup" aria-label="ما مدى ثقتك؟">
-                <span className="shrink-0 text-sm font-bold text-[var(--t500)]">ثقتك:</span>
-                {CONF_OPTIONS.map((o) => (
-                  <button
-                    key={o.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={conf === o.id}
-                    onClick={() => setConf(conf === o.id ? null : o.id)}
-                    className={`min-h-[36px] min-w-0 flex-1 rounded-full border text-sm font-bold transition ${conf === o.id ? "border-[var(--t700)] bg-[var(--t700)] text-white" : "border-[var(--t075)] text-[var(--t700)] dark:border-border"}`}
-                  >
-                    {o.label}
-                  </button>
-                ))}
-              </div>
             )}
             <div className="flex gap-3">
               {showFeedback && !showWhy && (
