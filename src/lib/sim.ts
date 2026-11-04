@@ -10,6 +10,7 @@ import { SIM_SCENARIOS_D } from "./sim-scenarios-d";
 import { SIM_SCENARIOS_E } from "./sim-scenarios-e";
 import { SIM_SCENARIOS_F } from "./sim-scenarios-f";
 import { SIM_SCENARIOS_G } from "./sim-scenarios-g";
+import { SIM_SCENARIOS_H } from "./sim-scenarios-h";
 
 // ---------- الكفاءات الخمس المقيسة ----------
 export const SIM_SKILLS = [
@@ -57,7 +58,7 @@ export interface SimScenario {
   end: string; // خلاصة الموقف — تُعرض في التقرير
 }
 
-export const SIM_SCENARIOS: SimScenario[] = [...SIM_SCENARIOS_A, ...SIM_SCENARIOS_B, ...SIM_SCENARIOS_C, ...SIM_SCENARIOS_D, ...SIM_SCENARIOS_E, ...SIM_SCENARIOS_F, ...SIM_SCENARIOS_G];
+export const SIM_SCENARIOS: SimScenario[] = [...SIM_SCENARIOS_A, ...SIM_SCENARIOS_B, ...SIM_SCENARIOS_C, ...SIM_SCENARIOS_D, ...SIM_SCENARIOS_E, ...SIM_SCENARIOS_F, ...SIM_SCENARIOS_G, ...SIM_SCENARIOS_H];
 
 /** جلسة موسعة: ثلاثة مواقف متتابعة — نحو ثلاثين قراراً في مرة واحدة */
 export const SIM_SESSION_SIZE = 3;
