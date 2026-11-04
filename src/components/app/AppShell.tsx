@@ -169,14 +169,14 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
   };
   if (tab !== "today")
     return (
-      <header className="green-head safe-top sticky top-0 z-30 px-2 pb-2 lg:hidden">
+      <header className="green-head safe-top sticky top-0 z-30 px-2 pb-0.5 lg:hidden">
         <HeaderArt />
-        <div className="relative flex h-14 items-center justify-center px-14">
+        <div className="relative flex h-12 items-center justify-center px-14">
           {/* رجوع إلى الرئيسية */}
           <button type="button" onClick={() => onTab("today")} aria-label="رجوع" className="absolute right-1.5 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
             <ArrowRight className="h-6 w-6" strokeWidth={2.5} />
           </button>
-          <h1 className="font-display text-xl font-extrabold">{NAV.find((n) => n.id === tab)?.label}</h1>
+          <h1 className="font-display text-lg font-extrabold">{NAV.find((n) => n.id === tab)?.label}</h1>
           {tab === "profile" && (
             <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="absolute left-1.5 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
               <Settings className="h-6 w-6" strokeWidth={2.2} />
@@ -456,7 +456,7 @@ export default function AppShell() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className={cn("mx-auto w-full max-w-5xl px-4 pt-5 lg:px-8 lg:pt-8", tab === "today" ? "pb-2 lg:pb-10" : "pb-10")}
+              className={cn("mx-auto w-full max-w-5xl px-4 pt-5 lg:px-8 lg:pt-8", tab === "today" ? "pb-6 lg:pb-10" : "pb-28 lg:pb-10")}
             >
               {tab === "today" && <TodayView onGoTab={go} />}
               {tab === "notebook" && <NotebookView />}
