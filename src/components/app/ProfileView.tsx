@@ -226,9 +226,9 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
         <Card className="p-5">
           <div className="flex items-center gap-4">
             {user?.avatar ? (
-              <img src={user.avatar} alt="" className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-[#B9A7FF]" referrerPolicy="no-referrer" />
+              <img src={user.avatar} alt="" className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-[#E8C766]" referrerPolicy="no-referrer" />
             ) : (
-              <span className="shrink-0 rounded-full ring-2 ring-[#B9A7FF] ring-offset-2 ring-offset-white dark:ring-offset-card">
+              <span className="shrink-0 rounded-full ring-2 ring-[#E8C766] ring-offset-2 ring-offset-white dark:ring-offset-card">
                 <DefaultAvatar seed={user?.email ?? user?.name ?? "guest"} />
               </span>
             )}

@@ -13,7 +13,7 @@ import { ArrowDown, ArrowLeft } from "lucide-react";
 // عنوان الصفحة التي يظهر فيها الرسم: لا يتكرر عنوان الرسم إن طابقه
 const PageTitleCtx = createContext("");
 
-const C = ["#A87B12", "#D4A017", "#D4A017", "var(--t700)", "var(--t800)", "var(--t700)", "#14B8A6", "#6366F1"];
+const C = ["#A87B12", "#D4A017", "#D4A017", "var(--t700)", "var(--t800)", "var(--t700)", "#14B8A6", "#C9971C"];
 const tint = (c: string, p = 14) => `color-mix(in srgb, ${c} ${p}%, var(--card))`;
 
 function Frame({ title, children }: { title: string; children: React.ReactNode }) {
