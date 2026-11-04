@@ -37,10 +37,20 @@ export async function connectFacebook(code: string) {
   return page.name;
 }
 
+// وسوم ثابتة، ووسم لموضوع اليوم من الأسبوع (الأحد = ٠)، حتى تصل المنشورات لمن يبحث عنها
+const BASE_TAGS = "#الرخصة_المهنية #اختبار_المعلمين #تربوي";
+const DAY_TAGS = ["#أخلاقيات_المهنة #مهارات_التدريس", "#القياس_والتقويم", "#نظريات_التعلم", "#التربية_الخاصة #الفروق_الفردية", "#علم_نفس_النمو", "#مهارات_القرن_21 #التعليم_الرقمي", "#مراجعة_الرخصة"];
+const tags = (iso: string) => `\n\n${BASE_TAGS} ${DAY_TAGS[new Date(iso + "T12:00:00Z").getUTCDay()]}`;
+
 const LETTERS = ["أ", "ب", "ج", "د", "هـ", "و", "ز", "ح", "ط", "ي"];
 
 /** منشور فيسبوك لموعد من اليوم، من الجدول نفسه الذي تستخدمه قناة تيليجرام */
 export function buildFacebookPost(iso = todayISO(), slot: Slot): { message: string; link?: string; photo?: string } | null {
+  const p = buildPlain(iso, slot);
+  return p ? { ...p, message: p.message + tags(iso) } : null;
+}
+
+function buildPlain(iso: string, slot: Slot): { message: string; link?: string; photo?: string } | null {
   const plan = dayPlan(iso);
   if (slot === "tip" && plan.tip) {
     const t = plan.tip;
