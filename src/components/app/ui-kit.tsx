@@ -25,7 +25,7 @@ export function SectionHeader({ title, action }: { title: string; sub?: string; 
     <div className="mb-3 flex items-center justify-between gap-3">
       {/* عنوان قسم بشَرطة ذهبية قصيرة قبله */}
       <div className="flex min-w-0 items-center gap-2">
-        <span className="h-5 w-[4px] shrink-0 rounded-full bg-gradient-to-b from-[#FF5C8A] to-[#F25F5C]" aria-hidden="true" />
+        <span className="h-5 w-[4px] shrink-0 rounded-full bg-[var(--t600)]" aria-hidden="true" />
         <h2 className="truncate font-display text-lg font-extrabold text-[var(--t900)] dark:text-foreground">{title}</h2>
       </div>
       {action}
@@ -162,7 +162,7 @@ export function ListRow({
         <span className="rounded-full bg-danger-soft px-2 py-0.5 text-xs font-semibold text-destructive">{ad(badge)}</span>
       )}
       {meta && <span className="shrink-0 text-sm text-muted-foreground">{meta}</span>}
-      {!disabled && <ChevronLeft className="h-4 w-4 shrink-0 text-[#F25F5C]" aria-hidden="true" />}
+      {!disabled && <ChevronLeft className="h-4 w-4 shrink-0 text-[#9AB0A6]" aria-hidden="true" />}
     </button>
   );
 }
@@ -515,11 +515,6 @@ export function HeaderArt() {
       <path className="w3" d="M-20 0H420V6C340 16 280 2 215 16C145 32 80 58 -20 118Z" fill="url(#ha3)" />
       <path className="w2" d="M-20 0H330C280 16 225 8 170 28C115 48 60 78 -20 104Z" fill="url(#ha2)" />
       <path className="w1" d="M-20 0H240C200 12 160 12 118 30C78 48 40 70 -20 90Z" fill="url(#ha1)" />
-      <path className="w2" d="M-20 108C40 62 92 44 140 28C205 8 290 4 420 2" stroke="url(#hag)" strokeWidth="1.8" fill="none" />
-      <path className="w1" d="M-20 98C38 58 88 40 132 25C190 6 270 2 420 -1" stroke="url(#hag)" strokeWidth="0.9" fill="none" opacity="0.7" />
-      <g transform="translate(150 22) scale(1.6)"><path className="sp" d={star} fill="#FF5C8A" /></g>
-      <g transform="translate(212 12) scale(1.1)"><path className="sp" style={{ animationDelay: "1s" }} d={star} fill="#FFC2D4" /></g>
-      <g transform="translate(96 46) scale(1.3)"><path className="sp" style={{ animationDelay: "2s" }} d={star} fill="#7C5CFF" /></g>
     </svg>
   );
 }

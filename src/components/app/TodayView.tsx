@@ -181,13 +181,13 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             }}
             className="col-span-4 flex min-w-0 flex-col gap-2"
           >
-            <span className="exam-cta relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-[26px] bg-gradient-to-l from-[#FFF8E1] via-[#FFE8F0] to-[#FFD6E3] px-3 text-[var(--t900)]" style={{ height: tileH ?? 120 }}>
+            <span className="exam-cta relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-[26px] bg-[var(--t050)] ring-1 ring-[var(--t100)] px-3 text-[var(--t900)]" style={{ height: tileH ?? 120 }}>
               <span className="relative flex h-[46px] w-[46px] shrink-0 items-center justify-center" aria-hidden="true">
                 <span className="gold-wave" />
                 <span className="gold-wave" style={{ animationDelay: "1.1s" }} />
                 <span className="gold-wave" style={{ animationDelay: "2.2s" }} />
-                <span className="exam-pulse relative flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-[#FFC2D4] via-[#FF5C8A] to-[#F25F5C]">
-                  <span className="text-[14px] font-extrabold text-[var(--t900)]">ابدأ</span>
+                <span className="exam-pulse relative flex h-full w-full items-center justify-center rounded-full bg-[var(--t700)]">
+                  <span className="text-[14px] font-extrabold text-white">ابدأ</span>
                 </span>
               </span>
               <FitText max={18} min={12} className="min-w-0 font-extrabold">اختبار المحاكاة</FitText>
@@ -212,11 +212,11 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               className={cn("flex min-w-0 flex-col items-center gap-2", i === 1 || i === 2 ? "col-span-3" : "col-span-2")}
             >
               {/* صورة القسم بإطار ذهبي رفيع، وخط التقدّم الذهبي أسفلها */}
-              <span className={cn("relative flex w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)]", d.special ? "ring-2 ring-[#FF5C8A]" : "ring-1 ring-[#E2DDF5]")} style={{ height: tileH ?? 120 }}>
+              <span className={cn("relative flex w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)]", d.special ? "ring-1 ring-[var(--t300)]" : "ring-1 ring-[var(--t075)]")} style={{ height: tileH ?? 120 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 {d.special ? <TestArt /> : <img src={d.img} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: d.pos }} />}
                 <span className="absolute inset-x-4 bottom-2.5 h-[3px] overflow-hidden rounded-full bg-white/80" aria-hidden="true">
-                  <span className="block h-full rounded-full bg-gradient-to-l from-[#FF5C8A] to-[#7C5CFF]" style={{ width: `${Math.round(d.progress * 100)}%` }} />
+                  <span className="block h-full rounded-full bg-[var(--t600)]" style={{ width: `${Math.round(d.progress * 100)}%` }} />
                 </span>
               </span>
               <FitText max={i === 1 || i === 2 ? 17 : 14} min={10} group={i === 1 || i === 2 ? "door-wide" : "door-small"} className="w-full text-center font-bold leading-[22px] text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
@@ -224,7 +224,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           ))}
         </div>
       ) : (
-      <div ref={gridRef} className="-mx-1 grid grid-cols-2 gap-2.5">
+      <div ref={gridRef} className="grid grid-cols-2 gap-x-3 gap-y-4">
         {doors.map((d, i) => (
           <motion.button
             key={d.title}
@@ -241,21 +241,19 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 d.run();
               }, 160);
             }}
-            className="relative block overflow-hidden rounded-[26px] bg-[var(--t100)] text-right"
+            className="flex min-w-0 flex-col gap-1.5 text-right"
           >
-            {/* الصورة تملأ البطاقة، ولوحة العنوان نصف شفافة تطفو فوق أسفلها */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            {d.special ? (
-              <span className="relative block h-[calc(clamp(64px,calc((100dvh-440px)/3),130px)+34px)] w-full" style={cardH ? { height: cardH } : undefined}><TestArt /></span>
-            ) : (
-              <img src={d.img} alt="" className="block h-[calc(clamp(64px,calc((100dvh-440px)/3),130px)+34px)] w-full object-cover" style={cardH ? { height: cardH } : undefined} />
-            )}
-            <span className="absolute inset-x-1.5 bottom-1.5 flex min-h-[48px] flex-col justify-center overflow-hidden rounded-[20px] bg-white/80 px-3 py-2 backdrop-blur-md dark:bg-card/80">
-              <FitText max={16} min={8} group="doors" className="text-center font-extrabold text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
-              {/* خط التقدّم الذهبي */}
-              <span className="absolute inset-x-3 bottom-[5px] h-[3px] overflow-hidden rounded-full bg-[#EDE7FB]/70" aria-hidden="true">
-                <span className="block h-full rounded-full bg-gradient-to-l from-[#FF5C8A] to-[#FFC2D4] transition-[width] duration-700" style={{ width: `${Math.round(d.progress * 100)}%` }} />
-              </span>
+            {/* بطاقة صغيرة: صورة قصيرة، ثم العنوان تحتها، ثم خط التقدم */}
+            <span className="relative block h-[84px] w-full overflow-hidden rounded-[18px] bg-[var(--t100)] ring-1 ring-[var(--t075)]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {d.special ? <TestArt /> : <img src={d.img} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: d.pos }} />}
+            </span>
+            <span className="flex items-center justify-between gap-2 px-1">
+              <span className="min-w-0 truncate text-[14.5px] font-extrabold text-[var(--t900)] dark:text-foreground">{d.title}</span>
+              <span className="text-[11.5px] font-bold text-[var(--t450)]">{Math.round(d.progress * 100)}٪</span>
+            </span>
+            <span className="mx-1 block h-[3px] overflow-hidden rounded-full bg-[var(--t075)]" aria-hidden="true">
+              <span className="block h-full rounded-full bg-[var(--t600)] transition-[width] duration-700" style={{ width: `${Math.round(d.progress * 100)}%` }} />
             </span>
           </motion.button>
         ))}
@@ -280,20 +278,20 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 >
                   <defs>
                     <linearGradient id={`leafGold${i}`} x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0" stopColor="#FFC2D4" />
-                      <stop offset="1" stopColor="#F25F5C" />
+                      <stop offset="0" stopColor="var(--t300)" />
+                      <stop offset="1" stopColor="var(--t700)" />
                     </linearGradient>
                   </defs>
                   <path
                     d="M12 2C6.5 6 4.5 11.5 6 17c1.2 3.2 4 5 6 5s4.8-1.8 6-5c1.5-5.5-.5-11-6-15Z"
                     fill={d.done ? `url(#leafGold${i})` : d.today ? "var(--t100)" : d.future ? "none" : "var(--t050)"}
-                    stroke={d.done ? "#F25F5C" : d.today ? "var(--t800)" : "var(--t300)"}
+                    stroke={d.done ? "var(--t700)" : d.today ? "var(--t800)" : "var(--t300)"}
                     strokeWidth={d.today ? 1.8 : 1.3}
                     strokeDasharray={d.future ? "2.5 2" : undefined}
                   />
-                  <path d="M12 6v14M12 11l-3-2.5M12 15l3-2.5" stroke={d.done ? "#FFF0F5" : d.today ? "var(--t800)" : "var(--t300)"} strokeWidth="1.1" strokeLinecap="round" fill="none" />
+                  <path d="M12 6v14M12 11l-3-2.5M12 15l3-2.5" stroke={d.done ? "#FFFFFF" : d.today ? "var(--t800)" : "var(--t300)"} strokeWidth="1.1" strokeLinecap="round" fill="none" />
                 </svg>
-                <span className={cn("text-[12px] leading-none", d.today ? "font-extrabold text-[var(--t800)]" : d.done ? "font-bold text-[#7C5CFF]" : "font-bold text-[var(--t450)]")}>{d.label}</span>
+                <span className={cn("text-[12px] leading-none", d.today ? "font-extrabold text-[var(--t800)]" : d.done ? "font-bold text-[var(--t700)]" : "font-bold text-[var(--t450)]")}>{d.label}</span>
               </span>
             ))}
           </div>
@@ -380,13 +378,13 @@ function TestArt() {
           <stop offset="1" stopColor="#0B2236" />
         </linearGradient>
         <radialGradient id="ta-glow" cx="0.78" cy="0.22" r="0.6">
-          <stop offset="0" stopColor="#FF5C8A" stopOpacity="0.35" />
-          <stop offset="1" stopColor="#FF5C8A" stopOpacity="0" />
+          <stop offset="0" stopColor="#2E9E7E" stopOpacity="0.3" />
+          <stop offset="1" stopColor="#2E9E7E" stopOpacity="0" />
         </radialGradient>
         <linearGradient id="ta-gold" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#FFC2D4" />
-          <stop offset="0.55" stopColor="#FF5C8A" />
-          <stop offset="1" stopColor="#7C5CFF" />
+          <stop offset="0" stopColor="#A7F3D0" />
+          <stop offset="0.55" stopColor="#2E9E7E" />
+          <stop offset="1" stopColor="#136F5C" />
         </linearGradient>
       </defs>
       <rect width="200" height="200" fill="url(#ta-bg)" />
@@ -412,7 +410,7 @@ function TestArt() {
         <circle cx="152" cy="150" r="25" fill="none" stroke="#FFE8F0" strokeOpacity="0.8" strokeWidth="1.5" strokeDasharray="2 3" />
         <path className="ta-check" d="M139 151 l9 9 l18 -20" fill="none" stroke="#173322" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" pathLength={1} />
       </g>
-      <path d="M170 34 l2.2 5.6 5.6 2.2 -5.6 2.2 -2.2 5.6 -2.2 -5.6 -5.6 -2.2 5.6 -2.2z" fill="#FFC2D4" className="ta-spark" />
+      <path d="M170 34 l2.2 5.6 5.6 2.2 -5.6 2.2 -2.2 5.6 -2.2 -5.6 -5.6 -2.2 5.6 -2.2z" fill="#A7F3D0" className="ta-spark" />
     </svg>
   );
 }

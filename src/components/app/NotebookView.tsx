@@ -34,12 +34,12 @@ function CausalMap({ map }: { map: ChapterMap }) {
               {/* الخط العمودي والنقطة */}
               {k < ch.steps.length - 1 && <span className="absolute bottom-0 right-[7px] top-4 w-[2px] bg-[var(--t150)]" aria-hidden="true" />}
               <span
-                className={cn("absolute right-0 top-[9px] h-4 w-4 rounded-full border-[3px] border-white dark:border-card", k === 0 ? "bg-[var(--t800)]" : k === ch.steps.length - 1 ? "bg-[#7C5CFF]" : "bg-[var(--t300)]")}
+                className={cn("absolute right-0 top-[9px] h-4 w-4 rounded-full border-[3px] border-white dark:border-card", k === 0 ? "bg-[var(--t800)]" : k === ch.steps.length - 1 ? "bg-[var(--t600)]" : "bg-[var(--t300)]")}
                 aria-hidden="true"
               />
               <p className="text-base font-bold leading-8 text-foreground">{st}</p>
               {k < ch.links.length && (
-                <span className="my-0.5 inline-flex items-center gap-0.5 rounded-full bg-[#F0EBFF] px-1.5 text-[11px] font-bold leading-[18px] text-[#D9467A]">
+                <span className="my-0.5 inline-flex items-center gap-0.5 rounded-full bg-[var(--t050)] px-1.5 text-[11px] font-bold leading-[18px] text-[var(--t700)]">
                   <ArrowDown className="h-2.5 w-2.5" strokeWidth={3} />
                   {ch.links[k]}
                 </span>
@@ -66,7 +66,7 @@ function Examples({ concepts }: { concepts: Concept[] }) {
     <ul className="space-y-3">
       {items.map(({ c, ex }) => (
         <li key={c.id} className="rounded-[22px] border border-[var(--t075)] bg-white p-4 dark:border-border dark:bg-card">
-          <p className="inline-flex rounded-full bg-[#F0EBFF] px-3 text-sm font-bold leading-7 text-[#D9467A]">{c.title}</p>
+          <p className="font-extrabold leading-7 text-foreground">{c.title}</p>
           <p className="mt-2 leading-8">{ex}</p>
         </li>
       ))}
@@ -78,7 +78,7 @@ function Rules({ concepts }: { concepts: Concept[] }) {
   return (
     <ul className="divide-y divide-[var(--t075)] overflow-hidden rounded-[22px] border border-[var(--t075)] bg-white dark:divide-border dark:border-border dark:bg-card">
       {concepts.map((c) => (
-        <li key={c.id} className="border-r-[3px] border-r-[#7C5CFF] px-4 py-3">
+        <li key={c.id} className="border-r-[3px] border-r-[var(--t600)] px-4 py-3">
           <p className="font-extrabold leading-7 text-foreground">{c.title}</p>
           <p className="mt-0.5 leading-8 text-foreground">{c.rule}</p>
         </li>

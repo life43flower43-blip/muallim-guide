@@ -10,7 +10,7 @@ export const COOKIE_NAME = 'turbawy_token'
 /** كوكي state قصيرة العمر لتسجيل الدخول بـ Google (حماية CSRF) */
 export const STATE_COOKIE_NAME = 'turbawy_oauth_state'
 const TOKEN_EXPIRY = '30d'
-export const TOKEN_MAX_AGE = 30 * 24 * 60 * 60
+export const TOKEN_MAX_AGE = 180 * 24 * 60 * 60
 
 declare global {
   var __TURBAWY_FALLBACK_JWT_SECRET: string | undefined

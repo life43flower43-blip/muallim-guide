@@ -641,12 +641,13 @@ body {
   border: 1.5px solid transparent;
   background:
     linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(90deg, #7C5CFF, #FF8FB1 25%, #FF5C8A 50%, #FF8FB1 75%, #7C5CFF) border-box;
+    linear-gradient(#DCE8E2, #DCE8E2) border-box;
+  box-shadow: 0 6px 20px rgba(14, 59, 50, 0.08);
 }
 .dark .nav-gold {
   background:
     linear-gradient(var(--card), var(--card)) padding-box,
-    linear-gradient(90deg, #7C5CFF, #FF8FB1 25%, #FF5C8A 50%, #FF8FB1 75%, #7C5CFF) border-box;
+    linear-gradient(rgba(255,255,255,0.12), rgba(255,255,255,0.12)) border-box;
 }
 
 /* شريط العنوان متصل بأعلى الشاشة وجانبيها، بلون شريط حالة الهاتف نفسه، وحوافه السفلى مستديرة */
@@ -734,13 +735,13 @@ body {
 
 /* شريط اختبار المحاكاة: لمعة ذهبية تعبره كل بضع ثوانٍ، وعقرب الساعة يدور */
 .exam-cta {
-  border: 1.5px solid #7C5CFF;
+  border: 1px solid var(--t150);
 }
 .exam-cta::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 40%, rgba(255, 143, 177, 0.28) 50%, transparent 60%);
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.55) 50%, transparent 60%);
   background-size: 250% 100%;
   animation: exam-shine 4s ease-in-out infinite;
   pointer-events: none;
@@ -764,8 +765,8 @@ body {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  border: 2.5px solid rgba(124, 92, 255, 0.85);
-  background: radial-gradient(circle, transparent 55%, rgba(255, 143, 177, 0.35) 75%, transparent 76%);
+  border: 2px solid rgba(19, 111, 92, 0.45);
+  background: none;
   animation: gold-wave 3.3s ease-out infinite;
   pointer-events: none;
 }
