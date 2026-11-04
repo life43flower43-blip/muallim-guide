@@ -14,7 +14,7 @@ import { FitText } from "./FitText";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { BookOpen, CheckCircle2, XCircle, Dumbbell, Lightbulb, X, Search, Dna, Brain, Heart, ClipboardList, School, Library, Bot, Plus, Trash2, ChevronLeft, ChevronRight, ChevronDown, Share2, StickyNote, GraduationCap, ClipboardCheck, Play, HelpCircle, HandHeart, Landmark, Layers, Puzzle } from "lucide-react";
+import { BookOpen, CheckCircle2, XCircle, Dumbbell, Lightbulb, X, Search, Dna, Brain, Heart, ClipboardList, School, Library, Bot, Users, Plus, Trash2, ChevronLeft, ChevronRight, ChevronDown, Share2, StickyNote, GraduationCap, ClipboardCheck, Play, HelpCircle, HandHeart, Landmark, Layers, Puzzle } from "lucide-react";
 import {
   COURSES,
   CONCEPTS,
@@ -65,6 +65,7 @@ const COURSE_ICONS: Record<string, React.ElementType> = {
   SE1: HandHeart,
   F1: Landmark,
   AI1: Bot,
+  L1: Users,
 };
 function CourseIcon({ id, className }: { id: string; className?: string }) {
   const Icon = COURSE_ICONS[id] ?? BookOpen;
@@ -96,6 +97,7 @@ const COURSE_SUBTITLE: Record<string, string> = {
   SE1: "صعوبات التعلم والإعاقات والموهبة والدمج في الصف العادي",
   F1: "فلسفة التربية وتاريخها والبحث الإجرائي وأخلاقيات المهنة",
   AI1: "تطوره ودوره في العملية التعليمية وأخلاقياته",
+  L1: "أنماط القيادة والإشراف التربوي وقيادة المدرسة",
 };
 
 const MASTERY_TONE: Record<MasteryLevel, "neutral" | "primary" | "success"> = { 0: "neutral", 1: "neutral", 2: "primary", 3: "success" };
