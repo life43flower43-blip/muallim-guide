@@ -6,13 +6,15 @@ P = "public/data/qbank.json"
 bank = json.load(open(P))
 for f in sorted(glob.glob("content/bank/*.json")):
     add = json.load(open(f))
-    cid = add["course"]["id"]
-    bank["courses"][cid] = add["course"]["name"]
+    # ملف لمحور جديد فيه "course"، أو ملف إضافات لمحاور موجودة بحقل courseId في كل مفهوم
+    cid = add["course"]["id"] if "course" in add else None
+    if cid:
+        bank["courses"][cid] = add["course"]["name"]
     ids = {c["id"] for c in add["concepts"]}
     bank["concepts"] = [c for c in bank["concepts"] if c["id"] not in ids]
     bank["questions"] = [q for q in bank["questions"] if q["conceptId"] not in ids]
     for c in add["concepts"]:
-        bank["concepts"].append({"id": c["id"], "courseId": cid, "chapter": c["chapter"], "title": c["title"], "explanation": c["explanation"],
+        bank["concepts"].append({"id": c["id"], "courseId": c.get("courseId", cid), "chapter": c["chapter"], "title": c["title"], "explanation": c["explanation"],
                                  "examples": c["examples"], "example": c["examples"][0], "rule": c["rule"]})
     n = {}
     for cidc, diff, text, opts, correct, reason in add["questions"]:
