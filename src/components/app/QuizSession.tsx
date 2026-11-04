@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Check, X, AlertTriangle, CheckCircle2, XCircle, ChevronDown, Lightbulb, BookOpen, Timer as TimerIcon, Brain, Flag, Gem, RotateCcw } from "lucide-react";
+import { Check, X, AlertTriangle, CheckCircle2, XCircle, ChevronDown, Lightbulb, BookOpen, Timer as TimerIcon, Brain, Flag, Gem, RotateCcw } from "lucide-react";
 import { questionById, conceptById, COURSES, COURSE_SHORT, shuffle } from "@/lib/qbank";
 import { useApp } from "@/lib/store";
 import { useUi, type QuizConfig } from "@/lib/ui-store";
@@ -11,7 +11,7 @@ import { saveSnapshot, loadSnapshot, clearSnapshot, RESUME_FLAG, type Confidence
 import { ad, arCount, QUESTION_OBJ_FORMS, splitReason } from "@/lib/arabic";
 import { ConceptReader } from "./ConceptsView";
 import { toast } from "@/hooks/use-toast";
-import { Callout, Card, DifficultyChip, Divided, EmptyState, PrimaryButton, Ring, ScreenShell, SecondaryButton, SectionHeader, SkillBar, pct } from "./ui-kit";
+import { BackButton, Callout, Card, DifficultyChip, Divided, EmptyState, PrimaryButton, Ring, ScreenShell, SecondaryButton, SectionHeader, SkillBar, pct } from "./ui-kit";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -562,9 +562,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
       <div className="fixed inset-0 z-40 flex flex-col bg-background">
         {/* الرأس: إغلاق وشريط تقدم سميك */}
         <header className="safe-top mx-auto flex w-full max-w-[720px] items-center gap-3 px-4 pb-1 pt-3">
-          <button type="button" onClick={exit} aria-label="رجوع" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--t050)] text-[var(--t700)]">
-            <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
-          </button>
+          <BackButton onClick={exit} />
           <div className="flex h-2.5 flex-1 justify-start overflow-hidden rounded-full bg-[var(--t075)]" role="progressbar" aria-valuenow={Math.round(progress)} aria-valuemin={0} aria-valuemax={100}>
             <motion.div className="h-full rounded-full bg-[var(--t700)]" animate={{ width: `${Math.max(progress, 3)}%` }} transition={{ type: "spring", stiffness: 120, damping: 20 }} />
           </div>
