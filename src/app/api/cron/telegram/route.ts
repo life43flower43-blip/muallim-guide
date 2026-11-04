@@ -9,6 +9,7 @@ import { todayISO } from "@/lib/articles";
 import { db } from "@/lib/db";
 import { buildFacebookPost, postToFacebook } from "@/lib/facebook";
 import { buildLinkedInPost, postToLinkedIn } from "@/lib/linkedin";
+import { buildXPost, postToX, xConfigured } from "@/lib/x";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
   const iso = todayISO();
   const posts = buildPosts(iso, slot);
   const fbPost = buildFacebookPost(iso, slot);
-  if (request.nextUrl.searchParams.get("dry") === "1") return NextResponse.json({ slot, posts, facebook: fbPost });
+  if (request.nextUrl.searchParams.get("dry") === "1") return NextResponse.json({ slot, posts, facebook: fbPost, x: buildXPost(iso, slot) });
 
   // كل منصة مرة واحدة فقط لكل يوم وموعد، حتى لو شُغّل المجدول مرتين
   const once = async (key: string, run: () => Promise<boolean>) => {
@@ -45,6 +46,9 @@ export async function GET(request: NextRequest) {
     : "not_configured";
   const fbConnected = await db.socialAccount.findUnique({ where: { platform: "facebook" } }).catch(() => null);
   out.facebook = fbPost && fbConnected ? await once(`${iso}:${slot}:fb`, async () => (await postToFacebook(fbPost)).ok) : "not_connected";
+  const xPost = buildXPost(iso, slot);
+  out.x = xPost && xConfigured() ? await once(`${iso}:${slot}:x`, async () => (await postToX(xPost)).ok) : "not_configured";
+
   // لينكدإن: منشور واحد في اليوم مع منشور الصباح
   if (slot === "tip") {
     const liPost = buildLinkedInPost(iso);
