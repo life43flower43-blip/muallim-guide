@@ -8,6 +8,7 @@ import { buildPosts, sendPosts, SLOTS, telegramConfigured, type Slot } from "@/l
 import { todayISO } from "@/lib/articles";
 import { db } from "@/lib/db";
 import { buildFacebookPost, postToFacebook } from "@/lib/facebook";
+import { buildLinkedInPost, postToLinkedIn } from "@/lib/linkedin";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -44,5 +45,11 @@ export async function GET(request: NextRequest) {
     : "not_configured";
   const fbConnected = await db.socialAccount.findUnique({ where: { platform: "facebook" } }).catch(() => null);
   out.facebook = fbPost && fbConnected ? await once(`${iso}:${slot}:fb`, async () => (await postToFacebook(fbPost)).ok) : "not_connected";
+  // لينكدإن: منشور واحد في اليوم مع منشور الصباح
+  if (slot === "tip") {
+    const liPost = buildLinkedInPost(iso);
+    const liConnected = await db.socialAccount.findUnique({ where: { platform: "linkedin" } }).catch(() => null);
+    out.linkedin = liPost && liConnected ? await once(`${iso}:tip:li`, async () => (await postToLinkedIn(liPost)).ok) : "not_connected";
+  }
   return NextResponse.json(out);
 }
