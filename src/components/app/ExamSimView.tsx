@@ -351,11 +351,6 @@ export default function ExamSimView() {
           {current && (
             <motion.div key={current.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
               <div className="flex flex-wrap items-center gap-2">
-                <Chip>
-                  <span className="h-2 w-2 rounded-full" style={{ background: COURSE_COLOR[items[idx].courseId] ?? "var(--primary)" }} />
-                  {COURSE_SHORT[items[idx].courseId] ?? ""}
-                </Chip>
-                <DifficultyChip level={current.difficulty} />
                 <button
                   type="button"
                   aria-pressed={!!flagged[current.id]}
