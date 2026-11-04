@@ -83,12 +83,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       <article className="overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
         <Cover id={a.slug} title={a.title} courseId={course} label={a.category} className="h-60 sm:h-80" />
         <div className="p-5 sm:p-8">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-[#6B8077]">
+          <h1 className="font-display text-[27px] font-extrabold leading-[1.5] sm:text-[33px]">{a.title}</h1>
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-[#6B8077]">
             <Link href={`/articles/c/${CAT_SLUGS[a.category] ?? "issues"}`} className="rounded-md px-2 py-0.5 font-bold text-white" style={{ background: courseMeta(course).color }}>{a.category}</Link>
             <span>{arDate(a.date)}</span>
             <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {arCount(a.minutes, MINUTE_FORMS)} للقراءة</span>
           </div>
-          <h1 className="mt-4 font-display text-[27px] font-extrabold leading-[1.5] sm:text-[33px]">{a.title}</h1>
           <p className="mt-3 border-s-4 ps-4 text-[17px] leading-8 text-[#3A5249]" style={{ borderColor: courseMeta(course).color }}>{a.description}</p>
 
           {heads.length > 2 && (

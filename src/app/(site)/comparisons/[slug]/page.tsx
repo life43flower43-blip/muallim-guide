@@ -41,10 +41,10 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
       <Crumbs items={[{ href: "/comparisons", label: "مقارنات تربوية" }, { label: `${c.a} أم ${c.b}` }]} />
 
       <article className="rounded-2xl border border-[#E2ECE6] bg-white p-4 sm:p-7">
-        <p className="text-[13px] font-bold text-[#136F5C]">{c.group}</p>
-        <h1 className="mt-1 font-display text-[25px] font-extrabold leading-[1.6] text-[#14302A] sm:text-[30px]">
+        <h1 className="font-display text-[25px] font-extrabold leading-[1.6] text-[#14302A] sm:text-[30px]">
           الفرق بين {c.a} و{c.b}
         </h1>
+        <p className="mt-1 text-[13px] font-bold text-[#136F5C]">{c.group}</p>
 
         <div className="mt-5 space-y-4">
           {c.rows.map((r) => (
