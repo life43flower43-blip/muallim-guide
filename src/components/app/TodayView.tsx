@@ -83,6 +83,8 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const labCount = useApp((s) => s.labAttempts.length);
   const simCount = useApp((s) => s.simAttempts.length);
   const planCount = useApp((s) => s.lessonPlans.length);
+  // الهدف يحدد الزر الكبير وترتيب البطاقات: التوظيف (المحاكاة)، الكلية (المفاهيم)، المعلم (المواقف الصفية)
+  const goal = useApp((s) => s.goal) ?? "job";
   const [pressed, setPressed] = useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
@@ -163,7 +165,12 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   ];
   // ترتيب شبكة الرئيسية: «اختبر نفسك» بجانب المحاكاة، والعناوين الطويلة في البطاقات العريضة
   const byTitle = (t: string) => doors.find((d) => d.title === t)!;
-  const gridDoors = ["اختبر نفسك", "المفاهيم التربوية", "المواقف الصفية", "مهارات التدريس", "طرائق التدريس", "خطة الدرس"].map(byTitle);
+  const ORDER: Record<string, string[]> = {
+    job: ["اختبر نفسك", "المفاهيم التربوية", "المواقف الصفية", "مهارات التدريس", "طرائق التدريس", "خطة الدرس"],
+    university: ["اختبر نفسك", "المفاهيم التربوية", "طرائق التدريس", "مهارات التدريس", "المواقف الصفية", "خطة الدرس"],
+    teacher: ["اختبر نفسك", "المواقف الصفية", "خطة الدرس", "مهارات التدريس", "طرائق التدريس", "المفاهيم التربوية"],
+  };
+  const gridDoors = (ORDER[goal] ?? ORDER.job).map(byTitle);
 
   return (
     <div className="mx-auto -mt-1 max-w-2xl space-y-3 lg:mt-0">
@@ -177,7 +184,9 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             whileTap={{ scale: 0.97 }}
             onClick={() => {
               tick();
-              ui.startExamsim();
+              if (goal === "university") ui.startLearn();
+              else if (goal === "teacher") ui.startSim();
+              else ui.startExamsim();
             }}
             className="col-span-4 flex min-w-0 flex-col gap-2"
           >
@@ -190,7 +199,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                   <span className="text-[14px] font-extrabold text-white">ابدأ</span>
                 </span>
               </span>
-              <FitText max={18} min={12} className="min-w-0 font-extrabold">اختبار المحاكاة</FitText>
+              <FitText max={18} min={12} className="min-w-0 font-extrabold">{goal === "university" ? "تابع مذاكرة المحاور" : goal === "teacher" ? "موقف صفي اليوم" : "اختبار المحاكاة"}</FitText>
             </span>
             <span className="text-center text-[15px] font-bold leading-[22px] text-transparent" aria-hidden="true">.</span>
           </motion.button>
@@ -225,7 +234,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         </div>
       ) : (
       <div ref={gridRef} className="grid grid-cols-2 gap-x-3 gap-y-4">
-        {doors.map((d, i) => (
+        {(ORDER[goal] ?? ORDER.job).map(byTitle).map((d, i) => (
           <motion.button
             key={d.title}
             type="button"

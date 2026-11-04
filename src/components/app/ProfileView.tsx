@@ -336,7 +336,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             options={[["light", "فاتح", Sun], ["auto", "تلقائي", Monitor], ["dark", "ليلي", Moon]] as const}
           />
           <p className="text-sm font-medium text-secondary-foreground">لون التطبيق</p>
-          <div className="grid grid-cols-4 gap-2" role="radiogroup" aria-label="لون التطبيق">
+          <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="لون التطبيق">
             {THEMES.map((th) => (
               <button
                 key={th.id}
