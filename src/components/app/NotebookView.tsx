@@ -5,7 +5,7 @@
 // ============================================================================
 
 import { useMemo, useState } from "react";
-import { ArrowDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { CHAPTER_MAPS, COURSES, COURSE_SHORT, conceptsOfCourse, type ChapterMap } from "@/lib/qbank";
@@ -30,7 +30,7 @@ function CausalMap({ map }: { map: ChapterMap }) {
       {map.chains.map((ch, i) => (
         <ol key={i} className="rounded-[20px] border border-[var(--t075)] bg-white px-5 py-4 dark:border-border dark:bg-card">
           {ch.steps.map((st, k) => (
-            <li key={k} className="relative pr-6">
+            <li key={k} className="relative pb-2 pr-6 last:pb-0">
               {/* الخط العمودي والنقطة */}
               {k < ch.steps.length - 1 && <span className="absolute bottom-0 right-[7px] top-4 w-[2px] bg-[var(--t150)]" aria-hidden="true" />}
               <span
@@ -38,12 +38,6 @@ function CausalMap({ map }: { map: ChapterMap }) {
                 aria-hidden="true"
               />
               <p className="text-[15px] font-semibold leading-7 text-foreground">{st}</p>
-              {k < ch.links.length && (
-                <span className="my-0.5 inline-flex items-center gap-0.5 rounded-full bg-[#FBF3DA] px-1.5 text-[11px] font-bold leading-[18px] text-[#A87B12]">
-                  <ArrowDown className="h-2.5 w-2.5" strokeWidth={3} />
-                  {ch.links[k]}
-                </span>
-              )}
             </li>
           ))}
         </ol>
@@ -65,9 +59,8 @@ function Examples({ concepts }: { concepts: Concept[] }) {
   return (
     <ul className="space-y-3">
       {items.map(({ c, ex }) => (
-        <li key={c.id} className="rounded-[20px] border border-[var(--t075)] bg-white px-5 py-4 dark:border-border dark:bg-card">
-          <p className="text-[15.5px] font-bold leading-7 text-foreground">{c.title}</p>
-          <p className="mt-1 text-[15px] font-normal leading-7 text-foreground">{ex}</p>
+        <li key={c.id} className="rounded-[20px] border border-[var(--t075)] border-r-2 border-r-[#D4A017] bg-white px-5 py-4 dark:border-border dark:bg-card">
+          <p className="text-[15px] font-normal leading-7 text-foreground">{ex}</p>
         </li>
       ))}
     </ul>
@@ -79,8 +72,7 @@ function Rules({ concepts }: { concepts: Concept[] }) {
     <ul className="space-y-3">
       {concepts.map((c) => (
         <li key={c.id} className="rounded-[20px] border border-[var(--t075)] border-r-2 border-r-[#D4A017] bg-white px-5 py-4 dark:border-border dark:bg-card">
-          <p className="text-[15.5px] font-bold leading-7 text-foreground">{c.title}</p>
-          <p className="mt-1 text-[15px] font-normal leading-7 text-foreground">{c.rule}</p>
+          <p className="text-[15px] font-normal leading-7 text-foreground">{c.rule}</p>
         </li>
       ))}
     </ul>
