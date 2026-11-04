@@ -5,6 +5,7 @@ import { allArticles, todayISO } from "@/lib/articles";
 import { SITE_URL, publicBank } from "@/lib/public-bank";
 import { conceptImage } from "@/lib/concept-images";
 import { PROMOS } from "@/lib/telegram-promos";
+import { crossPromo } from "@/lib/social-links";
 import schedule from "../../content/telegram-schedule.json";
 import themes from "../../content/telegram-themes.json";
 
@@ -112,7 +113,10 @@ export function buildPosts(iso = todayISO(), slot: Slot = "tip") {
       posts.push(msg(`🆕 <b>مقال جديد:</b> ${esc(a.title)}\n\n${esc(clip(a.description, 220))}\n\n<a href="${SITE_URL}/articles/${a.slug}">اقرأ المقال ←</a>`, true));
   }
 
-  if (slot === "promo" && wd === 6) {
+  if (slot === "promo" && wd === 5) {
+    // الجمعة: كل منصاتنا
+    posts.push(msg(crossPromo("telegram", true)));
+  } else if (slot === "promo" && wd === 6) {
     // السبت: تذكير باختبار الأسبوع قبل أن يتجدد غدًا
     posts.push(msg(`⏳ <b>آخر يوم لاختبار هذا الأسبوع</b>\n\n٢٠ سؤالًا من مواضيع الأسبوع، مع التصحيح والتفسير فورًا. غدًا يُنشر اختبار جديد.\n\n<a href="${SITE_URL}/weekly-test">ابدأ الاختبار ←</a>`));
   } else if (slot === "promo" && plan.promo) {

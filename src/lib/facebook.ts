@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { SITE_URL } from "@/lib/public-bank";
 import { allArticles, todayISO } from "@/lib/articles";
 import { dayNumber, dayPlan, SLOTS, type Slot } from "@/lib/telegram";
+import { crossPromo, footerLine } from "@/lib/social-links";
 
 const G = "https://graph.facebook.com/v21.0";
 export const FB_SCOPES = "pages_manage_posts,pages_read_engagement,pages_show_list";
@@ -90,9 +91,12 @@ function buildPlain(iso: string, slot: Slot): { message: string; link?: string; 
     const t = plan.tip;
     const art = allArticles().find((a) => a.date === iso);
     const extra = art ? `\n\n🆕 مقال جديد: ${art.title}\n${SITE_URL}/articles/${art.slug}` : "";
-    const message = `💡 ${t.title}\n\n${t.text}\n\nالشرح كاملًا: ${SITE_URL}${t.href}${extra}`;
+    const message = `💡 ${t.title}\n\n${t.text}\n\nالشرح كاملًا: ${SITE_URL}${t.href}${extra}\n\n${footerLine("facebook")}`;
     const meta = { course: courseOf(t.href), kind: "tip" };
     return t.image ? { message, photo: `${SITE_URL}${t.image}`, ...meta } : { message, link: `${SITE_URL}${t.href}`, ...meta };
+  }
+  if (slot === "promo" && new Date(iso + "T12:00:00Z").getUTCDay() === 5) {
+    return { message: crossPromo("facebook"), course: "G1", kind: "site" };
   }
   if (slot === "promo" && plan.promo) {
     const p = plan.promo;
