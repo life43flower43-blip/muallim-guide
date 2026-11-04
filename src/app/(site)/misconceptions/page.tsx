@@ -19,8 +19,8 @@ export default function Misconceptions() {
     <WithSidebar>
       <Crumbs items={[{ label: "مفاهيم خاطئة شائعة" }]} />
       <header className="border-b border-[#E2ECE6] pb-6">
-        <p className="text-[13px] font-bold text-[#136F5C]">اختبر نفسك</p>
-        <h1 className="mt-1 font-display text-[28px] font-extrabold leading-[1.45] text-[#14302A] sm:text-[34px]">مفاهيم تربوية خاطئة شائعة: صحيحة أم خاطئة؟</h1>
+        <h1 className="font-display text-[28px] font-extrabold leading-[1.45] text-[#14302A] sm:text-[34px]">مفاهيم تربوية خاطئة شائعة: صحيحة أم خاطئة؟</h1>
+        <p className="mt-2 text-[13px] font-bold text-[#136F5C]">اختبر نفسك</p>
         <p className="mt-2 max-w-3xl text-[16px] leading-8 text-[#4A6158]">
           {ad(MISCONCEPTIONS.length)} عبارة يتداولها المعلمون والطلاب عن التعلم والتدريس. احكم على كل عبارة أولًا، ثم اقرأ الصواب، ولماذا، وماذا يعني ذلك في صفك.
         </p>

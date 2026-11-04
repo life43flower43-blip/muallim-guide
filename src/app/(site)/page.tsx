@@ -73,8 +73,8 @@ export default function Home() {
         <span className="absolute -start-16 -top-16 h-56 w-56 rounded-full bg-white/10" aria-hidden="true" />
         </div>
         <div className="relative max-w-2xl">
-          <p className="inline-block rounded-full bg-white/15 px-3 py-1 text-[13px] font-bold">مجاني للمعلمين وطلاب كليات التربية</p>
-          <h1 className="mt-4 font-display text-[28px] font-extrabold leading-[1.45] sm:text-[40px]">كل ما يحتاجه المعلم العربي، في مكان واحد</h1>
+          <h1 className="font-display text-[28px] font-extrabold leading-[1.45] sm:text-[40px]">كل ما يحتاجه المعلم العربي، في مكان واحد</h1>
+          <p className="mt-2 inline-block rounded-full bg-white/15 px-3 py-1 text-[13px] font-bold">مجاني للمعلمين وطلاب كليات التربية</p>
           <p className="mt-3 text-[16px] leading-8 text-white/85 sm:text-[18px]">مقالات تربوية، ومفاهيم مشروحة بأمثلة من الصف، واستعداد حقيقي لاختبارات الرخصة المهنية والتوظيف.</p>
           <div className="relative z-30 mt-6 max-w-xl text-right"><SearchBox /></div>
           <div className="mt-5 flex flex-wrap gap-2 text-[13px]">

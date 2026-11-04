@@ -41,8 +41,8 @@ export default async function CoursePage({ params }: { params: Promise<{ course:
         <img src={m.img} alt="" className="absolute inset-0 h-full w-full object-cover" />
         <span className="absolute inset-0" style={{ background: `linear-gradient(to left, ${m.color}F2, ${m.color}B0)` }} />
         <div className="relative p-6 text-white">
-          <p className="text-[13px] font-bold text-white/80">تصنيف: {m.short}</p>
-          <h1 className="mt-1 font-display text-[26px] font-extrabold leading-[1.5]">{name}</h1>
+          <h1 className="font-display text-[26px] font-extrabold leading-[1.5]">{name}</h1>
+          <p className="mt-2 text-[13px] font-bold text-white/80">تصنيف: {m.short}</p>
           <p className="mt-2 max-w-2xl leading-7 text-white/90">{m.about}</p>
           <p className="mt-3 text-[13px] font-bold text-white/85">{arCount(chapters.length, CHAPTER_FORMS)}، {arCount(total, CONCEPT_FORMS)}</p>
         </div>

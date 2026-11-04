@@ -48,8 +48,8 @@ export default function LicenseGuide() {
       <Crumbs items={[{ label: "دليل اختبار الرخصة" }]} />
       <article className="space-y-8">
         <header className="border-b border-[#E2ECE6] pb-6">
-          <p className="text-[13px] font-bold text-[#136F5C]">دليل شامل</p>
-          <h1 className="mt-1 font-display text-[28px] font-extrabold leading-[1.45] text-[#14302A] sm:text-[34px]">كيف تستعد لاختبار الرخصة المهنية للمعلمين؟</h1>
+          <h1 className="font-display text-[28px] font-extrabold leading-[1.45] text-[#14302A] sm:text-[34px]">كيف تستعد لاختبار الرخصة المهنية للمعلمين؟</h1>
+          <p className="mt-2 text-[13px] font-bold text-[#136F5C]">دليل شامل</p>
           <p className="mt-2 max-w-3xl text-[16px] leading-8 text-[#4A6158]">ما الذي يقيسه الجزء التربوي، وكيف تذاكره بخطة واضحة، وكيف تتدرب عليه.</p>
         </header>
 
