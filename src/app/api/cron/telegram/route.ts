@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { buildPosts, sendPosts, SLOTS, telegramConfigured, type Slot } from "@/lib/telegram";
 import { todayISO } from "@/lib/articles";
 import { db } from "@/lib/db";
+import { buildFacebookPost, postToFacebook } from "@/lib/facebook";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -22,18 +23,26 @@ export async function GET(request: NextRequest) {
   const slot: Slot = (SLOTS as readonly string[]).includes(raw) ? (raw as Slot) : "tip";
   const iso = todayISO();
   const posts = buildPosts(iso, slot);
-  if (request.nextUrl.searchParams.get("dry") === "1") return NextResponse.json({ slot, posts });
-  if (!telegramConfigured()) return NextResponse.json({ skipped: "telegram_not_configured", posts: posts.length });
+  const fbPost = buildFacebookPost(iso, slot);
+  if (request.nextUrl.searchParams.get("dry") === "1") return NextResponse.json({ slot, posts, facebook: fbPost });
 
-  // مرة واحدة فقط لكل يوم وموعد، حتى لو شُغّل المجدول مرتين
-  try {
-    await db.telegramPost.create({ data: { key: `${iso}:${slot}` } });
-  } catch {
-    return NextResponse.json({ skipped: "already_posted", key: `${iso}:${slot}` });
-  }
+  // كل منصة مرة واحدة فقط لكل يوم وموعد، حتى لو شُغّل المجدول مرتين
+  const once = async (key: string, run: () => Promise<boolean>) => {
+    try {
+      await db.telegramPost.create({ data: { key } });
+    } catch {
+      return "already_posted";
+    }
+    const ok = await run().catch(() => false);
+    if (!ok) await db.telegramPost.delete({ where: { key } }).catch(() => {}); // يُعاد في المرة القادمة
+    return ok ? "sent" : "failed";
+  };
 
-  const results = await sendPosts(posts);
-  // إن فشل الإرسال كله يُحذف القيد ليُعاد في المرة القادمة
-  if (results.every((r) => !r.ok)) await db.telegramPost.delete({ where: { key: `${iso}:${slot}` } }).catch(() => {});
-  return NextResponse.json({ results });
+  const out: Record<string, unknown> = {};
+  out.telegram = telegramConfigured()
+    ? await once(`${iso}:${slot}`, async () => (await sendPosts(posts)).some((r) => r.ok))
+    : "not_configured";
+  const fbConnected = await db.socialAccount.findUnique({ where: { platform: "facebook" } }).catch(() => null);
+  out.facebook = fbPost && fbConnected ? await once(`${iso}:${slot}:fb`, async () => (await postToFacebook(fbPost)).ok) : "not_connected";
+  return NextResponse.json(out);
 }
