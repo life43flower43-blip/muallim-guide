@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AlertTriangle, BookOpenText, ChevronDown, FileQuestion, Layers, Network, Scale, School, Search } from "lucide-react";
 import { SITE_URL, courseList, publicBank } from "@/lib/public-bank";
 import { allArticles } from "@/lib/articles";
-import { courseMeta, pickQuestions } from "@/lib/site-nav";
+import { courseMeta, pickQuestions, COURSE_EMOJI } from "@/lib/site-nav";
 import DailyQuestion from "@/components/site/DailyQuestion";
 import SearchBox from "@/components/site/SearchBox";
 import CatChips from "@/components/site/CatChips";
@@ -142,9 +142,12 @@ export default function Home() {
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {courses.map((c) => (
             <li key={c.id}>
-              <Link href={`/learn/${c.id}`} className="flex h-full flex-col rounded-2xl border border-[#E2ECE6] bg-white p-4 hover:border-[#136F5C]">
-                <span className="font-display text-[16px] font-extrabold leading-7 text-[#14302A]">{courseMeta(c.id).short}</span>
-                <span className="mt-auto pt-1 text-[13px] text-[#6B8077]">{ad(c.concepts.length)} مفهومًا</span>
+              <Link href={`/learn/${c.id}`} className="flex h-full items-center gap-2 rounded-2xl border border-[#E2ECE6] bg-white p-2.5 hover:border-[#136F5C]">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[20px]" style={{ background: `${courseMeta(c.id).color}1A` }} aria-hidden="true">{COURSE_EMOJI[c.id] ?? "📘"}</span>
+                <span className="min-w-0">
+                  <span className="block whitespace-nowrap font-display text-[clamp(11px,3vw,14px)] font-extrabold leading-6 text-[#14302A]">{courseMeta(c.id).short}</span>
+                  <span className="block text-[12.5px] text-[#6B8077]">{ad(c.concepts.length)} مفهومًا</span>
+                </span>
               </Link>
             </li>
           ))}

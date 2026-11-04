@@ -19,6 +19,12 @@ export const COURSE_META: Record<string, CourseMeta> = {
   C1: { short: "المهارات", img: "/topics/C1.jpg", color: "#8A6A12", about: "مهارات المعلم العملية: التواصل، والعرض، والتعزيز، وتنويع المثيرات، وغلق الدرس." },
 };
 
+/** رمز مميز لكل محور، لا يتكرر */
+export const COURSE_EMOJI: Record<string, string> = {
+  M1: "🌱", M2: "🧠", M3: "💡", M4: "📊", M5: "🧑‍🏫", SE1: "🤝",
+  F1: "🏛️", AI1: "🤖", G1: "📚", C1: "🛠️", L1: "🧭", R1: "🧩",
+};
+
 export const courseMeta = (id: string): CourseMeta => COURSE_META[id] ?? { short: id, img: "/home/concepts-v2.jpg", color: "#136F5C", about: "" };
 
 /** أقسام التطبيق كما تُعرض في الموقع: لكل قسم صفحة تعريف ورابط يفتحه في التطبيق */
