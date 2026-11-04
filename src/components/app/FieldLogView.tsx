@@ -471,7 +471,7 @@ export default function FieldLogView() {
                     {v.rating && <Chip>{v.rating}</Chip>}
                   </span>
                 </span>
-                <ChevronLeft className="mt-2 h-4 w-4 shrink-0 text-[#F25F5C]" />
+                <ChevronLeft className="mt-2 h-4 w-4 shrink-0 text-[#C9971C]" />
               </button>
             ))}
           </Divided>

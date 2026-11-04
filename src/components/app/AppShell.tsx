@@ -143,7 +143,7 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
                   aria-hidden="true"
                 />
               )}
-              <n.icon className={cn("relative h-6 w-6 transition-colors", active ? "text-[#FFC2D4]" : "text-[var(--t700)] dark:text-primary")} strokeWidth={active ? 2.4 : 1.9} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.2 : 0} />
+              <n.icon className={cn("relative h-6 w-6 transition-colors", active ? "text-[#F3DC8E]" : "text-[var(--t700)] dark:text-primary")} strokeWidth={active ? 2.4 : 1.9} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.2 : 0} />
               <span className={cn("relative whitespace-nowrap text-[clamp(10px,3.1vw,13px)] transition-colors", active ? "font-bold text-white" : "font-medium text-[var(--t700)] dark:text-primary")}>{n.label}</span>
               {n.id === "mistakes" && due > 0 && (
                 <span className="absolute right-1/2 top-0.5 translate-x-5 rounded-full bg-destructive px-1.5 text-[10px] font-semibold leading-4 text-white ring-2 ring-white">
@@ -191,35 +191,35 @@ function MobileTopBar({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; 
       <div className="flex items-center justify-between gap-2 px-2.5 pb-1 pt-1">
         <span className="flex min-w-0 items-center gap-2 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icons/logo-128.png" alt="" className="h-11 w-11 shrink-0 rounded-[14px] bg-white object-contain p-0.5 ring-1 ring-[#FF5C8A]/70" />
+          <img src="/icons/logo-128.png" alt="" className="h-11 w-11 shrink-0 rounded-[14px] bg-white object-contain p-0.5 ring-1 ring-[#D4A017]/70" />
           <span className="shrink-0 whitespace-nowrap font-display text-[clamp(20px,6.8vw,28px)] font-extrabold leading-9">تربوي</span>
         </span>
         <span className="flex shrink-0 items-center gap-1">
-          <span className="flex items-center gap-1 rounded-full bg-white p-[4px] max-[360px]:hidden text-base font-extrabold text-[#7C5CFF] dark:bg-card" aria-label={`هدف اليوم ${ad(Math.round(goal * 100))}٪`}>
+          <span className="flex items-center gap-1 rounded-full bg-white p-[4px] max-[360px]:hidden text-base font-extrabold text-[#C9971C] dark:bg-card" aria-label={`هدف اليوم ${ad(Math.round(goal * 100))}٪`}>
             {/* حلقة هدف اليوم تمتلئ بالذهبي حول الشعلة، وتتوهج عند اكتمالها */}
-            <span className={cn("relative h-[28px] w-[28px] rounded-full", goal >= 1 && "ring-2 ring-[#FFC2D4]")}>
+            <span className={cn("relative h-[28px] w-[28px] rounded-full", goal >= 1 && "ring-2 ring-[#F3DC8E]")}>
               <GoalBurst done={goal >= 1} />
               <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90" aria-hidden="true">
                 <defs>
                   <linearGradient id="goalGold" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0" stopColor="#FF5C8A" />
-                    <stop offset="1" stopColor="#F25F5C" />
+                    <stop offset="0" stopColor="#D4A017" />
+                    <stop offset="1" stopColor="#C9971C" />
                   </linearGradient>
                 </defs>
                 <circle cx="18" cy="18" r="15" fill="none" stroke="#F3EEFF" strokeWidth="3.5" />
                 <circle cx="18" cy="18" r="15" fill="none" stroke="url(#goalGold)" strokeWidth="3.5" strokeLinecap="round" strokeDasharray={`${goal * 94.25} 94.25`} className="transition-[stroke-dasharray] duration-700" />
               </svg>
-              <Flame className="absolute inset-0 m-auto h-[14px] w-[14px]" fill="#FF5C8A" stroke="#7C5CFF" strokeWidth={1.5} />
+              <Flame className="absolute inset-0 m-auto h-[14px] w-[14px]" fill="#D4A017" stroke="#C9971C" strokeWidth={1.5} />
             </span>
             
           </span>
-          <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-[36px] w-[36px] items-center justify-center rounded-full bg-white text-[#F25F5C] dark:bg-card">
+          <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-[36px] w-[36px] items-center justify-center rounded-full bg-white text-[#C9971C] dark:bg-card">
             <Bell className="h-[18px] w-[18px]" strokeWidth={2.2} />
             {due > 0 && (
               <span className="absolute -right-1 -top-1 min-w-[20px] rounded-full bg-destructive px-1 text-center text-[11px] font-bold leading-5 text-white">{ad(Math.min(due, 99))}</span>
             )}
           </button>
-          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-[36px] w-[36px] items-center justify-center rounded-full bg-white text-[#F25F5C] dark:bg-card">
+          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-[36px] w-[36px] items-center justify-center rounded-full bg-white text-[#C9971C] dark:bg-card">
             <Settings className="h-[18px] w-[18px]" strokeWidth={2.2} />
           </button>
         </span>

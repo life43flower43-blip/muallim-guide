@@ -272,7 +272,7 @@ export default function LabView() {
   }
 
   const tabs = (
-    <div role="tablist" aria-label="أقسام المختبر" className="mb-5 grid grid-cols-4 gap-1 rounded-[22px] border border-[#E2DDF5] bg-white p-1 dark:bg-card">
+    <div role="tablist" aria-label="أقسام المختبر" className="mb-5 grid grid-cols-4 gap-1 rounded-[22px] border border-[#ECE3C4] bg-white p-1 dark:bg-card">
       {(
         [
           ["list", "المواقف", Dumbbell],
@@ -314,7 +314,7 @@ export default function LabView() {
             {st && <span className="shrink-0 rounded-full bg-[var(--t100)] px-2 text-[11px] font-bold leading-5 text-[var(--t800)]">{st}</span>}
           </span>
         </span>
-        <ChevronLeft className="h-4 w-4 shrink-0 text-[#F25F5C]" />
+        <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C]" />
       </button>
     );
   };

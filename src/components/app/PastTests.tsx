@@ -24,7 +24,7 @@ export default function PastTests() {
         title="اختباراتك السابقة"
         action={
           tests.length > 5 && (
-            <button type="button" onClick={() => setShowAll((v) => !v)} className="min-h-[36px] shrink-0 whitespace-nowrap text-sm font-bold text-[#7C5CFF]">
+            <button type="button" onClick={() => setShowAll((v) => !v)} className="min-h-[36px] shrink-0 whitespace-nowrap text-sm font-bold text-[#C9971C]">
               {showAll ? "أقل" : `الكل (${ad(tests.length)})`}
             </button>
           )
@@ -42,7 +42,7 @@ export default function PastTests() {
                   {dateFmt.format(new Date(t.ts))}، {arCount(t.total, QUESTION_FORMS)}، {fmtDur(t.durationSec)}
                 </p>
               </div>
-              <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-sm font-bold", v >= 70 ? "bg-[var(--t100)] text-[var(--t800)]" : v >= 50 ? "bg-[#F0EBFF] text-[#D9467A]" : "bg-danger-soft text-destructive")}>{pct(v)}</span>
+              <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-sm font-bold", v >= 70 ? "bg-[var(--t100)] text-[var(--t800)]" : v >= 50 ? "bg-[#FBF3DA] text-[#A87B12]" : "bg-danger-soft text-destructive")}>{pct(v)}</span>
             </div>
           );
         })}

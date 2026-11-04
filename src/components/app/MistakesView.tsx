@@ -39,7 +39,7 @@ function MistakeCard({ item, onConcept }: { item: MistakeItem; onConcept: () => 
         <button
           type="button"
           onClick={() => setRevealed(true)}
-          className="mt-3 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[16px] bg-[#F0EBFF] text-sm font-bold text-[#D9467A] transition active:scale-[0.98]"
+          className="mt-3 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[16px] bg-[#FBF3DA] text-sm font-bold text-[#A87B12] transition active:scale-[0.98]"
         >
           <Eye className="h-4 w-4" /> اكشف الإجابة
         </button>
@@ -51,7 +51,7 @@ function MistakeCard({ item, onConcept }: { item: MistakeItem; onConcept: () => 
           </p>
           <p className="text-sm leading-7 text-secondary-foreground">{base}</p>
           {item.concept && (
-            <button type="button" onClick={onConcept} className="inline-flex min-h-[40px] items-center gap-1.5 text-sm font-bold text-[#7C5CFF]">
+            <button type="button" onClick={onConcept} className="inline-flex min-h-[40px] items-center gap-1.5 text-sm font-bold text-[#C9971C]">
               <BookOpen className="h-4 w-4" /> اقرأ المفهوم
             </button>
           )}
@@ -83,7 +83,7 @@ function CourseSection({ group, items, expanded, onToggle, onReview, onConcept }
         ))}
       </div>
       {items.length > SECTION_PREVIEW && (
-        <button type="button" onClick={onToggle} aria-expanded={expanded} className="flex min-h-[40px] w-full items-center justify-center gap-1 text-sm font-bold text-[#7C5CFF]">
+        <button type="button" onClick={onToggle} aria-expanded={expanded} className="flex min-h-[40px] w-full items-center justify-center gap-1 text-sm font-bold text-[#C9971C]">
           {expanded ? "عرض أقل" : `عرض الكل (${ad(items.length)})`}
           <ChevronDown className={cn("h-4 w-4 transition-transform", expanded && "rotate-180")} />
         </button>
@@ -163,7 +163,7 @@ export default function MistakesView({ onGoTab }: { onGoTab: (t: Tab) => void })
               onClick={() => setCourse(g.courseId)}
               className={cn(
                 "min-h-[36px] shrink-0 whitespace-nowrap rounded-full border px-3.5 text-sm font-bold transition-colors",
-                course === g.courseId ? "border-transparent bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "border-[#E2DDF5] bg-white text-[var(--t500)] dark:bg-card"
+                course === g.courseId ? "border-transparent bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "border-[#ECE3C4] bg-white text-[var(--t500)] dark:bg-card"
               )}
             >
               {g.courseId ? COURSE_SHORT[g.courseId] ?? g.name : g.name} {ad(g.count)}

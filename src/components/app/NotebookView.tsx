@@ -34,12 +34,12 @@ function CausalMap({ map }: { map: ChapterMap }) {
               {/* الخط العمودي والنقطة */}
               {k < ch.steps.length - 1 && <span className="absolute bottom-0 right-[7px] top-4 w-[2px] bg-[var(--t150)]" aria-hidden="true" />}
               <span
-                className={cn("absolute right-0 top-[9px] h-4 w-4 rounded-full border-[3px] border-white dark:border-card", k === 0 ? "bg-[var(--t800)]" : k === ch.steps.length - 1 ? "bg-[var(--t600)]" : "bg-[var(--t300)]")}
+                className={cn("absolute right-0 top-[9px] h-4 w-4 rounded-full border-[3px] border-white dark:border-card", k === 0 ? "bg-[var(--t800)]" : k === ch.steps.length - 1 ? "bg-[#D4A017]" : "bg-[var(--t300)]")}
                 aria-hidden="true"
               />
               <p className="text-base font-bold leading-8 text-foreground">{st}</p>
               {k < ch.links.length && (
-                <span className="my-0.5 inline-flex items-center gap-0.5 rounded-full bg-[var(--t050)] px-1.5 text-[11px] font-bold leading-[18px] text-[var(--t700)]">
+                <span className="my-0.5 inline-flex items-center gap-0.5 rounded-full bg-[#FBF3DA] px-1.5 text-[11px] font-bold leading-[18px] text-[#A87B12]">
                   <ArrowDown className="h-2.5 w-2.5" strokeWidth={3} />
                   {ch.links[k]}
                 </span>
@@ -78,7 +78,7 @@ function Rules({ concepts }: { concepts: Concept[] }) {
   return (
     <ul className="divide-y divide-[var(--t075)] overflow-hidden rounded-[22px] border border-[var(--t075)] bg-white dark:divide-border dark:border-border dark:bg-card">
       {concepts.map((c) => (
-        <li key={c.id} className="border-r-[3px] border-r-[var(--t600)] px-4 py-3">
+        <li key={c.id} className="border-r-[3px] border-r-[#D4A017] px-4 py-3">
           <p className="font-extrabold leading-7 text-foreground">{c.title}</p>
           <p className="mt-0.5 leading-8 text-foreground">{c.rule}</p>
         </li>
@@ -113,10 +113,10 @@ export default function NotebookView() {
       <button
         type="button"
         onClick={() => useUi.getState().startMind()}
-        className="mind-card relative flex w-full items-center gap-3 overflow-hidden rounded-[24px] bg-gradient-to-l from-[#0F4634] via-[#103B3A] to-[#0B2236] p-3.5 text-right text-white ring-2 ring-[#FF5C8A] transition active:scale-[0.98]"
+        className="mind-card relative flex w-full items-center gap-3 overflow-hidden rounded-[24px] bg-gradient-to-l from-[#0F4634] via-[#103B3A] to-[#0B2236] p-3.5 text-right text-white ring-2 ring-[#D4A017] transition active:scale-[0.98]"
       >
         <svg viewBox="0 0 64 64" className="h-16 w-16 shrink-0" aria-hidden="true">
-          <g stroke="#FF5C8A" strokeWidth="2" strokeLinecap="round" opacity="0.85">
+          <g stroke="#D4A017" strokeWidth="2" strokeLinecap="round" opacity="0.85">
             <path className="mc-line" d="M32 32 L12 14" /><path className="mc-line" d="M32 32 L54 16" style={{ animationDelay: ".3s" }} />
             <path className="mc-line" d="M32 32 L10 46" style={{ animationDelay: ".6s" }} /><path className="mc-line" d="M32 32 L52 50" style={{ animationDelay: ".9s" }} />
           </g>
@@ -124,34 +124,34 @@ export default function NotebookView() {
           <circle cx="10" cy="46" r="5.5" fill="#5CC46F" /><circle cx="52" cy="50" r="5.5" fill="#A08BFF" />
           <circle className="mc-core" cx="32" cy="32" r="9" fill="url(#mc-gold)" />
           <defs>
-            <linearGradient id="mc-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#FFC2D4" /><stop offset="1" stopColor="#F25F5C" /></linearGradient>
+            <linearGradient id="mc-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#F3DC8E" /><stop offset="1" stopColor="#C9971C" /></linearGradient>
           </defs>
         </svg>
         <span className="min-w-0 flex-1">
           <FitText max={18} min={12} className="font-extrabold leading-7 text-white">الخرائط الذهنية المتحركة</FitText>
-          <FitText max={13} min={10} className="leading-6 text-[#FFD6E3]">إحدى عشرة خريطة · مشاهد قصيرة · تدريب مباشر</FitText>
+          <FitText max={13} min={10} className="leading-6 text-[#FCEBB6]">إحدى عشرة خريطة · مشاهد قصيرة · تدريب مباشر</FitText>
         </span>
-        <ChevronLeft className="h-5 w-5 shrink-0 text-[#FF5C8A]" strokeWidth={2.5} aria-hidden="true" />
+        <ChevronLeft className="h-5 w-5 shrink-0 text-[#D4A017]" strokeWidth={2.5} aria-hidden="true" />
       </button>
 
       {current ? (
         <div className="space-y-4">
           {/* المحور والفصل في محدِّد واحد، وسهمان صغيران للتنقل بين الفصول */}
           <div className="flex items-center gap-1 rounded-[20px] border border-[var(--t075)] bg-white p-1.5 dark:border-border dark:bg-card">
-            <button type="button" aria-label="الفصل السابق" disabled={chIndex <= 0} onClick={() => setChIndex(chIndex - 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#F25F5C] disabled:opacity-25">
+            <button type="button" aria-label="الفصل السابق" disabled={chIndex <= 0} onClick={() => setChIndex(chIndex - 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#C9971C] disabled:opacity-25">
               <ChevronRight className="h-5 w-5" strokeWidth={2.5} />
             </button>
             <button type="button" onClick={() => setPicking(true)} className="min-w-0 flex-1 rounded-[14px] px-1 py-1 text-center transition active:scale-[0.98]">
-              <FitText max={14} min={11} className="text-center font-bold leading-6 text-[#7C5CFF]">{`${COURSE_SHORT[courseId] ?? ""} ▾`}</FitText>
+              <FitText max={14} min={11} className="text-center font-bold leading-6 text-[#C9971C]">{`${COURSE_SHORT[courseId] ?? ""} ▾`}</FitText>
               <FitText max={20} min={12} className="text-center font-extrabold leading-7 text-foreground">{chapterLabel(current.chapter)}</FitText>
             </button>
-            <button type="button" aria-label="الفصل التالي" disabled={chIndex >= chapters.length - 1} onClick={() => setChIndex(chIndex + 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#F25F5C] disabled:opacity-25">
+            <button type="button" aria-label="الفصل التالي" disabled={chIndex >= chapters.length - 1} onClick={() => setChIndex(chIndex + 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#C9971C] disabled:opacity-25">
               <ChevronLeft className="h-5 w-5" strokeWidth={2.5} />
             </button>
           </div>
 
           {/* أقسام الدفتر تحت محدد الفصل */}
-          <div role="tablist" aria-label="أقسام الدفتر" className="grid grid-cols-3 gap-1 rounded-[22px] border border-[#E2DDF5] bg-white p-1 dark:bg-card">
+          <div role="tablist" aria-label="أقسام الدفتر" className="grid grid-cols-3 gap-1 rounded-[22px] border border-[#ECE3C4] bg-white p-1 dark:bg-card">
             {PARTS.map((p) => (
               <button
                 key={p.id}
@@ -194,7 +194,7 @@ export default function NotebookView() {
                         setCourseId(c.id);
                         setChIndex(0);
                       }}
-                      className={cn("min-h-[36px] shrink-0 whitespace-nowrap rounded-full border px-3.5 text-sm font-bold", courseId === c.id ? "border-transparent bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "border-[#E2DDF5] bg-white text-[var(--t500)] dark:bg-card")}
+                      className={cn("min-h-[36px] shrink-0 whitespace-nowrap rounded-full border px-3.5 text-sm font-bold", courseId === c.id ? "border-transparent bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "border-[#ECE3C4] bg-white text-[var(--t500)] dark:bg-card")}
                     >
                       {COURSE_SHORT[c.id] ?? c.name}
                     </button>

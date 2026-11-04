@@ -187,7 +187,7 @@ export function ToolRow({
           {desc}
         </span>
       </span>
-      <ChevronLeft className="h-4.5 w-4.5 shrink-0 text-[#F25F5C]" />
+      <ChevronLeft className="h-4.5 w-4.5 shrink-0 text-[#C9971C]" />
     </motion.button>
   );
 }

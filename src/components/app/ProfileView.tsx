@@ -234,7 +234,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             )}
             <div className="min-w-0 flex-1">
               <FitText max={20} min={14} className="font-display font-extrabold">{user ? user.name : "ضيف"}</FitText>
-              <FitText max={14} min={10} className="mt-0.5 font-bold text-[#D9467A]">{`المستوى ${ad(levelFromXp(xp))} · ${levelTitle(levelFromXp(xp))}`}</FitText>
+              <FitText max={14} min={10} className="mt-0.5 font-bold text-[#A87B12]">{`المستوى ${ad(levelFromXp(xp))} · ${levelTitle(levelFromXp(xp))}`}</FitText>
               <ProgressBar value={(xpInLevel(xp) / LEVEL_XP) * 100} className="mt-2" />
             </div>
           </div>
@@ -246,12 +246,12 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           )}
           {st.examDate && (
             <button type="button" onClick={() => setSettingsOpen(true)} className="mt-4 flex min-h-[44px] w-full items-center gap-3 border-t border-border pt-4 text-right text-sm">
-              <CalendarClock className="h-5 w-5 shrink-0 text-[#F25F5C]" />
+              <CalendarClock className="h-5 w-5 shrink-0 text-[#C9971C]" />
               <span className="min-w-0 flex-1">
                 <FitText max={14} min={10} className="font-bold">{daysLeft !== null && daysLeft >= 0 ? `اختبارك بعد ${arCount(daysLeft, DAY_FORMS)}` : "موعد اختبارك"}</FitText>
                 <FitText max={12} min={9} className="text-muted-foreground">{dateFmt.format(new Date(st.examDate))}</FitText>
               </span>
-              <ChevronLeft className="h-4 w-4 text-[#F25F5C]" />
+              <ChevronLeft className="h-4 w-4 text-[#C9971C]" />
             </button>
           )}
         </Card>
@@ -260,10 +260,10 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
       {/* أرقامك */}
       <div className="grid grid-cols-4 gap-2">
         {[
-          { icon: Flame, label: "أيام متتالية", value: ad(wallet.streak), c: "#F25F5C", bg: "#FFE9E8" },
+          { icon: Flame, label: "أيام متتالية", value: ad(wallet.streak), c: "#C9971C", bg: "#FFE9E8" },
           { icon: Target, label: "سؤالًا", value: ad(stats.answered), c: "#0EA5E9", bg: "#E0F2FE" },
           { icon: CheckCircle2, label: "الدقة", value: pct(stats.accuracy), c: "#10B981", bg: "#DCFCE7" },
-          { icon: Gem, label: "جوهرة", value: ad(wallet.gems), c: "#7C5CFF", bg: "#F0EBFF" },
+          { icon: Gem, label: "جوهرة", value: ad(wallet.gems), c: "#C9971C", bg: "#FBF3DA" },
         ].map((s) => (
           <Card key={s.label} className="flex min-w-0 flex-col items-center gap-1 px-1.5 py-3 text-center">
             <span className="flex h-9 w-9 items-center justify-center rounded-full" style={{ background: s.bg, color: s.c }}>
@@ -293,7 +293,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
                 <span className="relative flex h-12 w-12 items-center justify-center">
                   <svg viewBox="0 0 48 48" className="absolute inset-0 -rotate-90" aria-hidden="true">
                     <circle cx="24" cy="24" r="21" fill="none" stroke="var(--t100)" strokeWidth="3" />
-                    {frac > 0 && <circle cx="24" cy="24" r="21" fill="none" stroke="#7C5CFF" strokeWidth="3" strokeLinecap="round" strokeDasharray={`${frac * C} ${C}`} />}
+                    {frac > 0 && <circle cx="24" cy="24" r="21" fill="none" stroke="#C9971C" strokeWidth="3" strokeLinecap="round" strokeDasharray={`${frac * C} ${C}`} />}
                   </svg>
                   <a.icon className={cn("h-5 w-5", level === 0 ? "text-muted-foreground" : "text-[var(--t700)]")} />
                 </span>
@@ -346,11 +346,11 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
                 onClick={() => st.setTheme(th.id)}
                 className={cn(
                   "flex flex-col items-center gap-1.5 rounded-[18px] border bg-white py-2.5 text-sm font-bold transition dark:bg-card",
-                  (st.theme ?? "emerald") === th.id ? "border-[#7C5CFF] ring-2 ring-[#B9A7FF]" : "border-border"
+                  (st.theme ?? "emerald") === th.id ? "border-[#C9971C] ring-2 ring-[#B9A7FF]" : "border-border"
                 )}
               >
                 <span className="relative h-8 w-8 rounded-full" style={{ background: th.color }}>
-                  <span className="absolute -bottom-0.5 -left-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-[#7C5CFF]" aria-hidden="true" />
+                  <span className="absolute -bottom-0.5 -left-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-[#C9971C]" aria-hidden="true" />
                 </span>
                 {th.label}
               </button>
