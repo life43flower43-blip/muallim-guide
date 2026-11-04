@@ -57,15 +57,15 @@ const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
 
 /** مربع إجراء موحّد: رمز ذهبي في دائرة، والعنوان تحته في سطر واحد */
 const LICENSE_TOOLS = [
-  { icon: Scale, title: "المقارنات", href: "/comparisons", sub: "مفاهيم يكثر الخلط بينها" },
-  { icon: ListChecks, title: "المعايير العشرة", href: "/standards", sub: "ما يقيسه الاختبار" },
-  { icon: Calculator, title: "حاسبة الرخصة", href: "/license-calculator", sub: "قدّر مستواك" },
-  { icon: CalendarCheck, title: "اختبار الأسبوع", href: "/weekly-test", sub: "٢٠ سؤالًا كل أحد" },
-  { icon: GraduationCap, title: "أدلة التخصصات", href: "/specialized", sub: "اختبار تخصصك" },
-  { icon: Globe, title: "اختبارات الدول", href: "/teacher-exams", sub: "السعودية والإمارات ومصر" },
-  { icon: BookA, title: "المعجم", href: "/glossary", sub: "المصطلحات بإيجاز" },
-  { icon: MessagesSquare, title: "مشكلات صفية", href: "/classroom-problems", sub: "مواقف وحلولها" },
-  { icon: Lightbulb, title: "مفاهيم خاطئة", href: "/misconceptions", sub: "أفكار شائعة خاطئة" },
+  { icon: Scale, title: "المقارنات", href: "/comparisons", emoji: "⚖️", sub: "مفاهيم يكثر الخلط بينها" },
+  { icon: ListChecks, title: "المعايير العشرة", href: "/standards", emoji: "📋", sub: "ما يقيسه الاختبار" },
+  { icon: Calculator, title: "حاسبة الرخصة", href: "/license-calculator", emoji: "🧮", sub: "قدّر مستواك" },
+  { icon: CalendarCheck, title: "اختبار الأسبوع", href: "/weekly-test", emoji: "🗓️", sub: "٢٠ سؤالًا كل أحد" },
+  { icon: GraduationCap, title: "أدلة التخصصات", href: "/specialized", emoji: "🎓", sub: "اختبار تخصصك" },
+  { icon: Globe, title: "اختبارات الدول", href: "/teacher-exams", emoji: "🌍", sub: "السعودية والإمارات ومصر" },
+  { icon: BookA, title: "المعجم", href: "/glossary", emoji: "📖", sub: "المصطلحات بإيجاز" },
+  { icon: MessagesSquare, title: "مشكلات صفية", href: "/classroom-problems", emoji: "💬", sub: "مواقف وحلولها" },
+  { icon: Lightbulb, title: "مفاهيم خاطئة", href: "/misconceptions", emoji: "💡", sub: "أفكار شائعة خاطئة" },
 ];
 
 // ألوان الأيقونات: لكل بطاقة لونها حتى لا تتشابه
@@ -78,23 +78,21 @@ const TONES = [
   { bg: "#EEF1FB", fg: "#3A55A4" },
 ];
 
-/** بطاقة أفقية: أيقونة ملونة، ثم العنوان ووصف قصير تحته */
-function Tile({ icon: Icon, title, sub, meta, tone = 0, onClick }: { icon: React.ElementType; title: string; sub?: string; meta?: string; small?: boolean; tone?: number; onClick: () => void }) {
+/** بطاقة أفقية مستديرة: رمز ملون في دائرة، ثم العنوان ووصفه كاملين، وحافة سفلية بارزة */
+function Tile({ emoji, title, sub, meta, tone = 0, onClick }: { icon?: React.ElementType; emoji: string; title: string; sub?: string; meta?: string; small?: boolean; tone?: number; onClick: () => void }) {
   const t = TONES[tone % TONES.length];
   return (
     <button
       type="button"
       onClick={onClick}
-      className="relative flex min-h-[64px] min-w-0 items-center gap-2.5 rounded-[18px] border border-[var(--t075)] border-b-[3px] bg-white px-2.5 py-2 text-right text-[var(--t900)] transition active:translate-y-[1px] active:border-b dark:border-border dark:bg-card dark:text-foreground"
+      className="relative flex min-h-[72px] min-w-0 items-center gap-2.5 rounded-[26px] border-2 border-[#E3EDE8] border-b-[5px] border-b-[#C9DDD3] bg-white px-2.5 py-2.5 text-right text-[var(--t900)] transition active:translate-y-[2px] active:border-b-2 dark:border-border dark:bg-card dark:text-foreground"
     >
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full" style={{ background: t.bg, color: t.fg }}>
-        <Icon className="h-5 w-5" strokeWidth={2} />
-      </span>
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[24px] leading-none" style={{ background: t.bg }} aria-hidden="true">{emoji}</span>
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-[14px] font-extrabold leading-6">{title}</span>
-        {sub && <span className="block truncate text-[12px] leading-5 text-muted-foreground">{sub}</span>}
+        <span className="block text-[13.5px] font-extrabold leading-5">{title}</span>
+        {sub && <span className="mt-0.5 block text-[11.5px] leading-[16px] text-muted-foreground">{sub}</span>}
       </span>
-      {meta && <span className="absolute left-2 top-1.5 rounded-full bg-[var(--t100)] px-1.5 text-[10px] font-bold leading-4 text-[var(--t800)]">{meta}</span>}
+      {meta && <span className="absolute left-3 top-1.5 rounded-full bg-[var(--t100)] px-1.5 text-[10px] font-bold leading-4 text-[var(--t800)]">{meta}</span>}
     </button>
   );
 }
@@ -198,16 +196,16 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
       <ProgressSummary />
 
       {view === "tests" ? (
-        <div className="grid grid-cols-2 gap-3">
-          <Tile tone={0} sub="اختر المحاور والعدد" icon={SlidersHorizontal} title="أنشئ اختبارك" onClick={() => setBuilder(true)} />
-          <Tile tone={1} sub="كل المحاور بوقت محدد" icon={Timer} title="اختبار شامل" meta={best["ALL::exam"] !== undefined ? pct(best["ALL::exam"]) : undefined} onClick={() => ui.startQuiz({ mode: "exam", label: "اختبار تجريبي شامل", qids: fullMockExam(), timeLimitSec: EXAM_SECONDS * 2, topicKey: "ALL::exam" })} />
-          <Tile tone={2} sub="اعرف من أين تبدأ" icon={Gauge} title="تحديد المستوى" onClick={ui.startPlacement} />
-          <Tile tone={3} sub="نافس زميلك بالأسئلة" icon={Users} title="تحدّي زميل" onClick={ui.startPeer} />
+        <div className="grid grid-cols-2 gap-2.5">
+          <Tile tone={0} emoji="🛠️" sub="اختر المحاور والعدد" icon={SlidersHorizontal} title="أنشئ اختبارك" onClick={() => setBuilder(true)} />
+          <Tile tone={1} emoji="⏱️" sub="كل المحاور بوقت محدد" icon={Timer} title="اختبار شامل" meta={best["ALL::exam"] !== undefined ? pct(best["ALL::exam"]) : undefined} onClick={() => ui.startQuiz({ mode: "exam", label: "اختبار تجريبي شامل", qids: fullMockExam(), timeLimitSec: EXAM_SECONDS * 2, topicKey: "ALL::exam" })} />
+          <Tile tone={2} emoji="🎯" sub="اعرف من أين تبدأ" icon={Gauge} title="تحديد المستوى" onClick={ui.startPlacement} />
+          <Tile tone={3} emoji="🤝" sub="نافس زميلك بالأسئلة" icon={Users} title="تحدّي زميل" onClick={ui.startPeer} />
           {/* أدوات الرخصة من الموقع: تفتح في الصفحة نفسها */}
           <p className="col-span-2 mt-3 font-extrabold text-[var(--t900)] dark:text-foreground">أدوات الرخصة</p>
           <div className="col-span-2 grid grid-cols-2 gap-2.5">
             {LICENSE_TOOLS.map((t, k) => (
-              <Tile key={t.href} tone={k + 4} sub={t.sub} icon={t.icon} title={t.title} onClick={() => { window.location.href = t.href; }} />
+              <Tile key={t.href} tone={k + 4} emoji={t.emoji} sub={t.sub} icon={t.icon} title={t.title} onClick={() => { window.location.href = t.href; }} />
             ))}
           </div>
         </div>
