@@ -28,7 +28,7 @@ function CausalMap({ map }: { map: ChapterMap }) {
   return (
     <div className="space-y-3">
       {map.chains.map((ch, i) => (
-        <ol key={i} className="rounded-[22px] border border-[var(--t075)] bg-white px-4 py-3 dark:border-border dark:bg-card">
+        <ol key={i} className="rounded-[20px] border border-[var(--t075)] bg-white px-5 py-4 dark:border-border dark:bg-card">
           {ch.steps.map((st, k) => (
             <li key={k} className="relative pr-6">
               {/* الخط العمودي والنقطة */}
@@ -37,7 +37,7 @@ function CausalMap({ map }: { map: ChapterMap }) {
                 className={cn("absolute right-0 top-[9px] h-4 w-4 rounded-full border-[3px] border-white dark:border-card", k === 0 ? "bg-[var(--t800)]" : k === ch.steps.length - 1 ? "bg-[#D4A017]" : "bg-[var(--t300)]")}
                 aria-hidden="true"
               />
-              <p className="text-base font-bold leading-8 text-foreground">{st}</p>
+              <p className="text-[15px] font-semibold leading-7 text-foreground">{st}</p>
               {k < ch.links.length && (
                 <span className="my-0.5 inline-flex items-center gap-0.5 rounded-full bg-[#FBF3DA] px-1.5 text-[11px] font-bold leading-[18px] text-[#A87B12]">
                   <ArrowDown className="h-2.5 w-2.5" strokeWidth={3} />
@@ -65,9 +65,9 @@ function Examples({ concepts }: { concepts: Concept[] }) {
   return (
     <ul className="space-y-3">
       {items.map(({ c, ex }) => (
-        <li key={c.id} className="rounded-[22px] border border-[var(--t075)] bg-white p-4 dark:border-border dark:bg-card">
-          <p className="font-extrabold leading-7 text-foreground">{c.title}</p>
-          <p className="mt-2 leading-8">{ex}</p>
+        <li key={c.id} className="rounded-[20px] border border-[var(--t075)] bg-white px-5 py-4 dark:border-border dark:bg-card">
+          <p className="text-[15.5px] font-bold leading-7 text-foreground">{c.title}</p>
+          <p className="mt-1 text-[15px] font-normal leading-7">{ex}</p>
         </li>
       ))}
     </ul>
@@ -76,11 +76,11 @@ function Examples({ concepts }: { concepts: Concept[] }) {
 
 function Rules({ concepts }: { concepts: Concept[] }) {
   return (
-    <ul className="divide-y divide-[var(--t075)] overflow-hidden rounded-[22px] border border-[var(--t075)] bg-white dark:divide-border dark:border-border dark:bg-card">
+    <ul className="space-y-3">
       {concepts.map((c) => (
-        <li key={c.id} className="border-r-[3px] border-r-[#D4A017] px-4 py-3">
-          <p className="font-extrabold leading-7 text-foreground">{c.title}</p>
-          <p className="mt-0.5 leading-8 text-foreground">{c.rule}</p>
+        <li key={c.id} className="rounded-[20px] border border-[var(--t075)] border-r-2 border-r-[#D4A017] bg-white px-5 py-4 dark:border-border dark:bg-card">
+          <p className="text-[15.5px] font-bold leading-7 text-foreground">{c.title}</p>
+          <p className="mt-1 text-[15px] font-normal leading-7 text-[#33433D] dark:text-foreground/85">{c.rule}</p>
         </li>
       ))}
     </ul>
