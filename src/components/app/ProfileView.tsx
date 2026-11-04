@@ -11,6 +11,7 @@ import { FitText } from "./FitText";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  Share2,
   BookOpen,
   CalendarClock,
   CheckCircle2,
@@ -493,6 +494,21 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+        <button
+          type="button"
+          onClick={async () => {
+            // مشاركة التطبيق: قائمة المشاركة في الهاتف، وإلا نسخ الرابط
+            const url = `${window.location.origin}/tatbeeq`;
+            const text = "تطبيق تربوي: آلاف الأسئلة بشرح لكل إجابة للاستعداد لاختبار الرخصة المهنية للمعلمين، مجانًا";
+            try {
+              if (navigator.share) await navigator.share({ title: "تطبيق تربوي", text, url });
+              else { await navigator.clipboard.writeText(`${text}\n${url}`); toast({ title: "نُسخ رابط التطبيق" }); }
+            } catch {}
+          }}
+          className="flex min-h-[52px] w-full items-center gap-3 px-5 text-sm"
+        >
+          <Share2 className="h-5 w-5 text-primary" /> شارك التطبيق مع زملائك
+        </button>
         {user && (
           <>
             <button
