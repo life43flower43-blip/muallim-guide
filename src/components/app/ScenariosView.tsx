@@ -248,28 +248,11 @@ export default function ScenariosView() {
 
   const done = Object.keys(scenarioChoices).length;
   return (
-    <ScreenShell title="مواقف صفية سريعة" sub="موقف واحد، وقرار، ثم تفسير تربوي" onClose={clearScenarios}>
+    <ScreenShell title="مواقف صفية سريعة" onClose={clearScenarios}>
       <div className="space-y-6">
-        <Card className="p-5">
-          <div className="flex items-start gap-4">
-            <IconTile icon={Target} size={48} />
-            <div className="min-w-0 flex-1">
-              <h2 className="font-display text-base font-semibold">جولة قرارات</h2>
-              <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                مواقف صفية واقعية، لكل منها أربعة قرارات ممكنة. تختار فترى نتيجة قرارك وتفسيره، وكيف يفكر المعلم المحترف.
-              </p>
-            </div>
-          </div>
-          <div className="mt-4 flex items-center gap-3">
-            <ProgressBar value={(done / Math.max(1, SCENARIOS.length)) * 100} className="flex-1" />
-            <span className="shrink-0 text-sm text-muted-foreground">
-              {ad(done)} من {ad(SCENARIOS.length)}
-            </span>
-          </div>
-          <PrimaryButton onClick={() => startRun(buildScenarioRun(Object.keys(scenarioChoices)))} className="mt-4 w-full sm:w-auto">
-            ابدأ الجولة
-          </PrimaryButton>
-        </Card>
+        <PrimaryButton onClick={() => startRun(buildScenarioRun(Object.keys(scenarioChoices)))} className="w-full">
+          ابدأ الجولة · {ad(done)} من {ad(SCENARIOS.length)}
+        </PrimaryButton>
 
         {grouped.map(({ cat, items }) => (
           <section key={cat}>

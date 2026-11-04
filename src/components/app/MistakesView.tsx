@@ -18,6 +18,7 @@ import { ad, arCount, ERROR_OBJ_FORMS, splitReason } from "@/lib/arabic";
 import { cn } from "@/lib/utils";
 import type { Tab } from "./AppShell";
 import { ConceptReader } from "./ConceptsView";
+import DailyReviewCard from "./DailyReviewCard";
 import { EmptyState, PageTitle, PrimaryButton } from "./ui-kit";
 
 
@@ -93,6 +94,15 @@ function CourseSection({ group, items, expanded, onToggle, onReview, onConcept }
 }
 
 export default function MistakesView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
+  return (
+    <div className="space-y-4">
+      <DailyReviewCard />
+      <MistakesBody onGoTab={onGoTab} />
+    </div>
+  );
+}
+
+function MistakesBody({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const ui = useUi();
   const { data, isLoading, isError, refetch } = useMistakes();
   const [course, setCourse] = useState<string | null>(null);
