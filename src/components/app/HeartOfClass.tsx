@@ -101,7 +101,7 @@ export default function HeartOfClass() {
                         <div className="space-y-5 border-t border-border bg-muted/30 px-4 py-5 text-base leading-7">
                           <div>
                             <p className="mb-1.5 flex items-center gap-2 text-sm font-semibold">
-                              <Eye className="h-4 w-4 text-primary" /> {SIGNALS_LABEL}
+                              <Eye className="h-4 w-4 text-foreground" /> {SIGNALS_LABEL}
                             </p>
                             <ul className="space-y-1 text-secondary-foreground">
                               {p.signals.map((x, i) => (
@@ -114,7 +114,7 @@ export default function HeartOfClass() {
                           </div>
                           <div>
                             <p className="mb-1.5 flex items-center gap-2 text-sm font-semibold">
-                              <HeartHandshake className="h-4 w-4 text-primary" /> {INSIDE_LABEL}
+                              <HeartHandshake className="h-4 w-4 text-foreground" /> {INSIDE_LABEL}
                             </p>
                             <p className="text-secondary-foreground">{p.inside}</p>
                           </div>
@@ -123,7 +123,7 @@ export default function HeartOfClass() {
                           </Callout>
                           <div>
                             <p className="mb-2 flex items-center gap-2 text-sm font-semibold">
-                              <Footprints className="h-4 w-4 text-primary" /> {STEPS_LABEL}
+                              <Footprints className="h-4 w-4 text-foreground" /> {STEPS_LABEL}
                             </p>
                             <ol className="space-y-2 text-secondary-foreground">
                               {p.steps.map((x, i) => (

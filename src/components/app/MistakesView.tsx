@@ -31,7 +31,7 @@ function MistakeCard({ item, onConcept }: { item: MistakeItem; onConcept: () => 
       {/* سطر واحد: الفصل (المحور في عنوان القسم)، وعدد مرات الخطأ */}
       <div className="mb-2 flex items-center gap-2 text-sm">
         <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: COURSE_COLOR[item.courseId] ?? "var(--primary)" }} aria-hidden="true" />
-        <span className="min-w-0 flex-1 truncate font-bold text-[var(--t500)]">{item.concept?.chapter ?? COURSE_SHORT[item.courseId] ?? "عام"}</span>
+        <span className="min-w-0 flex-1 truncate font-bold text-muted-foreground">{item.concept?.chapter ?? COURSE_SHORT[item.courseId] ?? "عام"}</span>
         {item.mistakeCount > 1 && <span dir="ltr" className="shrink-0 rounded-full bg-danger-soft px-2 text-xs font-bold leading-6 text-destructive">×{ad(item.mistakeCount)}</span>}
       </div>
       <p className="font-bold leading-8">{q.question}</p>
@@ -47,8 +47,8 @@ function MistakeCard({ item, onConcept }: { item: MistakeItem; onConcept: () => 
       ) : (
         <div className="mt-3 space-y-2">
           {item.userAnswer && item.userAnswer !== q.correct && <p className="rounded-[14px] bg-danger-soft px-3 py-2 text-sm text-destructive">إجابتك: {item.userAnswer}</p>}
-          <p className="flex items-start gap-2 rounded-[14px] bg-[var(--t100)] px-3 py-2 text-sm font-bold text-[var(--t900)]">
-            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[var(--t800)]" /> {q.correct}
+          <p className="flex items-start gap-2 rounded-[14px] bg-[var(--t100)] px-3 py-2 text-sm font-bold text-foreground">
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-foreground" /> {q.correct}
           </p>
           <p className="text-sm leading-7 text-secondary-foreground">{base}</p>
           {item.concept && (
@@ -74,7 +74,7 @@ function CourseSection({ group, items, expanded, onToggle, onReview, onConcept }
         <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: COURSE_COLOR[group.courseId] ?? "var(--primary)" }} aria-hidden="true" />
         <h2 className="min-w-0 flex-1 truncate text-base font-bold">{COURSE_SHORT[group.courseId] ?? group.name}</h2>
         <span className="shrink-0 rounded-full bg-danger-soft px-2 text-sm font-bold leading-6 text-destructive" aria-label={arCount(group.count, ERROR_OBJ_FORMS)}>{ad(group.count)}</span>
-        <button type="button" onClick={onReview} className="inline-flex min-h-[36px] shrink-0 items-center gap-1 rounded-full bg-[var(--t100)] px-3 text-sm font-bold text-[var(--t900)] transition active:scale-[0.97]">
+        <button type="button" onClick={onReview} className="inline-flex min-h-[36px] shrink-0 items-center gap-1 rounded-full bg-[var(--t100)] px-3 text-sm font-bold text-foreground transition active:scale-[0.97]">
           <RotateCcw className="h-3.5 w-3.5" /> راجع
         </button>
       </div>
@@ -173,7 +173,7 @@ function MistakesBody({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               onClick={() => setCourse(g.courseId)}
               className={cn(
                 "min-h-[36px] shrink-0 whitespace-nowrap rounded-full border px-3.5 text-sm font-bold transition-colors",
-                course === g.courseId ? "border-transparent bg-[var(--t700)] text-white" : "border-[#ECE3C4] bg-white text-[var(--t500)] dark:bg-card"
+                course === g.courseId ? "border-transparent bg-[var(--t700)] text-white" : "border-[#ECE3C4] bg-white text-muted-foreground dark:bg-card"
               )}
             >
               {g.courseId ? COURSE_SHORT[g.courseId] ?? g.name : g.name} {ad(g.count)}

@@ -137,7 +137,7 @@ export default function LabView() {
             key={cid}
             type="button"
             onClick={() => openConceptDeep(cid)}
-            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-border bg-card px-3 text-sm text-primary hover:bg-accent"
+            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-border bg-card px-3 text-sm text-foreground hover:bg-accent"
           >
             <BookOpen className="h-3.5 w-3.5" /> {c.title}
           </button>
@@ -288,7 +288,7 @@ export default function LabView() {
           aria-selected={tab === id}
           onClick={() => setTab(id)}
           className={`flex min-h-[42px] min-w-0 items-center justify-center rounded-[18px] px-1 font-bold transition-colors ${
-            tab === id ? "bg-[var(--t700)] text-white" : "text-[var(--t500)]"
+            tab === id ? "bg-[var(--t700)] text-white" : "text-muted-foreground"
           }`}
         >
           <FitText max={15} min={10} group="lab-tabs" className="text-center">{lbl}</FitText>
@@ -309,9 +309,9 @@ export default function LabView() {
         <IconTile icon={asExam ? ShieldCheck : FlaskConical} />
         <span className="min-w-0 flex-1">
           <FitText max={17} min={12} className="font-bold leading-7">{s.title}</FitText>
-          <span className="mt-1.5 flex min-w-0 items-start gap-1.5 rounded-[12px] bg-[var(--t050)] px-2.5 py-1 text-[var(--t500)]">
+          <span className="mt-1.5 flex min-w-0 items-start gap-1.5 rounded-[12px] bg-[var(--t050)] px-2.5 py-1 text-muted-foreground">
             <span className="flex-1 text-[13px] font-medium leading-5">{(asExam ? [s.stage] : [s.skill, s.stage]).join(" · ")}</span>
-            {st && <span className="shrink-0 rounded-full bg-[var(--t100)] px-2 text-[11px] font-bold leading-5 text-[var(--t800)]">{st}</span>}
+            {st && <span className="shrink-0 rounded-full bg-[var(--t100)] px-2 text-[11px] font-bold leading-5 text-foreground">{st}</span>}
           </span>
         </span>
         <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C]" />
@@ -386,7 +386,7 @@ export default function LabView() {
                     const sc = labScenarioById.get(sid);
                     if (!sc) return null;
                     return (
-                      <button key={sid} type="button" onClick={() => startScenario(sc)} className="min-h-[36px] rounded-full border border-border px-3 text-sm text-primary hover:bg-accent">
+                      <button key={sid} type="button" onClick={() => startScenario(sc)} className="min-h-[36px] rounded-full border border-border px-3 text-sm text-foreground hover:bg-accent">
                         جرّب: {sc.title}
                       </button>
                     );
@@ -399,7 +399,7 @@ export default function LabView() {
                         key={sid}
                         type="button"
                         onClick={() => startScenario(sc, true)}
-                        className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-border px-3 text-sm text-primary hover:bg-accent"
+                        className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-border px-3 text-sm text-foreground hover:bg-accent"
                       >
                         <ShieldCheck className="h-3.5 w-3.5" /> اختبر استقلالك: {sc.title}
                       </button>
@@ -423,7 +423,7 @@ export default function LabView() {
                 <Card key={i} className="p-5">
                   <div className="mb-3 flex items-start justify-between gap-2">
                     <p className="flex items-center gap-1.5 text-base font-semibold">
-                      {a.mode === "exam" && <ShieldCheck className="h-4 w-4 text-primary" />}
+                      {a.mode === "exam" && <ShieldCheck className="h-4 w-4 text-foreground" />}
                       {sc?.title ?? "موقف تدريبي"}
                     </p>
                     {sc?.skill && <Chip tone="primary">{sc.skill}</Chip>}
@@ -438,7 +438,7 @@ export default function LabView() {
                       <dd className="text-secondary-foreground">{a.reflection.failed || "—"}</dd>
                     </div>
                     <div>
-                      <dt className="font-medium text-primary">ما سأغيّره</dt>
+                      <dt className="font-medium text-foreground">ما سأغيّره</dt>
                       <dd className="text-secondary-foreground">{a.reflection.change || "—"}</dd>
                     </div>
                   </dl>

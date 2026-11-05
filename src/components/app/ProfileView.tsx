@@ -240,7 +240,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           </div>
           {!user && (
             <details className="group mt-3 border-t border-border pt-3">
-              <summary className="flex min-h-[40px] cursor-pointer list-none items-center justify-between gap-2 text-[14px] font-bold text-[var(--t800)]">
+              <summary className="flex min-h-[40px] cursor-pointer list-none items-center justify-between gap-2 text-[14px] font-bold text-foreground">
                 <span>سجّل الدخول لتحفظ تقدمك على كل أجهزتك</span>
                 <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C] transition group-open:-rotate-90" />
               </summary>
@@ -262,13 +262,13 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
 
       {/* تابع تربوي في كل منصاته */}
       <div className="rounded-[20px] border border-[#ECE3C4] bg-white p-3 dark:border-border dark:bg-card">
-        <p className="text-center text-[13px] font-bold text-[var(--t700)]">تابع تربوي في كل منصاته: معلومة وسؤالان كل يوم</p>
+        <p className="text-center text-[13px] font-bold text-foreground">تابع تربوي في كل منصاته: معلومة وسؤالان كل يوم</p>
         <div className="mt-2 grid grid-cols-3 gap-2">
-          {process.env.NEXT_PUBLIC_LINKEDIN_URL && <a href={process.env.NEXT_PUBLIC_LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-[var(--t800)]">لينكدإن</a>}
-          {process.env.NEXT_PUBLIC_X_URL && <a href={process.env.NEXT_PUBLIC_X_URL} target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-[var(--t800)]">X</a>}
-          <a href="https://t.me/MuallimExam" target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-[var(--t800)]">تيليجرام</a>
-          <a href="https://www.facebook.com/share/1CHdqGvYz5/" target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-[var(--t800)]">فيسبوك</a>
-          <button type="button" onClick={shareApp} className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[#D4A017] text-[13px] font-extrabold text-[var(--t900)]">شارك التطبيق</button>
+          {process.env.NEXT_PUBLIC_LINKEDIN_URL && <a href={process.env.NEXT_PUBLIC_LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-foreground">لينكدإن</a>}
+          {process.env.NEXT_PUBLIC_X_URL && <a href={process.env.NEXT_PUBLIC_X_URL} target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-foreground">X</a>}
+          <a href="https://t.me/MuallimExam" target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-foreground">تيليجرام</a>
+          <a href="https://www.facebook.com/share/1CHdqGvYz5/" target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-foreground">فيسبوك</a>
+          <button type="button" onClick={shareApp} className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[#D4A017] text-[13px] font-extrabold text-foreground">شارك التطبيق</button>
         </div>
       </div>
 
@@ -381,7 +381,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             ))}
           </ul>
           <div className="mt-3 flex items-center gap-2.5 rounded-xl bg-muted px-3 py-2">
-            <Snowflake className="h-5 w-5 shrink-0 text-primary" />
+            <Snowflake className="h-5 w-5 shrink-0 text-foreground" />
             <div className="min-w-0 flex-1 leading-5">
               <p className="text-[13.5px] font-bold">تجميد السلسلة</p>
               <p className="text-[12.5px] text-muted-foreground">يحمي يومًا فائتًا · لديك {ad(wallet.streakFreeze)} من {ad(MAX_STREAK_FREEZES)}</p>
@@ -419,14 +419,14 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
       <div className="grid grid-cols-3 gap-2.5">
         {installEvt && (
           <button type="button" onClick={() => installEvt.prompt().then(() => setInstallEvt(null))} className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card">
-            <Smartphone className="h-5 w-5 text-primary" /> ثبّت التطبيق
+            <Smartphone className="h-5 w-5 text-foreground" /> ثبّت التطبيق
           </button>
         )}
         <button type="button" onClick={exportBackup} className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card">
-          <Download className="h-5 w-5 text-primary" /> نسخة احتياطية
+          <Download className="h-5 w-5 text-foreground" /> نسخة احتياطية
         </button>
         <button type="button" onClick={() => fileRef.current?.click()} className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card">
-          <Upload className="h-5 w-5 text-primary" /> استعادة نسخة
+          <Upload className="h-5 w-5 text-foreground" /> استعادة نسخة
         </button>
         <input
           ref={fileRef}
@@ -471,13 +471,13 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           }}
           className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card"
         >
-          <Share2 className="h-5 w-5 text-primary" /> شارك التطبيق
+          <Share2 className="h-5 w-5 text-foreground" /> شارك التطبيق
         </button>
         <a href="https://t.me/MuallimExam" target="_blank" rel="noopener noreferrer" className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card">
-          <Send className="h-5 w-5 text-primary" /> تيليجرام
+          <Send className="h-5 w-5 text-foreground" /> تيليجرام
         </a>
         <a href="https://www.facebook.com/share/1CHdqGvYz5/" target="_blank" rel="noopener noreferrer" className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card">
-          <Users className="h-5 w-5 text-primary" /> فيسبوك
+          <Users className="h-5 w-5 text-foreground" /> فيسبوك
         </a>
         {user && (
           <>
@@ -489,7 +489,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
               }}
               className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card"
             >
-              <LogOut className="h-5 w-5 text-primary" /> تسجيل الخروج
+              <LogOut className="h-5 w-5 text-foreground" /> تسجيل الخروج
             </button>
             <AlertDialog>
               <AlertDialogTrigger asChild>

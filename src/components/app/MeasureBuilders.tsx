@@ -45,11 +45,11 @@ async function share(title: string, text: string) {
 }
 
 function Label({ children }: { children: React.ReactNode }) {
-  return <p className="mb-1.5 text-sm font-bold text-[var(--t600)]">{children}</p>;
+  return <p className="mb-1.5 text-sm font-bold text-foreground">{children}</p>;
 }
 
 function Note({ children, tone = "neutral" }: { children: React.ReactNode; tone?: "neutral" | "good" | "fair" | "weak" }) {
-  const cls = { neutral: "bg-[var(--t050)] text-secondary-foreground", good: "bg-[#E3F4EA] text-[#1F5B3C]", fair: "bg-[#FBF3DA] text-[#7A5410]", weak: "bg-danger-soft text-destructive" }[tone];
+  const cls = { neutral: "bg-[var(--t050)] text-secondary-foreground", good: "bg-[#E3F4EA] text-foreground", fair: "bg-[#FBF3DA] text-[#7A5410]", weak: "bg-danger-soft text-destructive" }[tone];
   return <p className={cn("rounded-[16px] px-3.5 py-3 text-[15px] leading-7", cls)}>{children}</p>;
 }
 
@@ -57,14 +57,14 @@ function Big({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-[16px] border border-[var(--t075)] p-2.5 text-center dark:border-border">
       <p className="text-xs font-bold text-muted-foreground">{label}</p>
-      <p className="mt-0.5 font-display text-xl font-extrabold tabular-nums text-[var(--t800)] dark:text-foreground">{value}</p>
+      <p className="mt-0.5 font-display text-xl font-extrabold tabular-nums text-foreground dark:text-foreground">{value}</p>
     </div>
   );
 }
 
 function AddBtn({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
   return (
-    <button type="button" onClick={onClick} className="flex min-h-[42px] w-full items-center justify-center gap-1.5 rounded-[14px] border border-dashed border-[var(--t150)] text-sm font-bold text-[var(--t700)]">
+    <button type="button" onClick={onClick} className="flex min-h-[42px] w-full items-center justify-center gap-1.5 rounded-[14px] border border-dashed border-[var(--t150)] text-sm font-bold text-foreground">
       <Plus className="h-4 w-4" /> {children}
     </button>
   );
@@ -152,7 +152,7 @@ export function BlueprintTool() {
         <div className="space-y-3">
           <div className="overflow-hidden rounded-[18px] border border-[var(--t075)] dark:border-border">
             <table className="w-full table-fixed text-center text-sm">
-              <thead className="bg-[var(--t050)] text-xs text-[var(--t700)] dark:bg-muted">
+              <thead className="bg-[var(--t050)] text-xs text-foreground dark:bg-muted">
                 <tr>
                   <th className="w-[28%] px-2 py-2 text-right">الموضوع</th>
                   {LEVELS_SHORT.map((l) => (
@@ -168,7 +168,7 @@ export function BlueprintTool() {
                     {table[i].map((x, c) => (
                       <td key={c} className="tabular-nums">{ad(x)}</td>
                     ))}
-                    <td className="font-extrabold tabular-nums text-[var(--t800)] dark:text-foreground">{ad(table[i].reduce((a, b) => a + b, 0))}</td>
+                    <td className="font-extrabold tabular-nums text-foreground dark:text-foreground">{ad(table[i].reduce((a, b) => a + b, 0))}</td>
                   </tr>
                 ))}
               </tbody>
@@ -232,7 +232,7 @@ export function RubricTool() {
             ["score", "التصحيح به"],
           ] as const
         ).map(([id, l]) => (
-          <button key={id} type="button" role="tab" aria-selected={mode === id} onClick={() => setMode(id)} className={cn("min-h-[40px] rounded-[14px] text-sm font-bold", mode === id ? "bg-[var(--t700)] text-white" : "text-[var(--t500)]")}>
+          <button key={id} type="button" role="tab" aria-selected={mode === id} onClick={() => setMode(id)} className={cn("min-h-[40px] rounded-[14px] text-sm font-bold", mode === id ? "bg-[var(--t700)] text-white" : "text-muted-foreground")}>
             {l}
           </button>
         ))}
@@ -248,7 +248,7 @@ export function RubricTool() {
             {crit.map((c, i) => (
               <div key={i} className="space-y-2 rounded-[18px] border border-[var(--t075)] p-3 dark:border-border">
                 <div className="flex items-center gap-2">
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--t050)] text-sm font-extrabold text-[var(--t700)]">{ad(i + 1)}</span>
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--t050)] text-sm font-extrabold text-foreground">{ad(i + 1)}</span>
                   <input value={c.name} onChange={(e) => setC(i, { ...c, name: e.target.value })} placeholder="اسم المعيار" className={cn(inputCls, "flex-1 font-bold")} />
                   <DelBtn onClick={() => setCrit(crit.filter((_, j) => j !== i))} label="حذف المعيار" />
                 </div>
@@ -282,7 +282,7 @@ export function RubricTool() {
                       type="button"
                       onClick={() => setMarks(crit.map((_, j) => (j === i ? (marks[i] === k ? null : k) : marks[j] ?? null)))}
                       title={c.desc[k] || undefined}
-                      className={cn("min-h-[44px] min-w-0 rounded-[14px] border px-1 text-xs font-bold leading-4", marks[i] === k ? "border-transparent bg-[var(--t700)] text-white" : "border-[var(--t075)] text-[var(--t700)] dark:border-border")}
+                      className={cn("min-h-[44px] min-w-0 rounded-[14px] border px-1 text-xs font-bold leading-4", marks[i] === k ? "border-transparent bg-[var(--t700)] text-white" : "border-[var(--t075)] text-foreground dark:border-border")}
                     >
                       {l.name}
                       <span className="block opacity-75">{ad(l.pts)}</span>
@@ -376,7 +376,7 @@ export function ChecklistTool() {
         {students.length > 0 && (
           <div className="no-scrollbar -mx-4 mt-2 flex gap-2 overflow-x-auto px-4 pb-1">
             {students.map((s, i) => (
-              <button key={s} type="button" onClick={() => setCur(i)} className={cn("min-h-[38px] shrink-0 rounded-full border px-3.5 text-sm font-bold", cur === i ? "border-transparent bg-[var(--t700)] text-white" : "border-[var(--t075)] text-[var(--t700)] dark:border-border")}>
+              <button key={s} type="button" onClick={() => setCur(i)} className={cn("min-h-[38px] shrink-0 rounded-full border px-3.5 text-sm font-bold", cur === i ? "border-transparent bg-[var(--t700)] text-white" : "border-[var(--t075)] text-foreground dark:border-border")}>
                 {s} <span className="opacity-75">{ad(yesOf(i))}/{ad(items.length)}</span>
               </button>
             ))}
@@ -467,7 +467,7 @@ export function ZScoreTool() {
           <input value={t.name} onChange={(e) => set(i, "name", e.target.value)} className={cn(inputCls, "font-bold")} aria-label="اسم الاختبار" />
           <textarea value={t.scores} onChange={(e) => set(i, "scores", e.target.value)} rows={2} placeholder="درجات الصف كله، مثال: ١٥ ١٨ ١٢ ٢٠ ١٧" className={cn(inputCls, "h-auto py-2 leading-7")} />
           <div className="flex items-center gap-2">
-            <span className="shrink-0 text-sm font-bold text-[var(--t600)]">درجة الطالب</span>
+            <span className="shrink-0 text-sm font-bold text-foreground">درجة الطالب</span>
             <input value={t.student} onChange={(e) => set(i, "student", e.target.value)} inputMode="decimal" className={numCls} />
           </div>
           {res[i] && (
@@ -510,7 +510,7 @@ export function DistractorTool() {
   const [lo, setLo] = useState(["", "", "", ""]);
   const num = (a: string[]) => a.map((x) => parseSingle(x) ?? 0);
   const res = distractorsOf(key, num(up), num(lo));
-  const toneCls = { good: "text-[#1F7A4D]", fair: "text-[#A87B12]", weak: "text-destructive" };
+  const toneCls = { good: "text-foreground", fair: "text-[#A87B12]", weak: "text-destructive" };
 
   return (
     <div className="space-y-4">
@@ -518,7 +518,7 @@ export function DistractorTool() {
         <Label>الإجابة الصحيحة</Label>
         <div className="grid grid-cols-4 gap-2">
           {OPTION_LETTERS.slice(0, 4).map((l, i) => (
-            <button key={l} type="button" onClick={() => setKey(i)} className={cn("min-h-[42px] rounded-[14px] border font-extrabold", key === i ? "border-transparent bg-[var(--t700)] text-white" : "border-[var(--t075)] text-[var(--t700)] dark:border-border")}>
+            <button key={l} type="button" onClick={() => setKey(i)} className={cn("min-h-[42px] rounded-[14px] border font-extrabold", key === i ? "border-transparent bg-[var(--t700)] text-white" : "border-[var(--t075)] text-foreground dark:border-border")}>
               {l}
             </button>
           ))}
@@ -534,7 +534,7 @@ export function DistractorTool() {
           </div>
           {OPTION_LETTERS.slice(0, 4).map((l, i) => (
             <div key={l} className="grid grid-cols-[2.5rem_1fr_1fr] items-center gap-2">
-              <span className={cn("flex h-9 w-9 items-center justify-center rounded-full font-extrabold", key === i ? "bg-[var(--t700)] text-white" : "bg-[var(--t050)] text-[var(--t700)] dark:bg-muted")}>{l}</span>
+              <span className={cn("flex h-9 w-9 items-center justify-center rounded-full font-extrabold", key === i ? "bg-[var(--t700)] text-white" : "bg-[var(--t050)] text-foreground dark:bg-muted")}>{l}</span>
               <input value={up[i]} onChange={(e) => setUp(up.map((x, j) => (j === i ? e.target.value : x)))} inputMode="numeric" placeholder="٠" className={numCls} />
               <input value={lo[i]} onChange={(e) => setLo(lo.map((x, j) => (j === i ? e.target.value : x)))} inputMode="numeric" placeholder="٠" className={numCls} />
             </div>

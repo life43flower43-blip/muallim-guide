@@ -50,7 +50,7 @@ export function Splash() {
             />
           </motion.div>
           <motion.span
-            className="font-display text-3xl font-extrabold text-[var(--t900)]"
+            className="font-display text-3xl font-extrabold text-foreground"
             initial={booted ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}

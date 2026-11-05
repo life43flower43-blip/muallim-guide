@@ -73,7 +73,7 @@ function AcademicReason({ reason }: { reason: string }) {
   return (
     <div className="space-y-4">
       <div>
-        <p className="text-sm font-semibold text-primary">لماذا هذه الإجابة صحيحة</p>
+        <p className="text-sm font-semibold text-foreground">لماذا هذه الإجابة صحيحة</p>
         <p className="mt-1 text-base leading-8">{base}</p>
       </div>
       {rest && (
@@ -522,7 +522,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                             </p>
                             <AcademicReason reason={rq.reason} />
                             {rc && (
-                              <button type="button" onClick={() => setReaderId(rc.id)} className="flex min-h-[40px] items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-primary hover:bg-accent">
+                              <button type="button" onClick={() => setReaderId(rc.id)} className="flex min-h-[40px] items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-foreground hover:bg-accent">
                                 <BookOpen className="h-4 w-4" /> اقرأ المفهوم: {rc.title}
                               </button>
                             )}
@@ -551,9 +551,9 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
 
   const optClass = (o: { text: string; isCorrect: boolean }) => {
     const isSel = selected === o.text;
-    if (showFeedback && o.isCorrect) return "border-[var(--t700)] bg-[var(--t100)] text-[var(--t950)] dark:bg-[var(--t700)]/15 dark:text-[var(--t300)]";
+    if (showFeedback && o.isCorrect) return "border-[var(--t700)] bg-[var(--t100)] text-foreground dark:bg-[var(--t700)]/15 dark:text-[var(--t300)]";
     if (showFeedback && isSel) return "border-[#F0B4B4] bg-[#FFF6F6] text-foreground dark:bg-[#FF4B4B]/10";
-    if (isSel) return "border-[var(--t700)] bg-[var(--t050)] text-[var(--t950)] ring-2 ring-[var(--t150)] dark:bg-[var(--t800)]/15 dark:text-foreground";
+    if (isSel) return "border-[var(--t700)] bg-[var(--t050)] text-foreground ring-2 ring-[var(--t150)] dark:bg-[var(--t800)]/15 dark:text-foreground";
     return "border-[var(--t075)] bg-white text-foreground dark:border-border dark:bg-card";
   };
 
@@ -566,7 +566,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
           <div className="flex h-2.5 flex-1 justify-start overflow-hidden rounded-full bg-[var(--t075)]" role="progressbar" aria-valuenow={Math.round(progress)} aria-valuemin={0} aria-valuemax={100}>
             <motion.div className="h-full rounded-full bg-[var(--t700)]" animate={{ width: `${Math.max(progress, 3)}%` }} transition={{ type: "spring", stiffness: 120, damping: 20 }} />
           </div>
-          <span className="shrink-0 whitespace-nowrap text-sm font-bold text-[var(--t700)] dark:text-muted-foreground">
+          <span className="shrink-0 whitespace-nowrap text-sm font-bold text-foreground dark:text-muted-foreground">
             <bdi>{ad(idx + 1)} من {ad(questions.length)}</bdi>
           </span>
           {config.timeLimitSec ? <Timer seconds={config.timeLimitSec} onTimeout={() => setFinished(true)} /> : null}
@@ -624,11 +624,11 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
             {showFeedback && (
               <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-3">
                 <div className="flex items-start gap-2.5">
-                  <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${graded ? "bg-[var(--t100)] text-[var(--t700)]" : "bg-[#FDECEC] text-[#D64545]"}`}>
+                  <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${graded ? "bg-[var(--t100)] text-foreground" : "bg-[#FDECEC] text-[#D64545]"}`}>
                     {graded ? <Check className="h-4 w-4" strokeWidth={3} /> : <X className="h-4 w-4" strokeWidth={3} />}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className={`text-base font-extrabold leading-7 ${graded ? "text-[var(--t800)]" : "text-[#C0392B]"}`}>{graded ? PRAISE[idx % PRAISE.length] : "إجابة غير صحيحة"}</p>
+                    <p className={`text-base font-extrabold leading-7 ${graded ? "text-foreground" : "text-[#C0392B]"}`}>{graded ? PRAISE[idx % PRAISE.length] : "إجابة غير صحيحة"}</p>
                     {!graded && <p className="text-[14px] font-semibold leading-6 text-secondary-foreground">الإجابة الصحيحة مظلّلة بالأخضر في الأعلى.</p>}
                     {!graded && conf === "sure" && <p className="text-sm font-bold leading-6 text-[#A87B12]">كنت متأكدًا، فهذا تصور خاطئ. سيعود إليك السؤال قريبًا.</p>}
                     {graded && conf === "guess" && <p className="text-sm font-bold leading-6 text-[#A87B12]">أصبت بالتخمين، فسيعود إليك غدًا.</p>}
@@ -654,7 +654,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                 <button
                   type="button"
                   onClick={() => setShowWhy(true)}
-                  className="min-h-[50px] flex-1 rounded-[20px] border border-[var(--t150)] bg-white text-base font-bold text-[var(--t800)] active:scale-[0.98] dark:border-border dark:bg-card dark:text-primary"
+                  className="min-h-[50px] flex-1 rounded-[20px] border border-[var(--t150)] bg-white text-base font-bold text-foreground active:scale-[0.98] dark:border-border dark:bg-card dark:text-foreground"
                 >
                   الشرح
                 </button>

@@ -39,14 +39,14 @@ export default function Onboarding() {
           <span className="flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden bg-white">
 <img src="/icons/logo-128.png" alt="" className="h-full w-full object-contain p-0.5" />
           </span>
-          <span className="font-display text-xl font-bold text-primary">تربوي</span>
+          <span className="font-display text-xl font-bold text-foreground">تربوي</span>
         </div>
 
         {signIn ? (
           <Card className="p-5">
             <h1 className="mb-4 font-display text-xl font-bold">ادخل إلى حسابك</h1>
             <AuthPanel onDone={setOnboarded} initialMode="login" />
-            <button type="button" onClick={() => setSignIn(false)} className="mt-4 min-h-[44px] w-full text-sm font-medium text-primary">
+            <button type="button" onClick={() => setSignIn(false)} className="mt-4 min-h-[44px] w-full text-sm font-medium text-foreground">
               رجوع
             </button>
           </Card>
@@ -106,7 +106,7 @@ export default function Onboarding() {
               <PrimaryButton disabled={!goal} onClick={finish} className="h-12 w-full">
                 ابدأ
               </PrimaryButton>
-              <button type="button" onClick={() => setSignIn(true)} className="min-h-[44px] w-full text-sm font-medium text-primary">
+              <button type="button" onClick={() => setSignIn(true)} className="min-h-[44px] w-full text-sm font-medium text-foreground">
                 لدي حساب — تسجيل الدخول
               </button>
             </div>

@@ -71,7 +71,7 @@ export default function AuthPanel({ label = "المتابعة بحساب Google"
           <a
             href="/api/auth/google"
             onClick={() => onDone?.()}
-            className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-[20px] border border-[#D6E6DE] bg-white px-4 text-base font-bold text-[var(--t900)] transition-colors hover:bg-[#F3F8F5] dark:bg-card dark:text-foreground"
+            className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-[20px] border border-[#D6E6DE] bg-white px-4 text-base font-bold text-foreground transition-colors hover:bg-[#F3F8F5] dark:bg-card dark:text-foreground"
           >
             <GoogleIcon className="h-5 w-5 shrink-0" />
             <FitText max={16} min={11} className="shrink">{label}</FitText>
@@ -82,7 +82,7 @@ export default function AuthPanel({ label = "المتابعة بحساب Google"
 
       <div className="grid grid-cols-2 rounded-[16px] bg-muted p-1 text-sm font-bold">
         {(["signup", "login"] as const).map((m) => (
-          <button key={m} type="button" onClick={() => { setMode(m); setError(""); }} className={`min-h-[40px] rounded-[12px] ${mode === m ? "bg-white text-[var(--t900)] shadow-sm dark:bg-card dark:text-foreground" : "text-muted-foreground"}`}>
+          <button key={m} type="button" onClick={() => { setMode(m); setError(""); }} className={`min-h-[40px] rounded-[12px] ${mode === m ? "bg-white text-foreground shadow-sm dark:bg-card dark:text-foreground" : "text-muted-foreground"}`}>
             {m === "signup" ? "حساب جديد" : "دخول"}
           </button>
         ))}

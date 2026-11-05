@@ -109,7 +109,7 @@ export default function AiAssistantView() {
             onClick={clearChat}
             disabled={busy}
             aria-label="محادثة جديدة"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[var(--t900)] hover:bg-black/5 dark:text-foreground disabled:opacity-40"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground hover:bg-black/5 dark:text-foreground disabled:opacity-40"
           >
             <Trash2 className="h-5 w-5" />
           </button>
@@ -164,7 +164,7 @@ function EmptyState({ onPick }: { onPick: (t: string) => void }) {
   return (
     <div className="space-y-6">
       <div className="flex flex-col items-center pt-4 text-center">
-        <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent text-primary">
+        <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent text-foreground">
           <Sparkles className="h-7 w-7" />
         </span>
         <h2 className="mt-4 font-display text-lg font-semibold">بماذا أساعدك؟</h2>
@@ -184,7 +184,7 @@ function EmptyState({ onPick }: { onPick: (t: string) => void }) {
                 onClick={() => onPick(p.text)}
                 className="flex min-h-[56px] w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
               >
-                <Icon className="h-5 w-5 shrink-0 text-primary" />
+                <Icon className="h-5 w-5 shrink-0 text-foreground" />
                 <span className="text-base leading-6">{p.text}</span>
               </button>
             );
@@ -209,13 +209,13 @@ function ChatBubble({ msg }: { msg: ChatMsg }) {
   }
   return (
     <div className="flex gap-3">
-      <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-primary">
+      <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-foreground">
         <MessageSquareText className="h-4 w-4" />
       </span>
       <div className={`min-w-0 flex-1 rounded-2xl border px-4 py-3 ${msg.error ? "border-destructive/40 bg-danger-soft" : "border-border bg-card"}`}>
         {msg.pending ? (
           <div className="flex items-center gap-2 py-1">
-            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+            <Loader2 className="h-4 w-4 animate-spin text-foreground" />
             <span className="text-sm text-muted-foreground">يكتب الإجابة</span>
           </div>
         ) : (
