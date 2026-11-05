@@ -12,7 +12,7 @@
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset",
     "typecheck": "tsc --noEmit",
-    "vercel-build": "prisma generate && prisma db push --skip-generate && next build",
+    "vercel-build": "prisma generate && (prisma db push --skip-generate || echo \"db push skipped\") && next build",
     "postinstall": "prisma generate"
   },
   "dependencies": {
