@@ -43,10 +43,11 @@ type RawItem = { id: string; questionId: string; mistakeCount: number; userAnswe
 type ServerResult = { kind: 'guest' } | { kind: 'server'; items: RawItem[]; refresh: RawItem[]; mastered: number }
 
 async function fetchServerMistakes(): Promise<ServerResult> {
-  const res = await fetch('/api/my-mistakes')
+  // إن تعذّر الوصول إلى الخادم تُعرض أخطاء الجهاز بدل صفحة فارغة
+  const res = await fetch('/api/my-mistakes').catch(() => null)
+  if (!res) return { kind: 'guest' }
   const json = await res.json().catch(() => null)
-  if (json?.reason === 'not_authenticated') return { kind: 'guest' }
-  if (!res.ok || !json?.items) throw new Error(json?.reason || `HTTP ${res.status}`)
+  if (json?.reason === 'not_authenticated' || !res.ok || !json?.items) return { kind: 'guest' }
   return { kind: 'server', items: json.items, refresh: json.refresh ?? [], mastered: json.masteredCount ?? 0 }
 }
 
@@ -127,7 +128,7 @@ export function useMistakes() {
   }
 }
 
-async function postReview(body: Record<string, unknown>): Promise<{ reason?: string } | null> {
+async function postReview(body: Record<string, unknown>): Promise<{ reason?: string; recorded?: boolean } | null> {
   try {
     const res = await fetch('/api/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
     return await res.json().catch(() => null)
@@ -139,7 +140,8 @@ async function postReview(body: Record<string, unknown>): Promise<{ reason?: str
 /** إجابة خاطئة في أي تدريب: الضيف يحفظها على جهازه */
 export async function recordMistake(questionId: string, userAnswer: string, queryClient?: QueryClient) {
   const result = await postReview({ questionId, rating: 'again', userAnswer, source: 'practice' })
-  if (!result || result.reason === 'not_authenticated') {
+  // ما لم يؤكد الخادم الحفظ في الحساب يُحفظ الخطأ على الجهاز، فلا يضيع خطأ الضيف أبدًا
+  if (!result || result.recorded !== true) {
     useLocalMistakesStore.getState().addMistake(questionId, userAnswer)
   }
   queryClient?.invalidateQueries({ queryKey: MISTAKES_QUERY_KEY })

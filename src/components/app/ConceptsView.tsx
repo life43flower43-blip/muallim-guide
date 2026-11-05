@@ -436,7 +436,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
           <ChapterOutline concepts={siblings} currentId={c.id} onPick={go} />
         </aside>
 
-        <article className="mx-auto w-full max-w-[680px] space-y-8">
+        <article className="mx-auto w-full max-w-[680px] space-y-5">
           <ProgressBar value={((pos + 1) / Math.max(1, siblings.length)) * 100} height={4} className="lg:hidden" />
           <header>
             <div className="flex flex-wrap items-center gap-2">
@@ -451,20 +451,20 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
                 </Chip>
               )}
             </div>
-            <h1 className="mt-4 font-display text-2xl font-bold leading-[1.6] sm:text-[28px]">{c.title}</h1>
+            <h1 className="mt-2 font-display text-[21px] font-extrabold leading-[1.55] sm:text-[26px]">{c.title}</h1>
           </header>
 
           {c.rule && (
-            <p className="rounded-2xl border-[1.5px] border-[#D4A017] bg-[#FFFBEF] p-4 text-lg font-bold leading-9 dark:bg-[#D4A017]/10">
+            <p className="relative overflow-hidden rounded-[22px] bg-[#FFF7DF] px-4 py-3.5 text-[16px] font-bold leading-8 dark:bg-[#D4A017]/10"><span className="absolute inset-y-3 right-0 w-1 rounded-l-full bg-[#D4A017]" aria-hidden="true" />
               {c.rule}
             </p>
           )}
 
           <ConceptDiagram conceptId={c.id} pageTitle={c.title} />
 
-          <section className="space-y-5">
+          <section className="space-y-3.5">
             {splitArParagraphs(c.explanation).map((p, i) => (
-              <p key={i} className="text-lg leading-[2.1]">
+              <p key={i} className="text-[16px] leading-8 text-foreground/90">
                 {p}
               </p>
             ))}
@@ -475,14 +475,14 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
               <SectionHeader title="أمثلة من الميدان" sub="مواقف صفية تجسّد المفهوم" />
               <div className="space-y-3">
                 {shownExamples.map((ex, i) => (
-                  <Card key={i} className="p-4">
-                    <div className="flex items-start gap-3">
-                      <Lightbulb className="mt-1 h-5 w-5 shrink-0 text-gem" />
+                  <Card key={i} className="rounded-[22px] border-2 border-b-4 border-[#E3EDE8] border-b-[#C9DDD3] p-3.5">
+                    <div className="flex items-start gap-2.5">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FBF3DA] text-[16px]" aria-hidden="true">💡</span>
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-muted-foreground">{exampleContext(ex)}</p>
+                        <p className="text-[13px] font-bold text-[#B8860B]">{exampleContext(ex)}</p>
                         <div className="mt-1.5 space-y-2">
                           {splitArParagraphs(ex).map((p, j) => (
-                            <p key={j} className="text-base leading-8 text-secondary-foreground">
+                            <p key={j} className="text-[15px] leading-7 text-foreground/85">
                               {p}
                             </p>
                           ))}

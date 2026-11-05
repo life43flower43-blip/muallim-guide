@@ -194,7 +194,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         {/* شريط الأسبوع: غصن بسبع أوراق، تصير الورقة ذهبية في كل يوم درست فيه الطالبة */}
         <div className="relative min-w-0 px-2" aria-label="أيام دراستك هذا الأسبوع">
           <svg className="absolute inset-x-6 top-[13px] h-[6px] w-[calc(100%-48px)]" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M0 3C12 0 20 6 33 3S54 0 66 3 88 6 100 3" stroke="var(--t300)" strokeWidth="1.2" fill="none" vectorEffect="non-scaling-stroke" />
+            <path d="M0 3C12 0 20 6 33 3S54 0 66 3 88 6 100 3" stroke="#111111" strokeWidth="1.2" fill="none" vectorEffect="non-scaling-stroke" />
           </svg>
           <div className="relative flex items-start justify-between">
             {week.map((d, i) => (
@@ -213,14 +213,14 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                   </defs>
                   <path
                     d="M12 2C6.5 6 4.5 11.5 6 17c1.2 3.2 4 5 6 5s4.8-1.8 6-5c1.5-5.5-.5-11-6-15Z"
-                    fill={d.done ? `url(#leafGold${i})` : d.today ? "var(--t100)" : d.future ? "none" : "var(--t050)"}
-                    stroke={d.done ? "#C9971C" : d.today ? "var(--t800)" : "var(--t300)"}
+                    fill={d.done ? `url(#leafGold${i})` : d.today ? "#111111" : d.future ? "none" : "#FFFFFF"}
+                    stroke={d.done ? "#C9971C" : "#111111"}
                     strokeWidth={d.today ? 1.8 : 1.3}
                     strokeDasharray={d.future ? "2.5 2" : undefined}
                   />
-                  <path d="M12 6v14M12 11l-3-2.5M12 15l3-2.5" stroke={d.done ? "#FFFFFF" : d.today ? "var(--t800)" : "var(--t300)"} strokeWidth="1.1" strokeLinecap="round" fill="none" />
+                  <path d="M12 6v14M12 11l-3-2.5M12 15l3-2.5" stroke={d.done || d.today ? "#FFFFFF" : "#111111"} strokeWidth="1.1" strokeLinecap="round" fill="none" />
                 </svg>
-                <span className={cn("text-[12px] leading-none", d.today ? "font-extrabold text-foreground" : d.done ? "font-bold text-[#B8860B]" : "font-bold text-muted-foreground")}>{d.label}</span>
+                <span className={cn("text-[12px] leading-none", d.today ? "font-extrabold text-[#111111]" : d.done ? "font-bold text-[#B8860B]" : "font-bold text-[#111111]")}>{d.label}</span>
               </span>
             ))}
           </div>
