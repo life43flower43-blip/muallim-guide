@@ -49,7 +49,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Callout, Card, Chip, DifficultyChip, Divided, OptionButton, PrimaryButton, ProgressBar, Ring, ScreenShell, SecondaryButton, SectionHeader, SkillBar } from "./ui-kit";
+import { Callout, Card, Chip, DifficultyChip, Divided, OptionButton, PrimaryButton, ProgressBar, Ring, ScreenShell, SecondaryButton, SectionHeader, SkillBar, GameTile } from "./ui-kit";
 
 type Phase = "home" | "brief" | "run" | "result";
 
@@ -191,21 +191,8 @@ export default function ExamSimView() {
       <ScreenShell title="محاكي الاختبار الرسمي" sub={samePass ? `اختر نموذجًا، وحد النجاح ${ad(BLUEPRINTS[0].passPct)}٪ في كل النماذج` : "اختر نموذجًا للبدء"} onClose={close}>
         <div className="space-y-6">
           <div className="space-y-2.5">
-            {BLUEPRINTS.map((b) => (
-              <button key={b.id} type="button" onClick={() => startExam(b)} className="flex w-full min-w-0 items-center gap-3 rounded-[20px] border border-border bg-card px-3.5 py-3.5 text-right transition-colors hover:border-primary/60 active:scale-[0.99]">
-                {/* عدد الأسئلة نفسه يميّز النموذج بدل رمز متكرر */}
-                <span className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-[14px] bg-accent text-accent-foreground">
-                  <span className="text-[17px] font-extrabold leading-5">{ad(b.total)}</span>
-                  <span className="text-[10px] font-bold leading-3">سؤالًا</span>
-                </span>
-                <span className="min-w-0 flex-1">
-                  <FitText max={17} min={12} className="font-bold leading-7">{b.name}</FitText>
-                  <span className="block text-[13px] leading-5 text-secondary-foreground">
-                    {ad(b.minutes)} دقيقة{samePass ? "" : `، النجاح ${ad(b.passPct)}٪`}
-                  </span>
-                </span>
-                <ChevronLeft className="h-5 w-5 shrink-0 text-foreground" />
-              </button>
+            {BLUEPRINTS.map((b, k) => (
+              <GameTile key={b.id} tone={k} emoji={["📝", "🎓", "🏆", "🎯"][k % 4]} title={b.name} meta={`${ad(b.total)} سؤالًا · ${ad(b.minutes)} د`} onClick={() => startExam(b)} />
             ))}
           </div>
 

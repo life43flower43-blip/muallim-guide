@@ -33,7 +33,7 @@ import {
 } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
-import { COURSES, COURSE_COLOR, QUESTIONS, chaptersOfCourse } from "@/lib/qbank";
+import { COURSES, COURSE_SHORT, QUESTIONS, chaptersOfCourse } from "@/lib/qbank";
 import {
   EXAM_SECONDS,
   chapterSession,
@@ -51,7 +51,7 @@ import { cn } from "@/lib/utils";
 import ProgressSummary from "./ProgressSummary";
 import type { Tab } from "./AppShell";
 import TestBuilder from "./TestBuilder";
-import { Divided, PageTitle, Stars, pct } from "./ui-kit";
+import { Divided, PageTitle, Stars, pct, GameTile } from "./ui-kit";
 
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
 
@@ -69,6 +69,9 @@ const LICENSE_TOOLS = [
 ];
 
 // ألوان الأيقونات: لكل بطاقة لونها حتى لا تتشابه
+const COURSE_EMO: Record<string, string> = {
+  M1: "🌱", M2: "🧠", M3: "💡", M4: "📊", M5: "🧑‍🏫", SE1: "🤝", F1: "🏛️", AI1: "🤖", G1: "📚", C1: "🛠️", L1: "🧭", R1: "🧩",
+};
 const TONES = [
   { bg: "#E6F4EF", fg: "#136F5C" },
   { bg: "#FBF3DA", fg: "#B8860B" },
@@ -185,20 +188,13 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
           </div>
         </div>
       ) : (
-        <Divided>
-          {COURSES.map((c) => {
+        <div className="grid grid-cols-2 gap-2.5">
+          {COURSES.map((c, k) => {
             const chapters = chaptersOfCourse(c.id);
             const stars = chapters.reduce((n, ch) => n + starsFor(best[topicKey(c.id, ch)]), 0);
-            return (
-              <button key={c.id} type="button" onClick={() => setOpen(c.id)} className="flex min-h-[56px] w-full min-w-0 items-center gap-3 px-4 py-2.5 text-right">
-                <span className="h-7 w-1.5 shrink-0 rounded-full" style={{ background: COURSE_COLOR[c.id] ?? "var(--primary)" }} aria-hidden="true" />
-                <FitText max={16} min={11} className="flex-1 font-bold leading-7">{c.name}</FitText>
-                {stars > 0 && <span className="shrink-0 text-sm font-bold text-[#C9971C]">★ {ad(stars)}</span>}
-                <ChevronLeft className="h-5 w-5 shrink-0 text-[#C9971C]" />
-              </button>
-            );
+            return <GameTile key={c.id} tone={k} emoji={COURSE_EMO[c.id] ?? "📚"} title={COURSE_SHORT[c.id] ?? c.name} meta={stars > 0 ? `★ ${ad(stars)}` : undefined} onClick={() => setOpen(c.id)} />;
           })}
-        </Divided>
+        </div>
       )}
 
       {/* أرقامك وإنجازاتك في آخر الصفحة */}
