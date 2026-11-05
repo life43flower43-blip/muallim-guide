@@ -28,7 +28,7 @@ import { orderUnseenFirst } from "@/lib/srs";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { ad, arCount, QUESTION_OBJ_FORMS } from "@/lib/arabic";
-import { Card, Chip, Divided, ListRow, OptionButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, SkillBar } from "./ui-kit";
+import { Card, Chip, Divided, ListRow, OptionButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, SkillBar, GameTile, SceneCard } from "./ui-kit";
 import { NewBadge } from "./shared";
 
 export default function PlacementView() {
@@ -116,17 +116,16 @@ export default function PlacementView() {
 
     return (
       <ScreenShell title="نتيجة تحديد المستوى" onClose={close}>
-        <div className="space-y-5">
-          <Card className="p-6 text-center">
-            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-foreground">
-              <Compass className="h-7 w-7" />
-            </span>
-            <p className="mt-3 font-display text-2xl font-bold">{level.title}</p>
-            <p className="mx-auto mt-2 max-w-md text-base leading-7 text-secondary-foreground">{level.desc}</p>
-            <p className="mt-3 text-sm text-muted-foreground">
+        <div className="space-y-4">
+          {/* المستوى في بطاقة بارزة بلون الهوية */}
+          <div className="rounded-[24px] bg-[var(--t700)] px-5 py-5 text-center text-white">
+            <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/15 text-[26px]" aria-hidden="true">🧭</span>
+            <p className="mt-2 font-display text-[22px] font-extrabold">{level.title}</p>
+            <p className="mx-auto mt-1.5 max-w-md text-[14px] leading-6 text-white/85">{level.desc}</p>
+            <p className="mx-auto mt-3 inline-block rounded-full bg-white/15 px-3 text-[13px] font-bold leading-7">
               أجبت صوابًا عن {arCount(result.correctCount, QUESTION_OBJ_FORMS)} من {ad(result.total)}
             </p>
-          </Card>
+          </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
             <Card className="p-5">
@@ -171,15 +170,10 @@ export default function PlacementView() {
 
           <section>
             <SectionHeader title="خطتك المقترحة" sub="أعد الاختبار بعد أسبوع من التدريب لترى تقدمك" />
-            <Divided>
-              <ListRow
-                icon={Dumbbell}
-                title="تدرّب على أضعف محاورك"
-                sub={`جلسة على ${weakest ? COURSE_SHORT[weakest.courseId] : "المحور الأضعف"}، الجديد أولًا`}
-                onClick={trainWeak}
-              />
-              <ListRow icon={GraduationCap} title="اختبر جاهزيتك في المحاكي" sub="اختبار بالوقت والأقسام، كالاختبار الرسمي" onClick={() => startExamsim()} />
-            </Divided>
+            <div className="space-y-2.5">
+              <GameTile tone={0} emoji="💪" title={`تدرّب على ${weakest ? COURSE_SHORT[weakest.courseId] : "أضعف محاورك"}`} onClick={trainWeak} />
+              <GameTile tone={2} emoji="⏱️" title="اختبر جاهزيتك في المحاكي" onClick={() => startExamsim()} />
+            </div>
           </section>
         </div>
       </ScreenShell>
@@ -200,9 +194,9 @@ export default function PlacementView() {
     >
       <ProgressBar value={((idx + 1) / items.length) * 100} className="mb-5" />
       {current && (
-        <motion.div key={current.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
-          <h2 className="font-display text-lg font-semibold leading-9">{current.question}</h2>
-          <div className="space-y-3">
+        <motion.div key={current.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+          <SceneCard className="font-bold">{current.question}</SceneCard>
+          <div className="space-y-2.5">
             {current.options.map((o, i) => (
               <OptionButton
                 key={i}
