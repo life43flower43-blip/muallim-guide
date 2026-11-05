@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { dayStr, dayXpOf, useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { useMistakes } from "@/lib/mistakes-client";
-import { CONCEPTS, conceptsOfCourse } from "@/lib/qbank";
+import { COURSES, COURSE_SHORT, CONCEPTS, conceptsOfCourse } from "@/lib/qbank";
 import { overallReadiness } from "@/lib/practice-bank";
 import { ad } from "@/lib/arabic";
 import type { Tab } from "./AppShell";
@@ -94,6 +94,40 @@ const DOOR_BG: Record<string, string> = {
   "خطة الدرس": "linear-gradient(135deg,#9CC5FF,#5A8DEE)",
 };
 
+const STRIP = [
+  "linear-gradient(135deg,#3AAA9C,#1D8278)",
+  "linear-gradient(135deg,#5A8DEE,#3B6FD6)",
+  "linear-gradient(135deg,#F5B83D,#E0961A)",
+  "linear-gradient(135deg,#F28A5B,#E0663A)",
+  "linear-gradient(135deg,#34C38F,#1E9E6E)",
+  "linear-gradient(135deg,#38BDF8,#0E95CF)",
+];
+
+// آخر ما أُضيف إلى التطبيق
+const NEWS = [
+  "أُضيف محور «القيادة المدرسية والإشراف»",
+  "أُضيفت ٨ مواقف صفية جديدة للروضة والابتدائي",
+  "اختبار جديد من ٢٠ سؤالًا كل أحد",
+  "٥٢ مقارنة بين المفاهيم في «أدوات الرخصة»",
+  "أُضيف محور «السمات المهنية والاستدلال»",
+];
+
+function NewsLine() {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setI((n) => (n + 1) % NEWS.length), 4000);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <div className="col-span-4 flex min-w-0 items-center gap-2 rounded-[14px] bg-[var(--t050)] px-3 py-2">
+      <span className="shrink-0 rounded-full bg-[#F2584A] px-2 text-[11px] font-extrabold leading-5 text-white">جديد</span>
+      <motion.span key={i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="min-w-0 truncate text-[13px] font-bold text-[var(--t900)] dark:text-foreground">
+        {NEWS[i]}
+      </motion.span>
+    </div>
+  );
+}
+
 export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const attempts = useApp((s) => s.attempts);
   const ui = useUi();
@@ -160,7 +194,8 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const sessions = useApp((s) => s.sessions);
   const { data: mistakes } = useMistakes();
   const due = mistakes?.stats.due ?? 0;
-  const homeStyle = useApp((s) => s.homeStyle ?? "icons");
+  // الرئيسية بالرموز الدائرية دائمًا (بطلب صاحبة التطبيق)
+  const homeStyle = "icons" as "icons" | "photos";
   const week = useMemo(() => {
     const now = new Date();
     const start = new Date(now);
@@ -219,6 +254,28 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               <FitText max={12.5} min={9} group="home-ico" className="w-full whitespace-nowrap text-center font-bold text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
             </motion.button>
           ))}
+          {/* سطر «جديد»: آخر ما أُضيف، يتبدل كل بضع ثوانٍ */}
+          <NewsLine />
+          {/* المحاور في بطاقات ملونة تُسحب جانبيًا */}
+          <div className="col-span-4">
+            <p className="mb-2 flex items-center gap-2 text-[15px] font-extrabold text-[var(--t900)] dark:text-foreground">
+              <span className="h-4 w-[3px] rounded-full bg-[#D4A017]" aria-hidden="true" /> المحاور
+            </p>
+            <div className="no-scrollbar -mx-4 flex snap-x gap-2.5 overflow-x-auto px-4 pb-1">
+              {COURSES.map((c, k) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => ui.openCourseTab(c.id)}
+                  className="flex h-[64px] w-[132px] shrink-0 snap-start flex-col justify-center rounded-[16px] px-3 text-right text-white shadow-sm"
+                  style={{ background: STRIP[k % STRIP.length] }}
+                >
+                  <span className="truncate text-[14px] font-extrabold">{COURSE_SHORT[c.id] ?? c.name}</span>
+                  <span className="text-[11.5px] text-white/85">{ad(conceptsOfCourse(c.id).length)} مفهومًا</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       ) : (
       <div ref={gridRef} className="grid grid-cols-2 gap-x-3 gap-y-4">
