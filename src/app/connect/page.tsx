@@ -14,6 +14,7 @@ export default async function Connect({ searchParams }: { searchParams: Promise<
   const liDays = li?.expiresAt ? Math.ceil((li.expiresAt.getTime() - Date.now()) / 86400000) : null;
   const note =
     sp.fb === "ok" ? `✅ تم ربط صفحة «${sp.name}». سيبدأ النشر في الموعد القادم.`
+    : sp.fb === "posted" ? "✅ نُشر منشور تجريبي في الصفحة الآن. افتح صفحتك على فيسبوك وتأكد."
     : sp.fb === "missing" ? "⚠️ أضف FACEBOOK_APP_ID وFACEBOOK_APP_SECRET في Vercel ثم Redeploy."
     : sp.fb === "denied" ? "⚠️ لم تكتمل الموافقة. حاول مرة أخرى."
     : sp.fb === "error" ? `⚠️ ${sp.msg ?? "حدث خطأ"}`
@@ -29,7 +30,19 @@ export default async function Connect({ searchParams }: { searchParams: Promise<
       <section className="mt-5 rounded-2xl border border-[#E2ECE6] bg-white p-4">
         <p className="font-bold text-[#14302A]">فيسبوك</p>
         <p className="mt-1 text-[14px] text-[#5B7268]">{fb ? `مربوط بصفحة «${fb.name}»` : fbConfigured() ? "غير مربوط بعد" : "ينتظر FACEBOOK_APP_ID وFACEBOOK_APP_SECRET في Vercel"}</p>
-        <a href="/api/social/facebook/start" className="mt-3 inline-block rounded-xl bg-[#1877F2] px-4 py-2 font-bold text-white">{fb ? "إعادة الربط" : "اربط صفحة فيسبوك"}</a>
+        {fb?.lastAt && (
+          <p className="mt-2 text-[13px] leading-6 text-[#5B7268]">
+            آخر محاولة نشر: {fb.lastAt.toLocaleString("ar-SA", { timeZone: "Asia/Riyadh" })} — {fb.lastOk ? "نجحت ✅" : `فشلت ❌ ${fb.lastError ?? ""}`}
+          </p>
+        )}
+        <div className="mt-3 flex flex-wrap gap-2">
+          <a href="/api/social/facebook/start" className="inline-block rounded-xl bg-[#1877F2] px-4 py-2 font-bold text-white">{fb ? "إعادة الربط" : "اربط صفحة فيسبوك"}</a>
+          {fb && (
+            <form action="/api/social/facebook/test" method="post">
+              <button className="rounded-xl border border-[#1877F2] px-4 py-2 font-bold text-[#1877F2]">انشر منشورًا تجريبيًا الآن</button>
+            </form>
+          )}
+        </div>
       </section>
       <section className="mt-4 rounded-2xl border border-[#E2ECE6] bg-white p-4">
         <p className="font-bold text-[#14302A]">لينكدإن</p>

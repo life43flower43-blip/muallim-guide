@@ -664,7 +664,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   type="button"
                   onClick={next}
                   className={`min-h-[52px] flex-[2] rounded-[20px] text-lg font-bold text-white transition active:scale-[0.98] ${
-                    "bg-gradient-to-l from-[var(--t600)] to-[var(--t850)]"
+                    "bg-[var(--t700)]"
                   }`}
                 >
                   {idx + 1 >= questions.length ? "النتيجة" : "متابعة"}

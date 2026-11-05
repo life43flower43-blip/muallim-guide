@@ -642,7 +642,7 @@ body {
   border: 1.5px solid transparent;
   background:
     linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(90deg, #E8C766, #C9971C 50%, #E8C766) border-box;
+    linear-gradient(#D4A017, #D4A017) border-box;
   box-shadow: 0 6px 20px rgba(14, 59, 50, 0.08);
 }
 .dark .nav-gold {

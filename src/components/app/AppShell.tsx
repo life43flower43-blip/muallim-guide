@@ -161,7 +161,7 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
                 <motion.span
                   layoutId="nav-pill"
                   transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                  className="absolute inset-0 rounded-[20px] bg-gradient-to-b from-[var(--t600)] to-[var(--t850)]"
+                  className="absolute inset-0 rounded-[20px] bg-[var(--t700)]"
                   aria-hidden="true"
                 />
               )}

@@ -106,7 +106,7 @@ export default function NotebookView() {
       <button
         type="button"
         onClick={() => useUi.getState().startMind()}
-        className="mind-card relative flex w-full items-center gap-3 overflow-hidden rounded-[24px] bg-gradient-to-l from-[#0F4634] via-[#103B3A] to-[#0B2236] p-3.5 text-right text-white ring-2 ring-[#D4A017] transition active:scale-[0.98]"
+        className="mind-card relative flex w-full items-center gap-3 overflow-hidden rounded-[24px] bg-[#0B2236] p-3.5 text-right text-white ring-2 ring-[#D4A017] transition active:scale-[0.98]"
       >
         <svg viewBox="0 0 64 64" className="h-16 w-16 shrink-0" aria-hidden="true">
           <g stroke="#D4A017" strokeWidth="2" strokeLinecap="round" opacity="0.85">
@@ -154,7 +154,7 @@ export default function NotebookView() {
                 onClick={() => setPart(p.id)}
                 className={cn(
                   "min-h-[44px] min-w-0 rounded-[18px] px-1 font-bold transition active:scale-[0.98]",
-                  part === p.id ? "bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "text-[var(--t500)]"
+                  part === p.id ? "bg-[var(--t700)] text-white" : "text-[var(--t500)]"
                 )}
               >
                 <FitText max={16} min={10} group="nb-tabs" className="text-center">{p.label}</FitText>
@@ -187,7 +187,7 @@ export default function NotebookView() {
                         setCourseId(c.id);
                         setChIndex(0);
                       }}
-                      className={cn("min-h-[36px] shrink-0 whitespace-nowrap rounded-full border px-3.5 text-sm font-bold", courseId === c.id ? "border-transparent bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "border-[#ECE3C4] bg-white text-[var(--t500)] dark:bg-card")}
+                      className={cn("min-h-[36px] shrink-0 whitespace-nowrap rounded-full border px-3.5 text-sm font-bold", courseId === c.id ? "border-transparent bg-[var(--t700)] text-white" : "border-[#ECE3C4] bg-white text-[var(--t500)] dark:bg-card")}
                     >
                       {COURSE_SHORT[c.id] ?? c.name}
                     </button>

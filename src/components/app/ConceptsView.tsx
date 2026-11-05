@@ -712,7 +712,7 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
                   onClick={() => onChapter(ch)}
                   className="flex min-h-[64px] w-full min-w-0 items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
                 >
-                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${done ? "bg-gradient-to-br from-[#F3DC8E] to-[#C9971C] text-white" : "bg-[var(--t100)] text-[var(--t800)]"}`}>
+                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${done ? "bg-[#D4A017] text-white" : "bg-[var(--t100)] text-[var(--t800)]"}`}>
                     {done ? <CheckCircle2 className="h-5 w-5" /> : <BookOpen className="h-4 w-4" />}
                   </span>
                   <span className="min-w-0 flex-1">
@@ -846,7 +846,7 @@ export default function ConceptsView() {
               <button
                 type="button"
                 onClick={() => openConceptHere(resume.id)}
-                className="flex w-full min-w-0 items-center gap-3 rounded-[24px] bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] p-3.5 text-right text-white transition active:scale-[0.98]"
+                className="flex w-full min-w-0 items-center gap-3 rounded-[24px] bg-[var(--t700)] p-3.5 text-right text-white transition active:scale-[0.98]"
               >
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] bg-white/15 text-[#F3DC8E]">
                   <CourseIcon id={resume.courseId} className="h-6 w-6" />

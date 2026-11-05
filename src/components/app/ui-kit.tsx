@@ -193,7 +193,7 @@ export function PrimaryButton({ className, ...rest }: React.ButtonHTMLAttributes
     <button
       type="button"
       className={cn(
-        "inline-flex min-h-[50px] items-center justify-center gap-2 whitespace-nowrap rounded-[20px] bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] px-5 text-base max-[359px]:px-3 font-bold text-white transition active:scale-[0.97] hover:brightness-105 disabled:from-muted disabled:to-muted disabled:text-muted-foreground",
+        "inline-flex min-h-[50px] items-center justify-center gap-2 whitespace-nowrap rounded-[20px] bg-[var(--t700)] px-5 text-base max-[359px]:px-3 font-bold text-white transition active:scale-[0.97] hover:brightness-105 disabled:from-muted disabled:to-muted disabled:text-muted-foreground",
         className
       )}
       {...rest}
@@ -501,33 +501,11 @@ export function MasteryDot({ level, size = 14 }: { level: 0 | 1 | 2 | 3; size?: 
 
 /** زخرفة شريط العنوان: موجات خضراء متراكبة تنساب من الزاوية، وخيطان ذهبيان، ونجوم ذهبية تومض */
 export function HeaderArt() {
-  const star = "M0 -6 C0.8 -1.2 1.2 -0.8 6 0 C1.2 0.8 0.8 1.2 0 6 C-0.8 1.2 -1.2 0.8 -6 0 C-1.2 -0.8 -0.8 -1.2 0 -6Z";
+  // موجة بلون واحد صافٍ (التركوازي الأساسي) بلا تدرج
   return (
     <svg className="head-art pointer-events-none absolute inset-0 h-full w-full -scale-y-100" viewBox="0 0 400 130" preserveAspectRatio="none" aria-hidden="true">
-      <defs>
-        <linearGradient id="ha1" x1="0" y1="0" x2="1" y2="0.5">
-          <stop offset="0" stopColor="var(--t800)" stopOpacity="0.95" />
-          <stop offset="0.6" stopColor="var(--t850)" stopOpacity="0.35" />
-          <stop offset="1" stopColor="var(--t600)" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id="ha2" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="var(--t600)" stopOpacity="0.55" />
-          <stop offset="1" stopColor="var(--t100)" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id="ha3" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="var(--t200)" />
-          <stop offset="1" stopColor="var(--t100)" stopOpacity="0.3" />
-        </linearGradient>
-        <linearGradient id="hag" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#D4A017" stopOpacity="0.2" />
-          <stop offset="0.35" stopColor="#C9971C" />
-          <stop offset="0.75" stopColor="#F3DC8E" />
-          <stop offset="1" stopColor="#D4A017" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path className="w3" d="M-20 0H420V6C340 16 280 2 215 16C145 32 80 58 -20 118Z" fill="url(#ha3)" />
-      <path className="w2" d="M-20 0H330C280 16 225 8 170 28C115 48 60 78 -20 104Z" fill="url(#ha2)" />
-      <path className="w1" d="M-20 0H240C200 12 160 12 118 30C78 48 40 70 -20 90Z" fill="url(#ha1)" />
+      <path className="w3" d="M-20 0H420V6C340 16 280 2 215 16C145 32 80 58 -20 118Z" fill="var(--t100)" />
+      <path className="w1" d="M-20 0H240C200 12 160 12 118 30C78 48 40 70 -20 90Z" fill="var(--t600)" />
     </svg>
   );
 }

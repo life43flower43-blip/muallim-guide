@@ -172,8 +172,8 @@ export function ToolRow({
       <span
         className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-white ${
           tone === "amber"
-            ? "bg-gradient-to-br from-violet-500 to-pink-500"
-            : "bg-gradient-to-br from-[var(--t600)] to-[var(--t850)]"
+            ? "bg-[var(--t700)]"
+            : "bg-[var(--t700)]"
         }`}
       >
         <Icon className="h-5 w-5" />

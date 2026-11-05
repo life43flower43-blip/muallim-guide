@@ -120,5 +120,10 @@ export async function postToFacebook(post: { message: string; link?: string; pho
   else { body.set("message", post.message); if (post.link) body.set("link", post.link); }
   const r = await fetch(`${G}${path}`, { method: "POST", body });
   const j = await r.json().catch(() => ({}));
-  return j.id ? { ok: true } : { ok: false, error: j.error?.message ?? `HTTP ${r.status}` };
+  const ok = !!j.id;
+  const error = ok ? null : String(j.error?.message ?? `HTTP ${r.status}`).slice(0, 300);
+  if (!ok) console.error("facebook post failed:", error);
+  // نحفظ نتيجة آخر محاولة لتظهر في صفحة /connect
+  await db.socialAccount.update({ where: { platform: "facebook" }, data: { lastAt: new Date(), lastOk: ok, lastError: error } }).catch(() => {});
+  return ok ? { ok: true } : { ok: false, error: error! };
 }
