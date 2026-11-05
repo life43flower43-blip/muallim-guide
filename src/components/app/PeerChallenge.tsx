@@ -24,6 +24,8 @@ type Review = { qid: string; ok: boolean };
 
 const PEER_XP_PER_CORRECT = 8;
 
+const PEER_EMO: Record<string, string> = { M1: "🌱", M2: "🧠", M3: "💡", M4: "📊", M5: "🧑‍🏫", SE1: "🤝", F1: "🏛️", AI1: "🤖", G1: "📚", C1: "🛠️", L1: "🧭", R1: "🧩" };
+
 export default function PeerChallenge() {
   const clearPeer = useUi((s) => s.clearPeer);
   const peerIncoming = useUi((s) => s.peerIncoming);
@@ -209,24 +211,15 @@ export default function PeerChallenge() {
         <div className="space-y-6">
           <section>
             <SectionHeader title="المحور" />
-            <Divided>
-              {scopes.map((o) => (
-                <button
-                  key={o.id}
-                  type="button"
-                  aria-pressed={scope === o.id}
-                  onClick={() => setScope(o.id)}
-                  className="flex min-h-[52px] w-full items-center gap-3 px-4 py-3 text-right text-base transition-colors hover:bg-muted/60"
-                >
-                  <span className="flex-1">{o.label}</span>
-                  {scope === o.id && <Check className="h-5 w-5 text-foreground" />}
-                </button>
+            <div className="grid grid-cols-2 gap-2.5">
+              {scopes.map((o, k) => (
+                <GameTile key={o.id} tone={k} emoji={o.id === "all" ? "🌐" : PEER_EMO[o.id] ?? "📚"} title={o.label} active={scope === o.id} onClick={() => setScope(o.id)} />
               ))}
-            </Divided>
+            </div>
           </section>
           <section>
             <SectionHeader title="عدد الأسئلة" />
-            <div role="radiogroup" className="grid grid-cols-2 rounded-xl bg-muted p-1">
+            <div role="radiogroup" className="grid grid-cols-2 gap-1 rounded-[22px] border border-[#ECE3C4] bg-white p-1 dark:bg-card">
               {[5, 10].map((n) => (
                 <button
                   key={n}
@@ -234,7 +227,7 @@ export default function PeerChallenge() {
                   role="radio"
                   aria-checked={size === n}
                   onClick={() => setSize(n)}
-                  className={`min-h-[40px] rounded-lg text-sm transition-colors ${size === n ? "bg-card font-medium text-foreground shadow-sm" : "text-muted-foreground"}`}
+                  className={`min-h-[42px] rounded-[18px] text-base font-bold transition ${size === n ? "bg-[var(--t700)] text-white" : "text-muted-foreground"}`}
                 >
                   {ad(n)} أسئلة
                 </button>
