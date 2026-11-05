@@ -59,7 +59,7 @@
   --warning: #F97316;
   --amber: #F97316;
   --rose: #B42318;
-  --violet: #1F7A63;
+  --violet: #279488;
   --mint: #067647;
   --gem: #C9971C;
   --gem-soft: #FBF3DA;
@@ -69,31 +69,32 @@
 
 /* ألوان التطبيق: درجات اللون الأساسي تتغير بحسب النمط المختار، ولون الإبراز الحيوي (بنفسجي ووردي ومرجاني) ثابت في كل الأنماط */
 :root {
-  --t950: #0D5848;
-  --t900: #174D41;
-  --t850: #1C5E4F;
-  --t800: #136F5C;
-  --t700: #1F7A63;
-  --t600: #2C7D69;
-  --t500: #5D7A71;
-  --t450: #7E978E;
-  --t300: #A9CDBB;
-  --t200: #C9DDD3;
-  --t150: #CFE6DA;
-  --t100: #DCEFE5;
-  --t075: #E2ECE7;
-  --t060: #E3F1EA;
-  --t050: #EEF5F1;
-  --t025: #F8FCFA;
+  /* اللون الأساسي: تركوازي فاتح هادئ (بطلب صاحبة التطبيق)، والذهبي للإبراز */
+  --t950: #0B4D47;
+  --t900: #105A53;
+  --t850: #146B63;
+  --t800: #1D8278;
+  --t700: #279488;
+  --t600: #3AAA9C;
+  --t500: #5B8682;
+  --t450: #7EA19D;
+  --t300: #A3DAD2;
+  --t200: #C4E8E2;
+  --t150: #D0EEE9;
+  --t100: #DCF3EF;
+  --t075: #E2F0EE;
+  --t060: #E5F5F2;
+  --t050: #EEF8F6;
+  --t025: #F7FCFB;
   --background: #FFFFFF;
-  --primary: #136F5C;
-  --ring: #136F5C;
-  --teal: #136F5C;
-  --accent: #DCEFE5;
-  --accent-foreground: #0D5848;
-  --border: #D8E7DF;
-  --muted: #E8F1EC;
-  --secondary: #ECF4EF;
+  --primary: #1D8278;
+  --ring: #1D8278;
+  --teal: #1D8278;
+  --accent: #DCF3EF;
+  --accent-foreground: #0B4D47;
+  --border: #D5E9E5;
+  --muted: #E7F3F1;
+  --secondary: #EBF6F4;
 }
 :root[data-theme="navy"]:not(.dark) {
   --t950: #0F2440;

@@ -15,6 +15,7 @@ import { overallReadiness } from "@/lib/practice-bank";
 import { ad } from "@/lib/arabic";
 import type { Tab } from "./AppShell";
 import { FitText } from "./FitText";
+import { BookOpen, ClipboardCheck, Compass, Lightbulb, NotebookPen, Presentation, Shapes, Timer, Users } from "lucide-react";
 
 type Door = { title: string; img: string; pos?: string; progress: number; run: () => void; special?: boolean };
 
@@ -74,6 +75,24 @@ function MiniActivity({ sessions }: { sessions: { ts: number; total: number }[] 
     </div>
   );
 }
+
+// رمز ولون لكل قسم في شبكة الرئيسية، دون تكرار
+const DOOR_ICON: Record<string, React.ElementType> = {
+  "اختبر نفسك": ClipboardCheck,
+  "المفاهيم التربوية": Lightbulb,
+  "المواقف الصفية": Users,
+  "مهارات التدريس": Presentation,
+  "طرائق التدريس": Shapes,
+  "خطة الدرس": NotebookPen,
+};
+const DOOR_BG: Record<string, string> = {
+  "اختبر نفسك": "linear-gradient(135deg,#FFD36B,#F2A81D)",
+  "المفاهيم التربوية": "linear-gradient(135deg,#67D9F5,#1BA7D6)",
+  "المواقف الصفية": "linear-gradient(135deg,#FFB27A,#F07D2E)",
+  "مهارات التدريس": "linear-gradient(135deg,#6EE0B5,#22B07D)",
+  "طرائق التدريس": "linear-gradient(135deg,#7BD8CF,#279488)",
+  "خطة الدرس": "linear-gradient(135deg,#9CC5FF,#5A8DEE)",
+};
 
 export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const attempts = useApp((s) => s.attempts);
@@ -176,59 +195,28 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
     <div className="mx-auto -mt-1 max-w-2xl space-y-3 lg:mt-0">
       {/* أبواب التطبيق */}
       {homeStyle === "icons" ? (
-        // الصف الأول: «ابدأ اختبار المحاكاة» مستطيل عريض يمينًا وبجانبه بطاقة، ثم بطاقتان، ثم ثلاث بطاقات
-        <div ref={gridRef} className="grid grid-cols-6 gap-x-3 gap-y-3.5 pt-1">
-          <motion.button
-            {...rise(1)}
-            type="button"
-            whileTap={{ scale: 0.97 }}
-            onClick={() => {
-              tick();
-              if (goal === "university") ui.startLearn();
-              else if (goal === "teacher") ui.startSim();
-              else ui.startExamsim();
-            }}
-            className="col-span-4 flex min-w-0 flex-col gap-2"
-          >
-            <span className="exam-cta relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-[26px] bg-gradient-to-l from-[#FFFBEF] to-[#FBF3DA] px-3 text-[var(--t900)]" style={{ height: tileH ?? 120 }}>
-              <span className="relative flex h-[46px] w-[46px] shrink-0 items-center justify-center" aria-hidden="true">
-                <span className="gold-wave" />
-                <span className="gold-wave" style={{ animationDelay: "1.1s" }} />
-                <span className="gold-wave" style={{ animationDelay: "2.2s" }} />
-                <span className="exam-pulse relative flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-[#E8C766] to-[#C9971C]">
-                  <span className="text-[14px] font-extrabold text-white">ابدأ</span>
-                </span>
-              </span>
-              <FitText max={18} min={12} className="min-w-0 font-extrabold">{goal === "university" ? "تابع مذاكرة المحاور" : goal === "teacher" ? "موقف صفي اليوم" : "اختبار المحاكاة"}</FitText>
-            </span>
-            <span className="text-center text-[15px] font-bold leading-[22px] text-transparent" aria-hidden="true">.</span>
-          </motion.button>
-          {gridDoors.map((d, i) => (
+        // شبكة رموز دائرية ملونة: أربعة في كل صف، والاسم تحت كل رمز
+        <div ref={gridRef} className="grid grid-cols-4 gap-x-2 gap-y-5 pt-2">
+          {[
+            { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "linear-gradient(135deg,#FF8A7A,#F2584A)", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
+            ...gridDoors.map((d) => ({ title: d.title, icon: DOOR_ICON[d.title] ?? BookOpen, bg: DOOR_BG[d.title] ?? "linear-gradient(135deg,#5ED3C4,#279488)", run: d.run })),
+            { title: "البوصلة", icon: Compass, bg: "linear-gradient(135deg,#7FB6FF,#3B7BEA)", run: () => onGoTab("notebook") },
+          ].map((d, i) => (
             <motion.button
               key={d.title}
               type="button"
-              {...rise(2 + i)}
-              whileTap={{ scale: 0.94 }}
+              {...rise(1 + i)}
+              whileTap={{ scale: 0.92 }}
               onClick={() => {
-                if (pressed) return;
                 tick();
-                setPressed(d.title);
-                setTimeout(() => {
-                  setPressed(null);
-                  d.run();
-                }, 160);
+                d.run();
               }}
-              className={cn("flex min-w-0 flex-col items-center gap-2", i === 1 || i === 2 ? "col-span-3" : "col-span-2")}
+              className="flex min-w-0 flex-col items-center gap-1.5"
             >
-              {/* صورة القسم بإطار ذهبي رفيع، وخط التقدّم الذهبي أسفلها */}
-              <span className={cn("relative flex w-full items-center justify-center overflow-hidden rounded-[26px] bg-[var(--t100)]", d.special ? "ring-2 ring-[#D4A017]" : "ring-1 ring-[var(--t075)]")} style={{ height: tileH ?? 120 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                {d.special ? <TestArt /> : <img src={d.img} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: d.pos }} />}
-                <span className="absolute inset-x-4 bottom-2.5 h-[3px] overflow-hidden rounded-full bg-white/80" aria-hidden="true">
-                  <span className="block h-full rounded-full bg-[#D4A017]" style={{ width: `${Math.round(d.progress * 100)}%` }} />
-                </span>
+              <span className="flex h-[58px] w-[58px] items-center justify-center rounded-full text-white shadow-[0_6px_14px_rgba(0,0,0,0.12)]" style={{ background: d.bg }}>
+                <d.icon className="h-7 w-7" strokeWidth={2} />
               </span>
-              <FitText max={i === 1 || i === 2 ? 17 : 14} min={10} group={i === 1 || i === 2 ? "door-wide" : "door-small"} className="w-full text-center font-bold leading-[22px] text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
+              <FitText max={12.5} min={9} group="home-ico" className="w-full whitespace-nowrap text-center font-bold text-[var(--t900)] dark:text-foreground">{d.title}</FitText>
             </motion.button>
           ))}
         </div>
