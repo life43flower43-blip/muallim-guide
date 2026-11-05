@@ -1,4 +1,5 @@
 "use client";
+import { APP_VERSION } from "@/lib/version";
 
 // ============================================================================
 // «حسابي» — منقول من الملف الشخصي في أوريندو
@@ -522,6 +523,8 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           </div>
         </ScreenShell>
       )}
+      {/* رقم الإصدار: يبيّن أي نسخة على الجهاز */}
+      <p className="pt-2 text-center text-[11px] text-muted-foreground">الإصدار {APP_VERSION}</p>
     </div>
   );
 }

@@ -841,5 +841,6 @@ body {
 @keyframes mw-breathe { 0%, 100% { opacity: .25; transform: scale(.98); } 50% { opacity: .6; transform: scale(1.03); } }
 /* عند اللمس يهدأ التأثير */
 .mind-wrap:active::before, .mind-wrap:active::after, .mind-wrap:active .mw-halo { animation-play-state: paused; opacity: 0; transition: opacity .2s; }
-@media (prefers-reduced-motion: reduce) { .mind-wrap::before, .mind-wrap::after { animation: none; opacity: 0; } .mind-wrap .mw-halo { animation: none; } }
+/* تبقى الموجات حتى مع «تقليل الحركة» في الهاتف (يفعّله وضع توفير الطاقة كثيرًا)، لكن أبطأ وأهدأ */
+@media (prefers-reduced-motion: reduce) { .mind-wrap::before, .mind-wrap::after { animation-duration: 4.5s; } .mind-wrap::after { animation-delay: 2.25s; } }
 @media (prefers-reduced-motion: reduce) { .mind-card .mc-line, .mind-card .mc-core { animation: none; stroke-dashoffset: 0; } }
