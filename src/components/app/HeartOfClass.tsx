@@ -12,7 +12,6 @@ import {
   X,
   Heart,
   Lightbulb,
-  ChevronDown,
   RefreshCw,
   Eye,
   HeartHandshake,
@@ -23,9 +22,17 @@ import {
 import { HEART_FAMILIES, SPARKS } from "@/lib/personas";
 import { useUi } from "@/lib/ui-store";
 import { ad } from "@/lib/arabic";
-import { Callout, Card, Divided, PrimaryButton, ScreenShell, SectionHeader } from "./ui-kit";
+import { FitText } from "./FitText";
+import { Callout, Card, PrimaryButton, ScreenShell, SectionHeader } from "./ui-kit";
 
 type Tab = "ladder" | "spark";
+
+// رمز لكل شخصية، وألوان دوائر هادئة كصفحة التدريب
+const P_EMOJI: Record<string, string> = {
+  "silent-afraid": "🤫", "pressured-star": "🏅", bolt: "⚡", chatty: "💬", defiant: "🌪️", explosive: "🌋",
+  dreamer: "☁️", "deep-slow": "🐢", "bored-gifted": "💡", "quiet-artist": "🎨", newcomer: "🧳", withdrawn: "🐚",
+};
+const TONES = ["#E6F4EF", "#FBF3DA"];
 
 const SIGNALS_LABEL = "علامات تلاحظها في الصف";
 const INSIDE_LABEL = "ما يدور في داخله";
@@ -74,31 +81,35 @@ export default function HeartOfClass() {
 
       {tab === "ladder" ? (
         <div className="space-y-6">
-          <p className="text-base leading-7 text-secondary-foreground">
-            ست عائلات من المشاعر تشرح كثيرًا من تصرفات الطلاب. اختر شخصية لترى علاماتها، وما تحتاجه منك، وخطوات عملية للتعامل معها.
-          </p>
           {HEART_FAMILIES.map((f) => (
             <section key={f.id}>
               <SectionHeader title={f.name} sub={f.hint} />
-              <Divided>
-                {f.personas.map((p) => {
+              <div className="grid grid-cols-2 gap-2.5">
+                {f.personas.map((p, k) => {
                   const isOpen = openPersona === p.id;
                   return (
-                    <div key={p.id}>
-                      <button
-                        type="button"
-                        onClick={() => setOpenPersona(isOpen ? null : p.id)}
-                        aria-expanded={isOpen}
-                        className="flex min-h-[56px] w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
-                      >
-                        <span className="min-w-0 flex-1">
-                          <span className="block text-base font-medium">{p.name}</span>
-                          <span className="mt-0.5 block text-sm text-muted-foreground">{p.tag}</span>
-                        </span>
-                        <ChevronDown className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} />
-                      </button>
-                      {isOpen && (
-                        <div className="space-y-5 border-t border-border bg-muted/30 px-4 py-5 text-base leading-7">
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => setOpenPersona(isOpen ? null : p.id)}
+                      aria-expanded={isOpen}
+                      className={`flex min-h-[64px] min-w-0 items-center gap-2 rounded-[26px] border-2 border-b-[5px] bg-white px-2.5 py-2.5 text-right text-foreground transition active:translate-y-[2px] active:border-b-2 dark:bg-card ${isOpen ? "border-[#D4A017] border-b-[#B8860B]" : "border-[#E3EDE8] border-b-[#C9DDD3]"}`}
+                    >
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[24px] leading-none" style={{ background: TONES[k % 2] }} aria-hidden="true">{P_EMOJI[p.id] ?? "🙂"}</span>
+                      <FitText max={14} min={9} className="min-w-0 flex-1 whitespace-nowrap font-extrabold leading-6">{p.name}</FitText>
+                    </button>
+                  );
+                })}
+              </div>
+              {(() => {
+                const p = f.personas.find((x) => x.id === openPersona);
+                const open = !!p;
+                if (!p) return null;
+                return (
+                  <div className="mt-3">
+                      {open && (
+                        <div className="space-y-5 rounded-[22px] border-2 border-[#E3EDE8] bg-white dark:bg-card px-4 py-5 text-base leading-7">
+                          <p className="font-extrabold text-foreground">{p.name}: <span className="font-normal text-secondary-foreground">{p.tag}</span></p>
                           <div>
                             <p className="mb-1.5 flex items-center gap-2 text-sm font-semibold">
                               <Eye className="h-4 w-4 text-foreground" /> {SIGNALS_LABEL}
@@ -154,16 +165,14 @@ export default function HeartOfClass() {
                           </div>
                         </div>
                       )}
-                    </div>
-                  );
-                })}
-              </Divided>
+                  </div>
+                );
+              })()}
             </section>
           ))}
         </div>
       ) : (
         <div className="space-y-5">
-          <p className="text-base leading-7 text-secondary-foreground">فكرة واحدة تكفي لتغيّر حصة كاملة. اطلب شرارة جديدة كلما احتجت فكرة لدرسك.</p>
           <AnimatePresence mode="wait">
             <motion.div key={sparkIdx} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
               <Card className="p-6 text-center">

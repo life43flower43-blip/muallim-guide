@@ -816,6 +816,11 @@ body {
 @keyframes mc-core { 50% { transform: scale(1.15); } }
 /* موجات صغيرة تخرج من المركز وتتلاشى، تجذب إلى النقر */
 .mind-card .mc-wave { transform-box: fill-box; transform-origin: center; opacity: 0; animation: mc-wave 2.4s ease-out infinite; }
-@keyframes mc-wave { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(4.2); opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .mind-card .mc-wave { animation: none; opacity: 0; } }
+@keyframes mc-wave { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3.6); opacity: 0; } }
+/* شريط ضوء ذهبي يعبر البطاقة من اليمين إلى اليسار (إلى الأمام)، والسهم يندفع معه */
+.mind-card .mc-push { background: linear-gradient(270deg, transparent 0%, rgba(243,220,142,.28) 45%, rgba(243,220,142,.5) 50%, rgba(243,220,142,.28) 55%, transparent 100%); background-size: 50% 100%; background-repeat: no-repeat; animation: mc-push 2.4s ease-in-out infinite; }
+@keyframes mc-push { 0% { background-position: 200% 0; } 100% { background-position: -100% 0; } }
+.mind-card .mc-arrow { animation: mc-arrow 1.2s ease-in-out infinite; }
+@keyframes mc-arrow { 0%, 100% { transform: translateX(0); opacity: 1; } 50% { transform: translateX(-6px); opacity: .7; } }
+@media (prefers-reduced-motion: reduce) { .mind-card .mc-push, .mind-card .mc-arrow { animation: none; } .mind-card .mc-wave { animation: none; opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .mind-card .mc-line, .mind-card .mc-core { animation: none; stroke-dashoffset: 0; } }
