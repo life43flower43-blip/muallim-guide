@@ -333,13 +333,16 @@ export default function SimLabView() {
       footer={footer}
     >
       {!finished && !pendingOutcome && (
-        <motion.div key={nodeKey + runId} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+        <motion.div key={nodeKey + runId} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">
             <Chip tone="primary">القرار {ad(decisionNo)}</Chip>
             <Chip>{scenario.stage}</Chip>
           </div>
-          {nodeKey === "start" && <p className="text-[15px] leading-7 text-secondary-foreground">{scenario.intro}</p>}
-          {node && <SceneCard>{node.text}</SceneCard>}
+          {/* نص واحد في بطاقة واحدة: وصف الموقف، وتحته بخط أصغر ما يجري الآن، حتى تبقى الخيارات قريبة */}
+          <SceneCard className="space-y-2 py-3 text-[14.5px] leading-[1.85]">
+            {nodeKey === "start" && <p>{scenario.intro}</p>}
+            {node && <p className={nodeKey === "start" ? "border-t border-[var(--t100)] pt-2 text-[13.5px] font-normal text-secondary-foreground" : ""}>{node.text}</p>}
+          </SceneCard>
           <div>
             <AskHeading>ماذا ستفعل؟</AskHeading>
             <div className="space-y-2.5">

@@ -429,10 +429,10 @@ export function OptionButton({
         onClick={onClick}
         disabled={disabled}
         aria-keyshortcuts={shortcut}
-        className="flex min-w-0 flex-1 items-start gap-2.5 rounded-[16px] px-3.5 py-3 text-right disabled:cursor-default"
+        className="flex min-w-0 flex-1 items-start gap-2.5 rounded-[16px] px-3.5 py-2.5 text-right disabled:cursor-default"
       >
         {letter && <span className={cn("mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[13px] font-extrabold", letterCls)}>{letter}</span>}
-        <span className={cn("flex-1 text-[15px] font-medium leading-7", isStruck && "line-through decoration-2")}>{children}</span>
+        <span className={cn("flex-1 text-[14.5px] font-medium leading-[1.75]", isStruck && "line-through decoration-2")}>{children}</span>
         {/* رمز الصح والخطأ مع اللون، حتى لا يعتمد التمييز على اللون وحده */}
         {state === "correct" && <CircleCheck className="mt-1 h-5 w-5 shrink-0 text-success" aria-label="صحيح" />}
         {state === "wrong" && <CircleX className="mt-1 h-5 w-5 shrink-0 text-destructive" aria-label="خطأ" />}
@@ -466,7 +466,7 @@ export function SceneCard({ children, className }: { children: React.ReactNode; 
 /** عنوان سؤال التفاعل فوق الخيارات */
 export function AskHeading({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-2.5 flex items-center gap-2 text-[15px] font-extrabold text-foreground">
+    <p className="mb-2 flex items-center gap-2 text-[15px] font-extrabold text-foreground">
       <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FBF3DA] text-[13px]" aria-hidden="true">🤔</span>
       {children}
     </p>
