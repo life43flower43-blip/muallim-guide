@@ -103,16 +103,16 @@ export default function NotebookView() {
       <PageTitle title="البوصلة" />
 
       {/* مدخل الخرائط الذهنية المتحركة: بطاقة داكنة مميزة فيها شبكة أفكار تنبض بهدوء */}
+      {/* موجات ذهبية خفيفة تتدفق من حواف البطاقة إلى الخارج */}
+      <div className="mind-wrap relative">
+      <span className="mw-wave" aria-hidden="true" />
+      <span className="mw-wave" style={{ animationDelay: "1.2s" }} aria-hidden="true" />
       <button
         type="button"
         onClick={() => useUi.getState().startMind()}
         className="mind-card relative flex w-full items-center gap-3 overflow-hidden rounded-[24px] bg-[#0B2236] p-3.5 text-right text-white ring-2 ring-[#D4A017] transition active:scale-[0.98]"
       >
         <svg viewBox="0 0 64 64" className="h-16 w-16 shrink-0 overflow-visible" aria-hidden="true">
-          {/* موجات ذهبية تتدفق من المركز إلى الخارج */}
-          <circle className="mc-wave" cx="32" cy="32" r="9" fill="none" stroke="#F3DC8E" strokeWidth="2.6" />
-          <circle className="mc-wave" cx="32" cy="32" r="9" fill="none" stroke="#F3DC8E" strokeWidth="2.6" style={{ animationDelay: ".8s" }} />
-          <circle className="mc-wave" cx="32" cy="32" r="9" fill="none" stroke="#F3DC8E" strokeWidth="2.6" style={{ animationDelay: "1.6s" }} />
           <g stroke="#D4A017" strokeWidth="2" strokeLinecap="round" opacity="0.85">
             <path className="mc-line" d="M32 32 L12 14" /><path className="mc-line" d="M32 32 L54 16" style={{ animationDelay: ".3s" }} />
             <path className="mc-line" d="M32 32 L10 46" style={{ animationDelay: ".6s" }} /><path className="mc-line" d="M32 32 L52 50" style={{ animationDelay: ".9s" }} />
@@ -132,6 +132,7 @@ export default function NotebookView() {
         <span className="mc-push pointer-events-none absolute inset-0" aria-hidden="true" />
         <ChevronLeft className="mc-arrow h-6 w-6 shrink-0 text-[#F3DC8E]" strokeWidth={3} aria-hidden="true" />
       </button>
+      </div>
 
       {current ? (
         <div className="space-y-4">
