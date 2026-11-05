@@ -85,14 +85,8 @@ const DOOR_ICON: Record<string, React.ElementType> = {
   "طرائق التدريس": Shapes,
   "خطة الدرس": NotebookPen,
 };
-const DOOR_BG: Record<string, string> = {
-  "اختبر نفسك": "#0E7F74",
-  "المفاهيم التربوية": "#E08E00",
-  "المواقف الصفية": "#2458D6",
-  "مهارات التدريس": "#0A8FC2",
-  "طرائق التدريس": "#B8860B",
-  "خطة الدرس": "#0F9A62",
-};
+// الألوان حسب الموضع لا حسب القسم، فلا يتجاور لونان متقاربان مهما تغيّر الترتيب حسب الهدف
+const POS_BG = ["#0E7F74", "#E08E00", "#2458D6", "#0A8FC2", "#B8860B", "#0F9A62"];
 
 
 export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
@@ -304,7 +298,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         <div ref={gridRef} className="grid grid-cols-4 gap-x-2 gap-y-5 pt-2">
           {[
             { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "#E23B2E", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
-            ...gridDoors.map((d) => ({ title: d.title, icon: DOOR_ICON[d.title] ?? BookOpen, bg: DOOR_BG[d.title] ?? "#279488", run: d.run })),
+            ...gridDoors.map((d, k) => ({ title: d.title, icon: DOOR_ICON[d.title] ?? BookOpen, bg: POS_BG[k] ?? "#279488", run: d.run })),
             { title: "البوصلة", icon: Compass, bg: "#E2620F", run: () => onGoTab("notebook") },
           ].map((d, i) => (
             <motion.button

@@ -25,7 +25,7 @@ import {
 } from "@/lib/lab";
 import { conceptById, questionById, OPTION_LETTERS } from "@/lib/qbank";
 import { ad } from "@/lib/arabic";
-import { Callout, Card, Chip, Divided, EmptyState, IconTile, OptionButton, PrimaryButton, ScreenShell, SectionHeader, ToolTiles } from "./ui-kit";
+import { Callout, Card, Chip, Divided, EmptyState, IconTile, OptionButton, PrimaryButton, ScreenShell, SectionHeader, ToolTiles, GameTile } from "./ui-kit";
 
 type LabTab = "list" | "exam" | "map" | "mirror";
 
@@ -297,27 +297,9 @@ export default function LabView() {
     </div>
   );
 
-  const scenarioRow = (s: LabScenario, asExam: boolean) => {
-    const st = lastStatusOf(s.id);
-    return (
-      <button
-        key={s.id}
-        type="button"
-        onClick={() => startScenario(s, asExam)}
-        className="flex w-full min-w-0 items-center gap-3 px-4 py-3.5 text-right transition-colors hover:bg-muted/60"
-      >
-        <IconTile icon={asExam ? ShieldCheck : FlaskConical} />
-        <span className="min-w-0 flex-1">
-          <FitText max={17} min={12} className="font-bold leading-7">{s.title}</FitText>
-          <span className="mt-1.5 flex min-w-0 items-start gap-1.5 rounded-[12px] bg-[var(--t050)] px-2.5 py-1 text-muted-foreground">
-            <span className="flex-1 text-[13px] font-medium leading-5">{(asExam ? [s.stage] : [s.skill, s.stage]).join(" · ")}</span>
-            {st && <span className="shrink-0 rounded-full bg-[var(--t100)] px-2 text-[11px] font-bold leading-5 text-foreground">{st}</span>}
-          </span>
-        </span>
-        <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C]" />
-      </button>
-    );
-  };
+  const scenarioRow = (s: LabScenario, asExam: boolean, k = 0) => (
+    <GameTile key={s.id} tone={k} emoji={asExam ? "🛡️" : "🧪"} title={s.title} meta={lastStatusOf(s.id) || undefined} onClick={() => startScenario(s, asExam)} />
+  );
 
   const mirrorList = [...labAttempts].sort((a, b) => b.ts - a.ts);
 
@@ -333,7 +315,7 @@ export default function LabView() {
               { icon: Ruler, title: "أدوات القياس", onClick: () => { clearLab(); useUi.getState().startMeasure(); } },
             ]}
           />
-          <Divided>{LAB_SCENARIOS.map((s) => scenarioRow(s, false))}</Divided>
+          <div className="space-y-2.5">{LAB_SCENARIOS.map((s, k) => scenarioRow(s, false, k))}</div>
         </div>
       )}
 
@@ -342,7 +324,7 @@ export default function LabView() {
           <Callout tone="info" icon={ShieldCheck} title="مواقف جديدة بلا تلميح">
             لم تتدرّب عليها من قبل. لا يظهر تقييم أثناء القرار، والتحليل الكامل في النهاية. نتيجتك هنا هي دليل استقلالك المهني في خريطة الكفاءات.
           </Callout>
-          <Divided>{LAB_EXAM_SCENARIOS.map((s) => scenarioRow(s, true))}</Divided>
+          <div className="space-y-2.5">{LAB_EXAM_SCENARIOS.map((s, k) => scenarioRow(s, true, k))}</div>
         </div>
       )}
 
