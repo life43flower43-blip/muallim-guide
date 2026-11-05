@@ -15,7 +15,7 @@ import { useUi } from "@/lib/ui-store";
 import { ad } from "@/lib/arabic";
 import { shareText } from "@/lib/share";
 import { toast } from "@/hooks/use-toast";
-import { Callout, Card, Chip, Divided, ListRow, OptionButton, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader } from "./ui-kit";
+import { Callout, Card, Chip, Divided, GameTile, ListRow, OptionButton, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader } from "./ui-kit";
 
 const LETTERS = ["أ", "ب", "ج", "د", "هـ"];
 
@@ -182,13 +182,10 @@ export default function PeerChallenge() {
     return (
       <ScreenShell title="تحدّي الأقران" sub="نافس زميلك على الأسئلة نفسها" onClose={clearPeer}>
         <div className="space-y-6">
-          <p className="text-base leading-7 text-secondary-foreground">
-            الدرس يثبت أكثر حين تنافس فيه زميلك. أنشئ تحديًا من أسئلة البنك وشارك رابطه، فيجيب زميلك عن الأسئلة نفسها وتقارنان النتيجة. كل شيء ينتقل في الرابط نفسه.
-          </p>
-          <Divided>
-            <ListRow icon={Swords} title="أنشئ تحديًا وشاركه" sub="اختر المحور وعدد الأسئلة، حلّها، ثم أرسل الرابط" onClick={() => setScreen("create")} />
-            <ListRow icon={ClipboardPaste} title="وصلني رابط تحدٍّ" sub="ألصق الرابط الذي أرسله زميلك وابدأ" onClick={() => setScreen("paste")} />
-          </Divided>
+          <div className="grid grid-cols-2 gap-2.5">
+            <GameTile tone={3} emoji="⚔️" title="أنشئ تحديًا" onClick={() => setScreen("create")} />
+            <GameTile tone={2} emoji="🔗" title="وصلني رابط" onClick={() => setScreen("paste")} />
+          </div>
         </div>
       </ScreenShell>
     );

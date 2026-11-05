@@ -28,7 +28,7 @@ import { FitText } from "./FitText";
 import { parseScores, parseSingle, statsOf, difficultyOf, discriminationOf, weightOf } from "@/lib/measure";
 import { useUi } from "@/lib/ui-store";
 import { ad } from "@/lib/arabic";
-import { Callout, IconTile, ScreenShell, SectionHeader } from "./ui-kit";
+import { Callout, GameTile, IconTile, ScreenShell, SectionHeader } from "./ui-kit";
 
 type ToolId = "blueprint" | "rubric" | "checklist" | "stats" | "difficulty" | "discrim" | "distractor" | "weight" | "zscore" | "reliability";
 
@@ -48,26 +48,8 @@ const ANALYZE_TOOLS: ToolDef[] = [
   { id: "reliability", label: "ثبات الاختبار", icon: ShieldCheck, desc: "هل نتائج اختبارك متسقة؟" },
 ];
 const TOOLS = [...BUILD_TOOLS, ...ANALYZE_TOOLS];
+const TOOL_EMOJI: Record<ToolId, string> = {"blueprint": "🗂️", "rubric": "🪜", "checklist": "✅", "stats": "📊", "difficulty": "🧗", "discrim": "🔍", "distractor": "🎭", "weight": "⚖️", "zscore": "📈", "reliability": "🔒"};
 
-function ToolRow({ t, onClick }: { t: ToolDef; onClick: () => void }) {
-  const Icon = t.icon;
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[var(--t075)] bg-white p-3 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
-    >
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#FBF3DA] text-[#C9971C]">
-        <Icon className="h-5 w-5" />
-      </span>
-      <span className="min-w-0 flex-1">
-        <FitText max={16} min={12} className="font-bold leading-7">{t.label}</FitText>
-        <FitText max={13} min={9} className="leading-5 text-muted-foreground">{t.desc}</FitText>
-      </span>
-      <ChevronLeft className="h-5 w-5 shrink-0 text-[#C9971C]" />
-    </button>
-  );
-}
 
 // نسبة مئوية بأرقام مشرقية وعلامة ٪
 const pct = (v: number) => `${ad(Math.round(v * 100))}٪`;
@@ -109,14 +91,14 @@ export default function MeasureKit() {
         <div className="space-y-6">
           <section>
             <SectionHeader title="بناء أدوات التقويم" />
-            <div className="space-y-2.5">
-              {BUILD_TOOLS.map((t) => <ToolRow key={t.id} t={t} onClick={() => setTool(t.id)} />)}
+            <div className="grid grid-cols-2 gap-2.5">
+              {BUILD_TOOLS.map((t, k) => <GameTile key={t.id} tone={k} emoji={TOOL_EMOJI[t.id]} title={t.label} onClick={() => setTool(t.id)} />)}
             </div>
           </section>
           <section>
             <SectionHeader title="تحليل النتائج" />
-            <div className="space-y-2.5">
-              {ANALYZE_TOOLS.map((t) => <ToolRow key={t.id} t={t} onClick={() => setTool(t.id)} />)}
+            <div className="grid grid-cols-2 gap-2.5">
+              {ANALYZE_TOOLS.map((t, k) => <GameTile key={t.id} tone={k + 3} emoji={TOOL_EMOJI[t.id]} title={t.label} onClick={() => setTool(t.id)} />)}
             </div>
           </section>
           <p className="text-center text-xs text-muted-foreground">الحساب كله على جهازك، ولا تُرسل الدرجات إلى أي مكان.</p>
