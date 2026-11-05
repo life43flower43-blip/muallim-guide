@@ -108,7 +108,11 @@ export default function NotebookView() {
         onClick={() => useUi.getState().startMind()}
         className="mind-card relative flex w-full items-center gap-3 overflow-hidden rounded-[24px] bg-[#0B2236] p-3.5 text-right text-white ring-2 ring-[#D4A017] transition active:scale-[0.98]"
       >
-        <svg viewBox="0 0 64 64" className="h-16 w-16 shrink-0" aria-hidden="true">
+        <svg viewBox="0 0 64 64" className="h-16 w-16 shrink-0 overflow-visible" aria-hidden="true">
+          {/* موجات ذهبية تتدفق من المركز إلى الخارج */}
+          <circle className="mc-wave" cx="32" cy="32" r="9" fill="none" stroke="#F3DC8E" strokeWidth="1.6" />
+          <circle className="mc-wave" cx="32" cy="32" r="9" fill="none" stroke="#F3DC8E" strokeWidth="1.6" style={{ animationDelay: ".8s" }} />
+          <circle className="mc-wave" cx="32" cy="32" r="9" fill="none" stroke="#F3DC8E" strokeWidth="1.6" style={{ animationDelay: "1.6s" }} />
           <g stroke="#D4A017" strokeWidth="2" strokeLinecap="round" opacity="0.85">
             <path className="mc-line" d="M32 32 L12 14" /><path className="mc-line" d="M32 32 L54 16" style={{ animationDelay: ".3s" }} />
             <path className="mc-line" d="M32 32 L10 46" style={{ animationDelay: ".6s" }} /><path className="mc-line" d="M32 32 L52 50" style={{ animationDelay: ".9s" }} />
