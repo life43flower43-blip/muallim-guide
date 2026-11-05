@@ -511,21 +511,52 @@ export function HeaderArt() {
 }
 
 /** أدوات مرتبطة داخل القسم: مربعات صغيرة متساوية برمز ذهبي واسم في سطر واحد */
-export function ToolTiles({ items }: { items: { icon: React.ElementType; title: string; onClick: () => void }[] }) {
+// ألوان دوائر البطاقات (مثل صفحة التدريب): خلفية فاتحة ورمز بلون أغمق
+export const TILE_TONES = [
+  { bg: "#E6F4EF", fg: "#136F5C" },
+  { bg: "#FBF3DA", fg: "#B8860B" },
+  { bg: "#E3F1FB", fg: "#1F6FA8" },
+  { bg: "#FDECE4", fg: "#C2562B" },
+  { bg: "#E8F6F6", fg: "#0F8A8A" },
+  { bg: "#EEF1FB", fg: "#3A55A4" },
+];
+
+/** بطاقة بأسلوب صفحة التدريب: رمز في دائرة ملونة، والعنوان في سطر واحد، وحافة سفلية بارزة */
+export function GameTile({ emoji, icon: Icon, title, tone = 0, meta, progress, active, onClick, className }: {
+  emoji?: string; icon?: React.ElementType; title: string; tone?: number; meta?: string; progress?: number; active?: boolean; onClick: () => void; className?: string;
+}) {
+  const t = TILE_TONES[tone % TILE_TONES.length];
   return (
-    <div className={cn("grid gap-2.5", items.length === 3 ? "grid-cols-3" : "grid-cols-2")}>
-      {items.map((t) => (
-        <button
-          key={t.title}
-          type="button"
-          onClick={t.onClick}
-          className="flex min-h-[64px] min-w-0 items-center gap-2.5 rounded-[20px] border border-[var(--t075)] bg-white px-3 text-right transition active:scale-[0.97] max-[359px]:flex-col max-[359px]:justify-center max-[359px]:gap-1.5 max-[359px]:py-2.5 max-[359px]:text-center dark:border-border dark:bg-card"
-        >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FBF3DA] text-[#C9971C]">
-            <t.icon className="h-[18px] w-[18px]" strokeWidth={2} />
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "relative flex min-h-[64px] w-full min-w-0 items-center gap-2 rounded-[26px] border-2 border-b-[5px] bg-white px-2.5 py-2.5 text-right text-foreground transition active:translate-y-[2px] active:border-b-2 dark:border-border dark:bg-card dark:text-foreground",
+        active ? "border-[#D4A017] border-b-[#B8860B]" : "border-[#E3EDE8] border-b-[#C9DDD3]",
+        className,
+      )}
+    >
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[24px] leading-none" style={{ background: t.bg, color: t.fg }} aria-hidden="true">
+        {emoji ?? (Icon ? <Icon className="h-5 w-5" strokeWidth={2.2} /> : null)}
+      </span>
+      <span className="min-w-0 flex-1">
+        <FitText max={14.5} min={9} className="w-full whitespace-nowrap font-extrabold leading-6">{title}</FitText>
+        {progress !== undefined && (
+          <span className="mt-1 block h-1.5 overflow-hidden rounded-full bg-[#EEF3F1] dark:bg-muted" aria-hidden="true">
+            <span className="block h-full rounded-full" style={{ width: `${progress > 0 ? Math.max(4, progress * 100) : 0}%`, background: t.fg }} />
           </span>
-          <FitText max={15} min={10} className="w-full flex-1 font-bold max-[359px]:flex-none">{t.title}</FitText>
-        </button>
+        )}
+      </span>
+      {meta && <span className="absolute left-3 top-1.5 rounded-full bg-[var(--t100)] px-1.5 text-[10px] font-bold leading-4 text-foreground">{meta}</span>}
+    </button>
+  );
+}
+
+export function ToolTiles({ items }: { items: { icon: React.ElementType; emoji?: string; title: string; onClick: () => void }[] }) {
+  return (
+    <div className="grid grid-cols-2 gap-2.5">
+      {items.map((t, k) => (
+        <GameTile key={t.title} tone={k + 1} icon={t.icon} emoji={t.emoji} title={t.title} onClick={t.onClick} className={items.length % 2 && k === items.length - 1 ? "col-span-2" : undefined} />
       ))}
     </div>
   );

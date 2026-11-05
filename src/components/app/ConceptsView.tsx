@@ -52,7 +52,13 @@ import { ConceptDiagram } from "./Diagrams";
 import { referencesFor } from "@/lib/references";
 import { ad, arCount, CONCEPT_FORMS, CHAPTER_FORMS, QUESTION_FORMS, splitArParagraphs, splitReason, exampleContext } from "@/lib/arabic";
 import { toast } from "@/hooks/use-toast";
-import { Card, Chip, Divided, EmptyState, MasteryBar, MasteryDot, MasteryLegend, OptionButton, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, Stars, pct, ToolTiles } from "./ui-kit";
+import { Card, Chip, Divided, EmptyState, MasteryBar, MasteryDot, MasteryLegend, OptionButton, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, Stars, pct, ToolTiles, GameTile } from "./ui-kit";
+
+const COURSE_EMOJI: Record<string, string> = {
+  M1: "🌱", M2: "🧠", M3: "💡", M4: "📊", M5: "🧑‍🏫", SE1: "🤝",
+  F1: "🏛️", AI1: "🤖", G1: "📚", C1: "🛠️", L1: "🧭", R1: "🧩",
+};
+const CHAPTER_EMOJI = ["📗", "📘", "📙", "📕", "📓", "📔"];
 
 // أيقونة كل محور
 const COURSE_ICONS: Record<string, React.ElementType> = {
@@ -699,31 +705,14 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
 
         <section className="lg:order-1">
           <SectionHeader title="الفصول" sub={`${arCount(questionsOfCourse(courseId).length, QUESTION_FORMS)} في بنك المحور`} />
-          <Divided>
+          <div className="space-y-2.5">
             {chapters.map((ch, i) => {
               const cs = all.filter((c) => c.chapter === ch);
               const r = cs.filter((c) => conceptReads[c.id]).length;
-              const m = chapterMastery(courseId, ch, attempts);
               const done = cs.length > 0 && r === cs.length;
-              return (
-                <button
-                  key={ch}
-                  type="button"
-                  onClick={() => onChapter(ch)}
-                  className="flex min-h-[64px] w-full min-w-0 items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
-                >
-                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${done ? "bg-[#D4A017] text-white" : "bg-[var(--t100)] text-foreground"}`}>
-                    {done ? <CheckCircle2 className="h-5 w-5" /> : <BookOpen className="h-4 w-4" />}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <FitText max={18} min={12} className="font-bold leading-7">{chapterLabel(ch)}</FitText>
-                    <MasteryBar counts={m} height={5} className="mt-1.5 max-w-[220px]" />
-                  </span>
-                  <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C]" />
-                </button>
-              );
+              return <GameTile key={ch} tone={i} emoji={done ? "✅" : CHAPTER_EMOJI[i % CHAPTER_EMOJI.length]} title={chapterLabel(ch)} progress={cs.length ? r / cs.length : 0} onClick={() => onChapter(ch)} />;
             })}
-          </Divided>
+          </div>
         </section>
       </div>
     </ScreenShell>
@@ -869,24 +858,11 @@ export default function ConceptsView() {
 
           <ToolTiles
             items={[
-              { icon: Layers, title: "البطاقات", onClick: () => useUi.getState().startFlash() },
-              { icon: Puzzle, title: "التحديات", onClick: () => useUi.getState().startChallenges() },
+              { icon: Layers, emoji: "🃏", title: "البطاقات", onClick: () => useUi.getState().startFlash() },
+              { icon: Puzzle, emoji: "🧩", title: "التحديات", onClick: () => useUi.getState().startChallenges() },
+              { icon: Puzzle, emoji: "❌", title: "مفاهيم خاطئة شائعة", onClick: () => useUi.getState().startMyths() },
             ]}
           />
-
-          {/* مفاهيم خاطئة شائعة: صحيحة أم خاطئة؟ */}
-          <button
-            type="button"
-            onClick={() => useUi.getState().startMyths()}
-            className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[var(--t075)] bg-white p-3 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
-          >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-danger-soft text-base font-extrabold text-destructive" aria-hidden="true">✗✓</span>
-            <span className="min-w-0 flex-1">
-              <FitText max={16} min={11} className="font-bold leading-7">مفاهيم خاطئة شائعة</FitText>
-              <FitText max={13} min={9} className="leading-5 text-muted-foreground">صحيحة أم خاطئة؟ مع التصحيح</FitText>
-            </span>
-            <ChevronLeft className="h-5 w-5 shrink-0 text-[#C9971C]" />
-          </button>
 
           {/* المحاور: قائمة موحّدة، لكل محور اسمه في سطر واحد ووصفه وتقدّمه */}
           <section>
@@ -894,33 +870,22 @@ export default function ConceptsView() {
               title="المحاور"
               action={<span className="shrink-0 text-sm font-bold text-muted-foreground">قرأت {ad(totalRead)} من {ad(CONCEPTS.length)}</span>}
             />
-            <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }} className="grid gap-2.5 sm:grid-cols-2">
-              {COURSES.map((course) => {
+            <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }} className="grid grid-cols-2 gap-2.5">
+              {COURSES.map((course, k) => {
                 const cs = conceptsOfCourse(course.id);
                 const readCount = cs.filter((cc) => conceptReads[cc.id]).length;
-                const color = COURSE_COLOR[course.id] ?? "var(--primary)";
                 return (
-                  <button
+                  <GameTile
                     key={course.id}
-                    type="button"
+                    tone={k}
+                    emoji={COURSE_EMOJI[course.id] ?? "📚"}
+                    title={COURSE_SHORT[course.id] ?? course.name}
+                    progress={cs.length ? readCount / cs.length : 0}
                     onClick={() => {
                       setOpenCourseId(course.id);
                       setOpenChapter(null);
                     }}
-                    className="flex min-w-0 items-center gap-2.5 rounded-[22px] border border-[var(--t075)] bg-white p-3 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
-                  >
-                    <CourseBadge id={course.id} size={40} />
-                    <span className="min-w-0 flex-1">
-                      <FitText max={16} min={10} className="font-bold leading-7">{course.name}</FitText>
-                      {COURSE_SUBTITLE[course.id] && <FitText max={13} min={9} className="leading-5 text-muted-foreground">{COURSE_SUBTITLE[course.id]}</FitText>}
-                      <span className="mt-2 flex items-center gap-2">
-                        <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--t075)] dark:bg-muted">
-                          <span className="block h-full rounded-full" style={{ width: `${cs.length && readCount ? Math.max(3, (readCount / cs.length) * 100) : 0}%`, background: color }} />
-                        </span>
-                        <span className="shrink-0 text-xs font-bold text-muted-foreground">{ad(readCount)} من {ad(cs.length)}</span>
-                      </span>
-                    </span>
-                  </button>
+                  />
                 );
               })}
             </motion.div>

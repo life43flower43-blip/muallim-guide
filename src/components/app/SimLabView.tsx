@@ -27,8 +27,10 @@ import {
   type SimSkillScore,
 } from "@/lib/sim";
 import { LAB_ALL, isExamScenario } from "@/lib/lab";
-import { Callout, Card, Chip, Divided, IconTile, OptionButton, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, SkillBar, ToolTiles } from "./ui-kit";
+import { Callout, Card, Chip, Divided, IconTile, OptionButton, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, SkillBar, ToolTiles, GameTile } from "./ui-kit";
 import { conceptById, OPTION_LETTERS } from "@/lib/qbank";
+
+const STAGE_EMOJI: Record<string, string> = { "الروضة": "🧸", "الابتدائي": "🎒", "المتوسط": "📘", "الثانوي": "🎓" };
 
 const ratingIcon: Record<SimRating, typeof CheckCircle2> = {
   good: CheckCircle2,
@@ -255,8 +257,8 @@ export default function SimLabView() {
 
           <ToolTiles
             items={[
-              { icon: Zap, title: "مواقف سريعة", onClick: () => { clearSim(); useUi.getState().startScenarios(); } },
-              { icon: Heart, title: "قلب الصف", onClick: () => { clearSim(); useUi.getState().startHeart(); } },
+              { icon: Zap, emoji: "⚡", title: "مواقف سريعة", onClick: () => { clearSim(); useUi.getState().startScenarios(); } },
+              { icon: Heart, emoji: "💗", title: "قلب الصف", onClick: () => { clearSim(); useUi.getState().startHeart(); } },
             ]}
           />
 
@@ -286,25 +288,9 @@ export default function SimLabView() {
               ))}
             </div>
             <div className="space-y-2.5">
-              {shown.map((x) => {
+              {shown.map((x, k) => {
                 const st = lastStatusOf(x.id);
-                return (
-                  <button
-                    key={x.id}
-                    type="button"
-                    onClick={() => startScenario(x)}
-                    className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[var(--t075)] bg-white p-3 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
-                  >
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[var(--t050)] text-foreground">
-                      <Users className="h-5 w-5" />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <FitText max={16} min={11} className="font-bold leading-7">{x.title}</FitText>
-                      <FitText max={13} min={9} className="leading-5 text-muted-foreground">{[levelOf(x.stage), ...x.skills.slice(0, 2)].join(" · ")}</FitText>
-                    </span>
-                    {st && <span className={`shrink-0 rounded-full px-2.5 text-xs font-bold leading-6 ${st.cls}`}>{st.word}</span>}
-                  </button>
-                );
+                return <GameTile key={x.id} tone={k} emoji={STAGE_EMOJI[levelOf(x.stage)] ?? "🏫"} title={x.title} meta={st?.word} onClick={() => startScenario(x)} />;
               })}
             </div>
           </section>

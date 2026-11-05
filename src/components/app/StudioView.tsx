@@ -41,7 +41,7 @@ import { shareText } from "@/lib/share";
 import { toast } from "@/hooks/use-toast";
 import { ad } from "@/lib/arabic";
 import { MODEL_PLANS, type ModelPlan } from "@/lib/model-plans";
-import { Callout, Card, Chip, Divided, EmptyState, IconTile, PrimaryButton, ScreenShell, SecondaryButton, SectionHeader } from "./ui-kit";
+import { Callout, Card, Chip, Divided, EmptyState, IconTile, PrimaryButton, ScreenShell, SecondaryButton, SectionHeader, GameTile } from "./ui-kit";
 import {
   DURATION_OPTIONS,
   STRATEGY_OPTIONS,
@@ -55,6 +55,8 @@ import {
   type PlanCheckStatus,
   type PlanReview,
 } from "@/lib/plans";
+
+const SUBJECT_EMOJI: Record<string, string> = { "اللغة العربية": "📖", "الرياضيات": "➗", "العلوم": "🔬", "الاجتماعيات": "🌍", "الدراسات الاجتماعية": "🌍", "اللغة الإنجليزية": "🔤", "التربية الإسلامية": "🕌", "الدراسات الإسلامية": "🕌", "الحاسب والتقنية": "💻", "رياض الأطفال": "🧸", "التربية الفنية": "🎨" };
 
 type StudioTab = "new" | "templates" | "mine";
 type FormPlan = Omit<LessonPlan, "id" | "ts">;
@@ -522,22 +524,8 @@ export default function StudioView() {
             ))}
           </div>
           <div className="space-y-2.5">
-            {MODEL_PLANS.filter((m) => subjectFilter === "الكل" || m.form.subject === subjectFilter).map((m) => (
-              <button
-                key={m.id}
-                type="button"
-                onClick={() => setPreview(m)}
-                className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[var(--t075)] bg-white p-3.5 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
-              >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#FBF3DA] text-[#C9971C]">
-                  <NotebookPen className="h-5 w-5" />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <FitText max={16} min={11} className="font-bold leading-7">{m.form.topic}</FitText>
-                  <FitText max={13} min={9} className="leading-5 text-muted-foreground">{`${m.form.subject} · ${m.form.grade}`}</FitText>
-                  <FitText max={12} min={9} className="mt-1 leading-5 text-foreground">{m.form.strategies.join(" · ")}</FitText>
-                </span>
-              </button>
+            {MODEL_PLANS.filter((m) => subjectFilter === "الكل" || m.form.subject === subjectFilter).map((m, k) => (
+              <GameTile key={m.id} tone={k} emoji={SUBJECT_EMOJI[m.form.subject] ?? "📝"} title={m.form.topic} onClick={() => setPreview(m)} />
             ))}
           </div>
         </div>
@@ -549,30 +537,11 @@ export default function StudioView() {
           action={<PrimaryButton onClick={() => setTab("templates")}>الخطط الجاهزة</PrimaryButton>}
         />
       ) : (
-        <Divided>
-          {lessonPlans.map((p) => (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => {
-                setSelected(p);
-                setConfirmDel(null);
-              }}
-              className="flex w-full items-start gap-3 px-4 py-4 text-right transition-colors hover:bg-muted/60"
-            >
-              <IconTile icon={FileText} />
-              <span className="min-w-0 flex-1">
-                <span className="block text-base font-medium leading-6">{p.topic}</span>
-                <span className="mt-2 flex flex-wrap gap-1.5">
-                  {p.subject && <Chip tone="primary">{p.subject}</Chip>}
-                  {p.grade && <Chip>{p.grade}</Chip>}
-                  <Chip>{planMaturityWord(p)}</Chip>
-                </span>
-              </span>
-              <ChevronLeft className="mt-2 h-4 w-4 shrink-0 text-[#C9971C]" />
-            </button>
+        <div className="space-y-2.5">
+          {lessonPlans.map((p, k) => (
+            <GameTile key={p.id} tone={k} emoji={SUBJECT_EMOJI[p.subject ?? ""] ?? "📄"} title={p.topic} meta={planMaturityWord(p)} onClick={() => { setSelected(p); setConfirmDel(null); }} />
           ))}
-        </Divided>
+        </div>
       )}
     </ScreenShell>
   );
