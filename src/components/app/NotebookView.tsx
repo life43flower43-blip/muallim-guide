@@ -110,9 +110,9 @@ export default function NotebookView() {
       <button
         type="button"
         onClick={() => useUi.getState().startMind()}
-        className="mind-card relative flex w-full items-center gap-3 overflow-hidden rounded-[24px] bg-[#0B2236] p-3.5 text-right text-white ring-2 ring-[#D4A017] transition active:scale-[0.98]"
+        className="mind-card relative flex w-full items-center gap-3 overflow-hidden rounded-[20px] bg-[#0B2236] px-3 py-2.5 text-right text-white ring-2 ring-[#D4A017] transition active:scale-[0.98]"
       >
-        <svg viewBox="0 0 64 64" className="h-16 w-16 shrink-0 overflow-visible" aria-hidden="true">
+        <svg viewBox="0 0 64 64" className="h-11 w-11 shrink-0 overflow-visible" aria-hidden="true">
           <g stroke="#D4A017" strokeWidth="2" strokeLinecap="round" opacity="0.85">
             <path className="mc-line" d="M32 32 L12 14" /><path className="mc-line" d="M32 32 L54 16" style={{ animationDelay: ".3s" }} />
             <path className="mc-line" d="M32 32 L10 46" style={{ animationDelay: ".6s" }} /><path className="mc-line" d="M32 32 L52 50" style={{ animationDelay: ".9s" }} />
@@ -125,8 +125,8 @@ export default function NotebookView() {
           </defs>
         </svg>
         <span className="min-w-0 flex-1">
-          <FitText max={18} min={12} className="font-extrabold leading-7 text-white">الخرائط الذهنية المتحركة</FitText>
-          <FitText max={13} min={10} className="leading-6 text-[#FCEBB6]">إحدى عشرة خريطة · مشاهد قصيرة · تدريب مباشر</FitText>
+          <FitText max={16} min={12} className="font-extrabold leading-6 text-white">الخرائط الذهنية المتحركة</FitText>
+          <FitText max={12} min={9} className="leading-5 text-[#FCEBB6]">إحدى عشرة خريطة · مشاهد قصيرة · تدريب مباشر</FitText>
         </span>
         {/* موجات طاقة تندفع إلى الأمام نحو السهم */}
         <span className="mc-push pointer-events-none absolute inset-0" aria-hidden="true" />
