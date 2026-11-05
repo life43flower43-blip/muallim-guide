@@ -814,4 +814,8 @@ body {
 @keyframes mc-line { 0% { stroke-dashoffset: 40; } 30%, 80% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -40; } }
 .mind-card .mc-core { transform-box: fill-box; transform-origin: center; animation: mc-core 2s ease-in-out infinite; }
 @keyframes mc-core { 50% { transform: scale(1.15); } }
+/* موجات صغيرة تخرج من المركز وتتلاشى، تجذب إلى النقر */
+.mind-card .mc-wave { transform-box: fill-box; transform-origin: center; opacity: 0; animation: mc-wave 2.4s ease-out infinite; }
+@keyframes mc-wave { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(4.2); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .mind-card .mc-wave { animation: none; opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .mind-card .mc-line, .mind-card .mc-core { animation: none; stroke-dashoffset: 0; } }
