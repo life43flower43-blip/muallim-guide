@@ -1,4 +1,5 @@
 "use client";
+import { pickEmojis } from "@/lib/emoji-pick";
 
 // ============================================================================
 // التعلّم — محور ← فصل ← مفهوم
@@ -58,7 +59,6 @@ const COURSE_EMOJI: Record<string, string> = {
   M1: "🌱", M2: "🧠", M3: "💡", M4: "📊", M5: "🧑‍🏫", SE1: "🤝",
   F1: "🏛️", AI1: "🤖", G1: "📚", C1: "🛠️", L1: "🧭", R1: "🧩",
 };
-const CHAPTER_EMOJI = ["📗", "📘", "📙", "📕", "📓", "📔"];
 
 // أيقونة كل محور
 const COURSE_ICONS: Record<string, React.ElementType> = {
@@ -298,7 +298,7 @@ function ChapterOutline({ concepts, currentId, onPick }: { concepts: Concept[]; 
   const conceptReads = useApp((s) => s.conceptReads);
   const read = concepts.filter((c) => conceptReads[c.id]).length;
   return (
-    <nav aria-label="مفاهيم الفصل" className="sticky top-0">
+    <nav aria-label="مفاهيم المحطة" className="sticky top-0">
       <p className="text-xs font-medium text-muted-foreground">
         أكملت {ad(read)} من {ad(concepts.length)}
       </p>
@@ -378,7 +378,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
     setLastStudy(c.courseId, c.chapter);
     startQuiz({
       mode: "training",
-      label: `اختبار الفصل: ${chapterLabel(c.chapter)}`,
+      label: `اختبار المحطة: ${chapterLabel(c.chapter)}`,
       qids: chapterSession(c.courseId, c.chapter, attempts),
       topicKey: topicKey(c.courseId, c.chapter),
     });
@@ -425,7 +425,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
             </PrimaryButton>
           ) : (
             <PrimaryButton onClick={chapterQuiz} className="flex-1 sm:flex-none">
-              <ClipboardCheck className="h-4 w-4" /> أكملت الفصل، اختبر نفسك
+              <ClipboardCheck className="h-4 w-4" /> أكملت المحطة، اختبر نفسك
             </PrimaryButton>
           )}
         </>
@@ -559,7 +559,7 @@ function ChapterPage({ courseId, chapter, onBack, onOpen }: { courseId: string; 
 
   const quiz = () => {
     setLastStudy(courseId, chapter);
-    startQuiz({ mode: "training", label: `اختبار الفصل: ${chapterLabel(chapter)}`, qids: chapterSession(courseId, chapter, attempts), topicKey: topicKey(courseId, chapter) });
+    startQuiz({ mode: "training", label: `اختبار المحطة: ${chapterLabel(chapter)}`, qids: chapterSession(courseId, chapter, attempts), topicKey: topicKey(courseId, chapter) });
   };
 
   return (
@@ -571,7 +571,7 @@ function ChapterPage({ courseId, chapter, onBack, onOpen }: { courseId: string; 
       footer={
         <>
           <SecondaryButton onClick={quiz} className="flex-1 sm:flex-none">
-            <ClipboardCheck className="h-4 w-4" /> اختبار الفصل
+            <ClipboardCheck className="h-4 w-4" /> اختبار المحطة
           </SecondaryButton>
           <PrimaryButton onClick={() => nextUp && onOpen(nextUp.id)} className="flex-1 sm:flex-none">
             <Play className="h-4 w-4" /> {read === 0 ? "ابدأ القراءة" : read === concepts.length ? "راجع من البداية" : "تابع القراءة"}
@@ -596,7 +596,7 @@ function ChapterPage({ courseId, chapter, onBack, onOpen }: { courseId: string; 
           </div>
           {b !== undefined && (
             <div className="mt-4 flex items-center gap-2 border-t border-border pt-4 text-sm">
-              <span className="text-muted-foreground">أفضل نتيجة في اختبار الفصل</span>
+              <span className="text-muted-foreground">أفضل نتيجة في اختبار المحطة</span>
               <span className="font-medium">{pct(b)}</span>
               <Stars count={starsFor(b)} />
             </div>
@@ -650,6 +650,7 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
   const course = COURSES.find((c) => c.id === courseId);
   if (!course) return null;
   const chapters = chaptersOfCourse(courseId);
+  const chEmo = pickEmojis(chapters.map((c) => chapterLabel(c)));
   const all = conceptsOfCourse(courseId);
   const read = all.filter((c) => conceptReads[c.id]).length;
   const mastery = courseMastery(courseId, attempts);
@@ -675,7 +676,7 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
               <div className="flex items-center justify-between text-sm">
                 <span className="font-medium">الإتقان</span>
                 <span className="text-muted-foreground">
-                  قرأت {ad(read)} من {ad(all.length)}
+                  أنجزت {ad(read)} من {ad(all.length)}
                 </span>
               </div>
               <MasteryBar counts={mastery} />
@@ -704,13 +705,13 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
         </aside>
 
         <section className="lg:order-1">
-          <SectionHeader title="الفصول" sub={`${arCount(questionsOfCourse(courseId).length, QUESTION_FORMS)} في بنك المحور`} />
+          <SectionHeader title="المحطات" sub={`${arCount(questionsOfCourse(courseId).length, QUESTION_FORMS)} في بنك المحور`} />
           <div className="space-y-2.5">
             {chapters.map((ch, i) => {
               const cs = all.filter((c) => c.chapter === ch);
               const r = cs.filter((c) => conceptReads[c.id]).length;
               const done = cs.length > 0 && r === cs.length;
-              return <GameTile key={ch} tone={i} emoji={done ? "✅" : CHAPTER_EMOJI[i % CHAPTER_EMOJI.length]} title={chapterLabel(ch)} progress={cs.length ? r / cs.length : 0} onClick={() => onChapter(ch)} />;
+              return <GameTile key={ch} tone={i} emoji={done ? "✅" : chEmo[i]} title={chapterLabel(ch)} progress={cs.length ? r / cs.length : 0} onClick={() => onChapter(ch)} />;
             })}
           </div>
         </section>
@@ -868,7 +869,7 @@ export default function ConceptsView() {
           <section>
             <SectionHeader
               title="المحاور"
-              action={<span className="shrink-0 text-sm font-bold text-muted-foreground">قرأت {ad(totalRead)} من {ad(CONCEPTS.length)}</span>}
+              action={<span className="shrink-0 text-sm font-bold text-muted-foreground">أنجزت {ad(totalRead)} من {ad(CONCEPTS.length)}</span>}
             />
             <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }} className="grid grid-cols-2 gap-2.5">
               {COURSES.map((course, k) => {

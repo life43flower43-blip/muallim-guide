@@ -191,7 +191,7 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     }
     if (byCourse.size > 1)
       return { title: "الأداء حسب المحور", rows: [...byCourse].map(([id, v]) => ({ id, name: COURSE_SHORT[id] ?? COURSES.find((c) => c.id === id)?.name ?? id, ...v })) };
-    return { title: "الأداء حسب الفصل", rows: [...byChapter].map(([id, v]) => ({ id, name: chapterLabel(id), ...v })) };
+    return { title: "الأداء حسب المحطة", rows: [...byChapter].map(([id, v]) => ({ id, name: chapterLabel(id), ...v })) };
   }, [review]);
 
   // عند انتهاء الجلسة: تسجيل النتيجة مرة واحدة

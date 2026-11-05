@@ -56,7 +56,7 @@ const classroomExample = (c: Concept) => (THEORY.test(c.title) ? undefined : (c.
 /** مواقف صفية واقعية من الفصل: المفهوم في شارة ذهبية، والموقف تحته */
 function Examples({ concepts }: { concepts: Concept[] }) {
   const items = concepts.map((c) => ({ c, ex: classroomExample(c) })).filter((x) => x.ex);
-  if (items.length === 0) return <p className="p-3 text-center text-sm text-muted-foreground">لا مواقف صفية في هذا الفصل</p>;
+  if (items.length === 0) return <p className="p-3 text-center text-sm text-muted-foreground">لا مواقف صفية في هذه المحطة</p>;
   return (
     <ul className="space-y-3">
       {items.map(({ c, ex }) => (
@@ -138,14 +138,14 @@ export default function NotebookView() {
         <div className="space-y-4">
           {/* المحور والفصل في محدِّد واحد، وسهمان صغيران للتنقل بين الفصول */}
           <div className="flex items-center gap-1 rounded-[20px] border border-[var(--t075)] bg-white p-1.5 dark:border-border dark:bg-card">
-            <button type="button" aria-label="الفصل السابق" disabled={chIndex <= 0} onClick={() => setChIndex(chIndex - 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#C9971C] disabled:opacity-25">
+            <button type="button" aria-label="المحطة السابقة" disabled={chIndex <= 0} onClick={() => setChIndex(chIndex - 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#C9971C] disabled:opacity-25">
               <ChevronRight className="h-5 w-5" strokeWidth={2.5} />
             </button>
             <button type="button" onClick={() => setPicking(true)} className="min-w-0 flex-1 rounded-[14px] px-1 py-1 text-center transition active:scale-[0.98]">
               <FitText max={14} min={11} className="text-center font-bold leading-6 text-[#C9971C]">{`${COURSE_SHORT[courseId] ?? ""} ▾`}</FitText>
               <FitText max={20} min={12} className="text-center font-extrabold leading-7 text-foreground">{chapterLabel(current.chapter)}</FitText>
             </button>
-            <button type="button" aria-label="الفصل التالي" disabled={chIndex >= chapters.length - 1} onClick={() => setChIndex(chIndex + 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#C9971C] disabled:opacity-25">
+            <button type="button" aria-label="المحطة التالية" disabled={chIndex >= chapters.length - 1} onClick={() => setChIndex(chIndex + 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#C9971C] disabled:opacity-25">
               <ChevronLeft className="h-5 w-5" strokeWidth={2.5} />
             </button>
           </div>
@@ -173,7 +173,7 @@ export default function NotebookView() {
             CHAPTER_MAPS[`${courseId}::${current.chapter}`] ? (
               <CausalMap map={CHAPTER_MAPS[`${courseId}::${current.chapter}`]} />
             ) : (
-              <p className="p-3 text-center text-sm text-muted-foreground">خريطة هذا الفصل قيد الإعداد</p>
+              <p className="p-3 text-center text-sm text-muted-foreground">خريطة هذه المحطة قيد الإعداد</p>
             )
           ) : part === "rules" ? (
             <Rules concepts={current.concepts} />
@@ -183,7 +183,7 @@ export default function NotebookView() {
 
           {picking && (
             <div className="fixed inset-0 z-50 flex items-end bg-black/40" onClick={() => setPicking(false)}>
-              <div className="safe-bottom max-h-[75dvh] w-full overflow-y-auto rounded-t-3xl bg-card p-4" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="اختر المحور والفصل">
+              <div className="safe-bottom max-h-[75dvh] w-full overflow-y-auto rounded-t-3xl bg-card p-4" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="اختر المحور والمحطة">
                 <span className="mx-auto mb-3 block h-1.5 w-12 rounded-full bg-border" aria-hidden="true" />
                 <div className="no-scrollbar -mx-4 mb-3 flex gap-2 overflow-x-auto px-4 pb-1">
                   {COURSES.map((c) => (

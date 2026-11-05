@@ -1,4 +1,5 @@
 "use client";
+import { pickEmojis } from "@/lib/emoji-pick";
 
 // مختبر محاكاة الصفوف — الجيل الجديد: كل قرار يغيّر الموقف، والتحليل متعدد الكفاءات
 // السلسلة: الموقف ← قرار ← عاقبة وتحليل (لماذا، المخاطر، الأدلة) ← تطور الموقف ← تقرير كفاءات ← تمرين مستهدف
@@ -30,7 +31,6 @@ import { LAB_ALL, isExamScenario } from "@/lib/lab";
 import { Callout, Card, Chip, Divided, IconTile, OptionButton, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, SkillBar, ToolTiles, GameTile } from "./ui-kit";
 import { conceptById, OPTION_LETTERS } from "@/lib/qbank";
 
-const STAGE_EMOJI: Record<string, string> = { "الروضة": "🧸", "الابتدائي": "🎒", "المتوسط": "📘", "الثانوي": "🎓" };
 
 const ratingIcon: Record<SimRating, typeof CheckCircle2> = {
   good: CheckCircle2,
@@ -228,6 +228,7 @@ export default function SimLabView() {
   if (!scenario) {
     const doneCount = new Set(simAttempts.map((a) => a.sid)).size;
     const shown = SIM_SCENARIOS.filter((x) => level === "الكل" || levelOf(x.stage) === level);
+    const emojis = pickEmojis(shown.map((x) => x.title));
     return (
       <ScreenShell title="المواقف الصفية" onClose={clearSim}>
         <div className="space-y-6">
@@ -290,7 +291,7 @@ export default function SimLabView() {
             <div className="space-y-2.5">
               {shown.map((x, k) => {
                 const st = lastStatusOf(x.id);
-                return <GameTile key={x.id} tone={k} emoji={STAGE_EMOJI[levelOf(x.stage)] ?? "🏫"} title={x.title} meta={st?.word} onClick={() => startScenario(x)} />;
+                return <GameTile key={x.id} tone={k} emoji={emojis[k]} title={x.title} meta={st?.word} onClick={() => startScenario(x)} />;
               })}
             </div>
           </section>

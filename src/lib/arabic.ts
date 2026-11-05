@@ -119,18 +119,18 @@ export const ERROR_DUE_FORMS: CountForms = {
 };
 
 export const CHAPTER_FORMS: CountForms = {
-  one: "فصل واحد",
-  two: "فصلان",
-  few: "فصول",
-  many: "فصلًا",
+  one: "محطة واحدة",
+  two: "محطتان",
+  few: "محطات",
+  many: "محطة",
 };
 
 /** بعد «من»: «أتقنت ٣ من ٥ فصول» */
 export const CHAPTER_GEN_FORMS: CountForms = {
-  one: "فصل واحد",
-  two: "فصلين",
-  few: "فصول",
-  many: "فصلًا",
+  one: "محطة واحدة",
+  two: "محطتين",
+  few: "محطات",
+  many: "محطة",
 };
 
 export const MINUTE_FORMS: CountForms = {

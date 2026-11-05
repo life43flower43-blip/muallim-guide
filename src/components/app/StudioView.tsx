@@ -1,4 +1,5 @@
 "use client";
+import { pickEmojis } from "@/lib/emoji-pick";
 
 // استوديو خطط الدروس — طبقة ملء شاشة من رؤية المستخدم (بند «تخطيط الدروس»):
 // نموذج موجّه بكامل أركان الخطة (بطاقة، أهداف، معرفة سابقة، وسائل، استراتيجيات،
@@ -56,7 +57,6 @@ import {
   type PlanReview,
 } from "@/lib/plans";
 
-const SUBJECT_EMOJI: Record<string, string> = { "اللغة العربية": "📖", "الرياضيات": "➗", "العلوم": "🔬", "الاجتماعيات": "🌍", "الدراسات الاجتماعية": "🌍", "اللغة الإنجليزية": "🔤", "التربية الإسلامية": "🕌", "الدراسات الإسلامية": "🕌", "الحاسب والتقنية": "💻", "رياض الأطفال": "🧸", "التربية الفنية": "🎨" };
 
 type StudioTab = "new" | "templates" | "mine";
 type FormPlan = Omit<LessonPlan, "id" | "ts">;
@@ -524,8 +524,8 @@ export default function StudioView() {
             ))}
           </div>
           <div className="space-y-2.5">
-            {MODEL_PLANS.filter((m) => subjectFilter === "الكل" || m.form.subject === subjectFilter).map((m, k) => (
-              <GameTile key={m.id} tone={k} emoji={SUBJECT_EMOJI[m.form.subject] ?? "📝"} title={m.form.topic} onClick={() => setPreview(m)} />
+            {MODEL_PLANS.filter((m) => subjectFilter === "الكل" || m.form.subject === subjectFilter).map((m, k, arr) => (
+              <GameTile key={m.id} tone={k} emoji={pickEmojis(arr.map((x) => x.form.topic))[k]} title={m.form.topic} onClick={() => setPreview(m)} />
             ))}
           </div>
         </div>
@@ -538,8 +538,8 @@ export default function StudioView() {
         />
       ) : (
         <div className="space-y-2.5">
-          {lessonPlans.map((p, k) => (
-            <GameTile key={p.id} tone={k} emoji={SUBJECT_EMOJI[p.subject ?? ""] ?? "📄"} title={p.topic} meta={planMaturityWord(p)} onClick={() => { setSelected(p); setConfirmDel(null); }} />
+          {lessonPlans.map((p, k, arr) => (
+            <GameTile key={p.id} tone={k} emoji={pickEmojis(arr.map((x) => x.topic))[k]} title={p.topic} meta={planMaturityWord(p)} onClick={() => { setSelected(p); setConfirmDel(null); }} />
           ))}
         </div>
       )}

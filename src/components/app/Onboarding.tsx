@@ -14,7 +14,7 @@ import AuthPanel from "./AuthPanel";
 
 const GOALS: { id: LearnerGoal; title: string; sub: string; icon: React.ElementType }[] = [
   { id: "job", title: "الاستعداد لاختبار التوظيف", sub: "اختبارات محاكية ومراجعة للمحاور وجاهزية محسوبة", icon: Briefcase },
-  { id: "university", title: "مقررات كلية التربية", sub: "المفاهيم فصلًا فصلًا مع تدريب بعد كل فصل", icon: GraduationCap },
+  { id: "university", title: "مقررات كلية التربية", sub: "المفاهيم محطةً محطة مع تدريب بعد كل فصل", icon: GraduationCap },
   { id: "teacher", title: "تطوير ممارستي كمعلم", sub: "مواقف صفية وخطط دروس وأدوات تقويم", icon: School },
 ];
 

@@ -208,13 +208,13 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
           <Card className="flex items-start gap-3 p-4 text-sm leading-6 text-secondary-foreground">
             {mode === "timed" ? <Timer className="mt-0.5 h-5 w-5 shrink-0 text-foreground" /> : <GraduationCap className="mt-0.5 h-5 w-5 shrink-0 text-foreground" />}
             {mode === "timed"
-              ? "كالاختبار الحقيقي: لا تظهر الإجابات حتى تنهي، ثم تقرير يحلل أداءك حسب الفصل والثقة والزمن."
+              ? "كالاختبار الحقيقي: لا تظهر الإجابات حتى تنهي، ثم تقرير يحلل أداءك حسب المحطة والثقة والزمن."
               : "مناسب للتعلّم: بعد كل سؤال ترى الإجابة الصحيحة وسببها، ويمكنك فتح المفهوم دون مغادرة الاختبار."}
           </Card>
         </div>
 
         <section>
-          <SectionHeader title="المحاور والفصول" sub={`اخترت ${ad(picked.size)} من ${ad(allKeys.length)} فصلًا`} />
+          <SectionHeader title="المحاور والمحطات" sub={`اخترت ${ad(picked.size)} من ${ad(allKeys.length)} محطة`} />
           <Card className="overflow-hidden">
             <button
               type="button"
@@ -245,7 +245,7 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-base">{COURSE_SHORT[c.id] ?? c.name}</span>
                           <span className="text-xs text-muted-foreground">
-                            {ad(on)} من {ad(keys.length)} فصلًا
+                            {ad(on)} من {ad(keys.length)} محطة
                           </span>
                         </span>
                         <span className="text-sm text-muted-foreground">{ad(countOf(keys))}</span>

@@ -1,4 +1,5 @@
 "use client";
+import { pickEmojis } from "@/lib/emoji-pick";
 
 // مختبر المعلّم — تدريب مهني على المواقف: قرار متفرع الأثر ← تحليل ← تأمل ← خريطة كفاءات
 // + اختبار الاستقلال: مواقف جديدة تُدار بلا تقييم أثناء القرار، والتحليل بعد الختام
@@ -297,8 +298,10 @@ export default function LabView() {
     </div>
   );
 
+  const labEmo = pickEmojis(LAB_SCENARIOS.map((x) => x.title));
+  const examEmo = pickEmojis(LAB_EXAM_SCENARIOS.map((x) => x.title));
   const scenarioRow = (s: LabScenario, asExam: boolean, k = 0) => (
-    <GameTile key={s.id} tone={k} emoji={asExam ? "🛡️" : "🧪"} title={s.title} meta={lastStatusOf(s.id) || undefined} onClick={() => startScenario(s, asExam)} />
+    <GameTile key={s.id} tone={k} emoji={(asExam ? examEmo : labEmo)[k]} title={s.title} meta={lastStatusOf(s.id) || undefined} onClick={() => startScenario(s, asExam)} />
   );
 
   const mirrorList = [...labAttempts].sort((a, b) => b.ts - a.ts);
