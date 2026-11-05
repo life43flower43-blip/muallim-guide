@@ -89,7 +89,7 @@ export default function SimLabView() {
     const rel = simAttempts.filter((a) => a.sid === sid).sort((a, b) => a.ts - b.ts);
     if (!rel.length) return null;
     const ratings = rel[rel.length - 1].steps.map((s) => s.rating);
-    if (ratings.every((r) => r === "good")) return { word: "متقن", cls: "bg-[#E3F4EA] text-[#1F7A4D]" };
+    if (ratings.every((r) => r === "good")) return { word: "متقن", cls: "bg-[#E3F4EA] text-foreground" };
     if (ratings.every((r) => r === "poor")) return { word: "أعده", cls: "bg-danger-soft text-destructive" };
     return { word: "في تحسّن", cls: "bg-[#FBF3DA] text-[#A87B12]" };
   };
@@ -213,7 +213,7 @@ export default function SimLabView() {
             key={cid}
             type="button"
             onClick={() => openConceptDeep(cid)}
-            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-border bg-card px-3 text-sm text-primary hover:bg-accent"
+            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-border bg-card px-3 text-sm text-foreground hover:bg-accent"
           >
             <BookOpen className="h-3.5 w-3.5" /> {c.title}
           </button>
@@ -263,13 +263,13 @@ export default function SimLabView() {
           {/* خريطة الكفاءات تظهر بعد أول موقف */}
           {aggregate.length > 0 && (
             <section className="rounded-[24px] border border-[var(--t075)] bg-white p-4 dark:border-border dark:bg-card">
-              <SectionHeader title="خريطة كفاءاتك" action={<Gauge className="h-5 w-5 shrink-0 text-[var(--t500)]" />} />
+              <SectionHeader title="خريطة كفاءاتك" action={<Gauge className="h-5 w-5 shrink-0 text-muted-foreground" />} />
               {skillBars(aggregate)}
             </section>
           )}
 
           <section>
-            <SectionHeader title="المواقف" action={<span className="shrink-0 text-sm font-bold text-[var(--t500)]">{ad(shown.length)}</span>} />
+            <SectionHeader title="المواقف" action={<span className="shrink-0 text-sm font-bold text-muted-foreground">{ad(shown.length)}</span>} />
             {/* تصفية حسب المرحلة الدراسية */}
             <div className="no-scrollbar -mx-4 mb-3 flex gap-2 overflow-x-auto px-4" role="tablist" aria-label="المرحلة">
               {LEVELS.filter((l) => l === "الكل" || SIM_SCENARIOS.some((x) => levelOf(x.stage) === l)).map((l) => (
@@ -279,7 +279,7 @@ export default function SimLabView() {
                   role="tab"
                   aria-selected={level === l}
                   onClick={() => setLevel(l)}
-                  className={`min-h-[38px] shrink-0 rounded-full border px-4 text-sm font-bold transition ${level === l ? "border-transparent bg-[var(--t700)] text-white" : "border-[var(--t075)] bg-white text-[var(--t700)] dark:border-border dark:bg-card"}`}
+                  className={`min-h-[38px] shrink-0 rounded-full border px-4 text-sm font-bold transition ${level === l ? "border-transparent bg-[var(--t700)] text-white" : "border-[var(--t075)] bg-white text-foreground dark:border-border dark:bg-card"}`}
                 >
                   {l}
                 </button>
@@ -295,7 +295,7 @@ export default function SimLabView() {
                     onClick={() => startScenario(x)}
                     className="flex w-full min-w-0 items-center gap-3 rounded-[22px] border border-[var(--t075)] bg-white p-3 text-right transition active:scale-[0.98] dark:border-border dark:bg-card"
                   >
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[var(--t050)] text-[var(--t700)]">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[var(--t050)] text-foreground">
                       <Users className="h-5 w-5" />
                     </span>
                     <span className="min-w-0 flex-1">

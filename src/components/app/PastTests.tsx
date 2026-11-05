@@ -35,14 +35,14 @@ export default function PastTests() {
           const v = (t.correctCount / t.total) * 100;
           return (
             <div key={t.id} className="flex min-h-[60px] min-w-0 items-center gap-3 px-4 py-3">
-              <ListChecks className="h-5 w-5 shrink-0 text-[var(--t700)]" />
+              <ListChecks className="h-5 w-5 shrink-0 text-foreground" />
               <div className="min-w-0 flex-1">
                 <FitText max={17} min={12} className="font-bold leading-7">{t.label}</FitText>
                 <p className="text-sm text-muted-foreground">
                   {dateFmt.format(new Date(t.ts))}، {arCount(t.total, QUESTION_FORMS)}، {fmtDur(t.durationSec)}
                 </p>
               </div>
-              <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-sm font-bold", v >= 70 ? "bg-[var(--t100)] text-[var(--t800)]" : v >= 50 ? "bg-[#FBF3DA] text-[#A87B12]" : "bg-danger-soft text-destructive")}>{pct(v)}</span>
+              <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-sm font-bold", v >= 70 ? "bg-[var(--t100)] text-foreground" : v >= 50 ? "bg-[#FBF3DA] text-[#A87B12]" : "bg-danger-soft text-destructive")}>{pct(v)}</span>
             </div>
           );
         })}

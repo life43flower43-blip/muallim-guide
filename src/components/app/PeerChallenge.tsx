@@ -222,7 +222,7 @@ export default function PeerChallenge() {
                   className="flex min-h-[52px] w-full items-center gap-3 px-4 py-3 text-right text-base transition-colors hover:bg-muted/60"
                 >
                   <span className="flex-1">{o.label}</span>
-                  {scope === o.id && <Check className="h-5 w-5 text-primary" />}
+                  {scope === o.id && <Check className="h-5 w-5 text-foreground" />}
                 </button>
               ))}
             </Divided>
@@ -368,7 +368,7 @@ export default function PeerChallenge() {
           ) : (
             <Card className="p-4">
               <p className="flex items-center gap-2 text-sm font-semibold">
-                <Link2 className="h-4 w-4 text-primary" /> رابط التحدي
+                <Link2 className="h-4 w-4 text-foreground" /> رابط التحدي
               </p>
               <p className="mt-2 break-all rounded-lg bg-muted p-3 text-xs leading-5 text-muted-foreground" dir="ltr">
                 {linkText}

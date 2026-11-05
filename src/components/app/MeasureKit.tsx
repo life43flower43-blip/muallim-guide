@@ -91,7 +91,7 @@ function Note({ children }: { children: React.ReactNode }) {
   return (
     <Callout tone="neutral" className="mt-3">
       <p className="flex gap-2">
-        <Info className="mt-1.5 h-4 w-4 shrink-0 text-primary" />
+        <Info className="mt-1.5 h-4 w-4 shrink-0 text-foreground" />
         <span>{children}</span>
       </p>
     </Callout>
@@ -417,7 +417,7 @@ function ResultTile({ label, value, hint }: { label: string; value: string; hint
   return (
     <div className="rounded-xl border border-border bg-card p-3 text-center">
       <p className="text-xs font-semibold text-muted-foreground">{label}</p>
-      <p className="mt-1 font-display text-2xl font-medium tabular-nums text-primary" dir="ltr">
+      <p className="mt-1 font-display text-2xl font-medium tabular-nums text-foreground" dir="ltr">
         {value}
       </p>
       <p className="mt-1 text-xs text-muted-foreground">{hint}</p>

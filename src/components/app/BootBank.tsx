@@ -28,7 +28,7 @@ export default function BootBank({
         <img src="/icons/logo-128.png" alt="" className="h-full w-full object-contain" />
       </div>
       <div className="space-y-2">
-        <h1 className="font-display text-3xl font-extrabold text-[var(--t900)]">تربوي</h1>
+        <h1 className="font-display text-3xl font-extrabold text-foreground">تربوي</h1>
         {failed ? (
           <>
             <p className="text-sm font-medium leading-6 text-foreground">

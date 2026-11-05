@@ -260,7 +260,7 @@ function CheckUnderstanding({ conceptId, onAnswered }: { conceptId: string; onAn
 
   return (
     <Card className="p-5">
-      <p className="flex items-center gap-2 text-sm font-semibold text-primary">
+      <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
         <HelpCircle className="h-4 w-4" /> تحقّق من فهمك
       </p>
       <p className="mt-3 font-display text-base font-semibold leading-8">{q.question}</p>
@@ -391,7 +391,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
       onClose={onClose}
       actions={
         <>
-          <button type="button" onClick={share} aria-label="شارك المفهوم" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[var(--t900)] hover:bg-black/5 dark:text-foreground">
+          <button type="button" onClick={share} aria-label="شارك المفهوم" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground hover:bg-black/5 dark:text-foreground">
             <Share2 className="h-5 w-5" />
           </button>
         </>
@@ -490,7 +490,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
                 <button
                   type="button"
                   onClick={() => setShowAllExamples((v) => !v)}
-                  className="mt-3 flex min-h-[44px] items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-primary hover:bg-accent"
+                  className="mt-3 flex min-h-[44px] items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-foreground hover:bg-accent"
                 >
                   {showAllExamples ? "أمثلة أقل" : arCount(examples.length - 2, EXAMPLE_MORE)}
                   <ChevronDown className={`h-4 w-4 transition-transform ${showAllExamples ? "rotate-180" : ""}`} />
@@ -503,7 +503,7 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
 
           {!embedded && <Divided>
             <button type="button" onClick={train} disabled={qs.length === 0} className="flex min-h-[64px] w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60 disabled:opacity-50">
-              <Dumbbell className="h-5 w-5 shrink-0 text-primary" />
+              <Dumbbell className="h-5 w-5 shrink-0 text-foreground" />
               <span className="min-w-0 flex-1">
                 <span className="block text-base font-medium">تدرّب على هذا المفهوم</span>
                 <span className="text-sm text-muted-foreground">{arCount(qs.length, QUESTION_FORMS)} بشرح كامل</span>
@@ -712,7 +712,7 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
                   onClick={() => onChapter(ch)}
                   className="flex min-h-[64px] w-full min-w-0 items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
                 >
-                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${done ? "bg-[#D4A017] text-white" : "bg-[var(--t100)] text-[var(--t800)]"}`}>
+                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${done ? "bg-[#D4A017] text-white" : "bg-[var(--t100)] text-foreground"}`}>
                     {done ? <CheckCircle2 className="h-5 w-5" /> : <BookOpen className="h-4 w-4" />}
                   </span>
                   <span className="min-w-0 flex-1">
@@ -797,7 +797,7 @@ export default function ConceptsView() {
     <div className="space-y-6 pb-6">
       {/* البحث */}
       <div className="flex h-12 items-center gap-2.5 rounded-[20px] border border-[var(--t075)] bg-white px-4 focus-within:border-[var(--t500)] dark:border-border dark:bg-card">
-        <Search className="h-5 w-5 shrink-0 text-[var(--t500)]" />
+        <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -860,7 +860,7 @@ export default function ConceptsView() {
                     <span className="shrink-0 text-xs font-bold text-white/85">{ad(resumeRead)} من {ad(resumeSiblings.length)}</span>
                   </span>
                 </span>
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[var(--t800)]">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-foreground">
                   <Play className="h-4 w-4 fill-current" />
                 </span>
               </button>
@@ -892,7 +892,7 @@ export default function ConceptsView() {
           <section>
             <SectionHeader
               title="المحاور"
-              action={<span className="shrink-0 text-sm font-bold text-[var(--t500)]">قرأت {ad(totalRead)} من {ad(CONCEPTS.length)}</span>}
+              action={<span className="shrink-0 text-sm font-bold text-muted-foreground">قرأت {ad(totalRead)} من {ad(CONCEPTS.length)}</span>}
             />
             <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }} className="grid gap-2.5 sm:grid-cols-2">
               {COURSES.map((course) => {

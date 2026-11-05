@@ -26,7 +26,7 @@ export function SectionHeader({ title, action }: { title: string; sub?: string; 
       {/* عنوان قسم بشَرطة ذهبية قصيرة قبله */}
       <div className="flex min-w-0 items-center gap-2">
         <span className="h-5 w-[4px] shrink-0 rounded-full bg-[#D4A017]" aria-hidden="true" />
-        <h2 className="truncate font-display text-lg font-extrabold text-[var(--t900)] dark:text-foreground">{title}</h2>
+        <h2 className="truncate font-display text-lg font-extrabold text-foreground dark:text-foreground">{title}</h2>
       </div>
       {action}
     </div>
@@ -41,7 +41,7 @@ export function BackButton({ onClick, className }: { onClick: () => void; classN
       onClick={onClick}
       aria-label="رجوع"
       className={cn(
-        "flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-[var(--t800)] shadow-[0_4px_14px_rgba(14,59,50,0.14)] ring-2 ring-[#E8C766] transition active:scale-90 dark:bg-card dark:text-foreground",
+        "flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-foreground shadow-[0_4px_14px_rgba(14,59,50,0.14)] ring-2 ring-[#E8C766] transition active:scale-90 dark:bg-card dark:text-foreground",
         className
       )}
     >
@@ -206,7 +206,7 @@ export function SecondaryButton({ className, ...rest }: React.ButtonHTMLAttribut
     <button
       type="button"
       className={cn(
-        "inline-flex min-h-[50px] items-center justify-center gap-2 whitespace-nowrap rounded-[20px] border border-[var(--t150)] bg-white px-5 text-base font-bold text-[var(--t900)] transition active:scale-[0.97] hover:bg-[var(--t050)] disabled:border-border disabled:text-muted-foreground disabled:opacity-80 max-[359px]:px-3 dark:border-border dark:bg-card dark:text-foreground",
+        "inline-flex min-h-[50px] items-center justify-center gap-2 whitespace-nowrap rounded-[20px] border border-[var(--t150)] bg-white px-5 text-base font-bold text-foreground transition active:scale-[0.97] hover:bg-[var(--t050)] disabled:border-border disabled:text-muted-foreground disabled:opacity-80 max-[359px]:px-3 dark:border-border dark:bg-card dark:text-foreground",
         className
       )}
       {...rest}
@@ -284,7 +284,7 @@ export function ScreenShell({
           {/* موازنة زر الرجوع ليبقى العنوان في الوسط */}
           {!actions && !(onBack && onClose) && (onBack || onClose) && <span className="w-11 shrink-0" aria-hidden="true" />}
           {onBack && onClose && (
-            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[var(--t900)]/70 hover:bg-black/5 dark:text-muted-foreground">
+            <button type="button" onClick={onClose} aria-label="إغلاق" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground/70 hover:bg-black/5 dark:text-muted-foreground">
               <X className="h-6 w-6" strokeWidth={2.5} />
             </button>
           )}
@@ -413,7 +413,7 @@ export function OptionButton({
     dim: "border-border bg-card opacity-60",
   }[state];
   const letterCls = {
-    idle: "bg-[var(--t075)] text-[var(--t800)] dark:bg-muted dark:text-foreground",
+    idle: "bg-[var(--t075)] text-foreground dark:bg-muted dark:text-foreground",
     selected: "bg-primary text-primary-foreground",
     correct: "bg-success text-white",
     wrong: "bg-destructive text-white",

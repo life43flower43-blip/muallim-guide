@@ -108,14 +108,14 @@ function OrderPlay({
                   : "border-border bg-card"
               }`}
             >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-primary">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-foreground">
                 {ad(i + 1)}
               </span>
               {item ? (
                 <button
                   disabled={graded !== null}
                   onClick={() => setPlaced((p) => p.filter((x) => x !== item))}
-                  className="flex flex-1 items-center justify-between rounded-xl bg-accent px-3 py-2 text-right text-sm font-bold text-primary"
+                  className="flex flex-1 items-center justify-between rounded-xl bg-accent px-3 py-2 text-right text-sm font-bold text-foreground"
                 >
                   {item}
                   {graded === null && <X className="h-4 w-4 text-muted-foreground" />}
@@ -180,7 +180,7 @@ function FillPlay({
                 ? chosen === c.right
                   ? "border-success/40 bg-success-soft text-success"
                   : "border-destructive/40 bg-danger-soft text-destructive"
-                : "border-primary bg-accent text-primary"
+                : "border-primary bg-accent text-foreground"
               : "border-border text-muted-foreground"
           }`}
         >
@@ -196,7 +196,7 @@ function FillPlay({
               key={t}
               onClick={() => setChosen(t)}
               className={`rounded-full border px-4 py-2 text-sm font-bold ${
-                chosen === t ? "border-primary bg-accent text-primary" : "border-border bg-card"
+                chosen === t ? "border-primary bg-accent text-foreground" : "border-border bg-card"
               }`}
             >
               {t}
@@ -399,7 +399,7 @@ export default function ChallengeSession() {
       >
         <div className="flex flex-col items-center py-6 text-center">
           <Ring value={pct} size={120} stroke={10}>
-            <span className="font-display text-2xl font-bold text-primary">{ad(Math.round(pct))}٪</span>
+            <span className="font-display text-2xl font-bold text-foreground">{ad(Math.round(pct))}٪</span>
           </Ring>
           <h2 className="mt-5 font-display text-xl font-bold">{msg}</h2>
           <p className="mt-2 text-sm text-muted-foreground">

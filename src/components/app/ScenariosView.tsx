@@ -174,7 +174,7 @@ function ResultScreen({ scores, run, onAgain, onExit }: { scores: ScenarioScore[
     >
       <div className="flex flex-col items-center py-6 text-center">
         <Ring value={pct} size={120} stroke={10}>
-          <span className="font-display text-2xl font-bold text-primary">{ad(pct)}٪</span>
+          <span className="font-display text-2xl font-bold text-foreground">{ad(pct)}٪</span>
         </Ring>
         <h2 className="mt-5 font-display text-xl font-bold">{headline}</h2>
         <p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">

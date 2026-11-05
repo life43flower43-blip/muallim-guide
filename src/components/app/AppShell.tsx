@@ -82,7 +82,7 @@ function Logo() {
       <span className="flex h-9 w-9 items-center justify-center rounded-[10px] overflow-hidden bg-white">
 <img src="/icons/logo-128.png" alt="" className="h-full w-full object-contain p-0.5" />
       </span>
-      <span className="font-display text-xl font-bold text-primary">تربوي</span>
+      <span className="font-display text-xl font-bold text-foreground">تربوي</span>
     </span>
   );
 }
@@ -165,8 +165,8 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
                   aria-hidden="true"
                 />
               )}
-              <n.icon className={cn("relative h-6 w-6 transition-colors", active ? "text-[#F3DC8E]" : "text-[var(--t700)] dark:text-primary")} strokeWidth={active ? 2.4 : 1.9} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.2 : 0} />
-              <span className={cn("relative whitespace-nowrap text-[clamp(10px,3.1vw,13px)] transition-colors", active ? "font-bold text-white" : "font-medium text-[var(--t700)] dark:text-primary")}>{n.label}</span>
+              <n.icon className={cn("relative h-6 w-6 transition-colors", active ? "text-[#F3DC8E]" : "text-foreground dark:text-foreground")} strokeWidth={active ? 2.4 : 1.9} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.2 : 0} />
+              <span className={cn("relative whitespace-nowrap text-[clamp(10px,3.1vw,13px)] transition-colors", active ? "font-bold text-white" : "font-medium text-foreground dark:text-foreground")}>{n.label}</span>
               {n.id === "mistakes" && due > 0 && (
                 <span className="absolute right-1/2 top-0.5 translate-x-5 rounded-full bg-destructive px-1.5 text-[10px] font-semibold leading-4 text-white ring-2 ring-white">
                   {ad(Math.min(due, 99))}

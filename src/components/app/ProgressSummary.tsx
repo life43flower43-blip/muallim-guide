@@ -66,7 +66,7 @@ export default function ProgressSummary() {
                   <circle cx="18" cy="18" r="15" fill="none" stroke="var(--t100)" strokeWidth="2.5" />
                   {frac > 0 && <circle cx="18" cy="18" r="15" fill="none" stroke="#C9971C" strokeWidth="2.5" strokeLinecap="round" strokeDasharray={`${frac * C} ${C}`} />}
                 </svg>
-                <a.icon className={cn("h-4 w-4", level === 0 ? "text-muted-foreground" : "text-[var(--t700)]")} />
+                <a.icon className={cn("h-4 w-4", level === 0 ? "text-muted-foreground" : "text-foreground")} />
               </span>
               <span className="w-full truncate text-[11px] font-bold">{a.name}</span>
               <span className="text-[10px] text-muted-foreground">{ad(level)}/٥</span>

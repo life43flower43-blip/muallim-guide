@@ -302,7 +302,7 @@ export default function FieldLogView() {
                   setEditingId(null);
                   setFormErr("");
                 }}
-                className="font-medium text-primary underline"
+                className="font-medium text-foreground underline"
               >
                 ابدأ زيارة جديدة بدلًا من ذلك
               </button>

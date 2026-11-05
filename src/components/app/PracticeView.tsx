@@ -85,12 +85,12 @@ function Tile({ emoji, title, sub, meta, tone = 0, onClick }: { icon?: React.Ele
     <button
       type="button"
       onClick={onClick}
-      className="relative flex min-h-[64px] min-w-0 items-center gap-2 rounded-[26px] border-2 border-[#E3EDE8] border-b-[5px] border-b-[#C9DDD3] bg-white px-2.5 py-2.5 text-right text-[var(--t900)] transition active:translate-y-[2px] active:border-b-2 dark:border-border dark:bg-card dark:text-foreground"
+      className="relative flex min-h-[64px] min-w-0 items-center gap-2 rounded-[26px] border-2 border-[#E3EDE8] border-b-[5px] border-b-[#C9DDD3] bg-white px-2.5 py-2.5 text-right text-foreground transition active:translate-y-[2px] active:border-b-2 dark:border-border dark:bg-card dark:text-foreground"
     >
       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[24px] leading-none" style={{ background: t.bg }} aria-hidden="true">{emoji}</span>
       {/* العنوان في سطر واحد كاملًا: يصغر الخط عند الحاجة بدل القص */}
       <FitText max={14} min={9} group="tile-title" className="min-w-0 flex-1 whitespace-nowrap font-extrabold leading-6">{title}</FitText>
-      {meta && <span className="absolute left-3 top-1.5 rounded-full bg-[var(--t100)] px-1.5 text-[10px] font-bold leading-4 text-[var(--t800)]">{meta}</span>}
+      {meta && <span className="absolute left-3 top-1.5 rounded-full bg-[var(--t100)] px-1.5 text-[10px] font-bold leading-4 text-foreground">{meta}</span>}
     </button>
   );
 }
@@ -98,7 +98,7 @@ function Tile({ emoji, title, sub, meta, tone = 0, onClick }: { icon?: React.Ele
 /** زر صغير داخل المحور */
 function MiniBtn({ icon: Icon, title, onClick }: { icon: React.ElementType; title: string; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} className="flex min-h-[42px] items-center justify-center gap-1.5 rounded-[14px] border border-[#ECE3C4] bg-white text-sm font-bold text-[var(--t900)] transition active:scale-[0.97] dark:bg-card dark:text-foreground">
+    <button type="button" onClick={onClick} className="flex min-h-[42px] items-center justify-center gap-1.5 rounded-[14px] border border-[#ECE3C4] bg-white text-sm font-bold text-foreground transition active:scale-[0.97] dark:bg-card dark:text-foreground">
       <Icon className="h-4 w-4 text-[#C9971C]" />
       {title}
     </button>
@@ -166,7 +166,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
             role="tab"
             aria-selected={view === id}
             onClick={() => setView(id)}
-            className={cn("min-h-[42px] rounded-[18px] text-base font-bold transition", view === id ? "bg-[var(--t700)] text-white" : "text-[var(--t500)]")}
+            className={cn("min-h-[42px] rounded-[18px] text-base font-bold transition", view === id ? "bg-[var(--t700)] text-white" : "text-muted-foreground")}
           >
             {lbl}
           </button>
@@ -180,7 +180,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
           <Tile tone={2} emoji="🎯" sub="اعرف من أين تبدأ" icon={Gauge} title="تحديد المستوى" onClick={ui.startPlacement} />
           <Tile tone={3} emoji="🤝" sub="نافس زميلك بالأسئلة" icon={Users} title="تحدّي زميل" onClick={ui.startPeer} />
           {/* أدوات الرخصة من الموقع: تفتح في الصفحة نفسها */}
-          <p className="col-span-2 mt-3 font-extrabold text-[var(--t900)] dark:text-foreground">أدوات الرخصة</p>
+          <p className="col-span-2 mt-3 font-extrabold text-foreground dark:text-foreground">أدوات الرخصة</p>
           <div className="col-span-2 grid grid-cols-2 gap-2.5">
             {LICENSE_TOOLS.map((t, k) => (
               <Tile key={t.href} tone={k + 4} emoji={t.emoji} sub={t.sub} icon={t.icon} title={t.title} onClick={() => { window.location.href = t.href; }} />

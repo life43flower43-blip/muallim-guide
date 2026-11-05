@@ -154,7 +154,7 @@ export default function NotebookView() {
                 onClick={() => setPart(p.id)}
                 className={cn(
                   "min-h-[44px] min-w-0 rounded-[18px] px-1 font-bold transition active:scale-[0.98]",
-                  part === p.id ? "bg-[var(--t700)] text-white" : "text-[var(--t500)]"
+                  part === p.id ? "bg-[var(--t700)] text-white" : "text-muted-foreground"
                 )}
               >
                 <FitText max={16} min={10} group="nb-tabs" className="text-center">{p.label}</FitText>
@@ -187,7 +187,7 @@ export default function NotebookView() {
                         setCourseId(c.id);
                         setChIndex(0);
                       }}
-                      className={cn("min-h-[36px] shrink-0 whitespace-nowrap rounded-full border px-3.5 text-sm font-bold", courseId === c.id ? "border-transparent bg-[var(--t700)] text-white" : "border-[#ECE3C4] bg-white text-[var(--t500)] dark:bg-card")}
+                      className={cn("min-h-[36px] shrink-0 whitespace-nowrap rounded-full border px-3.5 text-sm font-bold", courseId === c.id ? "border-transparent bg-[var(--t700)] text-white" : "border-[#ECE3C4] bg-white text-muted-foreground dark:bg-card")}
                     >
                       {COURSE_SHORT[c.id] ?? c.name}
                     </button>

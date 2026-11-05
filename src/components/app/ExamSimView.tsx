@@ -204,7 +204,7 @@ export default function ExamSimView() {
                     {ad(b.minutes)} دقيقة{samePass ? "" : `، النجاح ${ad(b.passPct)}٪`}
                   </span>
                 </span>
-                <ChevronLeft className="h-5 w-5 shrink-0 text-primary" />
+                <ChevronLeft className="h-5 w-5 shrink-0 text-foreground" />
               </button>
             ))}
           </div>
@@ -486,7 +486,7 @@ export default function ExamSimView() {
         <div className="space-y-5">
           <Card className="flex flex-col items-center p-6 text-center">
             <Ring value={result.scorePct} size={128} stroke={10}>
-              <span className="font-display text-3xl font-bold text-primary"><bdi dir="rtl">{ad(result.scorePct)}٪</bdi></span>
+              <span className="font-display text-3xl font-bold text-foreground"><bdi dir="rtl">{ad(result.scorePct)}٪</bdi></span>
             </Ring>
             <Chip tone={result.passed ? "success" : "danger"} className="mt-4">
               {result.passed ? "ناجح" : "دون المحك"}
@@ -543,7 +543,7 @@ export default function ExamSimView() {
 function BriefStat({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
   return (
     <Card className="flex flex-col items-center gap-1 py-4">
-      <Icon className="h-5 w-5 text-primary" />
+      <Icon className="h-5 w-5 text-foreground" />
       <span className="font-display text-lg font-semibold">{value}</span>
       <span className="text-xs text-muted-foreground">{label}</span>
     </Card>

@@ -206,7 +206,7 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
           </section>
 
           <Card className="flex items-start gap-3 p-4 text-sm leading-6 text-secondary-foreground">
-            {mode === "timed" ? <Timer className="mt-0.5 h-5 w-5 shrink-0 text-primary" /> : <GraduationCap className="mt-0.5 h-5 w-5 shrink-0 text-primary" />}
+            {mode === "timed" ? <Timer className="mt-0.5 h-5 w-5 shrink-0 text-foreground" /> : <GraduationCap className="mt-0.5 h-5 w-5 shrink-0 text-foreground" />}
             {mode === "timed"
               ? "كالاختبار الحقيقي: لا تظهر الإجابات حتى تنهي، ثم تقرير يحلل أداءك حسب الفصل والثقة والزمن."
               : "مناسب للتعلّم: بعد كل سؤال ترى الإجابة الصحيحة وسببها، ويمكنك فتح المفهوم دون مغادرة الاختبار."}

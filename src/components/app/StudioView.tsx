@@ -372,7 +372,7 @@ export default function StudioView() {
           aria-selected={tab === id}
           onClick={() => setTab(id)}
           className={`flex min-h-[42px] min-w-0 items-center justify-center rounded-[18px] px-1 font-bold transition-colors ${
-            tab === id ? "bg-[var(--t700)] text-white" : "text-[var(--t500)]"
+            tab === id ? "bg-[var(--t700)] text-white" : "text-muted-foreground"
           }`}
         >
           <FitText max={15} min={10} group="studio-tabs" className="text-center">{lbl}</FitText>
@@ -405,7 +405,7 @@ export default function StudioView() {
           {formErr && <Callout tone="danger">{formErr}</Callout>}
           {editingId && (
             <Callout tone="info" title="تعدّل خطة محفوظة">
-              <button type="button" onClick={resetDraft} className="font-medium text-primary underline">
+              <button type="button" onClick={resetDraft} className="font-medium text-foreground underline">
                 ابدأ خطة جديدة بدلًا من ذلك
               </button>
             </Callout>
@@ -515,7 +515,7 @@ export default function StudioView() {
                 role="tab"
                 aria-selected={subjectFilter === sub}
                 onClick={() => setSubjectFilter(sub)}
-                className={`min-h-[38px] shrink-0 rounded-full border px-4 text-sm font-bold transition ${subjectFilter === sub ? "border-transparent bg-[var(--t700)] text-white" : "border-[var(--t075)] bg-white text-[var(--t700)] dark:border-border dark:bg-card"}`}
+                className={`min-h-[38px] shrink-0 rounded-full border px-4 text-sm font-bold transition ${subjectFilter === sub ? "border-transparent bg-[var(--t700)] text-white" : "border-[var(--t075)] bg-white text-foreground dark:border-border dark:bg-card"}`}
               >
                 {sub}
               </button>
@@ -535,7 +535,7 @@ export default function StudioView() {
                 <span className="min-w-0 flex-1">
                   <FitText max={16} min={11} className="font-bold leading-7">{m.form.topic}</FitText>
                   <FitText max={13} min={9} className="leading-5 text-muted-foreground">{`${m.form.subject} · ${m.form.grade}`}</FitText>
-                  <FitText max={12} min={9} className="mt-1 leading-5 text-[var(--t600)]">{m.form.strategies.join(" · ")}</FitText>
+                  <FitText max={12} min={9} className="mt-1 leading-5 text-foreground">{m.form.strategies.join(" · ")}</FitText>
                 </span>
               </button>
             ))}

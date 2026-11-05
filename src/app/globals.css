@@ -45,14 +45,14 @@
 :root {
   /* هوية «تربوي»: تركوازي هادئ مريح، رماديات مائلة إلى التركواز، وبرتقالي للجواهر وحدها */
   --radius: 0.75rem;
-  --foreground: #12292D;
+  --foreground: #111111;
   --card: #ffffff;
-  --card-foreground: #12292D;
+  --card-foreground: #111111;
   --popover: #ffffff;
-  --popover-foreground: #12292D;
+  --popover-foreground: #111111;
   --primary-foreground: #ffffff;
-  --secondary-foreground: #33494D;
-  --muted-foreground: #4A6165;
+  --secondary-foreground: #333333;
+  --muted-foreground: #555555;
   --destructive: #B42318;
   --input: #C3D9CD;
   --success: #067647;
@@ -91,7 +91,7 @@
   --ring: #1D8278;
   --teal: #1D8278;
   --accent: #DCF3EF;
-  --accent-foreground: #0B4D47;
+  --accent-foreground: #111111;
   --border: #D5E9E5;
   --muted: #E7F3F1;
   --secondary: #EBF6F4;
@@ -655,7 +655,7 @@ body {
 .green-head {
   overflow: hidden;
   background: #FFFFFF;
-  color: var(--t900);
+  color: #111111;
 }
 .dark .green-head {
   background: var(--background);

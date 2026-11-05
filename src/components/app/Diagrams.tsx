@@ -380,9 +380,9 @@ function InfoProcessing() {
         <p className="text-center text-sm font-bold text-muted-foreground">مدخلات الحواس</p>
         <ArrowDown className="mx-auto h-4 w-4 text-muted-foreground" />
         {box("المخزن الحسي", "جزء من الثانية للبصري وثوانٍ للسمعي", C[1])}
-        <p className="text-center text-sm font-bold text-[var(--t950)]">↓ الانتباه</p>
+        <p className="text-center text-sm font-bold text-foreground">↓ الانتباه</p>
         {box("المخزن قصير المدى", "نحو سبعة عناصر ونحو عشرين ثانية", C[4])}
-        <p className="text-center text-sm font-bold text-[var(--t950)]">↓ المراجعة والتنظيم</p>
+        <p className="text-center text-sm font-bold text-foreground">↓ المراجعة والتنظيم</p>
         {box("المخزن طويل المدى", "سعة شبه غير محدودة ومدد ممتدة", C[3])}
         <p className="pt-1 text-center text-sm text-muted-foreground">ما لا يُنتبه إليه يسقط، وما لا يُراجَع يُنسى</p>
       </div>
@@ -647,7 +647,7 @@ function Cpa() {
         </div>
         <ArrowLeft className="mx-auto h-4 w-4 text-muted-foreground" />
         <div className="rounded-xl border-2 p-2" style={{ borderColor: C[5], background: tint(C[5]) }}>
-          <p className="mb-1 text-base font-extrabold text-[var(--t700)]">٣</p>
+          <p className="mb-1 text-base font-extrabold text-foreground">٣</p>
           <p className="text-sm font-bold">مجرد</p>
           <p className="text-xs text-muted-foreground">رموز وأرقام</p>
         </div>
