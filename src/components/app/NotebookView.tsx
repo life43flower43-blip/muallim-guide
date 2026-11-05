@@ -37,7 +37,8 @@ function CausalMap({ map }: { map: ChapterMap }) {
                 className={cn("absolute right-0 top-[9px] h-4 w-4 rounded-full border-[3px] border-white dark:border-card", k === 0 ? "bg-[var(--t800)]" : k === ch.steps.length - 1 ? "bg-[#D4A017]" : "bg-[var(--t300)]")}
                 aria-hidden="true"
               />
-              <p className="text-[15px] font-semibold leading-7 text-foreground">{st}</p>
+              {/* الجملة كلها في سطر واحد: يصغر الخط قليلًا عند الحاجة بدل نزول الكلمات */}
+              <FitText max={15} min={10} className="whitespace-nowrap font-semibold leading-7 text-foreground">{st}</FitText>
             </li>
           ))}
         </ol>
