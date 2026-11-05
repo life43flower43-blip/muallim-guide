@@ -659,49 +659,21 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
 
   return (
     <ScreenShell wide title={course.name} sub={COURSE_SUBTITLE[courseId]} onBack={onBack}>
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px] lg:items-start [&>*]:min-w-0">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_320px] lg:items-start [&>*]:min-w-0">
         {/* ملخص المحور: أولًا على الجوال، وجانبًا على الحاسوب */}
-        <aside className="space-y-4 lg:sticky lg:top-0 lg:order-2">
-          <Card className="p-5">
-            <div className="flex items-start gap-3">
-              <CourseBadge id={courseId} size={48} />
-              <div className="min-w-0 flex-1">
-                <h2 className="font-display text-lg font-semibold leading-7">{course.name}</h2>
-                <p className="mt-0.5 text-sm text-muted-foreground">
-                  {arCount(chapters.length, CHAPTER_FORMS)}، {arCount(all.length, CONCEPT_FORMS)}
-                </p>
-              </div>
-            </div>
-            <div className="mt-5 space-y-2.5">
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-medium">الإتقان</span>
-                <span className="text-muted-foreground">
-                  أنجزت {ad(read)} من {ad(all.length)}
-                </span>
-              </div>
-              <MasteryBar counts={mastery} />
-              <MasteryLegend labels={MASTERY_LABELS} counts={mastery} />
-            </div>
-            {bestExam !== undefined && (
-              <p className="mt-4 border-t border-border pt-4 text-sm text-muted-foreground">
-                أفضل اختبار: <span className="font-bold text-foreground">{pct(bestExam)}</span>
-              </p>
-            )}
-            <div className="mt-5 flex flex-col gap-2.5">
-              {nextUp && (
-                <PrimaryButton onClick={() => onOpen(nextUp.id)} className="w-full">
-                  <Play className="h-4 w-4" /> {read === 0 ? "ابدأ المحور" : "تابع"}
-                </PrimaryButton>
-              )}
-              <SecondaryButton
-                className="w-full"
-                onClick={() => startQuiz({ mode: "exam", label: `اختبار: ${course.name}`, qids: courseExam(courseId), timeLimitSec: EXAM_SECONDS, topicKey: examKey(courseId) })}
-              >
-                <ClipboardCheck className="h-4 w-4" /> اختبار المحور
-              </SecondaryButton>
-            </div>
-            {nextUp && <p className="mt-3 text-center text-sm text-muted-foreground">التالي: {nextUp.title}</p>}
-          </Card>
+        {/* زرّان فقط في سطر واحد: تابع، واختبار المحور */}
+        <aside className="grid grid-cols-2 gap-2.5 lg:sticky lg:top-0 lg:order-2">
+          {nextUp && (
+            <PrimaryButton onClick={() => onOpen(nextUp.id)} className="w-full">
+              <Play className="h-4 w-4 fill-current" /> {read === 0 ? "ابدأ" : "تابع"}
+            </PrimaryButton>
+          )}
+          <SecondaryButton
+            className={nextUp ? "w-full" : "col-span-2 w-full"}
+            onClick={() => startQuiz({ mode: "exam", label: `اختبار: ${course.name}`, qids: courseExam(courseId), timeLimitSec: EXAM_SECONDS, topicKey: examKey(courseId) })}
+          >
+            <ClipboardCheck className="h-4 w-4" /> اختبار المحور{bestExam !== undefined ? ` · ${pct(bestExam)}` : ""}
+          </SecondaryButton>
         </aside>
 
         <section className="lg:order-1">
