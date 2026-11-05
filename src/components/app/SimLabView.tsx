@@ -233,7 +233,7 @@ export default function SimLabView() {
           <button
             type="button"
             onClick={startSession}
-            className="block w-full overflow-hidden rounded-[26px] bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] p-4 text-right text-white transition active:scale-[0.98]"
+            className="block w-full overflow-hidden rounded-[26px] bg-[var(--t700)] p-4 text-right text-white transition active:scale-[0.98]"
           >
             <span className="flex items-center gap-3">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 text-[#F3DC8E]">
@@ -247,7 +247,7 @@ export default function SimLabView() {
             </span>
             <span className="mt-3 flex items-center gap-2">
               <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/20" aria-hidden="true">
-                <span className="block h-full rounded-full bg-gradient-to-l from-[#F3DC8E] to-[#C9971C]" style={{ width: `${doneCount ? Math.max(3, (doneCount / Math.max(1, SIM_SCENARIOS.length)) * 100) : 0}%` }} />
+                <span className="block h-full rounded-full bg-[#D4A017]" style={{ width: `${doneCount ? Math.max(3, (doneCount / Math.max(1, SIM_SCENARIOS.length)) * 100) : 0}%` }} />
               </span>
               <span className="shrink-0 text-xs font-bold text-white/85">أنجزت {ad(doneCount)} من {ad(SIM_SCENARIOS.length)}</span>
             </span>

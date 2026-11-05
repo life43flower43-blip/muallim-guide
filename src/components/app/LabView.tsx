@@ -288,7 +288,7 @@ export default function LabView() {
           aria-selected={tab === id}
           onClick={() => setTab(id)}
           className={`flex min-h-[42px] min-w-0 items-center justify-center rounded-[18px] px-1 font-bold transition-colors ${
-            tab === id ? "bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "text-[var(--t500)]"
+            tab === id ? "bg-[var(--t700)] text-white" : "text-[var(--t500)]"
           }`}
         >
           <FitText max={15} min={10} group="lab-tabs" className="text-center">{lbl}</FitText>

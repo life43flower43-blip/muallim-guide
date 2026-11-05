@@ -173,7 +173,7 @@ function MistakesBody({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               onClick={() => setCourse(g.courseId)}
               className={cn(
                 "min-h-[36px] shrink-0 whitespace-nowrap rounded-full border px-3.5 text-sm font-bold transition-colors",
-                course === g.courseId ? "border-transparent bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "border-[#ECE3C4] bg-white text-[var(--t500)] dark:bg-card"
+                course === g.courseId ? "border-transparent bg-[var(--t700)] text-white" : "border-[#ECE3C4] bg-white text-[var(--t500)] dark:bg-card"
               )}
             >
               {g.courseId ? COURSE_SHORT[g.courseId] ?? g.name : g.name} {ad(g.count)}

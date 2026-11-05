@@ -86,21 +86,21 @@ const DOOR_ICON: Record<string, React.ElementType> = {
   "خطة الدرس": NotebookPen,
 };
 const DOOR_BG: Record<string, string> = {
-  "اختبر نفسك": "linear-gradient(135deg,#FFD36B,#F2A81D)",
-  "المفاهيم التربوية": "linear-gradient(135deg,#67D9F5,#1BA7D6)",
-  "المواقف الصفية": "linear-gradient(135deg,#FFB27A,#F07D2E)",
-  "مهارات التدريس": "linear-gradient(135deg,#6EE0B5,#22B07D)",
-  "طرائق التدريس": "linear-gradient(135deg,#7BD8CF,#279488)",
-  "خطة الدرس": "linear-gradient(135deg,#9CC5FF,#5A8DEE)",
+  "اختبر نفسك": "#F2A81D",
+  "المفاهيم التربوية": "#1BA7D6",
+  "المواقف الصفية": "#F07D2E",
+  "مهارات التدريس": "#22B07D",
+  "طرائق التدريس": "#279488",
+  "خطة الدرس": "#5A8DEE",
 };
 
 const STRIP = [
-  "linear-gradient(135deg,#3AAA9C,#1D8278)",
-  "linear-gradient(135deg,#5A8DEE,#3B6FD6)",
-  "linear-gradient(135deg,#F5B83D,#E0961A)",
-  "linear-gradient(135deg,#F28A5B,#E0663A)",
-  "linear-gradient(135deg,#34C38F,#1E9E6E)",
-  "linear-gradient(135deg,#38BDF8,#0E95CF)",
+  "#1D8278",
+  "#3B6FD6",
+  "#E0961A",
+  "#E0663A",
+  "#1E9E6E",
+  "#0E95CF",
 ];
 
 // آخر ما أُضيف إلى التطبيق
@@ -233,9 +233,9 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         // شبكة رموز دائرية ملونة: أربعة في كل صف، والاسم تحت كل رمز
         <div ref={gridRef} className="grid grid-cols-4 gap-x-2 gap-y-5 pt-2">
           {[
-            { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "linear-gradient(135deg,#FF8A7A,#F2584A)", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
-            ...gridDoors.map((d) => ({ title: d.title, icon: DOOR_ICON[d.title] ?? BookOpen, bg: DOOR_BG[d.title] ?? "linear-gradient(135deg,#5ED3C4,#279488)", run: d.run })),
-            { title: "البوصلة", icon: Compass, bg: "linear-gradient(135deg,#7FB6FF,#3B7BEA)", run: () => onGoTab("notebook") },
+            { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "#F2584A", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
+            ...gridDoors.map((d) => ({ title: d.title, icon: DOOR_ICON[d.title] ?? BookOpen, bg: DOOR_BG[d.title] ?? "#279488", run: d.run })),
+            { title: "البوصلة", icon: Compass, bg: "#3B7BEA", run: () => onGoTab("notebook") },
           ].map((d, i) => (
             <motion.button
               key={d.title}
@@ -407,7 +407,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 <path d="M4.4 37.5l1.3-5.6 5.5 1.6" fill="none" stroke={due > 0 ? "#C9971C" : "var(--t300)"} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span className="absolute h-[30px] w-[24px] translate-x-[3px] rotate-[10deg] rounded-[7px] bg-[var(--t150)]" />
-              <span className={cn("relative flex h-[30px] w-[24px] -rotate-[6deg] items-center justify-center rounded-[7px] text-[13px] font-extrabold text-white", due > 0 ? "bg-gradient-to-b from-[#E05A4C] to-[#B42318]" : "bg-gradient-to-b from-[var(--t600)] to-[var(--t850)]")}>
+              <span className={cn("relative flex h-[30px] w-[24px] -rotate-[6deg] items-center justify-center rounded-[7px] text-[13px] font-extrabold text-white", due > 0 ? "bg-[#B42318]" : "bg-[var(--t700)]")}>
                 {ad(due)}
               </span>
             </span>

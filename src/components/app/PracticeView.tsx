@@ -134,7 +134,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
       <button
         type="button"
         onClick={() => startSmart()}
-        className="relative block w-full overflow-hidden rounded-[26px] bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] p-4 text-right text-white transition active:scale-[0.98]"
+        className="relative block w-full overflow-hidden rounded-[26px] bg-[var(--t700)] p-4 text-right text-white transition active:scale-[0.98]"
       >
         <span className="flex items-center gap-3">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 text-[#F3DC8E]">
@@ -147,7 +147,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
           <ChevronLeft className="h-6 w-6 shrink-0 text-[#F3DC8E]" />
         </span>
         <span className="mt-3 block h-1.5 overflow-hidden rounded-full bg-white/20" aria-hidden="true">
-          <span className="block h-full rounded-full bg-gradient-to-l from-[#F3DC8E] to-[#C9971C]" style={{ width: `${bank ? Math.max(2, (answered / bank) * 100) : 0}%` }} />
+          <span className="block h-full rounded-full bg-[#D4A017]" style={{ width: `${bank ? Math.max(2, (answered / bank) * 100) : 0}%` }} />
         </span>
       </button>
 
@@ -166,7 +166,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
             role="tab"
             aria-selected={view === id}
             onClick={() => setView(id)}
-            className={cn("min-h-[42px] rounded-[18px] text-base font-bold transition", view === id ? "bg-gradient-to-l from-[var(--t600)] to-[var(--t850)] text-white" : "text-[var(--t500)]")}
+            className={cn("min-h-[42px] rounded-[18px] text-base font-bold transition", view === id ? "bg-[var(--t700)] text-white" : "text-[var(--t500)]")}
           >
             {lbl}
           </button>

@@ -144,6 +144,9 @@ model SocialAccount {
   name      String
   token     String
   expiresAt DateTime?
+  lastAt    DateTime? // آخر محاولة نشر
+  lastOk    Boolean? // هل نجحت
+  lastError String? // رسالة الخطأ إن فشلت، تُعرض في صفحة /connect
   updatedAt DateTime  @updatedAt
 }
 

@@ -28,7 +28,7 @@ export function Splash() {
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-gradient-to-b from-[var(--t050)] to-[var(--t060)]"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-[var(--t060)]"
           exit={{ opacity: 0 }}
           transition={{ duration: 0.35 }}
           aria-hidden="true"
