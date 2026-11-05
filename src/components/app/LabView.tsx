@@ -44,6 +44,7 @@ export default function LabView() {
   const quizAttempts = useApp((s) => s.attempts);
 
   const [tab, setTab] = useState<LabTab>("list");
+  const [openSkill, setOpenSkill] = useState<string | null>(null);
   const [scenario, setScenario] = useState<LabScenario | null>(null);
   const [examMode, setExamMode] = useState(false);
   const [runId, setRunId] = useState(0); // مفتاح جلسة — يجعل خلط العرض ثابتاً داخل الجلسة وجديداً بين الجلسات
@@ -298,6 +299,7 @@ export default function LabView() {
     </div>
   );
 
+  const skillEmo = pickEmojis(reports.map((r) => r.skill));
   const labEmo = pickEmojis(LAB_SCENARIOS.map((x) => x.title));
   const examEmo = pickEmojis(LAB_EXAM_SCENARIOS.map((x) => x.title));
   const scenarioRow = (s: LabScenario, asExam: boolean, k = 0) => (
@@ -324,76 +326,37 @@ export default function LabView() {
 
       {tab === "exam" && (
         <div className="space-y-5">
-          <Callout tone="info" icon={ShieldCheck} title="مواقف جديدة بلا تلميح">
-            لم تتدرّب عليها من قبل. لا يظهر تقييم أثناء القرار، والتحليل الكامل في النهاية. نتيجتك هنا هي دليل استقلالك المهني في خريطة الكفاءات.
-          </Callout>
           <div className="space-y-2.5">{LAB_EXAM_SCENARIOS.map((s, k) => scenarioRow(s, true, k))}</div>
         </div>
       )}
 
       {tab === "map" && (
-        <div className="space-y-4">
-          <p className="text-base leading-7 text-secondary-foreground">
-            تُبنى حالة كل كفاءة من قراراتك في المواقف، ومن إجاباتك عن أسئلة المفاهيم المرتبطة بها، ومن اختبار الاستقلال.
-          </p>
-          {reports.map((r) => (
-            <Card key={r.skill} className="p-5">
-              <div className="flex items-center justify-between gap-2">
-                <p className="font-display text-base font-semibold">{r.skill}</p>
-                <Chip tone={r.status === "strong" ? "success" : r.status === "weak" ? "danger" : r.status === "none" ? "neutral" : "warning"}>
-                  {STATUS_WORD[r.status]}
-                </Chip>
+        <div className="space-y-2.5">
+          {reports.map((r, k) => {
+            const open = openSkill === r.skill;
+            return (
+              <div key={r.skill} className="space-y-2.5">
+                <GameTile tone={k} emoji={skillEmo[k]} title={r.skill} meta={r.status === "none" ? undefined : STATUS_WORD[r.status]} active={open} onClick={() => setOpenSkill(open ? null : r.skill)} />
+                {open && (
+                  <div className="space-y-2.5 pr-4">
+                    {r.examVerdict && (
+                      <Callout tone="success" icon={ShieldCheck}>
+                        {r.examVerdict}
+                      </Callout>
+                    )}
+                    {r.scenarioIds.map((sid, j) => {
+                      const sc = labScenarioById.get(sid);
+                      return sc ? <GameTile key={sid} tone={j + 1} emoji="🧪" title={sc.title} onClick={() => startScenario(sc)} /> : null;
+                    })}
+                    {r.examScenarioIds.map((sid, j) => {
+                      const sc = labScenarioById.get(sid);
+                      return sc ? <GameTile key={sid} tone={j + 3} emoji="🛡️" title={sc.title} onClick={() => startScenario(sc, true)} /> : null;
+                    })}
+                  </div>
+                )}
               </div>
-              {r.examVerdict && (
-                <Callout tone="success" icon={ShieldCheck} className="mt-3">
-                  {r.examVerdict}
-                </Callout>
-              )}
-              {(r.evidence.length > 0 || r.quizEvidence.length > 0) && (
-                <ul className="mt-3 space-y-2 text-sm leading-6 text-secondary-foreground">
-                  {r.evidence.map((ev, i) => (
-                    <li key={`e${i}`} className="flex gap-2">
-                      <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                      {ev}
-                    </li>
-                  ))}
-                  {r.quizEvidence.map((ev, i) => (
-                    <li key={`q${i}`} className="flex gap-2">
-                      <Quote className="mt-1 h-3.5 w-3.5 shrink-0 text-gem" />
-                      {ev}
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {(r.scenarioIds.length > 0 || r.examScenarioIds.length > 0) && (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {r.scenarioIds.map((sid) => {
-                    const sc = labScenarioById.get(sid);
-                    if (!sc) return null;
-                    return (
-                      <button key={sid} type="button" onClick={() => startScenario(sc)} className="min-h-[36px] rounded-full border border-border px-3 text-sm text-foreground hover:bg-accent">
-                        جرّب: {sc.title}
-                      </button>
-                    );
-                  })}
-                  {r.examScenarioIds.map((sid) => {
-                    const sc = labScenarioById.get(sid);
-                    if (!sc) return null;
-                    return (
-                      <button
-                        key={sid}
-                        type="button"
-                        onClick={() => startScenario(sc, true)}
-                        className="inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-border px-3 text-sm text-foreground hover:bg-accent"
-                      >
-                        <ShieldCheck className="h-3.5 w-3.5" /> اختبر استقلالك: {sc.title}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </Card>
-          ))}
+            );
+          })}
         </div>
       )}
 
