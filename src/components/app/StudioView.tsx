@@ -10,6 +10,7 @@ import { FitText } from "./FitText";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
+  ArrowRight,
   X,
   ClipboardList,
   NotebookPen,
@@ -185,6 +186,8 @@ function PlanBody({ plan }: { plan: Omit<LessonPlan, "id" | "ts"> }) {
     </Card>
   );
 }
+
+const SUBJECT_EMOJI: Record<string, string> = { "اللغة العربية": "📖", "الرياضيات": "➗", "العلوم": "🔬", "الدراسات الاجتماعية": "🌍", "اللغة الإنجليزية": "🔤", "التربية الإسلامية": "🕌", "الحاسب والتقنية": "💻", "رياض الأطفال": "🧸" };
 
 export default function StudioView() {
   const clearStudio = useUi((s) => s.clearStudio);
@@ -508,26 +511,25 @@ export default function StudioView() {
         </div>
       ) : tab === "templates" ? (
         <div className="space-y-4">
-          {/* تصفية حسب المادة */}
-          <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4" role="tablist" aria-label="المادة">
-            {["الكل", ...Array.from(new Set(MODEL_PLANS.map((m) => m.form.subject)))].map((sub) => (
-              <button
-                key={sub}
-                type="button"
-                role="tab"
-                aria-selected={subjectFilter === sub}
-                onClick={() => setSubjectFilter(sub)}
-                className={`min-h-[38px] shrink-0 rounded-full border px-4 text-sm font-bold transition ${subjectFilter === sub ? "border-transparent bg-[var(--t700)] text-white" : "border-[var(--t075)] bg-white text-foreground dark:border-border dark:bg-card"}`}
-              >
-                {sub}
+          {subjectFilter === "الكل" ? (
+            /* المواد أولًا: بطاقة لكل مادة، وعند اختيارها تظهر خططها */
+            <div className="grid grid-cols-2 gap-2.5">
+              {Array.from(new Set(MODEL_PLANS.map((m) => m.form.subject))).map((sub, k) => (
+                <GameTile key={sub} tone={k} emoji={SUBJECT_EMOJI[sub] ?? "📝"} title={sub === "الدراسات الاجتماعية" ? "الاجتماعيات" : sub} meta={ad(MODEL_PLANS.filter((m) => m.form.subject === sub).length)} onClick={() => setSubjectFilter(sub)} />
+              ))}
+            </div>
+          ) : (
+            <>
+              <button type="button" onClick={() => setSubjectFilter("الكل")} className="inline-flex min-h-[38px] items-center gap-1.5 rounded-full border border-[var(--t075)] bg-white px-4 text-sm font-bold text-foreground dark:bg-card">
+                <ArrowRight className="h-4 w-4" /> كل المواد
               </button>
-            ))}
-          </div>
-          <div className="space-y-2.5">
-            {MODEL_PLANS.filter((m) => subjectFilter === "الكل" || m.form.subject === subjectFilter).map((m, k, arr) => (
-              <GameTile key={m.id} tone={k} emoji={pickEmojis(arr.map((x) => x.form.topic))[k]} title={m.form.topic} onClick={() => setPreview(m)} />
-            ))}
-          </div>
+              <div className="space-y-2.5">
+                {MODEL_PLANS.filter((m) => m.form.subject === subjectFilter).map((m, k, arr) => (
+                  <GameTile key={m.id} tone={k} emoji={pickEmojis(arr.map((x) => x.form.topic))[k]} title={m.form.topic} onClick={() => setPreview(m)} />
+                ))}
+              </div>
+            </>
+          )}
         </div>
       ) : lessonPlans.length === 0 ? (
         <EmptyState
