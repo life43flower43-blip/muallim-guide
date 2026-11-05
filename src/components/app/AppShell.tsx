@@ -336,7 +336,10 @@ export default function AppShell() {
   // عامل الخدمة للعمل دون اتصال، وإعادة تحميل واحدة عند وصول نسخة أحدث
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
-    navigator.serviceWorker.register("/sw.js").catch(() => {});
+    // لا يُخزَّن ملف العامل نفسه، ويُفحص التحديث كلما عاد المستخدم إلى التطبيق
+    navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" }).catch(() => {});
+    const check = () => { if (document.visibilityState === "visible") navigator.serviceWorker.getRegistration().then((r) => r?.update()).catch(() => {}); };
+    document.addEventListener("visibilitychange", check);
     let reloading = false;
     const hadController = !!navigator.serviceWorker.controller;
     const onChange = () => {
@@ -345,7 +348,10 @@ export default function AppShell() {
       window.location.reload();
     };
     navigator.serviceWorker.addEventListener("controllerchange", onChange);
-    return () => navigator.serviceWorker.removeEventListener("controllerchange", onChange);
+    return () => {
+      navigator.serviceWorker.removeEventListener("controllerchange", onChange);
+      document.removeEventListener("visibilitychange", check);
+    };
   }, []);
 
   // تحديث تلقائي: إن نُشرت نسخة أحدث والتبويب مفتوح، يُعاد التحميل حين يعود المستخدم إلى التطبيق
