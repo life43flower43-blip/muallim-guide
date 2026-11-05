@@ -29,7 +29,7 @@ import { buildScenarioRun } from "@/lib/scenarios";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { ad } from "@/lib/arabic";
-import { Callout, Card, Chip, Divided, IconTile, OptionButton, PrimaryButton, ProgressBar, Ring, ScreenShell, SecondaryButton, SectionHeader, GameTile } from "./ui-kit";
+import { Callout, Card, Chip, Divided, IconTile, OptionButton, PrimaryButton, ProgressBar, Ring, ScreenShell, SecondaryButton, SectionHeader, GameTile, SceneCard, AskHeading } from "./ui-kit";
 
 const LETTERS = ["أ", "ب", "ج", "د"];
 
@@ -106,17 +106,15 @@ function RunScreen({
       }
     >
       <ProgressBar value={((idx + (graded ? 1 : 0)) / run.length) * 100} className="mb-5" />
-      <motion.div key={sc.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+      <motion.div key={sc.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
         <div>
           <Chip tone="primary">{sc.category}</Chip>
-          <h2 className="mt-3 font-display text-lg font-semibold leading-8">{sc.title}</h2>
+          <h2 className="mt-2 font-display text-[17px] font-extrabold leading-7">{sc.title}</h2>
         </div>
-        <Card className="p-5">
-          <p className="text-base leading-8">{sc.situation}</p>
-        </Card>
+        <SceneCard>{sc.situation}</SceneCard>
         <div>
-          <p className="mb-3 font-display text-base font-semibold">ماذا ستفعل؟</p>
-          <div className="space-y-3">
+          <AskHeading>ماذا ستفعل؟</AskHeading>
+          <div className="space-y-2.5">
             {sc.options.map((o, i) => {
               let state: "idle" | "correct" | "wrong" | "dim" | "selected" = "idle";
               if (graded) {

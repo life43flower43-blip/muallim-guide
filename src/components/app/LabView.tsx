@@ -26,7 +26,7 @@ import {
 } from "@/lib/lab";
 import { conceptById, questionById, OPTION_LETTERS } from "@/lib/qbank";
 import { ad } from "@/lib/arabic";
-import { Callout, Card, Chip, Divided, EmptyState, IconTile, OptionButton, PrimaryButton, ScreenShell, SectionHeader, ToolTiles, GameTile } from "./ui-kit";
+import { Callout, Card, Chip, Divided, EmptyState, IconTile, OptionButton, PrimaryButton, ScreenShell, SectionHeader, ToolTiles, GameTile, SceneCard, AskHeading } from "./ui-kit";
 
 type LabTab = "list" | "exam" | "map" | "mirror";
 
@@ -169,7 +169,7 @@ export default function LabView() {
         footer={footer}
       >
         {!finished && !pendingOutcome && node && (
-          <motion.div key={nodeKey + runId} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+          <motion.div key={nodeKey + runId} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
             <div className="flex flex-wrap gap-2">
               <Chip tone="primary">القرار {ad(steps.length + 1)}</Chip>
               {examMode && (
@@ -178,12 +178,10 @@ export default function LabView() {
                 </Chip>
               )}
             </div>
-            <Card className="p-5">
-              <p className="text-base leading-8">{node.text}</p>
-            </Card>
+            <SceneCard>{node.text}</SceneCard>
             <div>
-              <p className="mb-3 font-display text-base font-semibold">{examMode ? "خذ قرارك، والتقييم يظهر بعد الختام" : "ماذا ستفعل؟"}</p>
-              <div className="space-y-3">
+              <AskHeading>{examMode ? "خذ قرارك، والتقييم يظهر بعد الختام" : "ماذا ستفعل؟"}</AskHeading>
+              <div className="space-y-2.5">
                 {shownOptions.map((o, i) => (
                   <OptionButton key={i} letter={OPTION_LETTERS[i]} onClick={() => choose(i)}>
                     {o.text}

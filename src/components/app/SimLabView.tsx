@@ -28,7 +28,7 @@ import {
   type SimSkillScore,
 } from "@/lib/sim";
 import { LAB_ALL, isExamScenario } from "@/lib/lab";
-import { Callout, Card, Chip, Divided, IconTile, OptionButton, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, SkillBar, ToolTiles, GameTile } from "./ui-kit";
+import { Callout, Card, Chip, Divided, IconTile, OptionButton, PrimaryButton, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, SkillBar, ToolTiles, GameTile, SceneCard, AskHeading } from "./ui-kit";
 import { conceptById, OPTION_LETTERS } from "@/lib/qbank";
 
 
@@ -333,20 +333,16 @@ export default function SimLabView() {
       footer={footer}
     >
       {!finished && !pendingOutcome && (
-        <motion.div key={nodeKey + runId} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+        <motion.div key={nodeKey + runId} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
           <div className="flex flex-wrap items-center gap-2">
             <Chip tone="primary">القرار {ad(decisionNo)}</Chip>
             <Chip>{scenario.stage}</Chip>
           </div>
-          {nodeKey === "start" && <p className="text-base leading-8 text-secondary-foreground">{scenario.intro}</p>}
-          {node && (
-            <Card className="p-5">
-              <p className="text-base leading-8">{node.text}</p>
-            </Card>
-          )}
+          {nodeKey === "start" && <p className="text-[15px] leading-7 text-secondary-foreground">{scenario.intro}</p>}
+          {node && <SceneCard>{node.text}</SceneCard>}
           <div>
-            <p className="mb-3 font-display text-base font-semibold">ماذا ستفعل؟</p>
-            <div className="space-y-3">
+            <AskHeading>ماذا ستفعل؟</AskHeading>
+            <div className="space-y-2.5">
               {shownOptions.map((o, i) => (
                 <OptionButton key={i} letter={OPTION_LETTERS[i]} onClick={() => choose(i)}>
                   {o.text}

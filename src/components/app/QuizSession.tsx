@@ -553,8 +553,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     const isSel = selected === o.text;
     if (showFeedback && o.isCorrect) return "border-[var(--t700)] bg-[var(--t100)] text-foreground dark:bg-[var(--t700)]/15 dark:text-[var(--t300)]";
     if (showFeedback && isSel) return "border-[#F0B4B4] bg-[#FFF6F6] text-foreground dark:bg-[#FF4B4B]/10";
-    if (isSel) return "border-[var(--t700)] bg-[var(--t050)] text-foreground ring-2 ring-[var(--t150)] dark:bg-[var(--t800)]/15 dark:text-foreground";
-    return "border-[var(--t075)] bg-white text-foreground dark:border-border dark:bg-card";
+    if (isSel) return "border-[var(--t700)] bg-[var(--t050)] text-foreground dark:bg-[var(--t800)]/15 dark:text-foreground";
+    return "border-[#E3EDE8] border-b-[#C9DDD3] bg-white text-foreground dark:border-border dark:bg-card";
   };
 
   return (
@@ -586,16 +586,19 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               {combo >= 3 && !answered && (
                 <p className="mb-3 text-base font-bold text-[#D4A017]">{ad(combo)} إجابات صحيحة متتالية!</p>
               )}
-              <h2 className="font-display text-[17px] font-bold leading-8 text-foreground">{q.question}</h2>
+              <h2 className="relative overflow-hidden rounded-[22px] bg-[var(--t050)] px-4 py-3.5 font-display text-[16px] font-bold leading-7 text-foreground dark:bg-card">
+                <span className="absolute inset-y-3 right-0 w-1 rounded-l-full bg-[var(--t600)]" aria-hidden="true" />
+                {q.question}
+              </h2>
 
-              <div className={q.type === "tf" ? "mt-6 grid grid-cols-2 gap-3" : "mt-6 space-y-2.5"}>
+              <div className={q.type === "tf" ? "mt-4 grid grid-cols-2 gap-2.5" : "mt-4 space-y-2.5"}>
                 {opts.map((o, i) => (
                   <button
                     key={i}
                     type="button"
                     disabled={answered}
                     onClick={() => choose(o.text)}
-                    className={`flex min-h-[54px] w-full items-center gap-3 rounded-[18px] border-[1.5px] px-3.5 py-3 text-right text-base font-semibold leading-7 transition active:scale-[0.99] ${optClass(o)} ${
+                    className={`flex min-h-[52px] w-full items-center gap-2.5 rounded-[18px] border-2 border-b-4 px-3.5 py-3 text-right text-[15px] font-medium leading-7 transition active:translate-y-[1px] ${optClass(o)} ${
                       q.type === "tf" ? "justify-center text-center font-bold" : ""
                     }`}
                   >

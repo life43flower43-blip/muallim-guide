@@ -268,12 +268,12 @@ export function ScreenShell({
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
       <header className="green-head safe-top relative shrink-0 px-2 pb-1.5">
         <HeaderArt />
-        <div className={cn("mx-auto flex min-h-[56px] items-center gap-2 px-1", wide ? "max-w-5xl" : "max-w-3xl")}>
+        <div className={cn("mx-auto flex min-h-[46px] items-center gap-2 px-1", wide ? "max-w-5xl" : "max-w-3xl")}>
           {/* زر الرجوع في أسفل الشاشة قريبًا من الإبهام؛ يبقى هنا مكان فارغ يوازن العنوان */}
           {(onBack || onClose) && <span className="w-11 shrink-0" aria-hidden="true" />}
           <div className="min-w-0 flex-1 px-1">
             <h1 className="text-center font-display font-extrabold leading-8">
-              <FitText max={20} min={13} className="text-center">{title}</FitText>
+              <FitText max={18} min={12} className="text-center">{title}</FitText>
             </h1>
           </div>
           {actions}
@@ -291,16 +291,17 @@ export function ScreenShell({
           <div className="relative min-h-0 flex-1">{children}</div>
         ) : (
           <div className="no-scrollbar flex-1 overflow-y-auto">
-            <div className={cn("mx-auto px-4 pb-24 pt-5", wide ? "max-w-5xl lg:px-8" : "max-w-3xl")}>{children}</div>
+            <div className={cn("mx-auto px-4 pb-6 pt-4", wide ? "max-w-5xl lg:px-8" : "max-w-3xl")}>{children}</div>
           </div>
         )}
-        {(onBack || onClose) && (
-          <BackButton onClick={(onBack ?? onClose)!} className={cn("absolute right-4 z-10", footer ? "bottom-3" : "bottom-[calc(env(safe-area-inset-bottom)+16px)]")} />
-        )}
       </div>
-      {footer && (
-        <div className="safe-bottom shrink-0 border-t border-border bg-card">
-          <div className={cn("mx-auto flex gap-3 px-4 py-3", wide ? "max-w-5xl" : "max-w-3xl")}>{footer}</div>
+      {/* الشريط السفلي: زر الرجوع في مكانه الثابت قرب الإبهام، ثم أزرار الشاشة؛ لا يغطي المحتوى أبدًا */}
+      {(footer || onBack || onClose) && (
+        <div className="safe-bottom shrink-0 border-t border-[var(--t075)] bg-white/95 backdrop-blur dark:border-border dark:bg-card">
+          <div className={cn("mx-auto flex items-center gap-2.5 px-4 py-2.5", wide ? "max-w-5xl" : "max-w-3xl")}>
+            {(onBack || onClose) && <BackButton onClick={(onBack ?? onClose)!} className="h-11 w-11" />}
+            {footer && <div className="flex min-w-0 flex-1 gap-2.5">{footer}</div>}
+          </div>
         </div>
       )}
     </div>
@@ -407,11 +408,11 @@ export function OptionButton({
   shortcut?: string;
 }) {
   const cls = {
-    idle: "border-border bg-card hover:border-primary/50 hover:bg-accent/40",
-    selected: "border-primary bg-accent ring-1 ring-primary",
-    correct: "border-success bg-success-soft",
-    wrong: "border-destructive bg-danger-soft",
-    dim: "border-border bg-card opacity-60",
+    idle: "border-[#E3EDE8] border-b-[#C9DDD3] bg-white hover:border-[var(--t300)] dark:border-border dark:bg-card",
+    selected: "border-[var(--t600)] border-b-[var(--t700)] bg-[var(--t050)] dark:bg-[var(--t800)]/15",
+    correct: "border-success border-b-success bg-success-soft",
+    wrong: "border-destructive border-b-destructive bg-danger-soft",
+    dim: "border-[#E3EDE8] bg-white opacity-60 dark:border-border dark:bg-card",
   }[state];
   const letterCls = {
     idle: "bg-[var(--t075)] text-foreground dark:bg-muted dark:text-foreground",
@@ -422,16 +423,16 @@ export function OptionButton({
   }[state];
   const isStruck = struck && (state === "idle" || state === "dim");
   return (
-    <div className={cn("group relative flex w-full items-stretch rounded-xl border transition-colors", cls, isStruck && "opacity-50")}>
+    <div className={cn("group relative flex w-full items-stretch rounded-[18px] border-2 border-b-4 transition-colors active:translate-y-[1px]", cls, isStruck && "opacity-50")}>
       <button
         type="button"
         onClick={onClick}
         disabled={disabled}
         aria-keyshortcuts={shortcut}
-        className="flex min-w-0 flex-1 items-start gap-3 rounded-xl p-4 text-right disabled:cursor-default"
+        className="flex min-w-0 flex-1 items-start gap-2.5 rounded-[16px] px-3.5 py-3 text-right disabled:cursor-default"
       >
-        {letter && <span className={cn("flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm font-semibold", letterCls)}>{letter}</span>}
-        <span className={cn("flex-1 text-base leading-7", isStruck && "line-through decoration-2")}>{children}</span>
+        {letter && <span className={cn("mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[13px] font-extrabold", letterCls)}>{letter}</span>}
+        <span className={cn("flex-1 text-[15px] font-medium leading-7", isStruck && "line-through decoration-2")}>{children}</span>
         {/* رمز الصح والخطأ مع اللون، حتى لا يعتمد التمييز على اللون وحده */}
         {state === "correct" && <CircleCheck className="mt-1 h-5 w-5 shrink-0 text-success" aria-label="صحيح" />}
         {state === "wrong" && <CircleX className="mt-1 h-5 w-5 shrink-0 text-destructive" aria-label="خطأ" />}
@@ -449,6 +450,26 @@ export function OptionButton({
         </button>
       )}
     </div>
+  );
+}
+
+/** نص الموقف في بطاقة مميزة: خلفية فاتحة وشريط جانبي بلون الهوية */
+export function SceneCard({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn("relative overflow-hidden rounded-[22px] bg-[var(--t050)] px-4 py-3.5 text-[15px] font-medium leading-7 text-foreground dark:bg-card", className)}>
+      <span className="absolute inset-y-3 right-0 w-1 rounded-l-full bg-[var(--t600)]" aria-hidden="true" />
+      {children}
+    </div>
+  );
+}
+
+/** عنوان سؤال التفاعل فوق الخيارات */
+export function AskHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="mb-2.5 flex items-center gap-2 text-[15px] font-extrabold text-foreground">
+      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FBF3DA] text-[13px]" aria-hidden="true">🤔</span>
+      {children}
+    </p>
   );
 }
 
