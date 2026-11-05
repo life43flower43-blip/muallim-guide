@@ -25,9 +25,17 @@ export function GoogleIcon({ className = "h-5 w-5" }: { className?: string }) {
 /** onDone يُستدعى قبل الدخول (مثلًا لإنهاء شاشة البداية فلا تعود بعد الدخول) */
 export default function AuthPanel({ label = "المتابعة بحساب Google", onDone, initialMode = "signup" }: { label?: string; onDone?: () => void; initialMode?: "signup" | "login" }) {
   const [google, setGoogle] = useState(false);
+  // آخر بريد دخلت به يبقى محفوظًا على الجهاز، فإن كان موجودًا تفتح الصفحة على «دخول»
   const [mode, setMode] = useState<"signup" | "login">(initialMode);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  useEffect(() => {
+    try {
+      const last = localStorage.getItem("turbawy-last-email");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      if (last) { setEmail(last); setMode("login"); }
+    } catch {}
+  }, []);
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -53,6 +61,12 @@ export default function AuthPanel({ label = "المتابعة بحساب Google"
         setBusy(false);
         return;
       }
+      try { localStorage.setItem("turbawy-last-email", email.trim()); } catch {}
+      // اطلب من المتصفح حفظ البريد وكلمة المرور (مدير كلمات المرور في الهاتف)
+      try {
+        const PC = (window as unknown as { PasswordCredential?: new (d: { id: string; password: string; name?: string }) => Credential }).PasswordCredential;
+        if (PC && navigator.credentials) await navigator.credentials.store(new PC({ id: email.trim(), password, name: name || undefined }));
+      } catch {}
       onDone?.();
       // العودة نفسها التي تتبع دخول Google: رسالة، ثم نقل بيانات الجهاز إلى الحساب
       window.location.href = "/app?login=success";
@@ -88,12 +102,12 @@ export default function AuthPanel({ label = "المتابعة بحساب Google"
         ))}
       </div>
 
-      <form onSubmit={submit} className="space-y-2.5">
+      <form onSubmit={submit} method="post" action={mode === "signup" ? "/api/auth/register" : "/api/auth/login"} className="space-y-2.5">
         {mode === "signup" && (
-          <input className={field} value={name} onChange={(e) => setName(e.target.value)} placeholder="اسمك" autoComplete="name" required minLength={2} maxLength={60} />
+          <input className={field} value={name} onChange={(e) => setName(e.target.value)} name="name" id="auth-name" placeholder="اسمك" autoComplete="name" required minLength={2} maxLength={60} />
         )}
-        <input className={field} type="email" dir="ltr" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="البريد الإلكتروني" autoComplete="email" required />
-        <input className={field} type="password" dir="ltr" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={mode === "signup" ? "كلمة مرور (٨ أحرف على الأقل)" : "كلمة المرور"} autoComplete={mode === "signup" ? "new-password" : "current-password"} required minLength={8} />
+        <input className={field} type="email" name="email" id="auth-email" dir="ltr" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="البريد الإلكتروني" autoComplete="username" required />
+        <input className={field} type="password" name="password" id="auth-password" dir="ltr" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={mode === "signup" ? "كلمة مرور (٨ أحرف على الأقل)" : "كلمة المرور"} autoComplete={mode === "signup" ? "new-password" : "current-password"} required minLength={8} />
         {error && <p role="alert" className="text-sm font-bold text-red-600">{error}</p>}
         <button type="submit" disabled={busy} className="min-h-[48px] w-full rounded-[20px] bg-[var(--t700,#136F5C)] px-4 text-base font-bold text-white disabled:opacity-60">
           {busy ? "لحظة..." : mode === "signup" ? "إنشاء الحساب" : "دخول"}
