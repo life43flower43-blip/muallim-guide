@@ -86,12 +86,12 @@ const DOOR_ICON: Record<string, React.ElementType> = {
   "خطة الدرس": NotebookPen,
 };
 const DOOR_BG: Record<string, string> = {
-  "اختبر نفسك": "#E08E00",
-  "المفاهيم التربوية": "#0A8FC2",
-  "المواقف الصفية": "#E2620F",
-  "مهارات التدريس": "#0F9A62",
-  "طرائق التدريس": "#0E7F74",
-  "خطة الدرس": "#3A6FE0",
+  "اختبر نفسك": "#1D8278",
+  "المفاهيم التربوية": "#1D8278",
+  "المواقف الصفية": "#1D8278",
+  "مهارات التدريس": "#1D8278",
+  "طرائق التدريس": "#1D8278",
+  "خطة الدرس": "#1D8278",
 };
 
 
@@ -303,9 +303,9 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         // شبكة رموز دائرية ملونة: أربعة في كل صف، والاسم تحت كل رمز
         <div ref={gridRef} className="grid grid-cols-4 gap-x-2 gap-y-5 pt-2">
           {[
-            { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "#E23B2E", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
+            { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "#1D8278", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
             ...gridDoors.map((d) => ({ title: d.title, icon: DOOR_ICON[d.title] ?? BookOpen, bg: DOOR_BG[d.title] ?? "#279488", run: d.run })),
-            { title: "البوصلة", icon: Compass, bg: "#2458D6", run: () => onGoTab("notebook") },
+            { title: "البوصلة", icon: Compass, bg: "#1D8278", run: () => onGoTab("notebook") },
           ].map((d, i) => (
             <motion.button
               key={d.title}

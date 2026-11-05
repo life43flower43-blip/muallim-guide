@@ -128,7 +128,9 @@ export default function NotebookView() {
           <FitText max={18} min={12} className="font-extrabold leading-7 text-white">الخرائط الذهنية المتحركة</FitText>
           <FitText max={13} min={10} className="leading-6 text-[#FCEBB6]">إحدى عشرة خريطة · مشاهد قصيرة · تدريب مباشر</FitText>
         </span>
-        <ChevronLeft className="h-5 w-5 shrink-0 text-[#D4A017]" strokeWidth={2.5} aria-hidden="true" />
+        {/* موجات طاقة تندفع إلى الأمام نحو السهم */}
+        <span className="mc-push pointer-events-none absolute inset-0" aria-hidden="true" />
+        <ChevronLeft className="mc-arrow h-6 w-6 shrink-0 text-[#F3DC8E]" strokeWidth={3} aria-hidden="true" />
       </button>
       </div>
 
