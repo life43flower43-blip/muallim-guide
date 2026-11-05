@@ -141,13 +141,13 @@ function BottomNav({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => v
       id="bottom-nav"
       aria-label="التنقل الرئيسي"
       className={cn(
-        "safe-bottom fixed inset-x-0 bottom-0 z-30 bg-background px-2 pb-2 pt-3 transition-[transform,opacity] duration-300 ease-out min-[380px]:px-3 lg:hidden",
+        "safe-bottom fixed inset-x-0 bottom-0 z-30 bg-background px-2 pb-2 pt-6 transition-[transform,opacity] duration-300 ease-out min-[380px]:px-3 lg:hidden",
         hidden ? "pointer-events-none translate-y-full opacity-0" : "translate-y-0 opacity-100"
       )}
     >
       {/* شريط عائم بإطار ذهبي، والحبة الخضراء تنزلق بين التبويبات */}
       {/* زر الرجوع عائم فوق شريط التنقل يمينًا، قريبًا من الإبهام */}
-      {tab !== "today" && <BackButton onClick={onBack} className="absolute -top-14 right-4" />}
+      {tab !== "today" && <BackButton onClick={onBack} className="absolute -top-11 right-4" />}
       <div>
       <div className="nav-gold grid min-w-0 flex-1 grid-cols-5 gap-0.5 rounded-[26px] p-1 min-[380px]:gap-1 min-[380px]:p-1.5">
         {NAV.map((n) => {
@@ -494,7 +494,7 @@ export default function AppShell() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className={cn("mx-auto w-full max-w-5xl px-4 pt-5 lg:px-8 lg:pt-8", "pb-36 lg:pb-10")}
+              className={cn("mx-auto w-full max-w-5xl px-4 pt-5 lg:px-8 lg:pt-8", "pb-44 lg:pb-10")}
             >
               {tab === "today" && <TodayView onGoTab={go} />}
               {tab === "notebook" && <NotebookView />}
