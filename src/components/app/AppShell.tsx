@@ -120,7 +120,7 @@ function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: 
   );
 }
 
-function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
+function BottomNav({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => void; due: number; onBack: () => void }) {
   // يختفي الشريط تدريجيًا حين يسحب الطالب الصفحة للأسفل، ويعود حين يسحبها للأعلى
   const [hidden, setHidden] = useState(false);
   useEffect(() => {
@@ -146,7 +146,10 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
       )}
     >
       {/* شريط عائم بإطار ذهبي، والحبة الخضراء تنزلق بين التبويبات */}
-      <div className="nav-gold grid grid-cols-5 gap-0.5 rounded-[26px] p-1 min-[380px]:gap-1 min-[380px]:p-1.5">
+      <div className="flex items-center gap-1.5">
+      {/* زر الرجوع بجانب شريط التنقل، فلا يغطي محتوى الصفحة */}
+      {tab !== "today" && <BackButton onClick={onBack} className="h-12 w-12" />}
+      <div className="nav-gold grid min-w-0 flex-1 grid-cols-5 gap-0.5 rounded-[26px] p-1 min-[380px]:gap-1 min-[380px]:p-1.5">
         {NAV.map((n) => {
           const active = tab === n.id;
           return (
@@ -176,6 +179,7 @@ function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due
           );
         })}
       </div>
+      </div>
     </nav>
   );
 }
@@ -194,8 +198,6 @@ function MobileTopBar({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) =
       <header className="green-head safe-top sticky top-0 z-30 px-2 pb-0.5 lg:hidden">
         <HeaderArt />
         <div className="relative flex h-12 items-center justify-center px-14">
-          {/* رجوع إلى الرئيسية: في أسفل الشاشة فوق شريط التنقل، قريبًا من الإبهام */}
-          <BackButton onClick={onBack} className="fixed bottom-[calc(env(safe-area-inset-bottom)+96px)] right-4 z-40" />
           <h1 className="font-display text-lg font-extrabold">{NAV.find((n) => n.id === tab)?.label}</h1>
           {tab === "profile" && (
             <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="absolute left-1.5 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
@@ -502,7 +504,7 @@ export default function AppShell() {
             </motion.div>
           </AnimatePresence>
         </main>
-        <BottomNav tab={tab} onTab={go} due={due} />
+        <BottomNav tab={tab} onTab={go} due={due} onBack={back} />
       </div>
 
       <AnimatePresence>{ui.simOpen && <SimLabView key="sim" />}</AnimatePresence>
