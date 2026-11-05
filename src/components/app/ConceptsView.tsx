@@ -836,22 +836,22 @@ export default function ConceptsView() {
               <button
                 type="button"
                 onClick={() => openConceptHere(resume.id)}
-                className="flex w-full min-w-0 items-center gap-3 rounded-[24px] bg-[var(--t700)] p-3.5 text-right text-white transition active:scale-[0.98]"
+                className="flex w-full min-w-0 items-center gap-2.5 rounded-[20px] bg-[var(--t700)] px-3 py-2.5 text-right text-white transition active:scale-[0.98]"
               >
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] bg-white/15 text-[#F3DC8E]">
-                  <CourseIcon id={resume.courseId} className="h-6 w-6" />
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/15 text-[#F3DC8E]">
+                  <CourseIcon id={resume.courseId} className="h-4 w-4" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <FitText max={17} min={12} className="font-extrabold leading-7">{resume.title}</FitText>
-                  <span className="mt-1.5 flex items-center gap-2">
+                  <FitText max={16} min={12} className="font-extrabold leading-6">{resume.title}</FitText>
+                  <span className="mt-1 flex items-center gap-2">
                     <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/20">
                       <span className="block h-full rounded-full bg-[#F3DC8E]" style={{ width: `${resumeSiblings.length ? Math.max(4, (resumeRead / resumeSiblings.length) * 100) : 0}%` }} />
                     </span>
                     <span className="shrink-0 text-xs font-bold text-white/85">{ad(resumeRead)} من {ad(resumeSiblings.length)}</span>
                   </span>
                 </span>
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-foreground">
-                  <Play className="h-4 w-4 fill-current" />
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-foreground">
+                  <Play className="h-3.5 w-3.5 fill-current" />
                 </span>
               </button>
             </section>

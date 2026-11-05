@@ -236,24 +236,21 @@ export default function SimLabView() {
           <button
             type="button"
             onClick={startSession}
-            className="block w-full overflow-hidden rounded-[26px] bg-[var(--t700)] p-4 text-right text-white transition active:scale-[0.98]"
+            className="flex w-full min-w-0 items-center gap-2.5 rounded-[20px] bg-[var(--t700)] px-3 py-2.5 text-right text-white transition active:scale-[0.98]"
           >
-            <span className="flex items-center gap-3">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 text-[#F3DC8E]">
-                <Play className="h-6 w-6 fill-current" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <FitText max={19} min={14} className="font-extrabold leading-8">جلسة متتابعة</FitText>
-                <FitText max={14} min={10} className="font-medium text-white/80">{`${ad(SIM_SESSION_SIZE)} مواقف ثم تقرير كفاءاتك`}</FitText>
-              </span>
-              <ChevronLeft className="h-6 w-6 shrink-0 text-[#F3DC8E]" />
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/15 text-[#F3DC8E]">
+              <Play className="h-4 w-4 fill-current" />
             </span>
-            <span className="mt-3 flex items-center gap-2">
-              <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/20" aria-hidden="true">
-                <span className="block h-full rounded-full bg-[#D4A017]" style={{ width: `${doneCount ? Math.max(3, (doneCount / Math.max(1, SIM_SCENARIOS.length)) * 100) : 0}%` }} />
+            <span className="min-w-0 flex-1">
+              <FitText max={16} min={12} className="font-extrabold leading-6">{`جلسة متتابعة · ${ad(SIM_SESSION_SIZE)} مواقف`}</FitText>
+              <span className="mt-1 flex items-center gap-2">
+                <span className="h-1 flex-1 overflow-hidden rounded-full bg-white/20" aria-hidden="true">
+                  <span className="block h-full rounded-full bg-[#D4A017]" style={{ width: `${doneCount ? Math.max(3, (doneCount / Math.max(1, SIM_SCENARIOS.length)) * 100) : 0}%` }} />
+                </span>
+                <span className="shrink-0 text-[11px] font-bold text-white/85">{ad(doneCount)} من {ad(SIM_SCENARIOS.length)}</span>
               </span>
-              <span className="shrink-0 text-xs font-bold text-white/85">أنجزت {ad(doneCount)} من {ad(SIM_SCENARIOS.length)}</span>
             </span>
+            <ChevronLeft className="h-5 w-5 shrink-0 text-[#F3DC8E]" />
           </button>
 
           <ToolTiles

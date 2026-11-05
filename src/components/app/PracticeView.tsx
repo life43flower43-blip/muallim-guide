@@ -134,21 +134,18 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
       <button
         type="button"
         onClick={() => startSmart()}
-        className="relative block w-full overflow-hidden rounded-[26px] bg-[var(--t700)] p-4 text-right text-white transition active:scale-[0.98]"
+        className="flex w-full min-w-0 items-center gap-2.5 rounded-[20px] bg-[var(--t700)] px-3 py-2.5 text-right text-white transition active:scale-[0.98]"
       >
-        <span className="flex items-center gap-3">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 text-[#F3DC8E]">
-            <Sparkles className="h-6 w-6" />
-          </span>
-          <span className="min-w-0 flex-1">
-            <FitText max={20} min={15} className="font-extrabold leading-8">تدريب ذكي</FitText>
-            <FitText max={14} min={10} className="font-medium text-white/80">عشرة أسئلة مختارة لك</FitText>
-          </span>
-          <ChevronLeft className="h-6 w-6 shrink-0 text-[#F3DC8E]" />
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/15 text-[#F3DC8E]">
+          <Sparkles className="h-4 w-4" />
         </span>
-        <span className="mt-3 block h-1.5 overflow-hidden rounded-full bg-white/20" aria-hidden="true">
-          <span className="block h-full rounded-full bg-[#D4A017]" style={{ width: `${bank ? Math.max(2, (answered / bank) * 100) : 0}%` }} />
+        <span className="min-w-0 flex-1">
+          <FitText max={16} min={12} className="font-extrabold leading-6">تدريب ذكي · عشرة أسئلة لك</FitText>
+          <span className="mt-1 block h-1 overflow-hidden rounded-full bg-white/20" aria-hidden="true">
+            <span className="block h-full rounded-full bg-[#D4A017]" style={{ width: `${bank ? Math.max(2, (answered / bank) * 100) : 0}%` }} />
+          </span>
         </span>
+        <ChevronLeft className="h-5 w-5 shrink-0 text-[#F3DC8E]" />
       </button>
 
 
