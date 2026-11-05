@@ -156,7 +156,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
   const achievements = [
     { id: "streak", name: "المواظبة", unit: "يومًا متتاليًا", icon: Flame, value: wallet.streak, tiers: [3, 7, 14, 30, 100] },
     { id: "answered", name: "التدريب", unit: "سؤالًا", icon: Target, value: stats.answered, tiers: [25, 100, 250, 500, 1000] },
-    { id: "chapters", name: "الإتقان", unit: "فصلًا متمكَّنًا منه", icon: BookOpen, value: stats.chaptersMastered, tiers: [1, 5, 10, 25, 50] },
+    { id: "chapters", name: "الإتقان", unit: "محطة أتقنتها", icon: BookOpen, value: stats.chaptersMastered, tiers: [1, 5, 10, 25, 50] },
     { id: "fixed", name: "إصلاح الأخطاء", unit: "خطأً مُصلَحًا", icon: CheckCircle2, value: fixed, tiers: [1, 10, 25, 50, 100] },
     { id: "exams", name: "الاختبارات", unit: "اختبارًا ناجحًا", icon: Trophy, value: stats.examsPassed, tiers: [1, 2, 3, 5, 8] },
   ];

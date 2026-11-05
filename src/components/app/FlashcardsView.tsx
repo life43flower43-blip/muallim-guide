@@ -127,7 +127,7 @@ export default function FlashcardsView() {
                 <span className="h-2 w-2 rounded-full" style={{ background: color }} />
                 {COURSE_SHORT[card.courseId] ?? ""}
               </Chip>
-              {isRead && <Chip tone="success">قرأته</Chip>}
+              {isRead && <Chip tone="success">أنجزته</Chip>}
             </div>
             <div className="flex flex-1 flex-col items-center justify-center text-center">
               <h2 className="font-display text-2xl font-bold leading-[1.7]">{card.title}</h2>
