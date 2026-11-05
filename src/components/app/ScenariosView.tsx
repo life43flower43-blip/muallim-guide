@@ -1,4 +1,5 @@
 "use client";
+import { pickEmojis } from "@/lib/emoji-pick";
 
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -28,7 +29,7 @@ import { buildScenarioRun } from "@/lib/scenarios";
 import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { ad } from "@/lib/arabic";
-import { Callout, Card, Chip, Divided, IconTile, OptionButton, PrimaryButton, ProgressBar, Ring, ScreenShell, SecondaryButton, SectionHeader } from "./ui-kit";
+import { Callout, Card, Chip, Divided, IconTile, OptionButton, PrimaryButton, ProgressBar, Ring, ScreenShell, SecondaryButton, SectionHeader, GameTile } from "./ui-kit";
 
 const LETTERS = ["أ", "ب", "ج", "د"];
 
@@ -247,6 +248,8 @@ export default function ScenariosView() {
   if (run) return <RunScreen run={run} onFinish={showResult} onExit={finishRun} />;
 
   const done = Object.keys(scenarioChoices).length;
+  const emoList = pickEmojis(SCENARIOS.map((x) => x.title));
+  const emo: Record<string, string> = Object.fromEntries(SCENARIOS.map((x, i) => [x.id, emoList[i]]));
   return (
     <ScreenShell title="مواقف صفية سريعة" onClose={clearScenarios}>
       <div className="space-y-6">
@@ -257,31 +260,13 @@ export default function ScenariosView() {
         {grouped.map(({ cat, items }) => (
           <section key={cat}>
             <SectionHeader title={cat} />
-            <Divided>
-              {items.map((s) => {
+            <div className="space-y-2.5">
+              {items.map((s, k) => {
                 const rec = scenarioChoices[s.id];
                 const sc: ScenarioScore | null = rec ? chosenScore(s, rec.opt) : null;
-                return (
-                  <button
-                    key={s.id}
-                    type="button"
-                    onClick={() => startRun([s])}
-                    className="flex min-h-[56px] w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
-                  >
-                    {sc === null ? (
-                      <Circle className="h-5 w-5 shrink-0 text-input" />
-                    ) : (
-                      <CheckCircle2 className={`h-5 w-5 shrink-0 ${sc === "best" ? "text-success" : sc === "ok" ? "text-gem" : "text-destructive"}`} />
-                    )}
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-base leading-6">{s.title}</span>
-                      {sc !== null && <span className="text-sm text-muted-foreground">آخر قرار: {scoreLabel(sc)}</span>}
-                    </span>
-                    <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C]" />
-                  </button>
-                );
+                return <GameTile key={s.id} tone={k} emoji={sc === null ? emo[s.id] : sc === "best" ? "✅" : sc === "ok" ? "🟡" : "🔁"} title={s.title} meta={sc !== null ? scoreLabel(sc) : undefined} onClick={() => startRun([s])} />;
               })}
-            </Divided>
+            </div>
           </section>
         ))}
       </div>
