@@ -105,8 +105,8 @@ export default function NotebookView() {
       {/* مدخل الخرائط الذهنية المتحركة: بطاقة داكنة مميزة فيها شبكة أفكار تنبض بهدوء */}
       {/* موجات ذهبية خفيفة تتدفق من حواف البطاقة إلى الخارج */}
       <div className="mind-wrap relative">
-      <span className="mw-wave" aria-hidden="true" />
-      <span className="mw-wave" style={{ animationDelay: "1.2s" }} aria-hidden="true" />
+      {/* هالة ضوئية ناعمة؛ والموجتان من ::before و::after في globals.css */}
+      <span className="mw-halo" aria-hidden="true" />
       <button
         type="button"
         onClick={() => useUi.getState().startMind()}
