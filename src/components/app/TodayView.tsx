@@ -86,21 +86,21 @@ const DOOR_ICON: Record<string, React.ElementType> = {
   "خطة الدرس": NotebookPen,
 };
 const DOOR_BG: Record<string, string> = {
-  "اختبر نفسك": "#F2A81D",
-  "المفاهيم التربوية": "#1BA7D6",
-  "المواقف الصفية": "#F07D2E",
-  "مهارات التدريس": "#22B07D",
-  "طرائق التدريس": "#279488",
-  "خطة الدرس": "#5A8DEE",
+  "اختبر نفسك": "#E08E00",
+  "المفاهيم التربوية": "#0A8FC2",
+  "المواقف الصفية": "#E2620F",
+  "مهارات التدريس": "#0F9A62",
+  "طرائق التدريس": "#0E7F74",
+  "خطة الدرس": "#3A6FE0",
 };
 
 const STRIP = [
-  "#1D8278",
-  "#3B6FD6",
-  "#E0961A",
-  "#E0663A",
-  "#1E9E6E",
-  "#0E95CF",
+  "#0E7F74",
+  "#2458D6",
+  "#D98200",
+  "#D9540F",
+  "#0F9A62",
+  "#0A8FC2",
 ];
 
 // آخر ما أُضيف إلى التطبيق
@@ -233,9 +233,9 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         // شبكة رموز دائرية ملونة: أربعة في كل صف، والاسم تحت كل رمز
         <div ref={gridRef} className="grid grid-cols-4 gap-x-2 gap-y-5 pt-2">
           {[
-            { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "#F2584A", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
+            { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "#E23B2E", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
             ...gridDoors.map((d) => ({ title: d.title, icon: DOOR_ICON[d.title] ?? BookOpen, bg: DOOR_BG[d.title] ?? "#279488", run: d.run })),
-            { title: "البوصلة", icon: Compass, bg: "#3B7BEA", run: () => onGoTab("notebook") },
+            { title: "البوصلة", icon: Compass, bg: "#2458D6", run: () => onGoTab("notebook") },
           ].map((d, i) => (
             <motion.button
               key={d.title}
@@ -261,17 +261,16 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             <p className="mb-2 flex items-center gap-2 text-[15px] font-extrabold text-[var(--t900)] dark:text-foreground">
               <span className="h-4 w-[3px] rounded-full bg-[#D4A017]" aria-hidden="true" /> المحاور
             </p>
-            <div className="no-scrollbar -mx-4 flex snap-x gap-2.5 overflow-x-auto px-4 pb-1">
+            <div className="grid grid-cols-3 gap-2">
               {COURSES.map((c, k) => (
                 <button
                   key={c.id}
                   type="button"
                   onClick={() => ui.openCourseTab(c.id)}
-                  className="flex h-[64px] w-[132px] shrink-0 snap-start flex-col justify-center rounded-[16px] px-3 text-right text-white shadow-sm"
+                  className="flex h-[52px] min-w-0 items-center justify-center rounded-[14px] px-1.5 text-center text-white shadow-sm"
                   style={{ background: STRIP[k % STRIP.length] }}
                 >
-                  <span className="truncate text-[14px] font-extrabold">{COURSE_SHORT[c.id] ?? c.name}</span>
-                  <span className="text-[11.5px] text-white/85">{ad(conceptsOfCourse(c.id).length)} مفهومًا</span>
+                  <FitText max={13.5} min={9} group="ax-strip" className="w-full whitespace-nowrap font-extrabold">{COURSE_SHORT[c.id] ?? c.name}</FitText>
                 </button>
               ))}
             </div>
