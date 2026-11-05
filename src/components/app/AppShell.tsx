@@ -141,7 +141,7 @@ function BottomNav({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => v
       id="bottom-nav"
       aria-label="التنقل الرئيسي"
       className={cn(
-        "safe-bottom fixed inset-x-0 bottom-0 z-30 bg-background px-2 pb-2 pt-2 transition-[transform,opacity] duration-300 ease-out min-[380px]:px-3 lg:hidden",
+        "safe-bottom fixed inset-x-0 bottom-0 z-30 bg-background px-2 pb-2 pt-3 transition-[transform,opacity] duration-300 ease-out min-[380px]:px-3 lg:hidden",
         hidden ? "pointer-events-none translate-y-full opacity-0" : "translate-y-0 opacity-100"
       )}
     >
