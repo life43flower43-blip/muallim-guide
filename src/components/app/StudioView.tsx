@@ -124,7 +124,7 @@ function PlanLines({ title, body }: { title: string; body: string }) {
   if (!lines.length) return null;
   return (
     <section>
-      <h3 className="mb-2 font-display text-base font-semibold">{title}</h3>
+      <h3 className="mb-2.5 rounded-[14px] bg-[var(--t050)] px-3.5 py-2 font-display text-[15px] font-extrabold text-foreground ring-1 ring-[var(--t150)] dark:bg-card">{title}</h3>
       <ul className="space-y-1.5 text-base leading-7 text-secondary-foreground">
         {lines.map((ln, i) => (
           <li key={i} className="flex gap-2">
@@ -146,7 +146,7 @@ function PlanBody({ plan }: { plan: Omit<LessonPlan, "id" | "ts"> }) {
       <PlanLines title="الوسائل والأدوات" body={plan.materials} />
       {plan.strategies.length > 0 && (
         <section>
-          <h3 className="mb-2 font-display text-base font-semibold">استراتيجيات التدريس</h3>
+          <h3 className="mb-2.5 rounded-[14px] bg-[var(--t050)] px-3.5 py-2 font-display text-[15px] font-extrabold text-foreground ring-1 ring-[var(--t150)] dark:bg-card">استراتيجيات التدريس</h3>
           <div className="flex flex-wrap gap-2">
             {plan.strategies.map((x) => (
               <Chip key={x} tone="primary">
@@ -158,7 +158,7 @@ function PlanBody({ plan }: { plan: Omit<LessonPlan, "id" | "ts"> }) {
       )}
       {PHASE_META.some((ph) => plan.phases[ph.key].trim()) && (
         <section>
-          <h3 className="mb-3 font-display text-base font-semibold">خطوات التنفيذ</h3>
+          <h3 className="mb-2.5 rounded-[14px] bg-[var(--t050)] px-3.5 py-2 font-display text-[15px] font-extrabold text-foreground ring-1 ring-[var(--t150)] dark:bg-card">خطوات التنفيذ</h3>
           <ol className="space-y-4">
             {PHASE_META.filter((ph) => plan.phases[ph.key].trim()).map((ph, i) => (
               <li key={ph.key} className="flex gap-3">
