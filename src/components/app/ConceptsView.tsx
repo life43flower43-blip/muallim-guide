@@ -557,6 +557,7 @@ function ChapterPage({ courseId, chapter, onBack, onOpen }: { courseId: string; 
   const nextUp = concepts.find((c) => !conceptReads[c.id]) ?? concepts[0];
   const b = best[topicKey(courseId, chapter)];
 
+  const cEmo = pickEmojis(concepts.map((c) => c.title));
   const quiz = () => {
     setLastStudy(courseId, chapter);
     startQuiz({ mode: "training", label: `اختبار المحطة: ${chapterLabel(chapter)}`, qids: chapterSession(courseId, chapter, attempts), topicKey: topicKey(courseId, chapter) });
@@ -568,73 +569,25 @@ function ChapterPage({ courseId, chapter, onBack, onOpen }: { courseId: string; 
       title={chapterLabel(chapter)}
       sub={COURSE_SHORT[courseId]}
       onBack={onBack}
-      footer={
-        <>
-          <SecondaryButton onClick={quiz} className="flex-1 sm:flex-none">
-            <ClipboardCheck className="h-4 w-4" /> اختبار المحطة
-          </SecondaryButton>
-          <PrimaryButton onClick={() => nextUp && onOpen(nextUp.id)} className="flex-1 sm:flex-none">
-            <Play className="h-4 w-4" /> {read === 0 ? "ابدأ القراءة" : read === concepts.length ? "راجع من البداية" : "تابع القراءة"}
-          </PrimaryButton>
-        </>
-      }
     >
-      <div className="mx-auto max-w-3xl space-y-6">
-        <Card className="p-5">
-          <h2 className="mt-1 font-display text-xl font-bold leading-8">{chapterLabel(chapter)}</h2>
-          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5">
-              <BookOpen className="h-4 w-4" /> {arCount(concepts.length, CONCEPT_FORMS)}
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <Dumbbell className="h-4 w-4" /> {arCount(nQ, QUESTION_FORMS)}
-            </span>
-          </div>
-          <div className="mt-5 space-y-2.5">
-            <MasteryBar counts={mastery} />
-            <MasteryLegend labels={MASTERY_LABELS} counts={mastery} />
-          </div>
-          {b !== undefined && (
-            <div className="mt-4 flex items-center gap-2 border-t border-border pt-4 text-sm">
-              <span className="text-muted-foreground">أفضل نتيجة في اختبار المحطة</span>
-              <span className="font-medium">{pct(b)}</span>
-              <Stars count={starsFor(b)} />
-            </div>
-          )}
-        </Card>
+      <div className="mx-auto max-w-3xl space-y-5">
+        {/* زرّان فقط في سطر واحد */}
+        <div className="grid grid-cols-2 gap-2.5">
+          <PrimaryButton onClick={() => nextUp && onOpen(nextUp.id)} className="w-full">
+            <Play className="h-4 w-4 fill-current" /> {read === 0 ? "ابدأ" : read === concepts.length ? "من البداية" : "تابع"}
+          </PrimaryButton>
+          <SecondaryButton onClick={quiz} className="w-full">
+            <ClipboardCheck className="h-4 w-4" /> اختبار المحطة{b !== undefined ? ` · ${pct(b)}` : ""}
+          </SecondaryButton>
+        </div>
 
         <section>
-          <SectionHeader title="المفاهيم" sub={`أكملت ${ad(read)} من ${ad(concepts.length)}`} />
-          <Divided>
-            {concepts.map((c, i) => {
-              const isRead = !!conceptReads[c.id];
-              const lv = conceptMastery(c.id, attempts);
-              return (
-                <button
-                  key={c.id}
-                  type="button"
-                  onClick={() => onOpen(c.id)}
-                  className="flex min-h-[64px] w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-muted/60"
-                >
-                  {isRead ? (
-                    <CheckCircle2 className="h-6 w-6 shrink-0 text-success" aria-label="مكتمل" />
-                  ) : (
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-input text-xs text-muted-foreground">{ad(i + 1)}</span>
-                  )}
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-base font-medium leading-6">{c.title}</span>
-                    {lv > 0 && (
-                      <span className="mt-0.5 flex items-center gap-2 text-sm text-muted-foreground">
-                        <MasteryDot level={lv} size={10} />
-                        <span>{MASTERY_LABELS[lv]}</span>
-                      </span>
-                    )}
-                  </span>
-                  <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C]" />
-                </button>
-              );
-            })}
-          </Divided>
+          <SectionHeader title="المفاهيم" action={<span className="shrink-0 text-sm font-bold text-muted-foreground">{ad(read)} من {ad(concepts.length)}</span>} />
+          <div className="space-y-2.5">
+            {concepts.map((c, i) => (
+              <GameTile key={c.id} tone={i} emoji={conceptReads[c.id] ? "✅" : cEmo[i]} title={c.title} onClick={() => onOpen(c.id)} />
+            ))}
+          </div>
         </section>
       </div>
     </ScreenShell>
