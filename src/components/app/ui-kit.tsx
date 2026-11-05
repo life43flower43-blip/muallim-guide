@@ -269,12 +269,8 @@ export function ScreenShell({
       <header className="green-head safe-top relative shrink-0 px-2 pb-1.5">
         <HeaderArt />
         <div className={cn("mx-auto flex min-h-[56px] items-center gap-2 px-1", wide ? "max-w-5xl" : "max-w-3xl")}>
-          {onBack ? (
-            <BackButton onClick={onBack} />
-          ) : onClose ? (
-            // كل شاشة لها زر رجوع واضح في مكانه المعتاد، حتى حين لا يكون فيها إلا الإغلاق
-            <BackButton onClick={onClose} />
-          ) : null}
+          {/* زر الرجوع في أسفل الشاشة قريبًا من الإبهام؛ يبقى هنا مكان فارغ يوازن العنوان */}
+          {(onBack || onClose) && <span className="w-11 shrink-0" aria-hidden="true" />}
           <div className="min-w-0 flex-1 px-1">
             <h1 className="text-center font-display font-extrabold leading-8">
               <FitText max={20} min={13} className="text-center">{title}</FitText>
@@ -290,13 +286,18 @@ export function ScreenShell({
           )}
         </div>
       </header>
-      {bare ? (
-        <div className="relative min-h-0 flex-1">{children}</div>
-      ) : (
-        <div className="no-scrollbar flex-1 overflow-y-auto">
-          <div className={cn("mx-auto px-4 pb-10 pt-5", wide ? "max-w-5xl lg:px-8" : "max-w-3xl")}>{children}</div>
-        </div>
-      )}
+      <div className="relative flex min-h-0 flex-1 flex-col">
+        {bare ? (
+          <div className="relative min-h-0 flex-1">{children}</div>
+        ) : (
+          <div className="no-scrollbar flex-1 overflow-y-auto">
+            <div className={cn("mx-auto px-4 pb-24 pt-5", wide ? "max-w-5xl lg:px-8" : "max-w-3xl")}>{children}</div>
+          </div>
+        )}
+        {(onBack || onClose) && (
+          <BackButton onClick={(onBack ?? onClose)!} className={cn("absolute right-4 z-10", footer ? "bottom-3" : "bottom-[calc(env(safe-area-inset-bottom)+16px)]")} />
+        )}
+      </div>
       {footer && (
         <div className="safe-bottom shrink-0 border-t border-border bg-card">
           <div className={cn("mx-auto flex gap-3 px-4 py-3", wide ? "max-w-5xl" : "max-w-3xl")}>{footer}</div>

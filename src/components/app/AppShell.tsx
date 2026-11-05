@@ -194,8 +194,8 @@ function MobileTopBar({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) =
       <header className="green-head safe-top sticky top-0 z-30 px-2 pb-0.5 lg:hidden">
         <HeaderArt />
         <div className="relative flex h-12 items-center justify-center px-14">
-          {/* رجوع إلى الرئيسية */}
-          <BackButton onClick={onBack} className="absolute right-1" />
+          {/* رجوع إلى الرئيسية: في أسفل الشاشة فوق شريط التنقل، قريبًا من الإبهام */}
+          <BackButton onClick={onBack} className="fixed bottom-[calc(env(safe-area-inset-bottom)+96px)] right-4 z-40" />
           <h1 className="font-display text-lg font-extrabold">{NAV.find((n) => n.id === tab)?.label}</h1>
           {tab === "profile" && (
             <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="absolute left-1.5 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
