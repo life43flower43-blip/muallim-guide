@@ -121,8 +121,30 @@ function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: 
 }
 
 function BottomNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: number }) {
+  // يختفي الشريط تدريجيًا حين يسحب الطالب الصفحة للأسفل، ويعود حين يسحبها للأعلى
+  const [hidden, setHidden] = useState(false);
+  useEffect(() => {
+    const el = document.getElementById("main-scroll");
+    if (!el) return;
+    let last = el.scrollTop;
+    const onScroll = () => {
+      const y = el.scrollTop;
+      if (y > last + 6 && y > 40) setHidden(true);
+      else if (y < last - 6 || y <= 40) setHidden(false);
+      last = y;
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [tab]);
   return (
-    <nav id="bottom-nav" aria-label="التنقل الرئيسي" className="safe-bottom px-2 pb-2 pt-1 min-[380px]:px-3 lg:hidden">
+    <nav
+      id="bottom-nav"
+      aria-label="التنقل الرئيسي"
+      className={cn(
+        "safe-bottom fixed inset-x-0 bottom-0 z-30 px-2 pb-2 pt-1 transition-[transform,opacity] duration-300 ease-out min-[380px]:px-3 lg:hidden",
+        hidden ? "pointer-events-none translate-y-full opacity-0" : "translate-y-0 opacity-100"
+      )}
+    >
       {/* شريط عائم بإطار ذهبي، والحبة الخضراء تنزلق بين التبويبات */}
       <div className="nav-gold grid grid-cols-5 gap-0.5 rounded-[26px] p-1 min-[380px]:gap-1 min-[380px]:p-1.5">
         {NAV.map((n) => {
@@ -464,7 +486,7 @@ export default function AppShell() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className={cn("mx-auto w-full max-w-5xl px-4 pt-5 lg:px-8 lg:pt-8", tab === "today" ? "pb-6 lg:pb-10" : "pb-28 lg:pb-10")}
+              className={cn("mx-auto w-full max-w-5xl px-4 pt-5 lg:px-8 lg:pt-8", "pb-28 lg:pb-10")}
             >
               {tab === "today" && <TodayView onGoTab={go} />}
               {tab === "notebook" && <NotebookView />}
