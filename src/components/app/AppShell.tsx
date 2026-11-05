@@ -146,9 +146,9 @@ function BottomNav({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => v
       )}
     >
       {/* شريط عائم بإطار ذهبي، والحبة الخضراء تنزلق بين التبويبات */}
-      <div className="flex items-center gap-1.5">
-      {/* زر الرجوع بجانب شريط التنقل، فلا يغطي محتوى الصفحة */}
-      {tab !== "today" && <BackButton onClick={onBack} className="h-12 w-12" />}
+      {/* زر الرجوع عائم فوق شريط التنقل يمينًا، قريبًا من الإبهام */}
+      {tab !== "today" && <BackButton onClick={onBack} className="absolute -top-14 right-4" />}
+      <div>
       <div className="nav-gold grid min-w-0 flex-1 grid-cols-5 gap-0.5 rounded-[26px] p-1 min-[380px]:gap-1 min-[380px]:p-1.5">
         {NAV.map((n) => {
           const active = tab === n.id;
