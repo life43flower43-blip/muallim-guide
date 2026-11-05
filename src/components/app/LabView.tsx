@@ -243,28 +243,6 @@ export default function LabView() {
               </section>
             )}
 
-            <Card className="p-5">
-              <SectionHeader title="مرآة المعلّم" sub="تأمل قصير يثبّت ما تعلمته من الموقف" />
-              <div className="space-y-4">
-                {(
-                  [
-                    ["success", "ما الذي نجح في تصرفاتك؟"],
-                    ["failed", "ما القرار الذي لم ينجح؟ ولماذا؟"],
-                    ["change", "ما الذي ستغيّره في المرة المقبلة؟"],
-                  ] as const
-                ).map(([k, lbl]) => (
-                  <label key={k} className="block space-y-1.5">
-                    <span className="text-sm font-medium text-secondary-foreground">{lbl}</span>
-                    <textarea
-                      value={reflect[k]}
-                      onChange={(e) => setReflect((r) => ({ ...r, [k]: e.target.value }))}
-                      rows={2}
-                      className="w-full rounded-xl border border-input bg-card p-3 text-base leading-7 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                    />
-                  </label>
-                ))}
-              </div>
-            </Card>
           </motion.div>
         )}
       </ScreenShell>
@@ -272,13 +250,12 @@ export default function LabView() {
   }
 
   const tabs = (
-    <div role="tablist" aria-label="أقسام المختبر" className="mb-5 grid grid-cols-4 gap-1 rounded-[22px] border border-[#ECE3C4] bg-white p-1 dark:bg-card">
+    <div role="tablist" aria-label="أقسام المختبر" className="mb-5 grid grid-cols-3 gap-1 rounded-[22px] border border-[#ECE3C4] bg-white p-1 dark:bg-card">
       {(
         [
           ["list", "المواقف", Dumbbell],
           ["exam", "الاستقلال", ShieldCheck],
           ["map", "الكفاءات", MapIcon],
-          ["mirror", "تأملاتي", Eye],
         ] as const
       ).map(([id, lbl]) => (
         <button

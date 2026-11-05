@@ -39,7 +39,20 @@ export default function MisconceptionsView() {
   };
 
   return (
-    <ScreenShell title="مفاهيم خاطئة شائعة" onClose={clear}>
+    <ScreenShell
+      title="مفاهيم خاطئة شائعة"
+      onClose={clear}
+      footer={
+        done ? undefined : answer === null ? (
+          <>
+            <SecondaryButton onClick={() => choose(true)} className="flex-1">صحيحة</SecondaryButton>
+            <SecondaryButton onClick={() => choose(false)} className="flex-1">خاطئة</SecondaryButton>
+          </>
+        ) : (
+          <PrimaryButton onClick={next} className="flex-1">{i + 1 < end ? "التالية" : "النتيجة"}</PrimaryButton>
+        )
+      }
+    >
       {done ? (
         <div className="space-y-5 py-6 text-center">
           <p className="text-lg font-extrabold">أصبت الحكم في {ad(score)} من {ad(end - start)}</p>
@@ -60,12 +73,7 @@ export default function MisconceptionsView() {
             <p className="text-lg font-extrabold leading-9">«{item.claim}»</p>
           </div>
 
-          {answer === null ? (
-            <div className="grid grid-cols-2 gap-3">
-              <SecondaryButton onClick={() => choose(true)}>صحيحة</SecondaryButton>
-              <SecondaryButton onClick={() => choose(false)}>خاطئة</SecondaryButton>
-            </div>
-          ) : (
+          {answer !== null && (
             <div className="space-y-3">
               <p className={cn("flex items-center gap-2 rounded-[16px] px-4 py-3 font-bold", correct ? "bg-[var(--t100)] text-foreground" : "bg-danger-soft text-destructive")}>
                 {correct ? <CheckCircle2 className="h-5 w-5 shrink-0" /> : <XCircle className="h-5 w-5 shrink-0" />}
@@ -85,7 +93,6 @@ export default function MisconceptionsView() {
                   <p className="leading-8 text-secondary-foreground">{item.classroom}</p>
                 </section>
               </div>
-              <PrimaryButton onClick={next} className="w-full">{i + 1 < end ? "التالية" : "النتيجة"}</PrimaryButton>
             </div>
           )}
         </div>

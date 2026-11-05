@@ -329,12 +329,11 @@ const shuffle = <T,>(arr: T[]): T[] => {
   return a;
 };
 
-/** جلسة متوازنة: تحديان ترتيب وثلاثة إكمال واثنان إنتاج — مخلوطة عشوائيًا */
+/** جلسة متوازنة: ثلاثة تحديات ترتيب وأربعة إكمال — مخلوطة عشوائيًا (حُذفت أسئلة الكتابة الحرة) */
 export function buildChallengeSet(): Challenge[] {
-  const orders = shuffle(ORDER_CHALLENGES).slice(0, 2);
-  const fills = shuffle(FILL_CHALLENGES).slice(0, 3);
-  const produces = shuffle(PRODUCE_CHALLENGES).slice(0, 2);
-  return shuffle([...orders, ...fills, ...produces]);
+  const orders = shuffle(ORDER_CHALLENGES).slice(0, 3);
+  const fills = shuffle(FILL_CHALLENGES).slice(0, 4);
+  return shuffle([...orders, ...fills]);
 }
 
 export const CHALLENGE_XP: Record<Challenge["kind"], number> = {
