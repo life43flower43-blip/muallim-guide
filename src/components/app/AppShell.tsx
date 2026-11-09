@@ -123,6 +123,16 @@ function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: 
 function BottomNav({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => void; due: number; onBack: () => void }) {
   // يختفي الشريط تدريجيًا حين يسحب الطالب الصفحة للأسفل، ويعود حين يسحبها للأعلى
   const [hidden, setHidden] = useState(false);
+  // ارتفاع الشريط الفعلي (مع مساحة أزرار الهاتف) ليترك المحتوى تحته مسافة تكفي فلا تختفي آخر بطاقة
+  useEffect(() => {
+    const nav = document.getElementById("bottom-nav");
+    if (!nav || typeof ResizeObserver === "undefined") return;
+    const set = () => document.documentElement.style.setProperty("--nav-h", `${nav.offsetHeight}px`);
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(nav);
+    return () => ro.disconnect();
+  }, []);
   useEffect(() => {
     const el = document.getElementById("main-scroll");
     if (!el) return;
@@ -141,7 +151,7 @@ function BottomNav({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => v
       id="bottom-nav"
       aria-label="التنقل الرئيسي"
       className={cn(
-        "safe-bottom fixed inset-x-0 bottom-0 z-30 bg-background px-2 pb-2 pt-6 transition-[transform,opacity] duration-300 ease-out min-[380px]:px-3 lg:hidden",
+        "safe-bottom fixed inset-x-0 bottom-0 z-30 px-2 pb-2 pt-1 transition-[transform,opacity] duration-300 ease-out min-[380px]:px-3 lg:hidden",
         hidden ? "pointer-events-none translate-y-full opacity-0" : "translate-y-0 opacity-100"
       )}
     >
@@ -494,7 +504,7 @@ export default function AppShell() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className={cn("mx-auto w-full max-w-5xl px-4 pt-5 lg:px-8 lg:pt-8", "pb-44 lg:pb-10")}
+              className={cn("mx-auto w-full max-w-5xl px-4 pt-5 lg:px-8 lg:pt-8", "pb-[calc(var(--nav-h,96px)+28px)] lg:pb-10")}
             >
               {tab === "today" && <TodayView onGoTab={go} />}
               {tab === "notebook" && <NotebookView />}
