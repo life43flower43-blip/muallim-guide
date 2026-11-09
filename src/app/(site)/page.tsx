@@ -1,4 +1,5 @@
 // الصفحة الرئيسية: ترحيب وبحث، وأحدث المقالات، وسؤال اليوم والاختبار، والمحاور، ومصادر التعلم، والتطبيق، وأسئلة شائعة
+import { topicForTag } from "@/lib/topics";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AlertTriangle, BookOpenText, ChevronDown, FileQuestion, Layers, Network, Scale, School, Search } from "lucide-react";
@@ -79,7 +80,7 @@ export default function Home() {
           <div className="relative z-30 mt-6 max-w-xl text-right"><SearchBox /></div>
           <div className="mt-5 flex flex-wrap gap-2 text-[13px]">
             {["إدارة الصف", "التقويم", "نظريات التعلم", "التربية الخاصة"].map((t) => (
-              <Link key={t} href={`/search?q=${encodeURIComponent(t)}`} rel="nofollow" className="rounded-full border border-white/30 px-3 py-1 font-bold text-white/90 hover:bg-white/10">{t}</Link>
+              <Link key={t} href={topicForTag(t) ? `/topics/${topicForTag(t)!.slug}` : `/search?q=${encodeURIComponent(t)}`} rel={topicForTag(t) ? undefined : "nofollow"} className="rounded-full border border-white/30 px-3 py-1 font-bold text-white/90 hover:bg-white/10">{t}</Link>
             ))}
           </div>
           <p className="mt-5 text-[13.5px] font-bold text-white/75">{stats.map((x) => `${x.v} ${x.l}`).join(" · ")}</p>
