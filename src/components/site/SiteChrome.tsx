@@ -21,6 +21,7 @@ export const LICENSE = [
 
 /** قائمة «مصادر التعلم»: صفحات المحتوى التفاعلي */
 export const RESOURCES = [
+  { href: "/topics", label: "مواضيع تربوية" },
   { href: "/classroom-problems", label: "مشكلات صفية" },
   { href: "/misconceptions", label: "مفاهيم خاطئة شائعة" },
   { href: "/comparisons", label: "مقارنات تربوية" },
@@ -148,6 +149,7 @@ export function SiteFooter() {
             <ul className={col}>
               <li><Link href="/license-guide" className="hover:text-white">دليل الرخصة المهنية</Link></li>
               <li><Link href="/practice-test" className="hover:text-white">نموذج اختبار</Link></li>
+              <li><Link href="/topics" className="hover:text-white">مواضيع تربوية</Link></li>
               <li><Link prefetch={false} href="/glossary" className="hover:text-white">معجم المصطلحات</Link></li>
             </ul>
           </div>

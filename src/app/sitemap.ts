@@ -4,6 +4,7 @@ import { SPECIALTIES } from "@/lib/specialties";
 import { SITE_URL, publicBank } from "@/lib/public-bank";
 import { APP_SECTIONS } from "@/lib/site-nav";
 import { allArticles, articleCats } from "@/lib/articles";
+import { TOPICS } from "@/lib/topics";
 import { PROBLEMS } from "@/lib/site-problems";
 
 // المقالات المجدولة تظهر في موعدها دون إعادة بناء
@@ -17,5 +18,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const articles = allArticles().map((a) => ({ url: `${SITE_URL}/articles/${a.slug}`, lastModified: a.date, changeFrequency: "monthly" as const, priority: 0.8 }));
   const cats = articleCats().map((c) => ({ url: `${SITE_URL}/articles/c/${c.slug}`, changeFrequency: "weekly" as const, priority: 0.6 }));
   const problems = PROBLEMS.map((x) => ({ url: `${SITE_URL}/classroom-problems/${x.slug}`, changeFrequency: "monthly" as const, priority: 0.7 }));
-  return [...fixed, ...articles, ...cats, ...problems, ...courses, ...concepts];
+  const topics = [{ url: `${SITE_URL}/topics`, changeFrequency: "weekly" as const, priority: 0.8 }, ...TOPICS.map((t) => ({ url: `${SITE_URL}/topics/${t.slug}`, changeFrequency: "weekly" as const, priority: 0.8 }))];
+  return [...fixed, ...topics, ...articles, ...cats, ...problems, ...courses, ...concepts];
 }
