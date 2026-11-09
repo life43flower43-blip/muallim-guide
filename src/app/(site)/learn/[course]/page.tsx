@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ course: s
   if (!name) return {};
   const chapters = courseChapters(course).map((c) => chapterLabel(c.chapter));
   return {
-    title: `${name} | تربوي`,
+    title: `${name}: شرح المفاهيم وأسئلة تدريب للرخصة المهنية | تربوي`,
     description: `${name}: ${chapters.slice(0, 6).join("، ")}، وغيرها. شرح وأمثلة وأسئلة تدريب.`,
     alternates: { canonical: `${SITE_URL}/learn/${course}` },
   };

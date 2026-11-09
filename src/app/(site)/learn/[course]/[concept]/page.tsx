@@ -28,11 +28,12 @@ export async function generateMetadata({ params }: { params: Promise<{ course: s
   if (!c) return {};
   const url = `${SITE_URL}/learn/${course}/${concept}`;
   return {
-    title: `${c.title} | ${SITE_NAME}`,
-    description: summary(c.explanation),
-    keywords: [c.title, chapterLabel(c.chapter), publicBank().courses[course], "اختبار الرخصة المهنية للمعلمين", "مفاهيم تربوية"],
+    // عنوان بنية البحث الشائعة («شرح»، «أمثلة»)، ووصف يبدأ بالسؤال الذي يكتبه الباحث
+    title: `${c.title}: شرح مبسط مع أمثلة | ${SITE_NAME}`,
+    description: summary(`ما هو ${c.title}؟ ${c.explanation}`),
+    keywords: [c.title, `ما هو ${c.title}`, `شرح ${c.title}`, `تعريف ${c.title}`, chapterLabel(c.chapter), publicBank().courses[course], "اختبار الرخصة المهنية للمعلمين", "مفاهيم تربوية"],
     alternates: { canonical: url },
-    openGraph: { title: c.title, description: summary(c.explanation), url, siteName: SITE_NAME, locale: "ar_AR", type: "article", images: [{ url: "/og.jpg", width: 1200, height: 630 }] },
+    openGraph: { title: `${c.title}: شرح مبسط مع أمثلة`, description: summary(`ما هو ${c.title}؟ ${c.explanation}`), url, siteName: SITE_NAME, locale: "ar_AR", type: "article", images: [{ url: "/og.jpg", width: 1200, height: 630 }] },
   };
 }
 
