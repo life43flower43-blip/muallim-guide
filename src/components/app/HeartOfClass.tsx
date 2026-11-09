@@ -84,7 +84,7 @@ export default function HeartOfClass() {
           {HEART_FAMILIES.map((f) => (
             <section key={f.id}>
               <SectionHeader title={f.name} sub={f.hint} />
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-2 gap-2.5 tiles2">
                 {f.personas.map((p, k) => {
                   const isOpen = openPersona === p.id;
                   return (

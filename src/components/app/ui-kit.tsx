@@ -576,7 +576,7 @@ export function GameTile({ emoji, icon: Icon, title, tone = 0, meta, progress, a
 
 export function ToolTiles({ items }: { items: { icon: React.ElementType; emoji?: string; title: string; onClick: () => void }[] }) {
   return (
-    <div className="grid grid-cols-2 gap-2.5">
+    <div className="grid grid-cols-2 gap-2.5 tiles2">
       {items.map((t, k) => (
         <GameTile key={t.title} tone={k + 1} icon={t.icon} emoji={t.emoji} title={t.title} onClick={t.onClick} className={items.length % 2 && k === items.length - 1 ? "col-span-2" : undefined} />
       ))}

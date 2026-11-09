@@ -91,13 +91,13 @@ export default function MeasureKit() {
         <div className="space-y-6">
           <section>
             <SectionHeader title="بناء أدوات التقويم" />
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-2.5 tiles2">
               {BUILD_TOOLS.map((t, k) => <GameTile key={t.id} tone={k} emoji={TOOL_EMOJI[t.id]} title={t.label} onClick={() => setTool(t.id)} />)}
             </div>
           </section>
           <section>
             <SectionHeader title="تحليل النتائج" />
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-2.5 tiles2">
               {ANALYZE_TOOLS.map((t, k) => <GameTile key={t.id} tone={k + 3} emoji={TOOL_EMOJI[t.id]} title={t.label} onClick={() => setTool(t.id)} />)}
             </div>
           </section>
