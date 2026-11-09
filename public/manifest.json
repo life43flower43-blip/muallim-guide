@@ -5,7 +5,7 @@
   "lang": "ar",
   "dir": "rtl",
   "start_url": "/app",
-  "scope": "/app",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#FFFFFF",
   "theme_color": "#FFFFFF",
