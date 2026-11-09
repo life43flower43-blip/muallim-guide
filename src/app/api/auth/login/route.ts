@@ -4,6 +4,7 @@
 // ============================================================================
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { checkRateLimit, rateLimitResponse, getClientIP, RATE_LIMITS } from '@/lib/rate-limit'
 import { setAuthCookie } from '@/lib/auth'
 import { verifyPassword } from '@/lib/password'
 
@@ -13,6 +14,11 @@ export async function POST(request: NextRequest) {
   const body = (await request.json().catch(() => ({}))) as { email?: string; password?: string }
   const email = String(body.email ?? '').trim().toLowerCase().slice(0, 120)
   const password = String(body.password ?? '').slice(0, 128)
+  // حد للمحاولات لكل عنوان ولكل حساب، ضد تخمين كلمات المرور
+  const rIp = checkRateLimit(`login-ip:${getClientIP(request)}`, RATE_LIMITS.AUTH_LOGIN)
+  if (!rIp.allowed) return rateLimitResponse(rIp, 'محاولات كثيرة. انتظر دقيقة ثم حاول مرة أخرى.')
+  const rEm = checkRateLimit(`login-email:${email}`, RATE_LIMITS.AUTH_EMAIL)
+  if (!rEm.allowed) return rateLimitResponse(rEm, 'محاولات كثيرة على هذا الحساب. انتظر ربع ساعة.')
   try {
     const user = email ? await db.user.findUnique({ where: { email } }) : null
     const ok = await verifyPassword(password, user?.password)

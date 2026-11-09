@@ -1,12 +1,15 @@
 // /api/auth/reset — تعيين كلمة مرور جديدة برمز الاستعادة، ثم الدخول مباشرة
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { checkRateLimit, rateLimitResponse, getClientIP, RATE_LIMITS } from '@/lib/rate-limit'
 import { setAuthCookie } from '@/lib/auth'
 import { hashPassword } from '@/lib/password'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
+  const rl = checkRateLimit(`reset:${getClientIP(request)}`, RATE_LIMITS.AUTH_REGISTER)
+  if (!rl.allowed) return rateLimitResponse(rl)
   const body = (await request.json().catch(() => ({}))) as { token?: string; password?: string }
   const token = String(body.token ?? '').slice(0, 100)
   const password = String(body.password ?? '').slice(0, 128)

@@ -45,6 +45,13 @@ export const RATE_LIMITS = {
   AUTH_LOGIN: { limit: 10, windowMs: 60_000 },
   /** إنشاء حساب: 5 في الساعة لكل عنوان */
   AUTH_REGISTER: { limit: 5, windowMs: 60 * 60_000 },
+  /** تخمين كلمة مرور حساب واحد: 20 محاولة في ربع ساعة لكل بريد */
+  AUTH_EMAIL: { limit: 20, windowMs: 15 * 60_000 },
+  /** رسائل استعادة كلمة المرور: 3 في الساعة لكل بريد، و10 لكل عنوان */
+  AUTH_FORGOT: { limit: 3, windowMs: 60 * 60_000 },
+  AUTH_FORGOT_IP: { limit: 10, windowMs: 60 * 60_000 },
+  /** المساعد الذكي بمفتاح الخادم: 30 رسالة في الساعة لكل مستخدم */
+  AI_CHAT: { limit: 30, windowMs: 60 * 60_000 },
   /** حفظ التقدم والجواهر والأخطاء: 60 في الدقيقة لكل مستخدم */
   PROGRESS_SAVE: { limit: 60, windowMs: 60_000 },
 } as const

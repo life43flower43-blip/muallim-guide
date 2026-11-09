@@ -4,6 +4,8 @@
 // https://radoxai.com/v1/chat/completions
 
 import { NextRequest, NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth";
+import { checkRateLimit, rateLimitResponse, RATE_LIMITS } from "@/lib/rate-limit";
 
 const RADOX_BASE = "https://radoxai.com/v1";
 const DEFAULT_MODEL = "gemini-3.6-flash";
@@ -34,7 +36,17 @@ function arabicError(status: number, body: string): { msg: string; status: numbe
 }
 
 export async function POST(req: NextRequest) {
-  const key = req.headers.get("x-ai-key")?.trim() || process.env.RADOX_API_KEY?.trim() || "";
+  // مفتاح المستخدم نفسه يُستعمل كما هو. أما مفتاح الخادم (على حسابنا) فللمسجلين فقط وبحد في الساعة،
+  // حتى لا يستهلك أحد رصيدنا من خارج التطبيق
+  const userKey = req.headers.get("x-ai-key")?.trim() || "";
+  let key = userKey;
+  if (!key && process.env.RADOX_API_KEY) {
+    const userId = await getCurrentUser();
+    if (!userId) return NextResponse.json({ error: "سجّل الدخول لاستخدام المساعد الذكي" }, { status: 401 });
+    const rl = checkRateLimit(`ai:${userId}`, RATE_LIMITS.AI_CHAT);
+    if (!rl.allowed) return rateLimitResponse(rl, "وصلت إلى حد الرسائل لهذه الساعة. حاول لاحقًا.");
+    key = process.env.RADOX_API_KEY.trim();
+  }
   if (!key)
     return NextResponse.json(
       { error: "لم يُضبط مفتاح المساعد الذكي بعد — افتح الإعدادات وألصق مفتاحك" },
