@@ -451,6 +451,8 @@ export default function AppShell() {
   }, [user?.id]);
 
   if (!hydrated) return <ShellSkeleton />;
+  // شاشة الترحيب لا تحتاج بنك الأسئلة، فتظهر فورًا بينما يتنزل البنك في الخلفية
+  if (!onboarded) return <Onboarding />;
   if (!bankLoaded)
     return (
       <BootBank
@@ -463,7 +465,6 @@ export default function AppShell() {
         }}
       />
     );
-  if (!onboarded) return <Onboarding />;
   if (ui.quizConfig) return <SafeBoundary full><QuizSession key={`${ui.quizConfig.label}:${ui.quizConfig.qids.join(",")}`} config={ui.quizConfig} /></SafeBoundary>;
   if (ui.challengesOpen) return <SafeBoundary full><ChallengeSession /></SafeBoundary>;
   if (ui.measureOpen) return <SafeBoundary full><MeasureKit /></SafeBoundary>;
