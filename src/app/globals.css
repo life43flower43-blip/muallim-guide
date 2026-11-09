@@ -844,3 +844,19 @@ body {
 /* تبقى الموجات حتى مع «تقليل الحركة» في الهاتف (يفعّله وضع توفير الطاقة كثيرًا)، لكن أبطأ وأهدأ */
 @media (prefers-reduced-motion: reduce) { .mind-wrap::before, .mind-wrap::after { animation-duration: 4.5s; } .mind-wrap::after { animation-delay: 2.25s; } }
 @media (prefers-reduced-motion: reduce) { .mind-card .mc-line, .mind-card .mc-core { animation: none; stroke-dashoffset: 0; } }
+
+/* زر «شارك التطبيق»: نبض ذهبي يخرج من حدوده إلى الخارج ليدعو إلى المشاركة */
+.glow-pulse::before,
+.glow-pulse::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
+  border: 2px solid rgba(212, 160, 23, .9);
+  box-shadow: 0 0 12px 2px rgba(212, 160, 23, .55);
+  opacity: 0; animation: glow-pulse 2.6s cubic-bezier(.22, .61, .36, 1) infinite;
+}
+.glow-pulse::after { animation-delay: 1.3s; }
+@keyframes glow-pulse {
+  0% { transform: scale(1); opacity: .9; }
+  100% { transform: scale(1.18, 1.45); opacity: 0; }
+}
+.glow-pulse:active::before, .glow-pulse:active::after { animation-play-state: paused; opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .glow-pulse::before, .glow-pulse::after { animation-duration: 4s; } }

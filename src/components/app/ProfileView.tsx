@@ -269,7 +269,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           {process.env.NEXT_PUBLIC_X_URL && <a href={process.env.NEXT_PUBLIC_X_URL} target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-foreground">X</a>}
           <a href="https://t.me/MuallimExam" target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-foreground">تيليجرام</a>
           <a href="https://www.facebook.com/share/1CHdqGvYz5/" target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-foreground">فيسبوك</a>
-          <button type="button" onClick={shareApp} className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[#D4A017] text-[13px] font-extrabold text-foreground">شارك التطبيق</button>
+          <button type="button" onClick={shareApp} className="glow-pulse relative isolate flex min-h-[40px] items-center justify-center rounded-[14px] bg-[#D4A017] text-[13px] font-extrabold text-foreground">شارك التطبيق</button>
         </div>
       </div>
 
@@ -470,7 +470,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
               else { await navigator.clipboard.writeText(`${text}\n${url}`); toast({ title: "نُسخ رابط التطبيق" }); }
             } catch {}
           }}
-          className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card"
+          className="glow-pulse relative isolate flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[#D4A017] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:bg-card"
         >
           <Share2 className="h-5 w-5 text-foreground" /> شارك التطبيق
         </button>
