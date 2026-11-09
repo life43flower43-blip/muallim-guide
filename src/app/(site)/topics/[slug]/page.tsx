@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: t.description,
     keywords: [t.name, ...t.kw, `ما هو ${t.name}`, `${t.name} للمعلمين`],
     alternates: { canonical: `${SITE_URL}/topics/${t.slug}` },
-    openGraph: { title: t.title, description: t.description, url: `${SITE_URL}/topics/${t.slug}`, ...(topicImage(t.slug) ? { images: [{ url: `${SITE_URL}${topicImage(t.slug)}`, width: 1200, height: 675 }] } : {}) },
+    openGraph: { title: t.title, description: t.description, url: `${SITE_URL}/topics/${t.slug}`, ...(topicImage(t.slug) ? { images: [{ url: `${SITE_URL}${topicImage(t.slug)}` }] } : {}) },
   };
 }
 
@@ -51,7 +51,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
       <PageHero kicker="موضوع" title={t.title} />
       {topicImage(t.slug) && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={topicImage(t.slug)} alt={t.name} width={1200} height={675} className="mt-5 aspect-video w-full rounded-2xl object-cover" />
+        <img src={topicImage(t.slug)} alt={t.name} width={1200} height={675} className="mt-5 h-auto w-full rounded-2xl" />
       )}
       <section className="mt-6 space-y-4 text-[16px] leading-[2] text-[#2C4A40]">
         {t.intro.map((p, i) => <p key={i}>{p}</p>)}
