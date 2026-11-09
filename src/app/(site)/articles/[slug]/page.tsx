@@ -127,7 +127,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <div className="mt-8 flex flex-wrap items-center gap-2">
               <Tag className="h-4 w-4 text-[#6B8077]" />
               {a.tags.map((t) => (
-                <Link key={t} href={`/search?q=${encodeURIComponent(t)}`} className="rounded-full bg-[#EEF5F1] px-3 py-1 text-[13px] font-bold text-[#136F5C] hover:bg-[#136F5C] hover:text-white">#{t}</Link>
+                <Link key={t} href={`/search?q=${encodeURIComponent(t)}`} rel="nofollow" className="rounded-full bg-[#EEF5F1] px-3 py-1 text-[13px] font-bold text-[#136F5C] hover:bg-[#136F5C] hover:text-white">#{t}</Link>
               ))}
             </div>
           )}
