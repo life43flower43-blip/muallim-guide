@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SITE_URL, SITE_NAME, publicBank } from "@/lib/public-bank";
 import { arDate, articleCourse } from "@/lib/articles";
-import { TOPICS, topicArticles, topicBySlug, topicConcepts } from "@/lib/topics";
+import { TOPICS, topicArticles, topicBySlug, topicConcepts, topicImage } from "@/lib/topics";
 import { Crumbs, PageHero, Tile, WithSidebar } from "@/components/site/Blocks";
 
 export const revalidate = 3600;
@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: t.description,
     keywords: [t.name, ...t.kw, `ما هو ${t.name}`, `${t.name} للمعلمين`],
     alternates: { canonical: `${SITE_URL}/topics/${t.slug}` },
-    openGraph: { title: t.title, description: t.description, url: `${SITE_URL}/topics/${t.slug}` },
+    openGraph: { title: t.title, description: t.description, url: `${SITE_URL}/topics/${t.slug}`, ...(topicImage(t.slug) ? { images: [{ url: `${SITE_URL}${topicImage(t.slug)}`, width: 1200, height: 675 }] } : {}) },
   };
 }
 
@@ -49,6 +49,10 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />
       <Crumbs items={[{ href: "/topics", label: "مواضيع تربوية" }, { label: t.name }]} />
       <PageHero kicker="موضوع" title={t.title} />
+      {topicImage(t.slug) && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={topicImage(t.slug)} alt={t.name} width={1200} height={675} className="mt-5 aspect-video w-full rounded-2xl object-cover" />
+      )}
       <section className="mt-6 space-y-4 text-[16px] leading-[2] text-[#2C4A40]">
         {t.intro.map((p, i) => <p key={i}>{p}</p>)}
         <ul className="grid gap-2 sm:grid-cols-3">
