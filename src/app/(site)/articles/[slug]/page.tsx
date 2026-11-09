@@ -29,7 +29,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!a) return {};
   const url = `${SITE_URL}/articles/${a.slug}`;
   return {
-    title: `${a.title} | تربوي`,
+    // العنوان الطويل يُعرض كاملًا دون اسم الموقع حتى لا يقصّه البحث
+    title: a.title.length > 58 ? { absolute: a.title } : `${a.title} | تربوي`,
     description: a.description,
     keywords: a.tags,
     alternates: { canonical: url },
