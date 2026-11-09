@@ -23,6 +23,7 @@ import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { ad } from "@/lib/arabic";
 import QuizSession from "./QuizSession";
+import SafeBoundary from "./SafeBoundary";
 import TodayView from "./TodayView";
 import ConceptsView from "./ConceptsView";
 import NotebookView from "./NotebookView";
@@ -463,11 +464,11 @@ export default function AppShell() {
       />
     );
   if (!onboarded) return <Onboarding />;
-  if (ui.quizConfig) return <QuizSession key={`${ui.quizConfig.label}:${ui.quizConfig.qids.join(",")}`} config={ui.quizConfig} />;
-  if (ui.challengesOpen) return <ChallengeSession />;
-  if (ui.measureOpen) return <MeasureKit />;
-  if (ui.peerOpen) return <PeerChallenge />;
-  if (ui.heartOpen) return <HeartOfClass key="heart" />;
+  if (ui.quizConfig) return <SafeBoundary full><QuizSession key={`${ui.quizConfig.label}:${ui.quizConfig.qids.join(",")}`} config={ui.quizConfig} /></SafeBoundary>;
+  if (ui.challengesOpen) return <SafeBoundary full><ChallengeSession /></SafeBoundary>;
+  if (ui.measureOpen) return <SafeBoundary full><MeasureKit /></SafeBoundary>;
+  if (ui.peerOpen) return <SafeBoundary full><PeerChallenge /></SafeBoundary>;
+  if (ui.heartOpen) return <SafeBoundary full><HeartOfClass key="heart" /></SafeBoundary>;
 
   const due = mistakes?.stats.due ?? 0;
   const go = (t: Tab) => {
@@ -506,17 +507,20 @@ export default function AppShell() {
               transition={{ duration: 0.15 }}
               className={cn("mx-auto w-full max-w-5xl px-4 pt-5 lg:px-8 lg:pt-8", "pb-[calc(var(--nav-h,96px)+28px)] lg:pb-10")}
             >
+              <SafeBoundary key={tab}>
               {tab === "today" && <TodayView onGoTab={go} />}
               {tab === "notebook" && <NotebookView />}
               {tab === "practice" && <PracticeView onGoTab={go} />}
               {tab === "mistakes" && <MistakesView onGoTab={go} />}
               {tab === "profile" && <ProfileView onGoTab={go} />}
+              </SafeBoundary>
             </motion.div>
           </AnimatePresence>
         </main>
         <BottomNav tab={tab} onTab={go} due={due} onBack={back} />
       </div>
 
+      <SafeBoundary full>
       <AnimatePresence>{ui.simOpen && <SimLabView key="sim" />}</AnimatePresence>
       <AnimatePresence>{ui.labOpen && <LabView key="lab" />}</AnimatePresence>
       <AnimatePresence>{ui.studioOpen && <StudioView key="studio" />}</AnimatePresence>
@@ -533,6 +537,7 @@ export default function AppShell() {
       <AnimatePresence>{ui.aiOpen && <AiAssistantView key="ai" />}</AnimatePresence>
       {ui.mindOpen && <MindMapView />}
       {ui.mythOpen && <MisconceptionsView />}
+      </SafeBoundary>
     </div>
   );
 }
