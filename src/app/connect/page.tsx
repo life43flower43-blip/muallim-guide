@@ -21,6 +21,7 @@ export default async function Connect({ searchParams }: { searchParams: Promise<
     : sp.li === "ok" ? `✅ تم ربط لينكدإن «${sp.name}». سيبدأ النشر في الموعد القادم.`
     : sp.li === "missing" ? "⚠️ أضف LINKEDIN_CLIENT_ID وLINKEDIN_CLIENT_SECRET في Vercel ثم Redeploy."
     : sp.li === "denied" ? "⚠️ لم تكتمل موافقة لينكدإن. حاول مرة أخرى."
+    : sp.li === "posted" ? "✅ نُشر منشور تجريبي في لينكدإن."
     : sp.li === "error" ? `⚠️ ${sp.msg ?? "حدث خطأ"}` : "";
   return (
     <main dir="rtl" className="mx-auto max-w-lg p-5 font-sans">
@@ -49,7 +50,19 @@ export default async function Connect({ searchParams }: { searchParams: Promise<
         <p className="mt-1 text-[14px] text-[#5B7268]">
           {li ? (liDays !== null && liDays <= 0 ? "انتهى الربط، أعد الربط ليستمر النشر" : `مربوط بحساب «${li.name}»، ويحتاج إعادة ربط بعد ${liDays} يومًا`) : liConfigured() ? "غير مربوط بعد" : "ينتظر LINKEDIN_CLIENT_ID وLINKEDIN_CLIENT_SECRET في Vercel"}
         </p>
-        <a href="/api/social/linkedin/start" className="mt-3 inline-block rounded-xl bg-[#0A66C2] px-4 py-2 font-bold text-white">{li ? "إعادة الربط" : "اربط لينكدإن"}</a>
+        {li?.lastAt && (
+          <p className="mt-1 text-[13px] text-[#5B7268]">
+            آخر محاولة نشر: {li.lastAt.toLocaleString("ar-SA", { timeZone: "Asia/Riyadh" })} — {li.lastOk ? "نجحت ✅" : `فشلت ❌ ${li.lastError ?? ""}`}
+          </p>
+        )}
+        <div className="mt-3 flex flex-wrap gap-2">
+          <a href="/api/social/linkedin/start" className="inline-block rounded-xl bg-[#0A66C2] px-4 py-2 font-bold text-white">{li ? "إعادة الربط" : "اربط لينكدإن"}</a>
+          {li && (
+            <form action="/api/social/linkedin/try" method="post">
+              <button className="rounded-xl border border-[#0A66C2] px-4 py-2 font-bold text-[#0A66C2]">انشر منشورًا تجريبيًا الآن</button>
+            </form>
+          )}
+        </div>
       </section>
     </main>
   );

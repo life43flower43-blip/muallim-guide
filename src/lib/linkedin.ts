@@ -64,5 +64,8 @@ export async function postToLinkedIn(p: { text: string; url: string; title: stri
       visibility: { "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC" },
     }),
   });
-  return r.ok ? { ok: true } : { ok: false, error: (await r.text()).slice(0, 200) };
+  const error = r.ok ? null : (await r.text()).slice(0, 200);
+  // آخر محاولة تُحفظ لتظهر في صفحة /connect
+  await db.socialAccount.update({ where: { platform: "linkedin" }, data: { lastAt: new Date(), lastOk: r.ok, lastError: error } }).catch(() => {});
+  return r.ok ? { ok: true } : { ok: false, error: error ?? "failed" };
 }
