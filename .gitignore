@@ -59,3 +59,7 @@ server.log
 # local sqlite
 /db/*.db-journal
 /prisma/*.db
+
+# يولَّدان وقت البناء من qbank.json
+/public/data/qbank-core.json
+/public/data/qbank-detail.json

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, X, AlertTriangle, CheckCircle2, XCircle, ChevronDown, Lightbulb, BookOpen, Timer as TimerIcon, Brain, Flag, Gem, RotateCcw } from "lucide-react";
-import { questionById, conceptById, COURSES, COURSE_SHORT, shuffle } from "@/lib/qbank";
+import { questionById, conceptById, COURSES, COURSE_SHORT, shuffle, useQbankDetail } from "@/lib/qbank";
 import { useApp } from "@/lib/store";
 import { useUi, type QuizConfig } from "@/lib/ui-store";
 import { saveSnapshot, loadSnapshot, clearSnapshot, RESUME_FLAG, type Confidence } from "@/lib/session-snapshot";
@@ -69,7 +69,9 @@ function Timer({ seconds, onTimeout }: { seconds: number; onTimeout: () => void 
 
 // الشرح: سبب صحة الإجابة، ثم لماذا البدائل خاطئة
 function AcademicReason({ reason }: { reason: string }) {
-  const { base, rest } = useMemo(() => splitReason(reason), [reason]);
+  const ready = useQbankDetail();
+  const { base, rest } = useMemo(() => splitReason(reason), [reason, ready]);
+  if (!reason && !ready) return <p className="text-sm text-muted-foreground">جارٍ تحميل الشرح…</p>;
   return (
     <div className="space-y-4">
       <div>
