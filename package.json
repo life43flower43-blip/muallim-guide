@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000 2>&1 | tee dev.log",
-    "build": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
+    "build": "node scripts/split-bank.mjs && next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
     "start": "NODE_ENV=production bun .next/standalone/server.js 2>&1 | tee server.log",
     "lint": "eslint .",
     "db:generate": "prisma generate",
@@ -12,7 +12,7 @@
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset",
     "typecheck": "tsc --noEmit",
-    "vercel-build": "prisma generate && (prisma db push --skip-generate || echo \"db push skipped\") && next build",
+    "vercel-build": "prisma generate && (prisma db push --skip-generate || echo \"db push skipped\") && node scripts/split-bank.mjs && next build",
     "postinstall": "prisma generate"
   },
   "dependencies": {
