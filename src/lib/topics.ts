@@ -272,7 +272,7 @@ export const TOPICS: Topic[] = [
 ];
 
 /** صور المواضيع الموجودة في public/topic-covers/<slug>.jpg */
-export const TOPIC_IMAGES = new Set<string>(["active-learning", "tests-and-measurement", "special-education", "ai-in-education", "teaching-ethics", "teacher-license", "learning-theories", "skills-21st-century", "formative-assessment", "flipped-classroom", "motivation", "critical-thinking", "lesson-planning", "individual-differences", "bloom-taxonomy", "classroom-management", "authentic-assessment"]);
+export const TOPIC_IMAGES = new Set<string>(["active-learning", "tests-and-measurement", "special-education", "ai-in-education", "teaching-ethics", "teacher-license", "learning-theories", "skills-21st-century", "formative-assessment", "flipped-classroom", "motivation", "critical-thinking", "lesson-planning", "individual-differences", "bloom-taxonomy", "classroom-management", "authentic-assessment", "parents-partnership", "project-based-learning", "teacher-wellbeing"]);
 export const topicImage = (slug: string) => (TOPIC_IMAGES.has(slug) ? `/topic-covers/${slug}.jpg` : undefined);
 
 export const topicBySlug = (slug: string) => TOPICS.find((t) => t.slug === slug);
