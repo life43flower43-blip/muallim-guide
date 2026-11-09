@@ -860,3 +860,6 @@ body {
 }
 .glow-pulse:active::before, .glow-pulse:active::after { animation-play-state: paused; opacity: 0; }
 @media (prefers-reduced-motion: reduce) { .glow-pulse::before, .glow-pulse::after { animation-duration: 4s; } }
+
+/* على الشاشات الصغيرة جدًا (أقل من ٣٥٠ بكسل) تصبح شبكة البطاقات عمودًا واحدًا فلا تُقص العناوين */
+@media (max-width: 349px) { .tiles2 { grid-template-columns: 1fr !important; } .tiles2 > .col-span-2 { grid-column: auto; } }

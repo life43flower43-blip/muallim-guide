@@ -513,7 +513,7 @@ export default function StudioView() {
         <div className="space-y-4">
           {subjectFilter === "الكل" ? (
             /* المواد أولًا: بطاقة لكل مادة، وعند اختيارها تظهر خططها */
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-2.5 tiles2">
               {Array.from(new Set(MODEL_PLANS.map((m) => m.form.subject))).map((sub, k) => (
                 <GameTile key={sub} tone={k} emoji={SUBJECT_EMOJI[sub] ?? "📝"} title={sub === "الدراسات الاجتماعية" ? "الاجتماعيات" : sub} meta={ad(MODEL_PLANS.filter((m) => m.form.subject === sub).length)} onClick={() => setSubjectFilter(sub)} />
               ))}

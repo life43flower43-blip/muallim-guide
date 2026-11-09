@@ -184,7 +184,7 @@ export default function PeerChallenge() {
     return (
       <ScreenShell title="تحدّي الأقران" sub="نافس زميلك على الأسئلة نفسها" onClose={clearPeer}>
         <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-2 gap-2.5 tiles2">
             <GameTile tone={3} emoji="⚔️" title="أنشئ تحديًا" onClick={() => setScreen("create")} />
             <GameTile tone={2} emoji="🔗" title="وصلني رابط" onClick={() => setScreen("paste")} />
           </div>
@@ -211,7 +211,7 @@ export default function PeerChallenge() {
         <div className="space-y-6">
           <section>
             <SectionHeader title="المحور" />
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-2.5 tiles2">
               {scopes.map((o, k) => (
                 <GameTile key={o.id} tone={k} emoji={o.id === "all" ? "🌐" : PEER_EMO[o.id] ?? "📚"} title={o.label} active={scope === o.id} onClick={() => setScope(o.id)} />
               ))}

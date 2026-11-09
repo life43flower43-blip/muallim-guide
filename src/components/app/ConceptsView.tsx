@@ -572,7 +572,7 @@ function ChapterPage({ courseId, chapter, onBack, onOpen }: { courseId: string; 
     >
       <div className="mx-auto max-w-3xl space-y-5">
         {/* زرّان فقط في سطر واحد */}
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-2 gap-2.5 tiles2">
           <PrimaryButton onClick={() => nextUp && onOpen(nextUp.id)} className="w-full">
             <Play className="h-4 w-4 fill-current" /> {read === 0 ? "ابدأ" : read === concepts.length ? "من البداية" : "تابع"}
           </PrimaryButton>
@@ -615,7 +615,7 @@ function CoursePage({ courseId, onBack, onChapter, onOpen }: { courseId: string;
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_320px] lg:items-start [&>*]:min-w-0">
         {/* ملخص المحور: أولًا على الجوال، وجانبًا على الحاسوب */}
         {/* زرّان فقط في سطر واحد: تابع، واختبار المحور */}
-        <aside className="grid grid-cols-2 gap-2.5 lg:sticky lg:top-0 lg:order-2">
+        <aside className="grid grid-cols-2 gap-2.5 tiles2 lg:sticky lg:top-0 lg:order-2">
           {nextUp && (
             <PrimaryButton onClick={() => onOpen(nextUp.id)} className="w-full">
               <Play className="h-4 w-4 fill-current" /> {read === 0 ? "ابدأ" : "تابع"}
@@ -796,7 +796,7 @@ export default function ConceptsView() {
               title="المحاور"
               action={<span className="shrink-0 text-sm font-bold text-muted-foreground">أنجزت {ad(totalRead)} من {ad(CONCEPTS.length)}</span>}
             />
-            <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }} className="grid grid-cols-2 gap-2.5">
+            <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }} className="grid grid-cols-2 gap-2.5 tiles2">
               {COURSES.map((course, k) => {
                 const cs = conceptsOfCourse(course.id);
                 const readCount = cs.filter((cc) => conceptReads[cc.id]).length;
