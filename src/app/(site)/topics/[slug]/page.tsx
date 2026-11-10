@@ -33,6 +33,14 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
   const ids = new Set(concepts.map((c) => c.id));
   const qCount = publicBank().questions.filter((q) => ids.has(q.conceptId)).length;
   const others = TOPICS.filter((x) => x.slug !== t.slug);
+  // خلاصة كل مفهوم في سطر (أول جملة من شرحه)، وأسئلة شائعة من المقدمة والمفاهيم
+  const firstSentence = (s: string) => (s.split(/(?<=[.؟!])\s/)[0] ?? s).trim();
+  const briefs = concepts.slice(0, 12).map((c) => ({ c, line: firstSentence(c.rule || c.explanation) }));
+  const faq = [
+    { q: `ما ${t.name}؟`, a: t.intro[0] },
+    { q: `كيف يطبق المعلم ${t.name} في الصف؟`, a: t.intro[1] },
+    ...concepts.slice(0, 4).map((c) => ({ q: `ما المقصود بـ«${c.title}»؟`, a: firstSentence(c.explanation) })),
+  ];
   const ld = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -47,6 +55,12 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
   return (
     <WithSidebar>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) }).replace(/</g, "\\u003c"),
+        }}
+      />
       <Crumbs items={[{ href: "/topics", label: "مواضيع تربوية" }, { label: t.name }]} />
       <PageHero kicker="موضوع" title={t.title} />
       {topicImage(t.slug) && (
@@ -81,6 +95,34 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
           </ul>
         </section>
       )}
+
+      {briefs.length > 0 && (
+        <section className="mt-9">
+          <h2 className="font-display text-[22px] font-extrabold text-[#0E3B32]">أهم مفاهيم {t.name} في سطر</h2>
+          <dl className="mt-4 space-y-3">
+            {briefs.map(({ c, line }) => (
+              <div key={c.id} className="rounded-xl border border-[#E2ECE6] bg-white p-4">
+                <dt className="font-bold text-[#14302A]">
+                  <Link href={`/learn/${c.courseId}/${c.id}`} className="hover:text-[#136F5C]">{c.title}</Link>
+                </dt>
+                <dd className="mt-1 text-[15px] leading-7 text-[#3A5249]">{line}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )}
+
+      <section className="mt-9">
+        <h2 className="font-display text-[22px] font-extrabold text-[#0E3B32]">أسئلة شائعة عن {t.name}</h2>
+        <div className="mt-4 space-y-2">
+          {faq.map((f) => (
+            <details key={f.q} className="rounded-xl border border-[#E2ECE6] bg-white p-4">
+              <summary className="cursor-pointer font-bold leading-7 text-[#14302A]">{f.q}</summary>
+              <p className="mt-2 text-[15px] leading-7 text-[#3A5249]">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
 
       <section className="mt-9 rounded-2xl bg-[#0E3B32] p-6 text-white">
         <h2 className="font-display text-[20px] font-extrabold">تدرّب على {t.name}</h2>

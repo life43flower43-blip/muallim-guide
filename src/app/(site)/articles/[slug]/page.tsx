@@ -39,6 +39,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
+/** أسئلة قسم «أسئلة شائعة» في المقال: **السؤال؟** ثم سطر الجواب — لبيانات FAQPage */
+function faqOf(body: string): { q: string; a: string }[] {
+  const m = body.split(/^## أسئلة شائعة\s*$/m)[1];
+  if (!m) return [];
+  const sec = m.split(/^## /m)[0];
+  const out: { q: string; a: string }[] = [];
+  const rx = /\*\*([^*\n]+؟)\*\*\s*\n([^\n]+(?:\n(?!\*\*|\n)[^\n]+)*)/g;
+  for (let r = rx.exec(sec); r; r = rx.exec(sec)) out.push({ q: r[1].trim(), a: r[2].replace(/\*\*/g, "").trim() });
+  return out;
+}
+
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const a = articleBySlug((await params).slug);
   if (!a) notFound();
@@ -65,6 +76,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       publisher: { "@type": "Organization", name: "تربوي", logo: { "@type": "ImageObject", url: `${SITE_URL}/icons/icon-512-v4.png` } },
       mainEntityOfPage: `${SITE_URL}${path}`,
     },
+    ...(faqOf(a.body).length
+      ? [{ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqOf(a.body).map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) }]
+      : []),
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
@@ -104,7 +118,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             </nav>
           )}
 
-          <div className="mt-7 text-[17.5px] leading-[2.05] text-[#24403A] [&_h2]:mb-3 [&_h2]:mt-9 [&_h2]:font-display [&_h2]:text-[22px] [&_h2]:font-extrabold [&_h2]:leading-[1.5] [&_h2]:text-[#14302A] [&_li]:mb-2 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:ps-6 [&_p]:my-4 [&_strong]:text-[#14302A] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:ps-6 [&_li::marker]:text-[#136F5C] [&_a]:font-bold [&_a]:text-[#136F5C] [&_a]:underline [&_blockquote]:my-4 [&_blockquote]:rounded-xl [&_blockquote]:border-s-4 [&_blockquote]:border-[#136F5C] [&_blockquote]:bg-[#EEF5F1] [&_blockquote]:px-4 [&_blockquote]:py-1">
+          <div className="mt-7 text-[17.5px] leading-[2.05] text-[#24403A] [&_h2]:mb-3 [&_h2]:mt-9 [&_h2]:font-display [&_h2]:text-[22px] [&_h2]:font-extrabold [&_h2]:leading-[1.5] [&_h2]:text-[#14302A] [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:font-display [&_h3]:text-[19px] [&_h3]:font-extrabold [&_h3]:text-[#14302A] [&_li]:mb-2 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:ps-6 [&_p]:my-4 [&_strong]:text-[#14302A] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:ps-6 [&_li::marker]:text-[#136F5C] [&_a]:font-bold [&_a]:text-[#136F5C] [&_a]:underline [&_blockquote]:my-4 [&_blockquote]:rounded-xl [&_blockquote]:border-s-4 [&_blockquote]:border-[#136F5C] [&_blockquote]:bg-[#EEF5F1] [&_blockquote]:px-4 [&_blockquote]:py-1">
             <ReactMarkdown components={{ h2: ({ children }) => <h2 id={`s-${++hi}`} className="scroll-mt-20">{children}</h2> }}>{a.body}</ReactMarkdown>
           </div>
 
