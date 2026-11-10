@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.vercel.muallim_guide.twa",
+        "sha256_cert_fingerprints": ["7C:8F:96:84:A3:63:7A:DE:0D:0B:F0:30:CE:5F:AC:F8:3F:86:BA:F6:F7:37:79:E4:89:C9:11:67:DF:3B:51:2A"]
+      }
+    }]
