@@ -37,6 +37,10 @@ export function installClientMonitor() {
     }
     return origFetch(input, init);
   };
+  // عامل الخدمة في كل صفحات الموقع لا في التطبيق وحده (تشترطه أدوات التغليف للمتاجر)
+  if ("serviceWorker" in navigator && location.protocol === "https:") {
+    window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" }).catch(() => {}), { once: true });
+  }
   window.addEventListener("error", (e) => reportClientError(e.error ?? e.message, "error"));
   window.addEventListener("unhandledrejection", (e) => reportClientError(e.reason, "promise"));
 }

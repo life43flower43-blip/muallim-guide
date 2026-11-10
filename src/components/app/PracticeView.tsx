@@ -51,6 +51,7 @@ import { cn } from "@/lib/utils";
 import ProgressSummary from "./ProgressSummary";
 import type { Tab } from "./AppShell";
 import TestBuilder from "./TestBuilder";
+import LicenseBankCard from "./LicenseBankCard";
 import { Divided, PageTitle, Stars, pct, GameTile } from "./ui-kit";
 
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
@@ -132,6 +133,8 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
   return (
     <div className="space-y-5">
       <PageTitle title="التدريب" />
+
+      <LicenseBankCard />
 
       {/* البطاقة الرئيسية: تدريب ذكي، وشريط ما أنجزته من البنك (الأرقام في «حسابي») */}
       <button
