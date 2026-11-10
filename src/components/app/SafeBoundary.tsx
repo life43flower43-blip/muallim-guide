@@ -3,6 +3,7 @@
 // حاجز أمان: إذا تعطلت شاشة واحدة لا يتوقف التطبيق كله، بل تظهر رسالة هادئة وزر رجوع للرئيسية
 import { Component, type ReactNode } from "react";
 import { useUi } from "@/lib/ui-store";
+import { reportClientError } from "@/lib/client-monitor";
 
 /** يغلق كل الشاشات المفتوحة فوق التطبيق ويعود إلى الرئيسية */
 export function closeAllScreens() {
@@ -19,6 +20,7 @@ export default class SafeBoundary extends Component<{ children: ReactNode; full?
   }
   componentDidCatch(error: unknown) {
     console.error("screen crashed:", error);
+    reportClientError(error, "screen");
   }
   private back = () => {
     closeAllScreens();

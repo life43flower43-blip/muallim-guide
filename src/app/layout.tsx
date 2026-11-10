@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Script from "next/script";
 import Providers from "./providers";
+import ClientMonitor from "@/components/ClientMonitor";
 
 // معرّف Google Analytics: يمكن تغييره من متغيرات Vercel دون تعديل الكود
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-N07YNJGJB2";
@@ -67,6 +68,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased bg-background text-foreground font-sans">
+        <ClientMonitor />
         <Providers>{children}</Providers>
         <Toaster />
         {/* إحصاءات الزوار: تُحمَّل بعد ظهور الصفحة فلا تبطئها */}

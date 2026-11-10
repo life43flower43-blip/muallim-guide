@@ -171,3 +171,18 @@ model QuestionReport {
   @@unique([questionId, reporter])
   @@index([questionId])
 }
+
+/// أعطال الواجهة عند المستخدمين: سجل واحد لكل عطل متكرر (بصمة الرسالة والمكان) مع عدّاد
+model ClientError {
+  id        String   @id // بصمة الرسالة والمكان والإصدار
+  message   String
+  stack     String?
+  url       String?
+  version   String?
+  ua        String?
+  count     Int      @default(1)
+  firstAt   DateTime @default(now())
+  lastAt    DateTime @default(now())
+
+  @@index([lastAt])
+}
