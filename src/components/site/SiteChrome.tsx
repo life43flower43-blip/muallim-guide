@@ -13,6 +13,7 @@ export const LICENSE = [
   { href: "/license-guide", label: "دليل الاستعداد للرخصة" },
   { href: "/standards", label: "المعايير العشرة" },
   { href: "/specialized", label: "الاختبارات التخصصية" },
+  { href: "/license-questions", label: "بنك أسئلة محلول" },
   { href: "/practice-test", label: "نموذج اختبار" },
   { href: "/weekly-test", label: "اختبار الأسبوع" },
   { href: "/license-calculator", label: "حاسبة مستوى الرخصة" },
@@ -148,6 +149,7 @@ export function SiteFooter() {
             <h3 className="mb-3 text-[13px] font-bold text-white">للمتقدمين للاختبار</h3>
             <ul className={col}>
               <li><Link href="/license-guide" className="hover:text-white">دليل الرخصة المهنية</Link></li>
+              <li><Link href="/license-questions" className="hover:text-white">بنك أسئلة الرخصة محلول</Link></li>
               <li><Link href="/practice-test" className="hover:text-white">نموذج اختبار</Link></li>
               <li><Link href="/topics" className="hover:text-white">مواضيع تربوية</Link></li>
               <li><Link prefetch={false} href="/glossary" className="hover:text-white">معجم المصطلحات</Link></li>
