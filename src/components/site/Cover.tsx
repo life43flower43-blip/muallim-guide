@@ -1,4 +1,5 @@
 // غلاف خاص بكل مقال: لون المحور، وزخرفة تختلف بحسب المقال، وأيقونة من موضوعه، وعنوانه
+import { createElement } from "react";
 import { ARTICLE_COVERS } from "@/lib/article-covers";
 import { conceptImage } from "@/lib/concept-images";
 import {
@@ -119,12 +120,15 @@ export function photoFor(id: string) {
 function Drawn({ id, title, courseId, small = false }: { id: string; title: string; courseId: string; small?: boolean }) {
   const m = courseMeta(courseId);
   const seed = hash(id);
-  const Icon = topicIcon(title);
+  const icon = createElement(topicIcon(title), {
+    className: `absolute text-white/90 ${small ? "left-1/2 top-1/2 h-9 w-9 -translate-x-1/2 -translate-y-1/2" : "end-5 top-5 h-14 w-14 sm:h-16 sm:w-16"}`,
+    strokeWidth: 1.6,
+  });
   const angle = 120 + (seed % 90);
   return (
     <span className="absolute inset-0" style={{ background: `linear-gradient(${angle}deg, ${m.color}, color-mix(in srgb, ${m.color} 62%, #0B2A23))` }}>
       <Pattern seed={seed} />
-      <Icon className={`absolute text-white/90 ${small ? "left-1/2 top-1/2 h-9 w-9 -translate-x-1/2 -translate-y-1/2" : "end-5 top-5 h-14 w-14 sm:h-16 sm:w-16"}`} strokeWidth={1.6} />
+      {icon}
     </span>
   );
 }

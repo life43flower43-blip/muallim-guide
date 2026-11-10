@@ -1,6 +1,7 @@
 "use client";
 
 // شريط ثابت أسفل الشاشة في الهاتف يدعو إلى التطبيق، ويُغلق لمدة أسبوع
+import { useClientValue } from "@/lib/use-client-value";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -9,16 +10,17 @@ import { X } from "lucide-react";
 const KEY = "turbawy-appbar-closed";
 
 export default function AppBar() {
-  const [show, setShow] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const path = usePathname();
-  useEffect(() => {
+  const due = useClientValue(() => {
     let closed = 0;
     try { closed = Number(localStorage.getItem(KEY) || 0); } catch {}
-    setShow(Date.now() - closed > 7 * 86400000);
-  }, []);
+    return Date.now() - closed > 7 * 86400000;
+  }, false);
+  const show = due && !hidden;
   if (!show || path === "/tatbeeq") return null;
   const close = () => {
-    setShow(false);
+    setHidden(true);
     try { localStorage.setItem(KEY, String(Date.now())); } catch {}
   };
   return (

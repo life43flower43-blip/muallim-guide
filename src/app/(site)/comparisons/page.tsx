@@ -15,7 +15,8 @@ export const metadata: Metadata = {
 };
 
 export default function Comparisons() {
-  let n = 0;
+  // ترقيم متصل عبر المجموعات، محسوب قبل العرض
+  const order = new Map(COMPARISON_GROUPS.flatMap((g) => COMPARISONS.filter((c) => c.group === g)).map((c, i) => [c.slug, i + 1]));
   return (
     <WithSidebar>
       <Crumbs items={[{ label: "مقارنات تربوية" }]} />
@@ -31,7 +32,7 @@ export default function Comparisons() {
               </h2>
               <ol className="divide-y divide-[#EEF3F0] overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
                 {list.map((c) => {
-                  n += 1;
+                  const n = order.get(c.slug) ?? 0;
                   return (
                     <li key={c.slug}>
                       <Link href={`/comparisons/${c.slug}`} className="flex items-center gap-3 px-4 py-3.5 transition hover:bg-[#F7FAF8]">

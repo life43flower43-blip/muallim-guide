@@ -25,8 +25,10 @@ export function RotateOne({ ids, children, storeKey = "turbawy-feat" }: { ids: s
     const fresh = ids.map((id, n) => [id, n] as const).filter(([id]) => !old.includes(id));
     const pool = fresh.length ? fresh : ids.map((id, n) => [id, n] as const);
     const [id, n] = pool[Math.floor(Math.random() * pool.length)];
-    setI(n);
+    // الاختيار عشوائي، فيُطبَّق بعد الترطيب لا أثناءه
+    const t = setTimeout(() => setI(n), 0);
     remember(storeKey, fresh.length ? [...old, id] : [id]);
+    return () => clearTimeout(t);
   }, [ids, storeKey]);
   return <>{items[i]}</>;
 }

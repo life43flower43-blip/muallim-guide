@@ -46,7 +46,12 @@ export default function MobileBar({ nav, groups = [], courses }: { nav: L[]; gro
   const [panel, setPanel] = useState<"none" | "search" | "menu">("none");
   const [showCourses, setShowCourses] = useState(false);
   const path = usePathname();
-  useEffect(() => setPanel("none"), [path]);
+  // إغلاق اللوحة عند الانتقال إلى صفحة أخرى
+  const [lastPath, setLastPath] = useState(path);
+  if (path !== lastPath) {
+    setLastPath(path);
+    setPanel("none");
+  }
   useEffect(() => {
     document.body.style.overflow = panel === "menu" ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
