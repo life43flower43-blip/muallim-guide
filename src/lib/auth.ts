@@ -5,6 +5,7 @@
 
 import { SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
+import { db } from '@/lib/db'
 
 export const COOKIE_NAME = 'turbawy_token'
 /** كوكي state قصيرة العمر لتسجيل الدخول بـ Google (حماية CSRF) */
@@ -38,21 +39,37 @@ function getJwtSecret(): string {
 
 const secretKey = new TextEncoder().encode(getJwtSecret())
 
-export async function createToken(userId: string): Promise<string> {
-  return await new SignJWT({ userId })
+/** رقم إصدار الجلسات: يزيد عند «الخروج من كل الأجهزة» وتغيير كلمة المرور، فتبطل الرموز القديمة */
+async function tokenVersionOf(userId: string): Promise<number> {
+  try {
+    const u = await db.user.findUnique({ where: { id: userId }, select: { tokenVersion: true } })
+    return u?.tokenVersion ?? 0
+  } catch {
+    return 0
+  }
+}
+
+export async function createToken(userId: string, tv?: number): Promise<string> {
+  return await new SignJWT({ userId, tv: tv ?? (await tokenVersionOf(userId)) })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime(TOKEN_EXPIRY)
     .sign(secretKey)
 }
 
-export async function verifyToken(token: string): Promise<{ userId: string } | null> {
+export async function verifyToken(token: string): Promise<{ userId: string; tv: number } | null> {
   try {
     const { payload } = await jwtVerify(token, secretKey)
-    return typeof payload.userId === 'string' ? { userId: payload.userId } : null
+    return typeof payload.userId === 'string' ? { userId: payload.userId, tv: typeof payload.tv === 'number' ? payload.tv : 0 } : null
   } catch {
     return null
   }
+}
+
+/** إبطال كل جلسات المستخدم على كل الأجهزة */
+export async function revokeAllSessions(userId: string): Promise<number> {
+  const u = await db.user.update({ where: { id: userId }, data: { tokenVersion: { increment: 1 } }, select: { tokenVersion: true } })
+  return u.tokenVersion
 }
 
 /** معرّف المستخدم الحالي من كوكي الجلسة، أو null للضيف */
@@ -61,7 +78,15 @@ export async function getCurrentUser(): Promise<string | null> {
   const token = cookieStore.get(COOKIE_NAME)?.value
   if (!token) return null
   const payload = await verifyToken(token)
-  return payload?.userId || null
+  if (!payload?.userId) return null
+  try {
+    // الحساب محذوف أو أُبطلت جلساته ← ضيف
+    const u = await db.user.findUnique({ where: { id: payload.userId }, select: { tokenVersion: true } })
+    if (!u || u.tokenVersion !== payload.tv) return null
+  } catch {
+    // تعثر قاعدة البيانات مؤقتًا لا يُخرج المستخدم
+  }
+  return payload.userId
 }
 
 export async function setAuthCookie(userId: string) {

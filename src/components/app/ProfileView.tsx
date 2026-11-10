@@ -62,6 +62,7 @@ import { OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
 import { disablePush, enablePush, usePushState } from "@/lib/push-client";
 import DefaultAvatar from "./DefaultAvatar";
 import AuthPanel from "./AuthPanel";
+import AccountSecurityButtons from "./AccountSecurityButtons";
 import PastTests from "./PastTests";
 import { Card, IconTile, PageTitle, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, pct } from "./ui-kit";
 
@@ -492,6 +493,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             >
               <LogOut className="h-5 w-5 text-foreground" /> تسجيل الخروج
             </button>
+            <AccountSecurityButtons />
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <button type="button" className="flex min-h-[76px] w-full flex-col items-center justify-center gap-1.5 rounded-[16px] border border-[var(--t075)] bg-white px-1 text-center text-[12.5px] font-bold leading-5 dark:border-border dark:bg-card text-[#C0504D]">

@@ -1,10 +1,13 @@
 // عودة لينكدإن بعد الموافقة: يتحقق من الحالة ويحفظ الرمز
 import { NextRequest, NextResponse } from "next/server";
+import { isAdmin } from "@/lib/admin";
 import { connectLinkedIn } from "@/lib/linkedin";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
+  // لصاحب الموقع فقط
+  if (!(await isAdmin())) return NextResponse.redirect(new URL("/connect", req.url), 303);
   const back = (q: string) => {
     const r = NextResponse.redirect(new URL(`/connect?${q}`, req.url));
     r.cookies.delete("li_state");

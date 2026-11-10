@@ -22,6 +22,7 @@ model User {
   streak       Int      @default(0)
   streakFreeze Int      @default(0)
   gems         Int      @default(0)
+  tokenVersion Int      @default(0) // يزيد لإبطال كل الجلسات
   lastActive   DateTime @default(now())
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -158,4 +159,15 @@ model PasswordReset {
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+/// بلاغات «خطأ في السؤال» من الطلاب: بلاغ واحد لكل سؤال من كل مُبلِّغ
+model QuestionReport {
+  id         String   @id @default(cuid())
+  questionId String
+  reporter   String // معرّف الحساب، أو بصمة العنوان للضيف
+  createdAt  DateTime @default(now())
+
+  @@unique([questionId, reporter])
+  @@index([questionId])
 }

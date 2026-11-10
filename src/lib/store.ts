@@ -270,12 +270,17 @@ export const useApp = create<AppState>()(
         });
       },
 
-      reportQuestion: (qid) =>
+      reportQuestion: (qid) => {
+        // يصل البلاغ إلى صاحب الموقع (مرة لكل سؤال من هذا الجهاز)
+        if (!get().reportedQuestions.includes(qid)) {
+          fetch("/api/report", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ qid }) }).catch(() => {});
+        }
         set((st) => ({
           reportedQuestions: st.reportedQuestions.includes(qid)
             ? st.reportedQuestions
             : [...st.reportedQuestions, qid],
-        })),
+        }));
+      },
 
       // أمثلة مجتمع الطلاب — يضيف الطالب مثالاً من واقع تخصصه فيبقى محفوظًا على جهازه
       addStudentExample: (cid, text, specialty) =>

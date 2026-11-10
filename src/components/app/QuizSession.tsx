@@ -30,24 +30,30 @@ import { pingStudied } from "@/lib/push-client";
 // ---------- مكونات صغيرة ----------
 
 function Timer({ seconds, onTimeout }: { seconds: number; onTimeout: () => void }) {
+  // الوقت يُحسب من موعد الانتهاء، فلا يتأخر إذا نام الجوال أو صغُر التطبيق
+  const [deadline] = useState(() => Date.now() + seconds * 1000);
   const [left, setLeft] = useState(seconds);
   const firedRef = useRef(false);
+  const timeoutRef = useRef(onTimeout);
   useEffect(() => {
-    const t = setInterval(() => {
-      setLeft((v) => {
-        if (v <= 1) {
-          clearInterval(t);
-          if (!firedRef.current) {
-            firedRef.current = true;
-            onTimeout();
-          }
-          return 0;
-        }
-        return v - 1;
-      });
-    }, 1000);
-    return () => clearInterval(t);
-  }, []);
+    timeoutRef.current = onTimeout;
+  });
+  useEffect(() => {
+    const tick = () => {
+      const v = Math.max(0, Math.round((deadline - Date.now()) / 1000));
+      setLeft(v);
+      if (v === 0 && !firedRef.current) {
+        firedRef.current = true;
+        timeoutRef.current();
+      }
+    };
+    const t = setInterval(tick, 1000);
+    document.addEventListener("visibilitychange", tick);
+    return () => {
+      clearInterval(t);
+      document.removeEventListener("visibilitychange", tick);
+    };
+  }, [deadline]);
   const m = Math.floor(left / 60);
   const s = left % 60;
   const danger = left <= 60;

@@ -68,6 +68,28 @@ const arDate = (ts: number) => {
   }
 };
 
+// مسودة الاختبار الجاري على الجهاز
+const DRAFT_KEY = "turbawy-exam-draft";
+type ExamDraft = { bpId: string; items: ExamItem[]; answers: Record<string, string>; flagged: Record<string, boolean>; idx: number; startedAt: number; deadline: number };
+function loadDraft(): ExamDraft | null {
+  try {
+    const d = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+    return d && Array.isArray(d.items) && d.items.length && typeof d.deadline === "number" ? (d as ExamDraft) : null;
+  } catch {
+    return null;
+  }
+}
+function saveDraft(d: ExamDraft) {
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+  } catch {}
+}
+function clearDraft() {
+  try {
+    localStorage.removeItem(DRAFT_KEY);
+  } catch {}
+}
+
 export default function ExamSimView() {
   const close = useUi((s) => s.clearExamsim);
   const startQuiz = useUi((s) => s.startQuiz);
@@ -75,19 +97,32 @@ export default function ExamSimView() {
   const finishSession = useApp((s) => s.finishSession);
   const queryClient = useQueryClient();
 
-  const [phase, setPhase] = useState<Phase>("home");
-  const [bp, setBp] = useState<ExamBlueprint | null>(null);
-  const [items, setItems] = useState<ExamItem[]>([]);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [flagged, setFlagged] = useState<Record<string, boolean>>({});
-  const [idx, setIdx] = useState(0);
-  const [remaining, setRemaining] = useState(0);
+  // استئناف اختبار جارٍ أُغلق التطبيق أثناءه (وإن انتهى وقته يُسلَّم فورًا)
+  const [resume] = useState(() => {
+    const d = typeof window !== "undefined" ? loadDraft() : null;
+    const blueprint = d ? BLUEPRINTS.find((b) => b.id === d.bpId) : undefined;
+    return d && blueprint ? { d, blueprint } : null;
+  });
+  const [phase, setPhase] = useState<Phase>(resume ? "run" : "home");
+  const [bp, setBp] = useState<ExamBlueprint | null>(resume?.blueprint ?? null);
+  const [items, setItems] = useState<ExamItem[]>(resume?.d.items ?? []);
+  const [answers, setAnswers] = useState<Record<string, string>>(resume?.d.answers ?? {});
+  const [flagged, setFlagged] = useState<Record<string, boolean>>(resume?.d.flagged ?? {});
+  const [idx, setIdx] = useState(resume ? Math.min(resume.d.idx, resume.d.items.length - 1) : 0);
+  const [remaining, setRemaining] = useState(resume ? Math.max(0, Math.round((resume.d.deadline - Date.now()) / 1000)) : 0);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [submitOpen, setSubmitOpen] = useState(false);
   const [result, setResult] = useState<ExamRun | null>(null);
   const [runs, setRuns] = useState<ExamRun[]>(() => loadExamRuns());
-  const [startedAt, setStartedAt] = useState(0);
+  const [startedAt, setStartedAt] = useState(resume?.d.startedAt ?? 0);
+  const [deadline, setDeadline] = useState(resume?.d.deadline ?? 0);
   const submittedRef = useRef(false);
+
+  // حفظ الاختبار الجاري مع كل إجابة
+  useEffect(() => {
+    if (phase !== "run" || !bp || !items.length) return;
+    saveDraft({ bpId: bp.id, items, answers, flagged, idx, startedAt, deadline });
+  }, [phase, bp, items, answers, flagged, idx, startedAt, deadline]);
 
   const startExam = (blueprint: ExamBlueprint) => {
     setBp(blueprint);
@@ -103,6 +138,7 @@ export default function ExamSimView() {
     setIdx(0);
     setRemaining(bp.minutes * 60);
     setStartedAt(Date.now());
+    setDeadline(Date.now() + bp.minutes * 60_000);
     setResult(null);
     setPhase("run");
   };
@@ -110,6 +146,7 @@ export default function ExamSimView() {
   const submit = useCallback(() => {
     if (submittedRef.current || !bp) return;
     submittedRef.current = true;
+    clearDraft();
     let correctCount = 0;
     const wrongQids: string[] = [];
     const secMap = new Map<string, { correct: number; total: number }>();
@@ -165,10 +202,17 @@ export default function ExamSimView() {
 
   // المؤقت التنازلي — والتسليم التلقائي عند انتهاء الوقت
   useEffect(() => {
-    if (phase !== "run") return;
-    const t = setInterval(() => setRemaining((r) => r - 1), 1000);
-    return () => clearInterval(t);
-  }, [phase]);
+    if (phase !== "run" || !deadline) return;
+    // الوقت المتبقي يُحسب من موعد الانتهاء، فلا يتأخر إذا نام الجوال أو صغُر التطبيق
+    const tick = () => setRemaining(Math.max(0, Math.round((deadline - Date.now()) / 1000)));
+    tick();
+    const t = setInterval(tick, 1000);
+    document.addEventListener("visibilitychange", tick);
+    return () => {
+      clearInterval(t);
+      document.removeEventListener("visibilitychange", tick);
+    };
+  }, [phase, deadline]);
 
   useEffect(() => {
     if (phase !== "run" || remaining > 0) return;

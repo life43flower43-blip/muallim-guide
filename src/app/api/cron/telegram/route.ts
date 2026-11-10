@@ -16,8 +16,8 @@ export const maxDuration = 30;
 
 export async function GET(request: NextRequest) {
   const secret = process.env.CRON_SECRET;
-  const fromCron = (request.headers.get("user-agent") ?? "").startsWith("vercel-cron");
-  const authorized = secret ? request.headers.get("authorization") === `Bearer ${secret}` : fromCron;
+  // بلا CRON_SECRET لا تشغيل: ترويسة user-agent يمكن تزويرها
+  const authorized = !!secret && request.headers.get("authorization") === `Bearer ${secret}`;
   if (!authorized) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   // ?slot=tip|q1|q2 — ثلاثة مواعيد في اليوم (انظر vercel.json)

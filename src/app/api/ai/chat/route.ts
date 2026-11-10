@@ -70,7 +70,8 @@ export async function POST(req: NextRequest) {
   if (!clean.length)
     return NextResponse.json({ error: "لا توجد رسالة صالحة لإرسالها" }, { status: 400 });
 
-  const model = typeof body.model === "string" && body.model.trim() ? body.model.trim() : DEFAULT_MODEL;
+  // مع مفتاح الموقع: النموذج الافتراضي فقط، فلا يختار أحد نموذجًا غاليًا على حسابنا
+  const model = userKey && typeof body.model === "string" && body.model.trim() ? body.model.trim().slice(0, 100) : DEFAULT_MODEL;
   const temperature = typeof body.temperature === "number" && body.temperature >= 0 && body.temperature <= 2
     ? body.temperature
     : 0.6;

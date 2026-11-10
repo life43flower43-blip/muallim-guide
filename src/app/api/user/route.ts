@@ -25,6 +25,9 @@ export async function DELETE() {
   const userId = await getCurrentUser()
   if (!userId) return NextResponse.json({ error: 'not_authenticated' }, { status: 401 })
   try {
+    // ما لا يرتبط بالحساب في قاعدة البيانات يُحذف يدويًا معه
+    await db.pushSubscription.deleteMany({ where: { userId } })
+    await db.passwordReset.deleteMany({ where: { userId } })
     await db.user.delete({ where: { id: userId } })
     await clearAuthCookie()
     return NextResponse.json({ deleted: true })

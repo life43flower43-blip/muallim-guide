@@ -103,6 +103,16 @@ export async function startProgressSync() {
   })
 }
 
+/** رفع أخير لنسخة الجهاز قبل الخروج — true إن حُفظت في الحساب */
+export async function flushProgress(): Promise<boolean> {
+  try {
+    const res = await fetch('/api/user/progress', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(snapshot()), signal: AbortSignal.timeout(10000) })
+    return res.ok
+  } catch {
+    return false
+  }
+}
+
 export function stopProgressSync() {
   unsubscribe?.()
   unsubscribe = null

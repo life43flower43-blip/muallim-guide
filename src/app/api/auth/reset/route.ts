@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { checkRateLimit, rateLimitResponse, getClientIP, RATE_LIMITS } from '@/lib/rate-limit'
-import { setAuthCookie } from '@/lib/auth'
+import { revokeAllSessions, setAuthCookie } from '@/lib/auth'
 import { hashPassword } from '@/lib/password'
 
 export const dynamic = 'force-dynamic'
@@ -18,6 +18,8 @@ export async function POST(request: NextRequest) {
   if (!row || row.expiresAt < new Date()) return NextResponse.json({ error: 'الرابط منتهي أو غير صالح، اطلب رابطًا جديدًا' }, { status: 400 })
   await db.user.update({ where: { id: row.userId }, data: { password: await hashPassword(password) } })
   await db.passwordReset.deleteMany({ where: { userId: row.userId } })
+  // من كان داخل الحساب بكلمة المرور القديمة يخرج
+  await revokeAllSessions(row.userId)
   await setAuthCookie(row.userId)
   return NextResponse.json({ ok: true })
 }

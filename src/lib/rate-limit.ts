@@ -51,6 +51,8 @@ export const RATE_LIMITS = {
   AUTH_FORGOT: { limit: 3, windowMs: 60 * 60_000 },
   AUTH_FORGOT_IP: { limit: 10, windowMs: 60 * 60_000 },
   /** المساعد الذكي بمفتاح الخادم: 30 رسالة في الساعة لكل مستخدم */
+  /** بلاغات الأسئلة: 30 في الساعة لكل عنوان */
+  REPORT: { limit: 30, windowMs: 60 * 60_000 },
   AI_CHAT: { limit: 30, windowMs: 60 * 60_000 },
   /** حفظ التقدم والجواهر والأخطاء: 60 في الدقيقة لكل مستخدم */
   PROGRESS_SAVE: { limit: 60, windowMs: 60_000 },
