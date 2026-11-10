@@ -23,6 +23,9 @@ const nextConfig: NextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
+          // سياسة محتوى لا تقيّد السكربتات (الإعلانات وأدوات القياس تحتاجها)، لكنها تمنع التضمين في مواقع أخرى،
+          // وتغيير عنوان الأساس، وإضافات object، وإرسال النماذج إلى مواقع غريبة، وتحمّل كل شيء عبر https
+          { key: "Content-Security-Policy", value: "frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; upgrade-insecure-requests" },
         ],
       },
     ];
