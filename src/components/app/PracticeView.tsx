@@ -63,7 +63,7 @@ const LICENSE_TOOLS = [
   { icon: Calculator, title: "حاسبة الرخصة", href: "/license-calculator", emoji: "🧮", sub: "قدّر مستواك" },
   { icon: CalendarCheck, title: "اختبار الأسبوع", href: "/weekly-test", emoji: "🗓️", sub: "٢٠ سؤالًا كل أحد" },
   { icon: GraduationCap, title: "أدلة التخصصات", href: "/specialized", emoji: "🎓", sub: "اختبار تخصصك" },
-  { icon: Globe, title: "اختبارات الدول", href: "/teacher-exams", emoji: "🌍", sub: "السعودية والإمارات ومصر" },
+  { icon: Globe, title: "اختبارات الدول", href: "/teacher-exams", emoji: "🌍", sub: "اختبارات التوظيف في الدول العربية" },
   { icon: BookA, title: "المعجم", href: "/glossary", emoji: "📖", sub: "المصطلحات بإيجاز" },
   { icon: MessagesSquare, title: "مشكلات صفية", href: "/classroom-problems", emoji: "💬", sub: "مواقف وحلولها" },
   { icon: Lightbulb, title: "مفاهيم خاطئة", href: "/misconceptions", emoji: "💡", sub: "أفكار شائعة خاطئة" },

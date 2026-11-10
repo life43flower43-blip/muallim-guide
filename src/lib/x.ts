@@ -43,7 +43,7 @@ function fit(head: string, body: string, tail: string) {
   return `${head}${b}${tail}`;
 }
 
-const TAGS = ["#الرخصة_المهنية", "#اختبار_المعلمين", "#تربوي", "#معلمين_السعودية", "#الاختبار_التربوي_العام", "#سؤال_اليوم", "#معلومة_تربوية", "#تطبيق_تربوي"];
+const TAGS = ["#الرخصة_المهنية", "#اختبار_المعلمين", "#تربوي", "#معلمين_العرب", "#اختبارات_توظيف_المعلمين", "#سؤال_اليوم", "#معلومة_تربوية", "#تطبيق_تربوي"];
 const tags = (n: number) => `${TAGS[n % TAGS.length]} ${TAGS[(n + 3) % TAGS.length]}`;
 
 export function buildXPost(iso = todayISO(), slot: Slot): string | null {
