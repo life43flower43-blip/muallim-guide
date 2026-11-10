@@ -1,7 +1,7 @@
 {
   "name": "تربوي — الإعداد المهني للمعلم",
   "short_name": "تربوي",
-  "description": "منصة إعداد مهني لطلبة كليات التربية والمتقدمين لاختبار التوظيف والمعلمين.",
+  "description": "تطبيق مجاني للمعلمين وطلاب كليات التربية: أكثر من ٧٥٠٠ سؤال للرخصة المهنية مع شرح كل إجابة، ومحاكي اختبار بوقت حقيقي، ومفاهيم مشروحة بأمثلة من الصف.",
   "lang": "ar",
   "dir": "rtl",
   "start_url": "/app",
@@ -29,5 +29,79 @@
       "purpose": "maskable"
     }
   ],
-  "id": "/app"
+  "id": "/app",
+  "orientation": "portrait",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "categories": [
+    "education",
+    "productivity"
+  ],
+  "prefer_related_applications": false,
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "screenshots": [
+    {
+      "src": "/shots/home.jpg",
+      "sizes": "824x1830",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "الرئيسية"
+    },
+    {
+      "src": "/shots/bank.jpg",
+      "sizes": "824x1830",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "اختبار محاكاة الرخصة المهنية"
+    },
+    {
+      "src": "/shots/practice.jpg",
+      "sizes": "824x1830",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "سؤال تدريب"
+    },
+    {
+      "src": "/shots/examsim.jpg",
+      "sizes": "780x1688",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "محاكي الاختبار"
+    },
+    {
+      "src": "/shots/learn.jpg",
+      "sizes": "780x1688",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "المفاهيم"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "اختبار محاكاة الرخصة المهنية",
+      "short_name": "بنك الأسئلة",
+      "url": "/app?open=bank",
+      "icons": [
+        {
+          "src": "/icons/icon-192-v4.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "محاكي الاختبار بوقت",
+      "short_name": "المحاكي",
+      "url": "/app?open=examsim",
+      "icons": [
+        {
+          "src": "/icons/icon-192-v4.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
 }

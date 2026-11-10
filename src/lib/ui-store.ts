@@ -28,6 +28,7 @@ interface UiState {
   peerOpen: boolean; // تحدّي الأقران — رابط يحمل التحدي بلا سيرفر
   peerIncoming: PeerPayload | null; // تحدٍّ وصل عبر رابط مفتوح — يُلتقط من معرف الرابط
   examsimOpen: boolean; // محاكي الرخصة والمسابقات — بلاتنات موقوتة بأقسام ومحك
+  bankOpen: boolean; // بنك الرخصة المهنية: كل الأسئلة مرتبة بالمحاور والفصول
   placementOpen: boolean; // اختبار تحديد المستوى — تشخيص ثلاثي المستويات
   flashOpen: boolean; // بطاقات المفاهيم — وضع بطاقات القلب
   learnOpen: boolean; // شاشة المفاهيم التربوية (المحاور والفصول والمفاهيم)
@@ -60,6 +61,8 @@ interface UiState {
   clearPeer: () => void;
   setPeerIncoming: (p: PeerPayload | null) => void;
   startExamsim: () => void;
+  startBank: () => void;
+  clearBank: () => void;
   clearExamsim: () => void;
   startPlacement: () => void;
   clearPlacement: () => void;
@@ -92,6 +95,7 @@ export const useUi = create<UiState>((set) => ({
   peerOpen: false,
   peerIncoming: null,
   examsimOpen: false,
+  bankOpen: false,
   placementOpen: false,
   flashOpen: false,
   aiOpen: false,
@@ -124,6 +128,8 @@ export const useUi = create<UiState>((set) => ({
   clearPeer: () => set({ peerOpen: false }),
   setPeerIncoming: (p) => set({ peerIncoming: p }),
   startExamsim: () => set({ examsimOpen: true }),
+  startBank: () => set({ bankOpen: true }),
+  clearBank: () => set({ bankOpen: false }),
   clearExamsim: () => set({ examsimOpen: false }),
   startPlacement: () => set({ placementOpen: true }),
   clearPlacement: () => set({ placementOpen: false }),
@@ -149,6 +155,7 @@ export const useUi = create<UiState>((set) => ({
       heartOpen: false,
       peerOpen: false,
       examsimOpen: false,
+      bankOpen: false,
       placementOpen: false,
       mythOpen: false,
       mindOpen: false,

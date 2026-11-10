@@ -41,6 +41,7 @@ import MeasureKit from "./MeasureKit";
 import PeerChallenge from "./PeerChallenge";
 import HeartOfClass from "./HeartOfClass";
 import ExamSimView from "./ExamSimView";
+import LicenseBankView from "./LicenseBankView";
 import PlacementView from "./PlacementView";
 import FlashcardsView from "./FlashcardsView";
 import AiAssistantView from "./AiAssistantView";
@@ -308,7 +309,7 @@ export default function AppShell() {
   // زر الرجوع في الهاتف: يغلق الشاشة المفتوحة أولًا ويبقى في التبويب نفسه، ثم يعود إلى الرئيسية
   const overlayOpen =
     ui.scenariosOpen || ui.labOpen || ui.simOpen || ui.studioOpen || ui.fieldOpen || ui.challengesOpen || ui.measureOpen ||
-    ui.heartOpen || ui.peerOpen || ui.examsimOpen || ui.placementOpen || ui.mindOpen || ui.mythOpen || ui.flashOpen || ui.aiOpen || ui.learnOpen;
+    ui.heartOpen || ui.peerOpen || ui.examsimOpen || ui.bankOpen || ui.placementOpen || ui.mindOpen || ui.mythOpen || ui.flashOpen || ui.aiOpen || ui.learnOpen;
   const overlayRef = useRef(false);
   useEffect(() => {
     if (overlayOpen && !overlayRef.current) window.history.pushState({ turbawyOverlay: true }, "");
@@ -422,7 +423,7 @@ export default function AppShell() {
     const s = useUi.getState();
     if (req.concept) { s.openConcept(req.concept); return; }
     const open: Record<string, () => void> = {
-      examsim: s.startExamsim, placement: s.startPlacement, learn: s.startLearn, sim: s.startSim, lab: s.startLab,
+      examsim: s.startExamsim, bank: s.startBank, placement: s.startPlacement, learn: s.startLearn, sim: s.startSim, lab: s.startLab,
       studio: s.startStudio, scenarios: s.startScenarios, measure: s.startMeasure, mind: s.startMind, myths: s.startMyths,
       flash: s.startFlash, challenges: s.startChallenges, field: s.startField,
     };
@@ -527,6 +528,7 @@ export default function AppShell() {
       <AnimatePresence>{ui.studioOpen && <StudioView key="studio" />}</AnimatePresence>
       <AnimatePresence>{ui.fieldOpen && <FieldLogView key="field" />}</AnimatePresence>
       <AnimatePresence>{ui.scenariosOpen && <ScenariosView key="scenarios" />}</AnimatePresence>
+      <AnimatePresence>{ui.bankOpen && <LicenseBankView key="bank" />}</AnimatePresence>
       <AnimatePresence>{ui.examsimOpen && <ExamSimView key="examsim" />}</AnimatePresence>
       <AnimatePresence>{ui.placementOpen && <PlacementView key="placement" />}</AnimatePresence>
       {ui.learnOpen && (

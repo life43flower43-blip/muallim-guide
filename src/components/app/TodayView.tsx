@@ -15,6 +15,7 @@ import { overallReadiness } from "@/lib/practice-bank";
 import { ad } from "@/lib/arabic";
 import type { Tab } from "./AppShell";
 import { FitText } from "./FitText";
+import LicenseBankCard from "./LicenseBankCard";
 import { BookOpen, ClipboardCheck, Compass, Lightbulb, NotebookPen, Presentation, Shapes, Timer, Users } from "lucide-react";
 
 type Door = { title: string; img: string; pos?: string; progress: number; run: () => void; special?: boolean };
@@ -291,6 +292,9 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           </button>
         </div>
       </motion.div>
+
+      {/* بنك الرخصة كاملًا: أهم باب للطلاب */}
+      <LicenseBankCard />
 
       {/* أبواب التطبيق */}
       {homeStyle === "icons" ? (
