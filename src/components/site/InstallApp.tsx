@@ -1,6 +1,7 @@
 "use client";
 
 // زر تثبيت التطبيق: يستعمل نافذة التثبيت في أندرويد إن توفرت، وإلا يعرض خطوات الآيفون، أو يفتح التطبيق
+import { useClientValue } from "@/lib/use-client-value";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Download, Share, SquarePlus, Smartphone } from "lucide-react";
@@ -13,13 +14,16 @@ if (typeof window !== "undefined") {
 
 export default function InstallApp({ className = "" }: { className?: string }) {
   const [can, setCan] = useState(false);
-  const [ios, setIos] = useState(false);
+  const ios = useClientValue(() => /iphone|ipad|ipod/i.test(navigator.userAgent), false);
   const [help, setHelp] = useState(false);
   useEffect(() => {
-    setIos(/iphone|ipad|ipod/i.test(navigator.userAgent));
-    const t = setInterval(() => setCan(!!deferred), 700);
-    setCan(!!deferred);
-    return () => clearInterval(t);
+    const check = () => setCan(!!deferred);
+    const first = setTimeout(check, 0);
+    const t = setInterval(check, 700);
+    return () => {
+      clearTimeout(first);
+      clearInterval(t);
+    };
   }, []);
 
   const install = async () => {
