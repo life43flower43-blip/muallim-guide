@@ -135,5 +135,10 @@
       "id": "app.vercel.muallim_guide.twa",
       "url": "https://play.google.com/store/apps/details?id=app.vercel.muallim_guide.twa"
     }
-  ]
+  ],
+  "serviceworker": {
+    "src": "/sw.js",
+    "scope": "/",
+    "update_via_cache": "none"
+  }
 }
