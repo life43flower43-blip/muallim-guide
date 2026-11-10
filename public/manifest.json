@@ -78,6 +78,13 @@
       "type": "image/jpeg",
       "form_factor": "narrow",
       "label": "المفاهيم"
+    },
+    {
+      "src": "/shots/wide-site.jpg",
+      "sizes": "1280x800",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "موقع تربوي"
     }
   ],
   "shortcuts": [
