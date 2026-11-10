@@ -110,5 +110,30 @@
         }
       ]
     }
+  ],
+  "share_target": {
+    "action": "/search",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "q"
+    }
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+turbawy",
+      "url": "/app?open=%s"
+    }
+  ],
+  "edge_side_panel": {
+    "preferred_width": 420
+  },
+  "handle_links": "preferred",
+  "related_applications": [
+    {
+      "platform": "play",
+      "id": "app.vercel.muallim_guide.twa",
+      "url": "https://play.google.com/store/apps/details?id=app.vercel.muallim_guide.twa"
+    }
   ]
 }
