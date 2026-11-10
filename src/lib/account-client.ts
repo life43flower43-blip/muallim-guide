@@ -9,8 +9,8 @@
 
 import { useQuery, type QueryClient } from '@tanstack/react-query'
 import { useApp } from './store'
-import { migrateLocalMistakesToServer } from './local-mistakes-store'
-import { startProgressSync, stopProgressSync } from './progress-sync'
+import { migrateLocalMistakesToServer, useLocalMistakesStore } from './local-mistakes-store'
+import { flushProgress, startProgressSync, stopProgressSync } from './progress-sync'
 import { GEM_RULES, gemsForSession, type GemReason } from './gems-rules'
 import { displayedStreak } from './streak'
 import { currentStreak } from './store'
@@ -61,9 +61,32 @@ export async function afterSignIn(queryClient: QueryClient) {
   await queryClient.invalidateQueries()
 }
 
+/** عنوان اشتراك الإشعارات لهذا الجهاز، إن وُجد */
+async function pushEndpoint(): Promise<string | undefined> {
+  try {
+    if (!('serviceWorker' in navigator)) return undefined
+    const reg = await navigator.serviceWorker.getRegistration()
+    return (await reg?.pushManager.getSubscription())?.endpoint
+  } catch {
+    return undefined
+  }
+}
+
+/** بعد الخروج: لا يبقى تقدم الحساب على الجهاز (بعد التأكد أنه محفوظ في الحساب) */
+function clearLocalAccountData() {
+  const st = useApp.getState()
+  const keep = { goal: st.goal, onboarded: st.onboarded }
+  st.resetAll()
+  useApp.setState(keep)
+  useLocalMistakesStore.getState().clearAll()
+}
+
 export async function signOut(queryClient: QueryClient) {
+  const saved = await flushProgress()
   stopProgressSync()
-  await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {})
+  const endpoint = await pushEndpoint()
+  await fetch('/api/auth/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ endpoint }) }).catch(() => {})
+  if (saved) clearLocalAccountData()
   queryClient.setQueryData(USER_QUERY_KEY, null)
   await queryClient.invalidateQueries()
 }
@@ -72,6 +95,7 @@ export async function deleteAccount(queryClient: QueryClient): Promise<boolean> 
   stopProgressSync()
   const res = await fetch('/api/user', { method: 'DELETE' }).catch(() => null)
   if (!res?.ok) return false
+  clearLocalAccountData()
   queryClient.setQueryData(USER_QUERY_KEY, null)
   await queryClient.invalidateQueries()
   return true

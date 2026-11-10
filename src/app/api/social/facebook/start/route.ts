@@ -1,11 +1,14 @@
 // بداية ربط صفحة فيسبوك: يحوّل إلى نافذة موافقة فيسبوك
 import { NextResponse } from "next/server";
+import { isAdmin } from "@/lib/admin";
 import { randomBytes } from "crypto";
 import { FB_SCOPES, fbConfigured, fbRedirect } from "@/lib/facebook";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  // لصاحب الموقع فقط
+  if (!(await isAdmin())) return NextResponse.redirect(new URL("/connect", fbRedirect()), 303);
   if (!fbConfigured()) return NextResponse.redirect(new URL("/connect?fb=missing", fbRedirect()));
   const state = randomBytes(16).toString("hex");
   // «Facebook Login for Business» يحتاج config_id بدل قائمة الصلاحيات

@@ -1,10 +1,13 @@
 // عودة فيسبوك بعد الموافقة: يتحقق من الحالة ويحفظ رمز الصفحة
 import { NextRequest, NextResponse } from "next/server";
+import { isAdmin } from "@/lib/admin";
 import { connectFacebook } from "@/lib/facebook";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
+  // لصاحب الموقع فقط
+  if (!(await isAdmin())) return NextResponse.redirect(new URL("/connect", req.url), 303);
   const back = (q: string) => {
     const r = NextResponse.redirect(new URL(`/connect?${q}`, req.url));
     r.cookies.delete("fb_state");
