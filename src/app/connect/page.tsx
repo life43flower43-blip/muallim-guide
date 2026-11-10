@@ -31,6 +31,7 @@ export default async function Connect({ searchParams }: { searchParams: Promise<
     .catch(() => []);
   const bankQ = reports.length ? new Map(publicBank().questions.map((q) => [q.id, q])) : new Map();
   const bankC = reports.length ? new Map(publicBank().concepts.map((c) => [c.id, c])) : new Map();
+  const errors = await db.clientError.findMany({ orderBy: { lastAt: "desc" }, take: 30 }).catch(() => []);
   const fb = await db.socialAccount.findUnique({ where: { platform: "facebook" } }).catch(() => null);
   const li = await db.socialAccount.findUnique({ where: { platform: "linkedin" } }).catch(() => null);
   const liDays = li?.expiresAt ? Math.ceil((li.expiresAt.getTime() - Date.now()) / 86400000) : null;
@@ -85,6 +86,21 @@ export default async function Connect({ searchParams }: { searchParams: Promise<
             </form>
           )}
         </div>
+      </section>
+      <section className="mt-4 rounded-2xl border border-[#E2ECE6] bg-white p-4">
+        <p className="font-bold text-[#14302A]">أعطال عند المستخدمين ({errors.length})</p>
+        {errors.length === 0 ? (
+          <p className="mt-1 text-[14px] text-[#5B7268]">لا أعطال مسجلة.</p>
+        ) : (
+          <ul className="mt-2 space-y-2">
+            {errors.map((e) => (
+              <li key={e.id} className="rounded-xl bg-[#FDF6F6] p-3 text-[13px] leading-6" dir="ltr">
+                <span className="font-bold text-[#8A1F1F]">×{e.count}</span> · v{e.version ?? "?"} · {e.url ?? ""} · {e.lastAt.toISOString().slice(0, 16).replace("T", " ")}
+                <p className="break-words text-[#14302A]">{e.message}</p>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
       <section className="mt-4 rounded-2xl border border-[#E2ECE6] bg-white p-4">
         <p className="font-bold text-[#14302A]">بلاغات «خطأ في السؤال» ({reports.length})</p>

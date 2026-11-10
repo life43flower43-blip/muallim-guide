@@ -12,13 +12,14 @@ export const liRedirect = () => `${SITE_URL}/api/social/linkedin/callback`;
 
 export async function connectLinkedIn(code: string) {
   const r = await fetch("https://www.linkedin.com/oauth/v2/accessToken", {
+    signal: AbortSignal.timeout(15000),
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ grant_type: "authorization_code", code, redirect_uri: liRedirect(), client_id: process.env.LINKEDIN_CLIENT_ID!, client_secret: process.env.LINKEDIN_CLIENT_SECRET! }),
   });
   const tok = await r.json();
   if (!tok.access_token) throw new Error(tok.error_description || tok.error || `HTTP ${r.status}`);
-  const me = await (await fetch("https://api.linkedin.com/v2/userinfo", { headers: { authorization: `Bearer ${tok.access_token}` } })).json();
+  const me = await (await fetch("https://api.linkedin.com/v2/userinfo", { signal: AbortSignal.timeout(15000), headers: { authorization: `Bearer ${tok.access_token}` } })).json();
   if (!me.sub) throw new Error("تعذر قراءة الحساب");
   const prev = await db.socialAccount.findUnique({ where: { platform: "linkedin" } });
   if (prev && prev.ownerId !== me.sub) throw new Error("هذه المنصة مربوطة بحساب آخر.");
@@ -49,6 +50,7 @@ export async function postToLinkedIn(p: { text: string; url: string; title: stri
   if (!acc) return { ok: false, error: "not_connected" };
   if (acc.expiresAt && acc.expiresAt < new Date()) return { ok: false, error: "expired" };
   const r = await fetch("https://api.linkedin.com/v2/ugcPosts", {
+    signal: AbortSignal.timeout(15000),
     method: "POST",
     headers: { authorization: `Bearer ${acc.token}`, "content-type": "application/json", "X-Restli-Protocol-Version": "2.0.0" },
     body: JSON.stringify({

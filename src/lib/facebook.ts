@@ -12,7 +12,7 @@ export const fbConfigured = () => !!process.env.FACEBOOK_APP_ID && !!process.env
 export const fbRedirect = () => `${SITE_URL}/api/social/facebook/callback`;
 
 async function gget(path: string, params: Record<string, string>) {
-  const r = await fetch(`${G}${path}?${new URLSearchParams(params)}`);
+  const r = await fetch(`${G}${path}?${new URLSearchParams(params)}`, { signal: AbortSignal.timeout(15000) });
   const j = await r.json();
   if (!r.ok || j.error) throw new Error(j.error?.message || `HTTP ${r.status}`);
   return j;
@@ -118,7 +118,7 @@ export async function postToFacebook(post: { message: string; link?: string; pho
   let path = `/${acc.accountId}/feed`;
   if (post.photo) { path = `/${acc.accountId}/photos`; body.set("url", post.photo); body.set("caption", post.message); }
   else { body.set("message", post.message); if (post.link) body.set("link", post.link); }
-  const r = await fetch(`${G}${path}`, { method: "POST", body });
+  const r = await fetch(`${G}${path}`, { method: "POST", body, signal: AbortSignal.timeout(15000) });
   const j = await r.json().catch(() => ({}));
   const ok = !!j.id;
   const error = ok ? null : String(j.error?.message ?? `HTTP ${r.status}`).slice(0, 300);

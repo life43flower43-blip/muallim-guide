@@ -44,7 +44,7 @@ export function applyQbank(raw: QbankRaw) {
 }
 
 /** إصدار البنك: يتغيّر فقط حين يتغيّر محتواه، فيُحمَّل مرة واحدة ويبقى محفوظًا عبر تحديثات الواجهة */
-export const QBANK_VERSION = "469168b6";
+export const QBANK_VERSION = "bf7794e4";
 
 /** جلب ملف JSON مع مؤشر تقدم */
 async function fetchJson<T>(url: string, onProgress?: (p: number) => void): Promise<T> {

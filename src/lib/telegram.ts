@@ -154,7 +154,12 @@ export async function sendPosts(posts: ReturnType<typeof buildPosts>) {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ chat_id, ...p.body }),
-    });
+      signal: AbortSignal.timeout(15000),
+    }).catch(() => null);
+    if (!res) {
+      results.push({ method: p.method, ok: false, error: "timeout" });
+      continue;
+    }
     const j = (await res.json().catch(() => ({}))) as { ok?: boolean; description?: string };
     results.push({ method: p.method, ok: !!j.ok, error: j.ok ? undefined : j.description });
   }

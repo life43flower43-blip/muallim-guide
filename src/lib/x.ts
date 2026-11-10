@@ -71,6 +71,6 @@ export function buildXPost(iso = todayISO(), slot: Slot): string | null {
 
 export async function postToX(text: string) {
   const url = "https://api.x.com/2/tweets";
-  const r = await fetch(url, { method: "POST", headers: { authorization: oauthHeader("POST", url), "content-type": "application/json" }, body: JSON.stringify({ text }) });
+  const r = await fetch(url, { signal: AbortSignal.timeout(15000), method: "POST", headers: { authorization: oauthHeader("POST", url), "content-type": "application/json" }, body: JSON.stringify({ text }) });
   return r.ok ? { ok: true } : { ok: false, error: (await r.text()).slice(0, 200) };
 }

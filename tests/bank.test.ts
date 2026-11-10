@@ -51,7 +51,7 @@ describe("بنك الأسئلة", () => {
       .filter((q) => q.type === "mcq")
       .filter((q) => {
         const longestWrong = Math.max(...q.options.filter((o) => !o.isCorrect).map((o) => o.text.length));
-        return q.correct.length > 2.2 * longestWrong;
+        return q.correct.length > 2 * longestWrong;
       })
       .map((q) => q.id);
     expect(bad).toEqual([]);
