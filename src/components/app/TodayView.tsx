@@ -190,6 +190,9 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
 
   return (
     <div className="mx-auto -mt-1 max-w-2xl space-y-3 lg:mt-0">
+      {/* بنك الرخصة كاملًا: أهم باب للطلاب، في أعلى الصفحة */}
+      <LicenseBankCard />
+
       {/* مستوى الاستعداد فوق غصن الأيام، على اليسار */}
       <motion.div ref={statsRef} {...rise(9)} className="flex flex-col-reverse gap-2">
         {/* شريط الأسبوع: غصن بسبع أوراق، تصير الورقة ذهبية في كل يوم درست فيه الطالبة */}
@@ -292,9 +295,6 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
           </button>
         </div>
       </motion.div>
-
-      {/* بنك الرخصة كاملًا: أهم باب للطلاب */}
-      <LicenseBankCard />
 
       {/* أبواب التطبيق */}
       {homeStyle === "icons" ? (
