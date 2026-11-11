@@ -30,17 +30,38 @@ export type AccountUser = {
 
 export const USER_QUERY_KEY = ['user'] as const
 
+// آخر مستخدم معروف على الجهاز: إن تعثّر الاتصال لحظة فتح التطبيق لا يظهر كأنه خرج
+const LAST_USER_KEY = 'turbawy-last-user'
+function readLastUser(): AccountUser | undefined {
+  try {
+    const raw = localStorage.getItem(LAST_USER_KEY)
+    return raw ? (JSON.parse(raw) as AccountUser) : undefined
+  } catch {
+    return undefined
+  }
+}
+function writeLastUser(u: AccountUser | null) {
+  try {
+    if (u) localStorage.setItem(LAST_USER_KEY, JSON.stringify(u))
+    else localStorage.removeItem(LAST_USER_KEY)
+  } catch {}
+}
+
 async function fetchUser(): Promise<AccountUser | null> {
-  const res = await fetch('/api/user')
+  const res = await fetch('/api/user', { cache: 'no-store', credentials: 'same-origin' })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   const json = await res.json()
-  return json.user ?? null
+  const user = (json.user ?? null) as AccountUser | null
+  writeLastUser(user)
+  return user
 }
 
 /** المستخدم الحالي: null للضيف، undefined أثناء التحميل الأول */
 export function useAccount() {
-  const q = useQuery({ queryKey: USER_QUERY_KEY, queryFn: fetchUser, staleTime: 60_000, retry: 1 })
-  return { user: q.data, isLoading: q.isLoading, isGuest: q.data === null, refetch: q.refetch }
+  const q = useQuery({ queryKey: USER_QUERY_KEY, queryFn: fetchUser, staleTime: 60_000, retry: 3, retryDelay: (n) => Math.min(1000 * 2 ** n, 8000) })
+  // تعثّر الشبكة لا يعني الخروج: نعرض آخر مستخدم معروف حتى ينجح الطلب
+  const user = q.data !== undefined ? q.data : q.isError || q.isLoading ? readLastUser() : undefined
+  return { user, isLoading: q.isLoading && user === undefined, isGuest: q.data === null, refetch: q.refetch }
 }
 
 /** بعد أي دخول ناجح: نقل جواهر الجهاز وأخطائه ثم مزامنة التقدم */
@@ -87,6 +108,7 @@ export async function signOut(queryClient: QueryClient) {
   const endpoint = await pushEndpoint()
   await fetch('/api/auth/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ endpoint }) }).catch(() => {})
   if (saved) clearLocalAccountData()
+  writeLastUser(null)
   queryClient.setQueryData(USER_QUERY_KEY, null)
   await queryClient.invalidateQueries()
 }
@@ -96,6 +118,7 @@ export async function deleteAccount(queryClient: QueryClient): Promise<boolean> 
   const res = await fetch('/api/user', { method: 'DELETE' }).catch(() => null)
   if (!res?.ok) return false
   clearLocalAccountData()
+  writeLastUser(null)
   queryClient.setQueryData(USER_QUERY_KEY, null)
   await queryClient.invalidateQueries()
   return true
