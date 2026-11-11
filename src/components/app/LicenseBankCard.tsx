@@ -5,6 +5,7 @@ import { useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { QUESTIONS } from "@/lib/qbank";
 import { ad } from "@/lib/arabic";
+import { FitText } from "./FitText";
 
 export default function LicenseBankCard() {
   const startBank = useUi((s) => s.startBank);
@@ -21,7 +22,7 @@ export default function LicenseBankCard() {
         <Library className="h-5 w-5" />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block truncate font-extrabold leading-6">محاكاة الرخصة المهنية</span>
+        <FitText max={16} min={11} className="block w-full whitespace-nowrap font-extrabold leading-6">محاكاة الرخصة المهنية</FitText>
         <span className="block truncate text-[12.5px] leading-5 text-white/75">
           {done ? `أنجزت ${ad(done)} من ${ad(total)} سؤالًا` : `${ad(total)} سؤالًا مرتبة بالمحاور`}
         </span>

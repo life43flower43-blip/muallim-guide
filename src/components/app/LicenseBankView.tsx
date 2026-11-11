@@ -83,20 +83,20 @@ export default function LicenseBankView() {
         <section className="rounded-[24px] bg-[var(--t800)] p-5 text-white">
           <p className="text-[13px] font-bold text-[#F3DC8E]">بنك أسئلة الرخصة المهنية كاملًا</p>
           <p className="mt-1 font-display text-[30px] font-extrabold leading-[1.3]">{ad(all.total)} سؤالًا</p>
-          <p className="text-[13.5px] leading-6 text-white/80">مرتبة في {ad(tree.length)} محورًا، ولكل سؤال شرح لإجابته.</p>
+          <p className="text-[13.5px] leading-6 text-white/80">في {ad(tree.length)} محورًا، ولكل سؤال شرح.</p>
           <div className="mt-4">
             <div className="mb-1.5 flex items-center justify-between text-[13px] font-bold">
-              <span>أنجزت {ad(all.done)} من {ad(all.total)}</span>
+              <span>{all.done ? `أنجزت ${ad(all.done)}` : "لم تبدأ بعد"}</span>
               <span>{all.done ? `الدقة ${ad(pctOf(all.correct, all.done))}٪` : ""}</span>
             </div>
             <ProgressBar value={Math.max(all.done ? 1.5 : 0, pctOf(all.done, all.total))} color="#D4A017" height={8} className="bg-white/20" />
           </div>
-          <div className="mt-4 grid grid-cols-2 gap-2 tiles2">
-            <button type="button" onClick={resumeAll} className="flex min-h-[48px] items-center justify-center gap-1.5 rounded-[16px] bg-[#F3DC8E] px-3 font-extrabold text-[#3a2c05]">
-              <PlayCircle className="h-5 w-5" /> {all.done ? "تابع من حيث توقفت" : "ابدأ من السؤال الأول"}
+          <div className="mt-4 space-y-2">
+            <button type="button" onClick={resumeAll} className="flex min-h-[48px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-[16px] bg-[#F3DC8E] px-3 font-extrabold text-[#3a2c05]">
+              <PlayCircle className="h-5 w-5 shrink-0" /> {all.done ? "تابع من حيث توقفت" : "ابدأ من السؤال الأول"}
             </button>
-            <button type="button" onClick={startExamsim} className="flex min-h-[48px] items-center justify-center gap-1.5 rounded-[16px] bg-white/15 px-3 font-bold text-white">
-              <Timer className="h-5 w-5" /> اختبار بوقت حقيقي
+            <button type="button" onClick={startExamsim} className="flex min-h-[44px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-[16px] bg-white/15 px-3 font-bold text-white">
+              <Timer className="h-5 w-5 shrink-0" /> اختبار بوقت حقيقي
             </button>
           </div>
         </section>
@@ -111,9 +111,9 @@ export default function LicenseBankView() {
                 <button type="button" onClick={() => setOpen(isOpen ? null : course.id)} aria-expanded={isOpen} className="flex w-full items-center gap-3 p-3.5 text-right">
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--t100)] text-[22px]" aria-hidden="true">{COURSE_EMO[course.id] ?? "📚"}</span>
                   <span className="min-w-0 flex-1">
-                    <span className="block font-extrabold leading-6 text-foreground">{course.name}</span>
-                    <span className="mt-0.5 block text-[12.5px] text-muted-foreground">
-                      {ad(s.total)} سؤالًا · {ad(chapters.length)} فصلًا · أنجزت {ad(pctOf(s.done, s.total))}٪
+                    <span className="block truncate font-extrabold leading-6 text-foreground">{COURSE_SHORT[course.id] ?? course.name}</span>
+                    <span className="mt-0.5 block truncate text-[12.5px] text-muted-foreground">
+                      {ad(s.total)} سؤالًا · أنجزت {ad(pctOf(s.done, s.total))}٪
                     </span>
                     <ProgressBar value={pctOf(s.done, s.total)} height={4} className="mt-1.5" />
                   </span>
@@ -138,7 +138,7 @@ export default function LicenseBankView() {
                               {complete ? <CheckCircle2 className="h-4 w-4" /> : ad(i + 1)}
                             </span>
                             <span className="min-w-0 flex-1">
-                              <span className="block text-[14.5px] font-bold leading-6 text-foreground">{chapterLabel(ch)}</span>
+                              <span className="block text-[14.5px] font-bold leading-6 text-foreground line-clamp-2">{chapterLabel(ch)}</span>
                               <span className="block text-[12px] text-muted-foreground">
                                 {ad(cs.done)} من {ad(cs.total)} سؤالًا{cs.done ? ` · الدقة ${ad(pctOf(cs.correct, cs.done))}٪` : ""}
                               </span>

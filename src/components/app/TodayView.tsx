@@ -328,7 +328,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               <span className="h-4 w-[3px] rounded-full bg-[#D4A017]" aria-hidden="true" /> المحاور
             </p>
             <div className="grid grid-cols-3 gap-2">
-              {COURSES.filter((c) => c.id !== "C1").map((c) => (
+              {COURSES.map((c) => (
                 <button
                   key={c.id}
                   type="button"
