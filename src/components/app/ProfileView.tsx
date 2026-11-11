@@ -241,7 +241,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             </div>
           </div>
           {!user && (
-            <details className="group mt-3 border-t border-border pt-3">
+            <details open className="group mt-3 border-t border-border pt-3">
               <summary className="flex min-h-[40px] cursor-pointer list-none items-center justify-between gap-2 text-[14px] font-bold text-foreground">
                 <span>سجّل الدخول لتحفظ تقدمك على كل أجهزتك</span>
                 <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C] transition group-open:-rotate-90" />
