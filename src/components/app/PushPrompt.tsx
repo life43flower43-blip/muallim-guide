@@ -1,19 +1,22 @@
 "use client";
-// طلب السماح بالإشعارات يظهر وحده بعد فتح التطبيق، مثل التطبيقات العادية:
+// طلب السماح بالإشعارات (للمسجَّلين فقط) يظهر وحده بعد فتح التطبيق، مثل التطبيقات العادية:
 // نافذة صغيرة بزر «سماح» يفتح نافذة الإذن في الجوال. لا تظهر لمن سمح أو منع، ولمن أجّل تعود بعد ثلاثة أيام.
 import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
 import { enablePush, usePushState } from "@/lib/push-client";
+import { useAccount } from "@/lib/account-client";
 
 const LATER_KEY = "turbawy-push-later";
 
 export default function PushPrompt() {
   const state = usePushState();
+  const { user } = useAccount();
+  const signedIn = !!user;
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (state !== "off" || typeof Notification === "undefined" || Notification.permission !== "default") return;
+    if (!signedIn || state !== "off" || typeof Notification === "undefined" || Notification.permission !== "default") return;
     let later = 0;
     try {
       later = Number(localStorage.getItem(LATER_KEY) || 0);
@@ -21,9 +24,9 @@ export default function PushPrompt() {
     if (Date.now() - later < 3 * 86400000) return;
     const t = setTimeout(() => setShow(true), 2500);
     return () => clearTimeout(t);
-  }, [state]);
+  }, [state, signedIn]);
 
-  if (!show) return null;
+  if (!show || !signedIn) return null;
   const close = () => {
     try {
       localStorage.setItem(LATER_KEY, String(Date.now()));

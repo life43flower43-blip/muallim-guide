@@ -49,11 +49,34 @@ function writeLastUser(u: AccountUser | null) {
   } catch {}
 }
 
-async function fetchUser(): Promise<AccountUser | null> {
+// نسخة احتياطية من الجلسة: إن مسح الجوال الكوكي عند إغلاق التطبيق يُستعاد الدخول بها
+const RESTORE_KEY = 'turbawy-restore'
+function readRestore(): string | null {
+  try { return localStorage.getItem(RESTORE_KEY) } catch { return null }
+}
+function writeRestore(t: string | null) {
+  try { if (t) localStorage.setItem(RESTORE_KEY, t); else localStorage.removeItem(RESTORE_KEY) } catch {}
+}
+
+async function getUser(): Promise<{ user: AccountUser | null; restore?: string }> {
   const res = await fetch('/api/user', { cache: 'no-store', credentials: 'same-origin' })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  const json = await res.json()
+  return res.json()
+}
+
+async function fetchUser(): Promise<AccountUser | null> {
+  let json = await getUser()
+  if (!json.user) {
+    const token = readRestore()
+    if (token) {
+      const r = await fetch('/api/auth/restore', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token }) })
+      if (r.ok) json = await getUser()
+      else if (r.status === 401) writeRestore(null)
+      else throw new Error(`HTTP ${r.status}`)
+    }
+  }
   const user = (json.user ?? null) as AccountUser | null
+  if (json.restore) writeRestore(json.restore)
   writeLastUser(user)
   return user
 }
@@ -82,6 +105,8 @@ export async function afterSignIn(queryClient: QueryClient) {
   await migrateLocalMistakesToServer()
   await startProgressSync()
   await queryClient.invalidateQueries()
+  // ربط إشعارات هذا الجهاز بالحساب
+  void import('./push-client').then((m) => m.syncPush()).catch(() => {})
 }
 
 /** عنوان اشتراك الإشعارات لهذا الجهاز، إن وُجد */
@@ -111,6 +136,7 @@ export async function signOut(queryClient: QueryClient) {
   await fetch('/api/auth/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ endpoint }) }).catch(() => {})
   if (saved) clearLocalAccountData()
   writeLastUser(null)
+  writeRestore(null)
   queryClient.setQueryData(USER_QUERY_KEY, null)
   await queryClient.invalidateQueries()
 }
@@ -121,6 +147,7 @@ export async function deleteAccount(queryClient: QueryClient): Promise<boolean> 
   if (!res?.ok) return false
   clearLocalAccountData()
   writeLastUser(null)
+  writeRestore(null)
   queryClient.setQueryData(USER_QUERY_KEY, null)
   await queryClient.invalidateQueries()
   return true

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getCurrentUser, clearAuthCookie } from '@/lib/auth'
+import { getCurrentUser, clearAuthCookie, createToken } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { PUBLIC_USER_SELECT } from '@/lib/accounts'
 
@@ -12,7 +12,8 @@ export async function GET() {
   if (!userId) return NextResponse.json({ user: null })
   try {
     const user = await db.user.findUnique({ where: { id: userId }, select: PUBLIC_USER_SELECT })
-    return NextResponse.json({ user })
+    // نسخة احتياطية من الجلسة تحفظها الواجهة: إن مسح الجوال الكوكي استُعيد الدخول بها
+    return NextResponse.json({ user, restore: user ? await createToken(userId) : undefined })
   } catch (error) {
     console.error('GET /api/user error:', error)
     // لا يتحول المسجَّل إلى ضيف بصمت إن تعثرت قاعدة البيانات: الواجهة تعيد المحاولة
