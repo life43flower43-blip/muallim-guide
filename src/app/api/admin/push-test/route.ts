@@ -18,11 +18,13 @@ export async function POST(req: NextRequest) {
   const back = (q: string) => NextResponse.redirect(new URL(`/connect?${q}`, req.url), 303)
   // recent: إلى آخر جهاز اشترك (لاختبار جوال لم يُربط بحساب بعد)
   if ((body as { recent?: unknown }).recent) {
+    const totalSubs = await db.pushSubscription.count()
     const s = await db.pushSubscription.findFirst({ orderBy: { createdAt: 'desc' } })
     if (!s) return NextResponse.json({ devices: 0 })
     const r = await sendPush(s, { title: 'إشعار تجريبي من تربوي', body: 'إن وصلك هذا الإشعار فالإشعارات تعمل على جهازك ✅', url: '/app', tag: 'test' })
     if (r === 'gone') await db.pushSubscription.delete({ where: { id: s.id } })
-    return NextResponse.json({ devices: 1, linked: !!s.userId, createdAt: s.createdAt, results: [r], error: r === 'error' ? lastPushError : undefined })
+    const em = s.userId ? ((await db.user.findUnique({ where: { id: s.userId }, select: { email: true } }))?.email ?? '') : ''
+    return NextResponse.json({ devices: 1, linked: !!s.userId, account: em ? em.slice(0, 3) + '…@' + em.split('@')[1] : null, totalSubs, createdAt: s.createdAt, results: [r], error: r === 'error' ? lastPushError : undefined })
   }
   const user = email ? await db.user.findUnique({ where: { email }, select: { id: true } }) : null
   const totalSubs = await db.pushSubscription.count()

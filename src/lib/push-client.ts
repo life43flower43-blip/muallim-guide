@@ -122,24 +122,57 @@ export function pingStudied() {
 
 /** عند فتح التطبيق: إن كان الإذن ممنوحًا فأعد تسجيل اشتراك الجهاز على الخادم،
  *  وإن كان الاشتراك القديم بمفتاح مختلف فأنشئ اشتراكًا جديدًا. فلا يبقى «مفعّل» في الواجهة وهو غير مسجل على الخادم. */
-export async function syncPush(): Promise<void> {
+export let lastSync = 'not-run'
+export async function syncPush(): Promise<string> {
+  lastSync = await syncPushInner()
+  return lastSync
+}
+async function syncPushInner(): Promise<string> {
   try {
-    if (read() === 'unsupported' || Notification.permission !== 'granted') return
+    if (read() === 'unsupported') return 'unsupported'
+    if (Notification.permission !== 'granted') return `perm-${Notification.permission}`
     const reg = await navigator.serviceWorker.ready
     const sub = await currentSub(reg, !!localStorage.getItem(KEY)) // لا ننشئ اشتراكًا لمن لم يفعّلها
-    if (!sub) return
-    const res = await fetch('/api/push/subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ subscription: sub.toJSON(), tzOffset: new Date().getTimezoneOffset(), slot: getPushSlot() }),
-    })
-    if (res.ok) {
-      localStorage.setItem(KEY, sub.endpoint)
-      emit()
+    if (!sub) return 'no-sub'
+    // على شبكة جوال بطيئة: مهلة أطول ومحاولة ثانية
+    let res: Response | null = null
+    for (let i = 0; i < 2 && !res?.ok; i++) {
+      res = await fetch('/api/push/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subscription: sub.toJSON(), tzOffset: new Date().getTimezoneOffset(), slot: getPushSlot() }),
+        signal: AbortSignal.timeout(45000),
+      }).catch(() => null)
     }
+    if (!res?.ok) return `server-${res?.status ?? 'timeout'}`
+    localStorage.setItem(KEY, sub.endpoint)
+    emit()
+    return `ok-${new URL(sub.endpoint).host}`
   } catch (e) {
-    fetch('/api/client-error', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: `push sync failed: ${String((e as Error)?.message ?? e).slice(0, 200)}`, url: '/app' }), keepalive: true }).catch(() => {})
+    const msg = String((e as Error)?.message ?? e).slice(0, 200)
+    fetch('/api/client-error', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: `push sync failed: ${msg}`, url: '/app' }), keepalive: true }).catch(() => {})
+    return `fail-${msg.slice(0, 60)}`
   }
+}
+
+/** حالة الإشعارات على هذا الجهاز للتشخيص */
+export async function pushDiag(): Promise<Record<string, string>> {
+  const d: Record<string, string> = { perm: typeof Notification === 'undefined' ? 'none' : Notification.permission, pm: String('PushManager' in window), sync: lastSync }
+  try {
+    const reg = await navigator.serviceWorker.getRegistration()
+    d.sw = reg ? (reg.active ? 'active' : 'installing') : 'none'
+    const sub = await reg?.pushManager.getSubscription()
+    if (sub) {
+      const want = keyBytes(await vapidKey())
+      const have = sub.options?.applicationServerKey ? new Uint8Array(sub.options.applicationServerKey) : null
+      d.sub = !have ? 'nokey' : have.length === want.length && have.every((b, i) => b === want[i]) ? 'ok' : 'oldkey'
+      d.ep = new URL(sub.endpoint).host
+    } else d.sub = 'none'
+    d.lsEp = String(!!localStorage.getItem(KEY))
+  } catch (e) {
+    d.err = String((e as Error)?.message ?? e).slice(0, 60)
+  }
+  return d
 }
 
 const SLOT_KEY = 'turbawy-push-slot'

@@ -299,15 +299,15 @@ export default function AppShell() {
   const [bankProgress, setBankProgress] = useState(0);
   const [bankFailed, setBankFailed] = useState(false);
   const startBankLoad = () => {
+    // تأكيد اشتراك الإشعارات بعد تنزيل بنك الأسئلة، فلا يتزاحمان على شبكة الجوال
+    const afterBank = () => setTimeout(() => void syncPush().then(() => setTimeout(() => void import("@/lib/diag").then((m) => m.sendDiag()), 3000)), 1500);
     loadQbank((p) => setBankProgress(p))
       .then(() => setBankLoaded(true))
-      .catch(() => setBankFailed(true));
+      .catch(() => setBankFailed(true))
+      .finally(afterBank);
   };
   useEffect(() => {
     startBankLoad();
-    // تأكيد اشتراك الإشعارات على الخادم بعد أن يستقر التطبيق
-    const t = setTimeout(() => void syncPush(), 4000);
-    return () => clearTimeout(t);
   }, []);
 
   // زر الرجوع في الهاتف: يغلق الشاشة المفتوحة أولًا ويبقى في التبويب نفسه، ثم يعود إلى الرئيسية
