@@ -1,8 +1,8 @@
 // إرسال الإشعارات من الخادم بمفاتيح VAPID — تعمل حين تُضبط متغيرات البيئة فقط
 import webpush from 'web-push'
 
-const PUBLIC = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? ''
-const PRIVATE = process.env.VAPID_PRIVATE_KEY ?? ''
+const PUBLIC = (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? '').trim()
+const PRIVATE = (process.env.VAPID_PRIVATE_KEY ?? '').trim()
 
 export const pushConfigured = () => Boolean(PUBLIC && PRIVATE)
 
@@ -12,6 +12,9 @@ function setup() {
   webpush.setVapidDetails(`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'support@turbawy.app'}`, PUBLIC, PRIVATE)
   ready = true
 }
+
+/** آخر خطأ إرسال (للتشخيص في الاختبار التجريبي): رمز الحالة والخادم والرسالة، بلا مفاتيح */
+export let lastPushError = ''
 
 export type PushPayload = { title: string; body: string; url?: string; tag?: string }
 
@@ -23,6 +26,8 @@ export async function sendPush(sub: { endpoint: string; p256dh: string; auth: st
     return 'ok'
   } catch (e) {
     const code = (e as { statusCode?: number }).statusCode
+    const body = String((e as { body?: unknown }).body ?? (e as Error).message ?? '').slice(0, 300)
+    lastPushError = `${code ?? '-'} ${new URL(sub.endpoint).host} ${body}`
     return code === 404 || code === 410 ? 'gone' : 'error'
   }
 }
