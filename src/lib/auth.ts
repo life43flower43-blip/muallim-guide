@@ -6,6 +6,7 @@
 import { SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
 import { db } from '@/lib/db'
+import { createHash } from 'crypto'
 
 export const COOKIE_NAME = 'turbawy_token'
 /** كوكي state قصيرة العمر لتسجيل الدخول بـ Google (حماية CSRF) */
@@ -20,11 +21,13 @@ declare global {
 const rawSecret = process.env.JWT_SECRET
 const isProduction = process.env.NODE_ENV === 'production'
 
-// في الإنتاج بلا JWT_SECRET: سرّ عشوائي مؤقت يتجدد مع كل تشغيل.
-// يُخرج المستخدمين عند إعادة التشغيل، لكنه لا يستعمل سرًّا ثابتًا معروفًا يمكن تزوير الجلسات به.
+// في الإنتاج بلا JWT_SECRET: سرّ ثابت مشتق من أسرار الخادم الأخرى (CRON_SECRET ومفتاح الإشعارات وقاعدة البيانات).
+// كان سرًّا عشوائيًا لكل خادم، فيُرفض دخول المستخدم كلما وصل طلبه إلى خادم آخر من خوادم Vercel (يخرج وحده).
 function getJwtSecret(): string {
   if (rawSecret && rawSecret.length >= 32) return rawSecret
   if (isProduction) {
+    const seed = [process.env.CRON_SECRET, process.env.VAPID_PRIVATE_KEY, process.env.DATABASE_URL].map((v) => (v ?? '').trim()).join('|')
+    if (seed.replace(/\|/g, '').length >= 32) return createHash('sha256').update(`turbawy-jwt-v1|${seed}`).digest('hex')
     if (!globalThis.__TURBAWY_FALLBACK_JWT_SECRET) {
       globalThis.__TURBAWY_FALLBACK_JWT_SECRET = Array.from(
         crypto.getRandomValues(new Uint8Array(48)),
