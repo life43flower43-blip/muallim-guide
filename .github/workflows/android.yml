@@ -1,0 +1,55 @@
+# بناء تطبيق أندرويد (TWA) وتوقيعه ونشره رابط تحميل في Releases.
+# مفتاح التوقيع يُشتق في كل مرة من السر BACKUP_PASSPHRASE (scripts/android-signing-key.py)، فلا يُحفظ في المستودع.
+name: Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['android/**', 'scripts/android-signing-key.py', '.github/workflows/android.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+      - name: مفتاح التوقيع
+        id: key
+        env:
+          APK_KEY_SEED: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          pip install --quiet cryptography
+          FP=$(python3 scripts/android-signing-key.py "$RUNNER_TEMP/release.p12" turbawy)
+          echo "fp=$FP" >> "$GITHUB_OUTPUT"
+          echo "SHA-256: $FP"
+      - name: البناء
+        working-directory: android
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+          VERSION_NAME: 2.${{ github.run_number }}
+        run: gradle assembleRelease --no-daemon --stacktrace
+      - name: التوقيع
+        run: |
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          IN=android/app/build/outputs/apk/release/app-release-unsigned.apk
+          "$BT/zipalign" -f -p 4 "$IN" aligned.apk
+          "$BT/apksigner" sign --ks "$RUNNER_TEMP/release.p12" --ks-type PKCS12 --ks-pass pass:turbawy --ks-key-alias turbawy --out turbawy.apk aligned.apk
+          "$BT/apksigner" verify --print-certs turbawy.apk | head -5
+      - name: النشر
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "android-${{ github.run_number }}" turbawy.apk --latest \
+            --title "تطبيق تربوي ${{ github.run_number }}" \
+            --notes "بصمة التوقيع SHA-256: ${{ steps.key.outputs.fp }}"
