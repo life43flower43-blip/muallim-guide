@@ -32,7 +32,7 @@ export function installClientMonitor() {
     const path = url.startsWith("/") ? url : (() => { try { const u = new URL(url); return u.origin === location.origin ? u.pathname : ""; } catch { return ""; } })();
     if (path.startsWith("/api/") && !init?.signal && !(input instanceof Request && input.signal)) {
       // المساعد الذكي أبطأ بطبيعته، وباقي الطلبات قصيرة
-      const ms = path.startsWith("/api/ai/") ? 90_000 : 20_000;
+      const ms = 20_000;
       return origFetch(input, { ...init, signal: AbortSignal.timeout(ms) });
     }
     return origFetch(input, init);
