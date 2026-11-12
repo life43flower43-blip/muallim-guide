@@ -15,7 +15,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 export async function POST(request: NextRequest) {
   const rl = checkRateLimit(`register:${getClientIP(request)}`, RATE_LIMITS.AUTH_REGISTER)
   if (!rl.allowed) return rateLimitResponse(rl, 'حسابات كثيرة من هذا الجهاز. حاول لاحقًا.')
-  const body = (await request.json().catch(() => ({}))) as { name?: string; email?: string; password?: string }
+  const body = (await request.json().catch(() => ({}))) as { name?: string; email?: string; password?: string; emailOptIn?: boolean }
   const name = String(body.name ?? '').trim().slice(0, 60)
   const email = String(body.email ?? '').trim().toLowerCase().slice(0, 120)
   const password = String(body.password ?? '')
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
         { status: 409 }
       )
     }
-    const user = await createUserWithWelcome({ email, name, password: await hashPassword(password) })
+    const user = await createUserWithWelcome({ email, name, password: await hashPassword(password), emailOptIn: body.emailOptIn === true })
     await setAuthCookie(user.id)
     return NextResponse.json({ ok: true })
   } catch (err) {

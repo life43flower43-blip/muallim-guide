@@ -38,6 +38,7 @@ export default function AuthPanel({ label = "المتابعة بحساب Google"
   }, []);
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [optIn, setOptIn] = useState(false);
   const [error, setError] = useState("");
 
   // زر Google يظهر فقط إن كان مفعّلًا على الخادم، حتى لا يضغط المستخدم زرًا لا يعمل
@@ -53,7 +54,7 @@ export default function AuthPanel({ label = "المتابعة بحساب Google"
       const res = await fetch(mode === "signup" ? "/api/auth/register" : "/api/auth/login", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(mode === "signup" ? { name, email, password } : { email, password }),
+        body: JSON.stringify(mode === "signup" ? { name, email, password, emailOptIn: optIn } : { email, password }),
       });
       const j = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -108,6 +109,12 @@ export default function AuthPanel({ label = "المتابعة بحساب Google"
         )}
         <input className={field} type="email" name="email" id="auth-email" dir="ltr" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="البريد الإلكتروني" autoComplete="username" required />
         <input className={field} type="password" name="password" id="auth-password" dir="ltr" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={mode === "signup" ? "كلمة مرور (٨ أحرف على الأقل)" : "كلمة المرور"} autoComplete={mode === "signup" ? "new-password" : "current-password"} required minLength={8} />
+        {mode === "signup" && (
+          <label className="flex cursor-pointer items-start gap-2 text-[13px] leading-6 text-muted-foreground">
+            <input type="checkbox" checked={optIn} onChange={(e) => setOptIn(e.target.checked)} className="mt-1 h-4 w-4 accent-[var(--t700,#136F5C)]" />
+            أرسلوا لي ملخصًا أسبوعيًا بالمقالات الجديدة على بريدي (يمكن إلغاؤه في أي وقت)
+          </label>
+        )}
         {error && <p role="alert" className="text-sm font-bold text-red-600">{error}</p>}
         <button type="submit" disabled={busy} className="min-h-[48px] w-full rounded-[20px] bg-[var(--t700,#136F5C)] px-4 text-base font-bold text-white disabled:opacity-60">
           {busy ? "لحظة..." : mode === "signup" ? "إنشاء الحساب" : "دخول"}
