@@ -3,7 +3,8 @@ import { cookies } from "next/headers";
 import { createHash, timingSafeEqual } from "crypto";
 
 export const ADMIN_COOKIE = "turbawy_admin";
-const adminKey = () => (process.env.ADMIN_KEY || process.env.CRON_SECRET || "").trim();
+// أول مفتاح صالح (١٦ حرفًا فأكثر): ADMIN_KEY ثم CRON_SECRET، فلا يُفسد مفتاحٌ قصير الآخرَ
+const adminKey = () => [process.env.ADMIN_KEY, process.env.CRON_SECRET].map((k) => (k ?? "").trim()).find((k) => k.length >= 16) ?? "";
 const digest = (s: string) => createHash("sha256").update(`turbawy-admin:${s}`).digest();
 
 /** القيمة المحفوظة في الكوكي: بصمة المفتاح لا المفتاح نفسه */
