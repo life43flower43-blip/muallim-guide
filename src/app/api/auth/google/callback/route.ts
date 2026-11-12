@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
 
     // ٤. مستخدم بالبريد نفسه: يُربط به حساب Google، أو يُنشأ حساب جديد
     const user = (await db.user.findUnique({ where: { email } })) ??
-      (await createUserWithWelcome({ email, name, avatar: picture }))
+      (await createUserWithWelcome({ email, name, avatar: picture, emailVerified: new Date() }))
     await db.oAuthAccount.create({
       data: { userId: user.id, provider: 'google', providerAccountId: googleId, email, name, picture },
     })

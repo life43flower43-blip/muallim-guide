@@ -5,7 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { randomBytes } from 'crypto'
 import { db } from '@/lib/db'
-import { checkRateLimit, rateLimitResponse, getClientIP, RATE_LIMITS } from '@/lib/rate-limit'
+import { checkRateLimitShared, rateLimitResponse, getClientIP, RATE_LIMITS } from '@/lib/rate-limit'
 import { SITE_URL } from '@/lib/public-bank'
 import { mailConfigured, sendMail } from '@/lib/mailer'
 
@@ -16,8 +16,8 @@ export async function POST(request: NextRequest) {
   const body = (await request.json().catch(() => ({}))) as { email?: string }
   const email = String(body.email ?? '').trim().toLowerCase().slice(0, 120)
   // حد للرسائل، حتى لا يُستعمل الموقع لإغراق بريد أحد
-  const rIp = checkRateLimit(`forgot-ip:${getClientIP(request)}`, RATE_LIMITS.AUTH_FORGOT_IP)
-  const rEm = checkRateLimit(`forgot-email:${email}`, RATE_LIMITS.AUTH_FORGOT)
+  const rIp = await checkRateLimitShared(`forgot-ip:${getClientIP(request)}`, RATE_LIMITS.AUTH_FORGOT_IP)
+  const rEm = await checkRateLimitShared(`forgot-email:${email}`, RATE_LIMITS.AUTH_FORGOT)
   if (!rIp.allowed || !rEm.allowed) return NextResponse.json({ ok: true })
   try {
     const user = email ? await db.user.findUnique({ where: { email } }) : null
