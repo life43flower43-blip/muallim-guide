@@ -3,7 +3,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { isAdmin } from '@/lib/admin'
-import { pushConfigured, sendPush } from '@/lib/push'
+import { pushConfigured, sendPush, lastPushError } from '@/lib/push'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     if (!s) return NextResponse.json({ devices: 0 })
     const r = await sendPush(s, { title: 'إشعار تجريبي من تربوي', body: 'إن وصلك هذا الإشعار فالإشعارات تعمل على جهازك ✅', url: '/app', tag: 'test' })
     if (r === 'gone') await db.pushSubscription.delete({ where: { id: s.id } })
-    return NextResponse.json({ devices: 1, linked: !!s.userId, createdAt: s.createdAt, results: [r] })
+    return NextResponse.json({ devices: 1, linked: !!s.userId, createdAt: s.createdAt, results: [r], error: r === 'error' ? lastPushError : undefined })
   }
   const user = email ? await db.user.findUnique({ where: { email }, select: { id: true } }) : null
   const totalSubs = await db.pushSubscription.count()
