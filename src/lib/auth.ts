@@ -11,8 +11,8 @@ import { createHash } from 'crypto'
 export const COOKIE_NAME = 'turbawy_token'
 /** كوكي state قصيرة العمر لتسجيل الدخول بـ Google (حماية CSRF) */
 export const STATE_COOKIE_NAME = 'turbawy_oauth_state'
-const TOKEN_EXPIRY = '30d'
-export const TOKEN_MAX_AGE = 180 * 24 * 60 * 60
+const TOKEN_EXPIRY = '400d'
+export const TOKEN_MAX_AGE = 400 * 24 * 60 * 60 // أقصى ما يسمح به Chrome، ويتجدد عند كل فتح
 
 declare global {
   var __TURBAWY_FALLBACK_JWT_SECRET: string | undefined
