@@ -1,0 +1,28 @@
+// إشعار تجريبي لصاحب الموقع: يرسل إلى كل أجهزة حساب ببريده، ويبيّن عدد الأجهزة المشتركة
+// محمي بمفتاح المشرف (كوكي /connect أو ترويسة Authorization بـ CRON_SECRET)
+import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/lib/db'
+import { isAdmin } from '@/lib/admin'
+import { pushConfigured, sendPush } from '@/lib/push'
+
+export const dynamic = 'force-dynamic'
+
+export async function POST(req: NextRequest) {
+  const secret = process.env.CRON_SECRET
+  const bearer = !!secret && req.headers.get('authorization') === `Bearer ${secret}`
+  if (!bearer && !(await isAdmin())) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  if (!pushConfigured()) return NextResponse.json({ error: 'push_not_configured' }, { status: 503 })
+  const body = (await req.json().catch(() => ({}))) as { email?: string }
+  const email = String(body.email ?? '').trim().toLowerCase()
+  const user = email ? await db.user.findUnique({ where: { email }, select: { id: true } }) : null
+  const totalSubs = await db.pushSubscription.count()
+  if (!user) return NextResponse.json({ user: false, totalSubs })
+  const subs = await db.pushSubscription.findMany({ where: { userId: user.id } })
+  const results: string[] = []
+  for (const s of subs) {
+    const r = await sendPush(s, { title: 'إشعار تجريبي من تربوي', body: 'إن وصلك هذا الإشعار فالإشعارات تعمل على جهازك ✅', url: '/app', tag: 'test' })
+    if (r === 'gone') await db.pushSubscription.delete({ where: { id: s.id } })
+    results.push(r)
+  }
+  return NextResponse.json({ user: true, devices: subs.length, results, totalSubs })
+}
