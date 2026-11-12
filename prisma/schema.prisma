@@ -127,6 +127,7 @@ model PushSubscription {
   tzOffset     Int      @default(0) // دقائق فرق التوقيت كما يعطيها getTimezoneOffset
   lastStudyDay String? // آخر يوم درس فيه بتوقيت الجهاز YYYY-MM-DD
   lastSentDay  String? // آخر يوم أُرسل فيه تذكير، لئلا يتكرر في اليوم نفسه
+  slot         String   @default("evening") // وقت التذكير المفضل: morning | noon | evening
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
