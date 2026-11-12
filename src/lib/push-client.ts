@@ -65,7 +65,8 @@ export async function enablePush(): Promise<boolean> {
     localStorage.setItem(KEY, sub.endpoint)
     emit()
     return true
-  } catch {
+  } catch (e) {
+    fetch('/api/client-error', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: `push enable failed: ${String((e as Error)?.message ?? e).slice(0, 200)}`, url: '/app' }), keepalive: true }).catch(() => {})
     return false
   }
 }
@@ -91,4 +92,35 @@ export function pingStudied() {
     if (!endpoint) return
     fetch('/api/push/ping', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ endpoint, day: today() }), keepalive: true }).catch(() => {})
   } catch {}
+}
+
+/** عند فتح التطبيق: إن كان الإذن ممنوحًا فأعد تسجيل اشتراك الجهاز على الخادم،
+ *  وإن كان الاشتراك القديم بمفتاح مختلف فأنشئ اشتراكًا جديدًا. فلا يبقى «مفعّل» في الواجهة وهو غير مسجل على الخادم. */
+export async function syncPush(): Promise<void> {
+  try {
+    if (read() === 'unsupported' || Notification.permission !== 'granted') return
+    const reg = await navigator.serviceWorker.ready
+    let sub = await reg.pushManager.getSubscription()
+    const want = keyBytes(VAPID)
+    const have = sub?.options?.applicationServerKey ? new Uint8Array(sub.options.applicationServerKey) : null
+    if (sub && have && (have.length !== want.length || have.some((b, i) => b !== want[i]))) {
+      await sub.unsubscribe()
+      sub = null
+    }
+    if (!sub) {
+      if (!localStorage.getItem(KEY)) return // لم يفعّلها المستخدم من قبل
+      sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: want })
+    }
+    const res = await fetch('/api/push/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subscription: sub.toJSON(), tzOffset: new Date().getTimezoneOffset() }),
+    })
+    if (res.ok) {
+      localStorage.setItem(KEY, sub.endpoint)
+      emit()
+    }
+  } catch (e) {
+    fetch('/api/client-error', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: `push sync failed: ${String((e as Error)?.message ?? e).slice(0, 200)}`, url: '/app' }), keepalive: true }).catch(() => {})
+  }
 }
