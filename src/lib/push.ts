@@ -35,7 +35,7 @@ export type PushPayload = { title: string; body: string; url?: string; tag?: str
 export async function sendPush(sub: { endpoint: string; p256dh: string; auth: string }, payload: PushPayload): Promise<'ok' | 'gone' | 'error'> {
   setup()
   try {
-    await webpush.sendNotification({ endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } }, JSON.stringify(payload), { TTL: 6 * 3600, urgency: 'normal' })
+    await webpush.sendNotification({ endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } }, JSON.stringify(payload), { TTL: 6 * 3600, urgency: 'high' }) // أولوية عالية في FCM: يصل فورًا ويوقظ الجوال
     return 'ok'
   } catch (e) {
     const code = (e as { statusCode?: number }).statusCode
