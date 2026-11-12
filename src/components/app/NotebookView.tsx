@@ -110,7 +110,7 @@ export default function NotebookView() {
       <button
         type="button"
         onClick={() => useUi.getState().startMind()}
-        className="mind-card relative flex w-full items-center gap-3 overflow-hidden rounded-[20px] bg-[#0B2236] px-3 py-2.5 text-right text-white ring-2 ring-[#D4A017] transition active:scale-[0.98]"
+        className="mind-card relative flex w-full items-center gap-3 overflow-hidden rounded-[20px] bg-gradient-to-l from-[#7B4FD6] to-[#5B3BB0] px-3 py-2.5 text-right text-white ring-2 ring-[#D4A017] transition active:scale-[0.98]"
       >
         <svg viewBox="0 0 64 64" className="h-11 w-11 shrink-0 overflow-visible" aria-hidden="true">
           <g stroke="#D4A017" strokeWidth="2" strokeLinecap="round" opacity="0.85">
