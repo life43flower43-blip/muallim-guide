@@ -67,3 +67,23 @@ export function rateLimitResponse(result: RateLimitResult, message = 'طلبات
   const retryAfter = Math.max(1, Math.ceil((result.resetTime - Date.now()) / 1000))
   return NextResponse.json({ error: message }, { status: 429, headers: { 'Retry-After': String(retryAfter) } })
 }
+
+/** حد مشترك في قاعدة البيانات لكل الخوادم، للطلبات الحساسة. إن تعثرت القاعدة رجع إلى حد الذاكرة */
+export async function checkRateLimitShared(identifier: string, config: RateLimitConfig): Promise<RateLimitResult> {
+  const now = Date.now()
+  const windowStart = Math.floor(now / config.windowMs) * config.windowMs
+  const resetTime = windowStart + config.windowMs
+  const key = `${identifier}:${windowStart}`.slice(0, 300)
+  try {
+    const { db } = await import('@/lib/db')
+    const rows = await db.$queryRaw<{ count: number }[]>`
+      INSERT INTO "RateHit" ("key", "count", "resetAt") VALUES (${key}, 1, ${new Date(resetTime)})
+      ON CONFLICT ("key") DO UPDATE SET "count" = "RateHit"."count" + 1
+      RETURNING "count"`
+    const count = Number(rows[0]?.count ?? 1)
+    if (Math.random() < 0.02) await db.rateHit.deleteMany({ where: { resetAt: { lt: new Date(now) } } }).catch(() => {})
+    return { allowed: count <= config.limit, remaining: Math.max(0, config.limit - count), resetTime, limit: config.limit }
+  } catch {
+    return checkRateLimit(identifier, config)
+  }
+}

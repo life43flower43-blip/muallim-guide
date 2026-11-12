@@ -3,17 +3,18 @@
 // ============================================================================
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { checkRateLimit, rateLimitResponse, getClientIP, RATE_LIMITS } from '@/lib/rate-limit'
+import { checkRateLimitShared, rateLimitResponse, getClientIP, RATE_LIMITS } from '@/lib/rate-limit'
 import { setAuthCookie } from '@/lib/auth'
 import { createUserWithWelcome } from '@/lib/accounts'
 import { hashPassword } from '@/lib/password'
+import { sendVerifyLink } from '@/lib/email-verify'
 
 export const dynamic = 'force-dynamic'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
 export async function POST(request: NextRequest) {
-  const rl = checkRateLimit(`register:${getClientIP(request)}`, RATE_LIMITS.AUTH_REGISTER)
+  const rl = await checkRateLimitShared(`register:${getClientIP(request)}`, RATE_LIMITS.AUTH_REGISTER)
   if (!rl.allowed) return rateLimitResponse(rl, 'حسابات كثيرة من هذا الجهاز. حاول لاحقًا.')
   const body = (await request.json().catch(() => ({}))) as { name?: string; email?: string; password?: string; emailOptIn?: boolean }
   const name = String(body.name ?? '').trim().slice(0, 60)
@@ -34,6 +35,8 @@ export async function POST(request: NextRequest) {
     }
     const user = await createUserWithWelcome({ email, name, password: await hashPassword(password), emailOptIn: body.emailOptIn === true })
     await setAuthCookie(user.id)
+    // رابط تأكيد البريد: فشل الإرسال لا يمنع التسجيل، ويستطيع المستخدم إعادة الطلب من «حسابي»
+    await sendVerifyLink(user).catch(() => false)
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error('register error:', err)

@@ -24,6 +24,7 @@ model User {
   gems         Int      @default(0)
   tokenVersion Int      @default(0) // يزيد لإبطال كل الجلسات
   emailOptIn   Boolean  @default(false) // يوافق على الملخص الأسبوعي بالبريد
+  emailVerified DateTime? // متى أكد المستخدم ملكية بريده
   lastDigestAt DateTime? // آخر ملخص أُرسل إليه
   lastActive   DateTime @default(now())
   createdAt    DateTime @default(now())
@@ -187,4 +188,25 @@ model ClientError {
   lastAt    DateTime @default(now())
 
   @@index([lastAt])
+}
+
+// عدّادات حدود الطلبات الحساسة (الدخول والتسجيل والاستعادة) مشتركة بين كل خوادم Vercel
+model RateHit {
+  key     String   @id
+  count   Int      @default(1)
+  resetAt DateTime
+
+  @@index([resetAt])
+}
+
+// روابط تأكيد البريد: «verify» لتأكيد بريد الحساب، و«change» لاعتماد بريد جديد
+model EmailToken {
+  token     String   @id
+  userId    String
+  kind      String
+  newEmail  String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }

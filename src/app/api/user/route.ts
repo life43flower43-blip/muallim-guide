@@ -20,6 +20,17 @@ export async function GET() {
   }
 }
 
+// PUT /api/user — تعديل الاسم
+export async function PUT(request: Request) {
+  const userId = await getCurrentUser()
+  if (!userId) return NextResponse.json({ error: 'not_authenticated' }, { status: 401 })
+  const body = (await request.json().catch(() => ({}))) as { name?: string }
+  const name = String(body.name ?? '').replace(/\s+/g, ' ').trim().slice(0, 60)
+  if (name.length < 2) return NextResponse.json({ error: 'اكتب اسمك (حرفان على الأقل)' }, { status: 400 })
+  const user = await db.user.update({ where: { id: userId }, data: { name }, select: PUBLIC_USER_SELECT })
+  return NextResponse.json({ user })
+}
+
 // DELETE /api/user — حذف الحساب وكل بياناته نهائيًا
 export async function DELETE() {
   const userId = await getCurrentUser()
