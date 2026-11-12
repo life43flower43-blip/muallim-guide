@@ -59,7 +59,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { Tab } from "./AppShell";
 import { OPEN_SETTINGS_EVENT } from "@/lib/ui-store";
-import { disablePush, enablePush, usePushState } from "@/lib/push-client";
+import { disablePush, enablePush, getPushSlot, setPushSlot, usePushState, type PushSlot } from "@/lib/push-client";
 import DefaultAvatar from "./DefaultAvatar";
 import AuthPanel from "./AuthPanel";
 import AccountSecurityButtons from "./AccountSecurityButtons";
@@ -364,6 +364,10 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
               </span>
             </button>
           )}
+          {push === "on" && <PushSlotPicker />}
+          {push === "denied" && (
+            <p className="text-xs leading-5 text-muted-foreground">لتفعيلها: إعدادات الجوال ← التطبيقات ← تربوي (أو Chrome) ← الإشعارات ← سماح.</p>
+          )}
         </Card>
       </div>
 
@@ -546,4 +550,22 @@ async function shareApp() {
       alert("نُسخ رابط التطبيق، الصقه لمن تريد");
     }
   } catch {}
+}
+
+/** وقت التذكير اليومي لهذا الجهاز */
+function PushSlotPicker() {
+  const [slot, setSlot] = useState<PushSlot>(() => (typeof window === "undefined" ? "evening" : getPushSlot()));
+  const OPTS: [PushSlot, string][] = [["morning", "صباحًا"], ["noon", "ظهرًا"], ["evening", "مساءً"]];
+  return (
+    <div className="flex items-center gap-2 pb-1 text-sm">
+      <span className="shrink-0 text-muted-foreground">وقت التذكير:</span>
+      <div className="grid flex-1 grid-cols-3 gap-1 rounded-xl bg-muted p-1">
+        {OPTS.map(([v, l]) => (
+          <button key={v} type="button" onClick={() => { setSlot(v); void setPushSlot(v); }} className={cn("min-h-[34px] rounded-lg text-[13px] font-bold", slot === v ? "bg-white text-foreground shadow-sm dark:bg-card" : "text-muted-foreground")}>
+            {l}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }

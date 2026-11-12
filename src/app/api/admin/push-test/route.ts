@@ -12,17 +12,23 @@ export async function POST(req: NextRequest) {
   const bearer = !!secret && req.headers.get('authorization') === `Bearer ${secret}`
   if (!bearer && !(await isAdmin())) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   if (!pushConfigured()) return NextResponse.json({ error: 'push_not_configured' }, { status: 503 })
-  const body = (await req.json().catch(() => ({}))) as { email?: string }
+  const isForm = (req.headers.get('content-type') ?? '').includes('form')
+  const body = isForm ? Object.fromEntries((await req.formData().catch(() => new FormData())).entries()) : ((await req.json().catch(() => ({}))) as { email?: string })
   const email = String(body.email ?? '').trim().toLowerCase()
+  const back = (q: string) => NextResponse.redirect(new URL(`/connect?${q}`, req.url), 303)
   const user = email ? await db.user.findUnique({ where: { email }, select: { id: true } }) : null
   const totalSubs = await db.pushSubscription.count()
-  if (!user) return NextResponse.json({ user: false, totalSubs })
+  if (!user) return isForm ? back('push=nouser') : NextResponse.json({ user: false, totalSubs })
   const subs = await db.pushSubscription.findMany({ where: { userId: user.id } })
   const results: string[] = []
   for (const s of subs) {
     const r = await sendPush(s, { title: 'إشعار تجريبي من تربوي', body: 'إن وصلك هذا الإشعار فالإشعارات تعمل على جهازك ✅', url: '/app', tag: 'test' })
     if (r === 'gone') await db.pushSubscription.delete({ where: { id: s.id } })
     results.push(r)
+  }
+  if (isForm) {
+    const ok = results.filter((r) => r === 'ok').length
+    return back(!subs.length ? 'push=none' : ok ? `push=sent&n=${ok}` : 'push=fail')
   }
   return NextResponse.json({ user: true, devices: subs.length, results, totalSubs })
 }

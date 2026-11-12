@@ -59,7 +59,7 @@ export async function enablePush(): Promise<boolean> {
     const res = await fetch('/api/push/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ subscription: sub.toJSON(), tzOffset: new Date().getTimezoneOffset() }),
+      body: JSON.stringify({ subscription: sub.toJSON(), tzOffset: new Date().getTimezoneOffset(), slot: getPushSlot() }),
     })
     if (!res.ok) return false
     localStorage.setItem(KEY, sub.endpoint)
@@ -114,7 +114,7 @@ export async function syncPush(): Promise<void> {
     const res = await fetch('/api/push/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ subscription: sub.toJSON(), tzOffset: new Date().getTimezoneOffset() }),
+      body: JSON.stringify({ subscription: sub.toJSON(), tzOffset: new Date().getTimezoneOffset(), slot: getPushSlot() }),
     })
     if (res.ok) {
       localStorage.setItem(KEY, sub.endpoint)
@@ -122,5 +122,27 @@ export async function syncPush(): Promise<void> {
     }
   } catch (e) {
     fetch('/api/client-error', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: `push sync failed: ${String((e as Error)?.message ?? e).slice(0, 200)}`, url: '/app' }), keepalive: true }).catch(() => {})
+  }
+}
+
+const SLOT_KEY = 'turbawy-push-slot'
+export type PushSlot = 'morning' | 'noon' | 'evening'
+export function getPushSlot(): PushSlot {
+  try {
+    const v = localStorage.getItem(SLOT_KEY)
+    if (v === 'morning' || v === 'noon' || v === 'evening') return v
+  } catch {}
+  return 'evening'
+}
+/** يغيّر وقت التذكير لهذا الجهاز على الخادم */
+export async function setPushSlot(slot: PushSlot): Promise<boolean> {
+  try {
+    localStorage.setItem(SLOT_KEY, slot)
+    const endpoint = localStorage.getItem(KEY)
+    if (!endpoint) return false
+    const r = await fetch('/api/push/prefs', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ endpoint, slot }) })
+    return r.ok
+  } catch {
+    return false
   }
 }

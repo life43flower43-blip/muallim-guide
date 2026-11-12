@@ -22,11 +22,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid_subscription' }, { status: 400 })
   }
   const tzOffset = Number.isFinite(body.tzOffset) ? Math.max(-840, Math.min(840, Math.round(body.tzOffset))) : 0
+  const slot = ['morning', 'noon', 'evening'].includes(body.slot) ? body.slot : undefined
   const userId = await getCurrentUser()
   await db.pushSubscription.upsert({
     where: { endpoint: sub.endpoint },
-    create: { endpoint: sub.endpoint, p256dh: sub.keys.p256dh, auth: sub.keys.auth, tzOffset, userId },
-    update: { p256dh: sub.keys.p256dh, auth: sub.keys.auth, tzOffset, ...(userId ? { userId } : {}) },
+    create: { endpoint: sub.endpoint, p256dh: sub.keys.p256dh, auth: sub.keys.auth, tzOffset, userId, ...(slot ? { slot } : {}) },
+    update: { p256dh: sub.keys.p256dh, auth: sub.keys.auth, tzOffset, ...(slot ? { slot } : {}), ...(userId ? { userId } : {}) },
   })
   return NextResponse.json({ ok: true })
 }
