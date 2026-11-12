@@ -60,11 +60,13 @@ async function currentSub(reg: ServiceWorkerRegistration, create: boolean): Prom
   let sub = await reg.pushManager.getSubscription()
   const want = keyBytes(await vapidKey())
   const have = sub?.options?.applicationServerKey ? new Uint8Array(sub.options.applicationServerKey) : null
+  let replaced = false
   if (sub && have && (have.length !== want.length || have.some((b, i) => b !== want[i]))) {
     await sub.unsubscribe()
     sub = null
+    replaced = true
   }
-  if (!sub && create) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: want })
+  if (!sub && (create || replaced)) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: want })
   return sub
 }
 
