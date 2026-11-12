@@ -63,6 +63,7 @@ import { disablePush, enablePush, usePushState } from "@/lib/push-client";
 import DefaultAvatar from "./DefaultAvatar";
 import AuthPanel from "./AuthPanel";
 import AccountSecurityButtons from "./AccountSecurityButtons";
+import EmailDigestToggle from "./EmailDigestToggle";
 import PastTests from "./PastTests";
 import { Card, IconTile, PageTitle, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, pct } from "./ui-kit";
 
@@ -240,6 +241,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
               <ProgressBar value={(xpInLevel(xp) / LEVEL_XP) * 100} className="mt-2" />
             </div>
           </div>
+          {user && <EmailDigestToggle user={user} />}
           {!user && (
             <details open className="group mt-3 border-t border-border pt-3">
               <summary className="flex min-h-[40px] cursor-pointer list-none items-center justify-between gap-2 text-[14px] font-bold text-foreground">

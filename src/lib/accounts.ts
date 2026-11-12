@@ -3,7 +3,7 @@ import { db } from '@/lib/db'
 import { WELCOME_GEMS } from '@/lib/auth'
 
 /** ينشئ مستخدمًا جديدًا مع جواهر الترحيب وسطرها في الدفتر، في معاملة واحدة */
-export async function createUserWithWelcome(data: { email: string; name: string; password?: string; avatar?: string }) {
+export async function createUserWithWelcome(data: { email: string; name: string; password?: string; avatar?: string; emailOptIn?: boolean }) {
   return db.$transaction(async (tx) => {
     const created = await tx.user.create({ data: { ...data, gems: WELCOME_GEMS } })
     await tx.gemTransaction.create({
@@ -30,6 +30,7 @@ export const PUBLIC_USER_SELECT = {
   streak: true,
   streakFreeze: true,
   gems: true,
+  emailOptIn: true,
   lastActive: true,
   createdAt: true,
 } as const

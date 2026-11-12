@@ -20,13 +20,13 @@ async function logFailure(provider: string, detail: string) {
     .catch(() => {})
 }
 
-export async function sendMail(to: string, subject: string, html: string): Promise<boolean> {
+export async function sendMail(to: string, subject: string, html: string, headers?: Record<string, string>): Promise<boolean> {
   const gUser = process.env.GMAIL_USER
   const gPass = process.env.GMAIL_APP_PASSWORD?.replace(/\s+/g, '')
   if (gUser && gPass) {
     try {
       const t = nodemailer.createTransport({ host: 'smtp.gmail.com', port: 465, secure: true, auth: { user: gUser, pass: gPass } })
-      await t.sendMail({ from: `تربوي <${gUser}>`, to, subject, html })
+      await t.sendMail({ from: `تربوي <${gUser}>`, to, subject, html, headers })
       return true
     } catch (e) {
       await logFailure('gmail', String((e as Error)?.message ?? e))
@@ -38,7 +38,7 @@ export async function sendMail(to: string, subject: string, html: string): Promi
       const r = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: { authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'content-type': 'application/json' },
-        body: JSON.stringify({ from: process.env.RESEND_FROM || 'تربوي <onboarding@resend.dev>', to: [to], subject, html }),
+        body: JSON.stringify({ from: process.env.RESEND_FROM || 'تربوي <onboarding@resend.dev>', to: [to], subject, html, headers }),
       })
       if (r.ok) return true
       const j = (await r.json().catch(() => ({}))) as { message?: string }

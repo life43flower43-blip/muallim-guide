@@ -158,8 +158,6 @@ function BottomNav({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => v
       )}
     >
       {/* شريط عائم بإطار ذهبي، والحبة الخضراء تنزلق بين التبويبات */}
-      {/* زر الرجوع عائم فوق شريط التنقل يمينًا، قريبًا من الإبهام */}
-      {tab !== "today" && <BackButton onClick={onBack} className="absolute -top-11 right-4" />}
       <div>
       <div className="nav-gold grid min-w-0 flex-1 grid-cols-5 gap-0.5 rounded-[26px] p-1 min-[380px]:gap-1 min-[380px]:p-1.5">
         {NAV.map((n) => {
@@ -210,6 +208,8 @@ function MobileTopBar({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) =
       <header className="green-head safe-top sticky top-0 z-30 px-2 pb-0.5 lg:hidden">
         <HeaderArt />
         <div className="relative flex h-12 items-center justify-center px-14">
+          {/* زر الرجوع في الشريط العلوي، فلا يغطي شيئًا من محتوى الصفحة */}
+          <BackButton onClick={onBack} className="absolute right-1.5 h-10 w-10" />
           <h1 className="font-display text-lg font-extrabold">{NAV.find((n) => n.id === tab)?.label}</h1>
           {tab === "profile" && (
             <button type="button" onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))} aria-label="الإعدادات" className="absolute left-1.5 flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">

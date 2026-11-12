@@ -24,6 +24,7 @@ export type AccountUser = {
   streak: number
   streakFreeze: number
   gems: number
+  emailOptIn?: boolean
   lastActive: string
   createdAt: string
 }

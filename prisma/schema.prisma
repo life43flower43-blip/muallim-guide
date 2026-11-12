@@ -23,6 +23,8 @@ model User {
   streakFreeze Int      @default(0)
   gems         Int      @default(0)
   tokenVersion Int      @default(0) // يزيد لإبطال كل الجلسات
+  emailOptIn   Boolean  @default(false) // يوافق على الملخص الأسبوعي بالبريد
+  lastDigestAt DateTime? // آخر ملخص أُرسل إليه
   lastActive   DateTime @default(now())
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
