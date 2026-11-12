@@ -64,12 +64,17 @@ async function getUser(): Promise<{ user: AccountUser | null; restore?: string }
   return res.json()
 }
 
+/** للتشخيص: هل وجد الكوكي عند الفتح، وهل استُعيد الدخول من النسخة الاحتياطية */
+export const authDiag = { cookie: 'unknown', restore: 'none' }
+
 async function fetchUser(): Promise<AccountUser | null> {
   let json = await getUser()
+  authDiag.cookie = json.user ? 'yes' : 'no'
   if (!json.user) {
     const token = readRestore()
     if (token) {
       const r = await fetch('/api/auth/restore', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token }) })
+      authDiag.restore = `status-${r.status}`
       if (r.ok) json = await getUser()
       else if (r.status === 401) writeRestore(null)
       else throw new Error(`HTTP ${r.status}`)

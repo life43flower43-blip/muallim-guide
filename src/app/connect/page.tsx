@@ -111,6 +111,7 @@ export default async function Connect({ searchParams }: { searchParams: Promise<
               <li key={e.id} className="rounded-xl bg-[#FDF6F6] p-3 text-[13px] leading-6" dir="ltr">
                 <span className="font-bold text-[#8A1F1F]">×{e.count}</span> · v{e.version ?? "?"} · {e.url ?? ""} · {e.lastAt.toISOString().slice(0, 16).replace("T", " ")}
                 <p className="break-words text-[#14302A]">{e.message}</p>
+                {e.ua && <p className="break-words text-[11px] text-[#5B7268]">{e.ua}</p>}
               </li>
             ))}
           </ul>
