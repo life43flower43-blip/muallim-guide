@@ -1,8 +1,21 @@
 // إرسال الإشعارات من الخادم بمفاتيح VAPID — تعمل حين تُضبط متغيرات البيئة فقط
 import webpush from 'web-push'
+import { createECDH } from 'crypto'
 
-const PUBLIC = (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? '').trim()
 const PRIVATE = (process.env.VAPID_PRIVATE_KEY ?? '').trim()
+// المفتاح العام يُشتق من الخاص دائمًا: لو اختلف المتغيّران في الإعدادات رفضت Google الإرسال (403 invalid JWT)
+function derivePublic(): string {
+  try {
+    const e = createECDH('prime256v1')
+    e.setPrivateKey(Buffer.from(PRIVATE, 'base64url'))
+    return e.getPublicKey().toString('base64url')
+  } catch {
+    return (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? '').trim()
+  }
+}
+const PUBLIC = PRIVATE ? derivePublic() : ''
+/** المفتاح العام الذي يشترك به الجهاز (مطابق للخاص) */
+export const vapidPublicKey = () => PUBLIC
 
 export const pushConfigured = () => Boolean(PUBLIC && PRIVATE)
 

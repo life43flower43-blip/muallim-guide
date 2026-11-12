@@ -32,6 +32,16 @@ export function usePushState(): PushState {
   )
 }
 
+// المفتاح من الخادم (مشتق من المفتاح الخاص) وليس من إعدادات البناء، فلا يختلفان أبدًا
+let serverKey: Promise<string> | null = null
+function vapidKey(): Promise<string> {
+  serverKey ??= fetch('/api/push/key', { cache: 'no-store' })
+    .then((r) => (r.ok ? r.json() : {}))
+    .then((j: { key?: string }) => j.key || VAPID)
+    .catch(() => VAPID)
+  return serverKey
+}
+
 function keyBytes(base64: string): Uint8Array<ArrayBuffer> {
   const pad = '='.repeat((4 - (base64.length % 4)) % 4)
   const raw = atob((base64 + pad).replace(/-/g, '+').replace(/_/g, '/'))
@@ -45,6 +55,19 @@ const today = () => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
+/** اشتراك الجهاز بالمفتاح الصحيح: القديم بمفتاح مختلف يُلغى ويُنشأ بدله */
+async function currentSub(reg: ServiceWorkerRegistration, create: boolean): Promise<PushSubscription | null> {
+  let sub = await reg.pushManager.getSubscription()
+  const want = keyBytes(await vapidKey())
+  const have = sub?.options?.applicationServerKey ? new Uint8Array(sub.options.applicationServerKey) : null
+  if (sub && have && (have.length !== want.length || have.some((b, i) => b !== want[i]))) {
+    await sub.unsubscribe()
+    sub = null
+  }
+  if (!sub && create) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: want })
+  return sub
+}
+
 /** يطلب الإذن ويشترك. يعيد true عند النجاح */
 export async function enablePush(): Promise<boolean> {
   if (read() === 'unsupported') return false
@@ -55,7 +78,8 @@ export async function enablePush(): Promise<boolean> {
   }
   try {
     const reg = await navigator.serviceWorker.ready
-    const sub = (await reg.pushManager.getSubscription()) ?? (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(VAPID) }))
+    const sub = await currentSub(reg, true)
+    if (!sub) return false
     const res = await fetch('/api/push/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -100,17 +124,8 @@ export async function syncPush(): Promise<void> {
   try {
     if (read() === 'unsupported' || Notification.permission !== 'granted') return
     const reg = await navigator.serviceWorker.ready
-    let sub = await reg.pushManager.getSubscription()
-    const want = keyBytes(VAPID)
-    const have = sub?.options?.applicationServerKey ? new Uint8Array(sub.options.applicationServerKey) : null
-    if (sub && have && (have.length !== want.length || have.some((b, i) => b !== want[i]))) {
-      await sub.unsubscribe()
-      sub = null
-    }
-    if (!sub) {
-      if (!localStorage.getItem(KEY)) return // لم يفعّلها المستخدم من قبل
-      sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: want })
-    }
+    const sub = await currentSub(reg, !!localStorage.getItem(KEY)) // لا ننشئ اشتراكًا لمن لم يفعّلها
+    if (!sub) return
     const res = await fetch('/api/push/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
