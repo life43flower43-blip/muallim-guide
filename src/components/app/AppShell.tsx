@@ -9,6 +9,7 @@
 // ============================================================================
 
 import { syncPush } from "@/lib/push-client";
+import PushPrompt from "./PushPrompt";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
@@ -533,6 +534,7 @@ export default function AppShell() {
       <AnimatePresence>{ui.scenariosOpen && <ScenariosView key="scenarios" />}</AnimatePresence>
       <AnimatePresence>{ui.bankOpen && <LicenseBankView key="bank" />}</AnimatePresence>
       <AnimatePresence>{ui.examsimOpen && <ExamSimView key="examsim" />}</AnimatePresence>
+      <PushPrompt />
       <AnimatePresence>{ui.placementOpen && <PlacementView key="placement" />}</AnimatePresence>
       {ui.learnOpen && (
         <ScreenShell title="المفاهيم التربوية" onClose={ui.clearLearn}>
