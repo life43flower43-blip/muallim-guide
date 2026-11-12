@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getCurrentUser, clearAuthCookie, createToken } from '@/lib/auth'
+import { getCurrentUser, clearAuthCookie, createToken, setAuthCookie } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { PUBLIC_USER_SELECT } from '@/lib/accounts'
 
@@ -12,6 +12,8 @@ export async function GET() {
   if (!userId) return NextResponse.json({ user: null })
   try {
     const user = await db.user.findUnique({ where: { id: userId }, select: PUBLIC_USER_SELECT })
+    // تجديد الجلسة عند كل فتح: يبقى المستخدم داخلًا ما دام يفتح التطبيق ولو مرة كل سنة
+    if (user) await setAuthCookie(userId)
     // نسخة احتياطية من الجلسة تحفظها الواجهة: إن مسح الجوال الكوكي استُعيد الدخول بها
     return NextResponse.json({ user, restore: user ? await createToken(userId) : undefined })
   } catch (error) {
