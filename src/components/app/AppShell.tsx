@@ -8,6 +8,7 @@
 // الوجهات: اليوم، التعلّم، التدريب، أخطائي، حسابي.
 // ============================================================================
 
+import { syncPush } from "@/lib/push-client";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
@@ -303,6 +304,9 @@ export default function AppShell() {
   };
   useEffect(() => {
     startBankLoad();
+    // تأكيد اشتراك الإشعارات على الخادم بعد أن يستقر التطبيق
+    const t = setTimeout(() => void syncPush(), 4000);
+    return () => clearTimeout(t);
   }, []);
 
   // زر الرجوع في الهاتف: يغلق الشاشة المفتوحة أولًا ويبقى في التبويب نفسه، ثم يعود إلى الرئيسية
