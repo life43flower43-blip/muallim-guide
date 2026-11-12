@@ -1,6 +1,6 @@
 // عامل خدمة: شبكة أولاً للتنقل والأصول، كاش أولاً لبنك البيانات الكبير
 // v32 — الواجهة الجديدة: الحسابات والجواهر والتدريب والأخطاء منقولة من أوريندو
-const CACHE = "turbawy-v258";
+const CACHE = "turbawy-v259";
 // كاش مستقل لبنك البيانات: لا يُحذف عند تحديث الواجهة، فلا يُعاد تنزيل البنك الكبير مع كل تحديث
 const DATA_CACHE = "turbawy-data";
 const SHELL = ["/app", "/manifest.json", "/icons/icon-192-v4.png", "/icons/icon-512-v4.png"];
@@ -93,11 +93,15 @@ self.addEventListener("push", (e) => {
   e.waitUntil(
     self.registration.showNotification(data.title, {
       body: data.body,
-      icon: "/icons/icon-192-v4.png",
-      badge: "/icons/icon-192-v4.png",
+      icon: "/icons/icon-192-v4.png", // الشعار الملوّن بجانب النص
+      badge: "/icons/badge-96.png", // أيقونة شريط الحالة: بيضاء شفافة كما يشترط Android
       dir: "rtl",
       lang: "ar",
       tag: data.tag || "turbawy",
+      renotify: true, // إشعار جديد بالوسم نفسه ينبثق ويُصدر صوتًا من جديد بدل أن يُستبدل بصمت
+      silent: false,
+      vibrate: [200, 100, 200],
+      timestamp: Date.now(),
       data: { url: data.url || "/app" },
     })
   );
