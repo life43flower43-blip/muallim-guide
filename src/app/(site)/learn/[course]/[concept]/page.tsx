@@ -8,9 +8,9 @@ import { notFound } from "next/navigation";
 import AdSlot from "@/components/site/AdSlot";
 import ReadProgress from "@/components/site/ReadProgress";
 import { problemsForConcept } from "@/lib/site-problems";
-import { ChevronLeft, Clock } from "lucide-react";
-import { ad, arCount, MINUTE_FORMS } from "@/lib/arabic";
-import { courseMeta, readMinutes } from "@/lib/site-nav";
+import { ChevronLeft } from "lucide-react";
+import { ad } from "@/lib/arabic";
+import { courseMeta } from "@/lib/site-nav";
 import { CatBadge, ConceptList, Crumbs, paragraphs, SectionTitle, ShareRow, TelegramCard, Thumb, WithSidebar } from "@/components/site/Blocks";
 import { photoFor } from "@/components/site/Cover";
 import { SITE_URL, SITE_NAME, chapterLabel, conceptQuestions, courseChapters, publicBank, summary } from "@/lib/public-bank";
@@ -112,7 +112,6 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
             <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-[#6B8077]">
               <CatBadge id={course} />
               <span>{chapterLabel(c.chapter)}</span>
-              <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {arCount(readMinutes(c), MINUTE_FORMS)} للقراءة</span>
             </div>
           </header>
 

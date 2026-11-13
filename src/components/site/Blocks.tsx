@@ -1,10 +1,10 @@
 // قطع الموقع المشتركة: بطاقة المقال، والشريط الجانبي، ومسار التنقل، وعنوان القسم، وأزرار المشاركة
 import Link from "next/link";
-import { Search, Clock, Smartphone, ChevronLeft } from "lucide-react";
+import { Search, Smartphone, ChevronLeft } from "lucide-react";
 import type { Concept } from "@/lib/types";
 import { chapterLabel, courseList, SITE_URL } from "@/lib/public-bank";
-import { APP_SECTIONS, courseMeta, excerpt, pickedConcepts, readMinutes } from "@/lib/site-nav";
-import { ad, arCount, MINUTE_FORMS } from "@/lib/arabic";
+import { APP_SECTIONS, courseMeta, excerpt, pickedConcepts } from "@/lib/site-nav";
+import { ad } from "@/lib/arabic";
 import AdSlot from "./AdSlot";
 import ShareBar from "./ShareBar";
 import SearchBox from "./SearchBox";
@@ -36,7 +36,6 @@ export function PostCard({ c, big = false }: { c: Concept; big?: boolean }) {
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-center justify-between gap-2">
           <CatBadge id={c.courseId} />
-          <span className="flex items-center gap-1 text-[12px] text-[#6B8077]"><Clock className="h-3.5 w-3.5" /> {arCount(readMinutes(c), MINUTE_FORMS)} للقراءة</span>
         </div>
         <h3 className={`mt-2 font-display font-bold leading-[1.55] text-[#14302A] ${big ? "text-[22px]" : "text-[17px]"}`}>
           <Link href={href(c)} className="hover:text-[#136F5C]">{c.title}</Link>
@@ -55,11 +54,7 @@ export function PostRow({ c, showExcerpt = false }: { c: Concept; showExcerpt?: 
       <Link href={href(c)} tabIndex={-1} aria-hidden="true" className="shrink-0"><MiniCover id={c.id} title={c.title} courseId={c.courseId} hint={c.chapter} className="h-[72px] w-[96px] rounded-xl" /></Link>
       <div className="min-w-0">
         <h3 className="line-clamp-2 text-[15px] font-bold leading-6 text-[#14302A]"><Link href={href(c)} className="hover:text-[#136F5C]">{c.title}</Link></h3>
-        {showExcerpt ? (
-          <p className="mt-1 line-clamp-2 text-[14px] leading-6 text-[#4D635A]">{excerpt(c, 120)}</p>
-        ) : (
-          <p className="mt-0.5 flex items-center gap-1 text-[12px] text-[#6B8077]"><Clock className="h-3 w-3" /> {arCount(readMinutes(c), MINUTE_FORMS)} للقراءة</p>
-        )}
+        {showExcerpt && <p className="mt-1 line-clamp-2 text-[14px] leading-6 text-[#4D635A]">{excerpt(c, 120)}</p>}
       </div>
     </article>
   );
@@ -224,10 +219,10 @@ export function Tile({ href, id, title, courseId, meta, card = false }: { href: 
 }
 
 export const conceptTile = (c: Concept) => (
-  <Tile key={c.id} href={href(c)} id={c.id} title={c.title} courseId={c.courseId} meta={`${courseMeta(c.courseId).short}، ${arCount(readMinutes(c), MINUTE_FORMS)} للقراءة`} />
+  <Tile key={c.id} href={href(c)} id={c.id} title={c.title} courseId={c.courseId} meta={courseMeta(c.courseId).short} />
 );
 export const conceptCard = (c: Concept) => (
-  <Tile key={c.id} card href={href(c)} id={c.id} title={c.title} courseId={c.courseId} meta={`${courseMeta(c.courseId).short}، ${arCount(readMinutes(c), MINUTE_FORMS)} للقراءة`} />
+  <Tile key={c.id} card href={href(c)} id={c.id} title={c.title} courseId={c.courseId} meta={courseMeta(c.courseId).short} />
 );
 
 /** رأس صفحة موحّد: خلفية متدرجة بلون القسم، وسطر صغير، وعنوان، ووصف */
@@ -261,7 +256,7 @@ export function ConceptList({ concepts, currentId, start = 1 }: { concepts: Conc
               )}
               <span className="min-w-0 flex-1">
                 <span className="line-clamp-2 text-[15px] font-bold leading-6 text-[#14302A]">{c.title}</span>
-                <span className="mt-0.5 block text-[12px] text-[#6B8077]">{here ? "تقرأ الآن" : `${arCount(readMinutes(c), MINUTE_FORMS)} للقراءة`}</span>
+                {here && <span className="mt-0.5 block text-[12px] text-[#6B8077]">تقرأ الآن</span>}
               </span>
               <ChevronLeft className="h-4 w-4 shrink-0 text-[#9AB0A6]" />
             </Link>
