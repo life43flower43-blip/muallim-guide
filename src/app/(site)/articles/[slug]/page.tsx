@@ -6,11 +6,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
-import { Clock, Tag } from "lucide-react";
+import { Tag } from "lucide-react";
 import { SITE_URL } from "@/lib/public-bank";
 import { CAT_SLUGS, allArticles, arDate, articleBySlug, articleCourse } from "@/lib/articles";
 import { courseMeta } from "@/lib/site-nav";
-import { ad, arCount, MINUTE_FORMS } from "@/lib/arabic";
+import { ad } from "@/lib/arabic";
 import { Cover, MiniCover } from "@/components/site/Cover";
 import { Tile, Crumbs, SectionTitle, ShareRow, WithSidebar, TelegramCard } from "@/components/site/Blocks";
 import AdSlot from "@/components/site/AdSlot";
@@ -103,7 +103,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-[#6B8077]">
             <Link href={`/articles/c/${CAT_SLUGS[a.category] ?? "issues"}`} className="rounded-md px-2 py-0.5 font-bold text-white" style={{ background: courseMeta(course).color }}>{a.category}</Link>
             <span>{arDate(a.date)}</span>
-            <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {arCount(a.minutes, MINUTE_FORMS)} للقراءة</span>
           </div>
           <p className="mt-3 border-s-4 ps-4 text-[17px] leading-8 text-[#3A5249]" style={{ borderColor: courseMeta(course).color }}>{a.description}</p>
 

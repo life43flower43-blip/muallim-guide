@@ -1,3 +1,5 @@
+import { readFileSync } from "fs";
+import path from "path";
 // صفحات المواضيع: صفحة لكل موضوع يكثر البحث عنه، فيها مقدمة مكتوبة له،
 // ثم كل ما في الموقع عنه من مقالات ومفاهيم شرح وأسئلة تدريب.
 import { allArticles, type Article } from "@/lib/articles";
@@ -274,6 +276,15 @@ export const TOPICS: Topic[] = [
 /** صور المواضيع الموجودة في public/topic-covers/<slug>.jpg */
 export const TOPIC_IMAGES = new Set<string>(["active-learning", "tests-and-measurement", "special-education", "ai-in-education", "teaching-ethics", "teacher-license", "learning-theories", "skills-21st-century", "formative-assessment", "flipped-classroom", "motivation", "critical-thinking", "lesson-planning", "individual-differences", "bloom-taxonomy", "classroom-management", "authentic-assessment", "parents-partnership", "project-based-learning", "teacher-wellbeing"]);
 export const topicImage = (slug: string) => (TOPIC_IMAGES.has(slug) ? `/topic-covers/${slug}.jpg` : undefined);
+
+/** نص المقال المكتوب للموضوع (content/topics/<slug>.md)، إن وُجد */
+export function topicBody(slug: string): string {
+  try {
+    return readFileSync(path.join(process.cwd(), "content", "topics", `${slug}.md`), "utf8").trim();
+  } catch {
+    return "";
+  }
+}
 
 export const topicBySlug = (slug: string) => TOPICS.find((t) => t.slug === slug);
 

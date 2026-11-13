@@ -4,7 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SITE_URL, SITE_NAME, publicBank } from "@/lib/public-bank";
 import { arDate, articleCourse } from "@/lib/articles";
-import { TOPICS, topicArticles, topicBySlug, topicConcepts, topicImage } from "@/lib/topics";
+import { TOPICS, topicArticles, topicBody, topicBySlug, topicConcepts, topicImage } from "@/lib/topics";
+import ReactMarkdown from "react-markdown";
 import { Crumbs, PageHero, Tile, WithSidebar } from "@/components/site/Blocks";
 
 export const revalidate = 3600;
@@ -36,7 +37,15 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
   // خلاصة كل مفهوم في سطر (أول جملة من شرحه)، وأسئلة شائعة من المقدمة والمفاهيم
   const firstSentence = (s: string) => (s.split(/(?<=[.؟!])\s/)[0] ?? s).trim();
   const briefs = concepts.slice(0, 12).map((c) => ({ c, line: firstSentence(c.rule || c.explanation) }));
-  const faq = [
+  const body = topicBody(t.slug);
+  // أسئلة المقال الشائعة (### سؤال ثم جوابه) تدخل بيانات الأسئلة الشائعة لمحركات البحث
+  const bodyFaq = (body.split(/^## أسئلة شائعة\s*$/m)[1] ?? "")
+    .split(/^### /m).slice(1)
+    .map((b) => { const [q, ...a] = b.split("\n"); return { q: q.trim(), a: a.join(" ").trim() }; })
+    .filter((f) => f.q && f.a);
+  const heads = body.split("\n").filter((l) => l.startsWith("## ")).map((l) => l.slice(3).trim());
+  let hi = 0;
+  const faq = bodyFaq.length ? bodyFaq : [
     { q: `ما ${t.name}؟`, a: t.intro[0] },
     { q: `كيف يطبق المعلم ${t.name} في الصف؟`, a: t.intro[1] },
     ...concepts.slice(0, 4).map((c) => ({ q: `ما المقصود بـ«${c.title}»؟`, a: firstSentence(c.explanation) })),
@@ -73,6 +82,24 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
           {t.points.map((p) => <li key={p} className="rounded-xl border border-[#E2ECE6] bg-white px-4 py-3 text-[14px] font-bold leading-7 text-[#0E3B32]">✓ {p}</li>)}
         </ul>
       </section>
+
+      {body && (
+        <>
+          {heads.length > 2 && (
+            <nav className="mt-7 rounded-2xl bg-[#136F5C0F] p-4" aria-label="محتويات الصفحة">
+              <p className="mb-2 font-display text-[16px] font-extrabold text-[#136F5C]">في هذه الصفحة</p>
+              <ol className="space-y-1.5 text-[15px]">
+                {heads.map((h, i) => (
+                  <li key={h}><a href={`#s-${i + 1}`} className="flex gap-2 leading-7 text-[#24403A] hover:underline"><span className="font-bold text-[#136F5C]">{(i + 1).toLocaleString("ar-u-nu-arab")}.</span>{h}</a></li>
+                ))}
+              </ol>
+            </nav>
+          )}
+          <article className="mt-4 text-[17.5px] leading-[2.05] text-[#24403A] [&_h2]:mb-3 [&_h2]:mt-9 [&_h2]:font-display [&_h2]:text-[22px] [&_h2]:font-extrabold [&_h2]:leading-[1.5] [&_h2]:text-[#14302A] [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:font-display [&_h3]:text-[19px] [&_h3]:font-extrabold [&_h3]:text-[#14302A] [&_li]:mb-2 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:ps-6 [&_p]:my-4 [&_strong]:text-[#14302A] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:ps-6 [&_li::marker]:text-[#136F5C] [&_a]:font-bold [&_a]:text-[#136F5C] [&_a]:underline">
+            <ReactMarkdown components={{ h2: ({ children }) => <h2 id={`s-${++hi}`} className="scroll-mt-20">{children}</h2> }}>{body}</ReactMarkdown>
+          </article>
+        </>
+      )}
 
       {articles.length > 0 && (
         <section className="mt-9">
@@ -112,6 +139,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
         </section>
       )}
 
+      {!bodyFaq.length && (
       <section className="mt-9">
         <h2 className="font-display text-[22px] font-extrabold text-[#0E3B32]">أسئلة شائعة عن {t.name}</h2>
         <div className="mt-4 space-y-2">
@@ -123,6 +151,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
           ))}
         </div>
       </section>
+      )}
 
       <section className="mt-9 rounded-2xl bg-[#0E3B32] p-6 text-white">
         <h2 className="font-display text-[20px] font-extrabold">تدرّب على {t.name}</h2>
