@@ -268,7 +268,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
 
       {/* تابع تربوي في كل منصاته */}
       <div className="rounded-[20px] border border-[#ECE3C4] bg-white p-3 dark:border-border dark:bg-card">
-        <p className="text-center text-[13px] font-bold text-foreground">تابع تربوي في كل منصاته: معلومة وسؤالان كل يوم</p>
+        <p className="text-center text-[13px] font-bold text-foreground">تابعنا</p>
         <div className="mt-2 grid grid-cols-3 gap-2">
           {process.env.NEXT_PUBLIC_LINKEDIN_URL && <a href={process.env.NEXT_PUBLIC_LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-foreground">لينكدإن</a>}
           {process.env.NEXT_PUBLIC_X_URL && <a href={process.env.NEXT_PUBLIC_X_URL} target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-foreground">X</a>}
