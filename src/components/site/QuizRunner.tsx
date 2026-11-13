@@ -1,7 +1,7 @@
 "use client";
 
 // اختبار تفاعلي في الموقع: سؤال في كل مرة، وتصحيح فوري مع التفسير، ثم النتيجة ودعوة إلى التطبيق
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, XCircle, RotateCcw, Smartphone, ChevronLeft } from "lucide-react";
 import type { SiteQ } from "@/lib/site-nav";
@@ -115,6 +115,13 @@ export default function QuizRunner({ questions, title, onConceptPage = false }: 
     setPicked(null);
     setI((x) => x + 1);
   };
+  // الإجابة الصحيحة تنقل مباشرة إلى السؤال التالي دون عرض التفسير
+  const right = picked !== null && picked === q?.correct;
+  useEffect(() => {
+    if (!right || questions.length === 1) return;
+    const t = setTimeout(next, 700);
+    return () => clearTimeout(t);
+  }, [right]);
   const restart = () => { setI(0); setPicked(null); setAnswers([]); };
 
   if (done) {
@@ -170,11 +177,12 @@ export default function QuizRunner({ questions, title, onConceptPage = false }: 
           );
         })}
       </ul>
-      {picked !== null && (
+      {right && questions.length > 1 && <p className="mt-4 text-center font-bold text-[#1E7B4A]">إجابة صحيحة ✓</p>}
+      {picked !== null && !(right && questions.length > 1) && (
         <div className={`mt-4 rounded-xl p-4 ${picked === q.correct ? "bg-[#EAF6EF]" : "bg-[#FFF6E5]"}`}>
           <p className="font-bold text-[#14302A]">{picked === q.correct ? "إجابة صحيحة" : "إجابة غير صحيحة، والصحيحة مظللة بالأخضر"}</p>
-          <p className="mt-1 text-[14px] leading-7 text-[#3A5249]">{q.reason}</p>
-          {!onConceptPage && <Link href={q.href} className="mt-2 inline-flex items-center gap-1 text-[13px] font-bold text-[#136F5C]">اقرأ شرح «{q.concept}» <ChevronLeft className="h-4 w-4" /></Link>}
+          {!right && <p className="mt-1 text-[14px] leading-7 text-[#3A5249]">{q.reason}</p>}
+          {!right && !onConceptPage && <Link href={q.href} className="mt-2 inline-flex items-center gap-1 text-[13px] font-bold text-[#136F5C]">اقرأ شرح «{q.concept}» <ChevronLeft className="h-4 w-4" /></Link>}
           {questions.length === 1 ? (
             <Link prefetch={false} href="/app?tab=practice" className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#136F5C] py-3 font-bold text-white"><Smartphone className="h-5 w-5" /> تدرّب على أسئلة أكثر في التطبيق</Link>
           ) : (
