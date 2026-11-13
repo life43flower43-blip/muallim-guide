@@ -291,7 +291,6 @@ export function TelegramCard({ className = "" }: { className?: string }) {
     <div className={`flex items-center gap-2.5 rounded-xl border border-[#E2ECE6] bg-white px-3 py-2 ${className}`}>
       <span className="min-w-0 flex-1">
         <span className="block text-[14.5px] font-extrabold text-[#14302A]">تابعنا</span>
-        <span className="block truncate text-[12.5px] text-[#4D635A]">معلومة وسؤالان كل يوم، مجانًا</span>
       </span>
       {socialLinks().filter((x) => x.id !== "site" && x.id !== "app").map((x) => (
         <a key={x.id} href={x.url} target="_blank" rel="noopener noreferrer" className="shrink-0 rounded-lg px-2.5 py-1.5 text-[13px] font-bold text-white" style={{ background: SOCIAL_COLOR[x.id] }}>{x.name}</a>
