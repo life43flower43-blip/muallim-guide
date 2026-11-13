@@ -86,14 +86,14 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
       {body && (
         <>
           {heads.length > 2 && (
-            <nav className="mt-7 rounded-2xl bg-[#136F5C0F] p-4" aria-label="محتويات الصفحة">
-              <p className="mb-2 font-display text-[16px] font-extrabold text-[#136F5C]">في هذه الصفحة</p>
-              <ol className="space-y-1.5 text-[15px]">
+            <details className="group mt-7 rounded-2xl bg-[#136F5C0F] p-4" aria-label="محتويات الصفحة">
+              <summary className="flex cursor-pointer list-none items-center justify-between font-display text-[16px] font-extrabold text-[#136F5C] [&::-webkit-details-marker]:hidden">في هذه الصفحة<span className="text-[14px] transition group-open:rotate-180">▾</span></summary>
+              <ol className="mt-2 space-y-1.5 text-[15px]">
                 {heads.map((h, i) => (
                   <li key={h}><a href={`#s-${i + 1}`} className="flex gap-2 leading-7 text-[#24403A] hover:underline"><span className="font-bold text-[#136F5C]">{(i + 1).toLocaleString("ar-u-nu-arab")}.</span>{h}</a></li>
                 ))}
               </ol>
-            </nav>
+            </details>
           )}
           <article className="mt-4 text-[17.5px] leading-[2.05] text-[#24403A] [&_h2]:mb-3 [&_h2]:mt-9 [&_h2]:font-display [&_h2]:text-[22px] [&_h2]:font-extrabold [&_h2]:leading-[1.5] [&_h2]:text-[#14302A] [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:font-display [&_h3]:text-[19px] [&_h3]:font-extrabold [&_h3]:text-[#14302A] [&_li]:mb-2 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:ps-6 [&_p]:my-4 [&_strong]:text-[#14302A] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:ps-6 [&_li::marker]:text-[#136F5C] [&_a]:font-bold [&_a]:text-[#136F5C] [&_a]:underline">
             <ReactMarkdown components={{ h2: ({ children }) => <h2 id={`s-${++hi}`} className="scroll-mt-20">{children}</h2> }}>{body}</ReactMarkdown>
