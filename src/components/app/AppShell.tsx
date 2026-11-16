@@ -154,12 +154,12 @@ function BottomNav({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => v
       id="bottom-nav"
       aria-label="التنقل الرئيسي"
       className={cn(
-        "safe-bottom fixed inset-x-0 bottom-0 z-30 px-2 pb-2 pt-1 transition-[transform,opacity] duration-300 ease-out min-[380px]:px-3 lg:hidden",
+        "fixed inset-x-0 bottom-0 z-30 transition-[transform,opacity] duration-300 ease-out lg:hidden",
         hidden ? "pointer-events-none translate-y-full opacity-0" : "translate-y-0 opacity-100"
       )}
     >
       {/* شريط بلون التطبيق متدرج، فيه نقاط لامعة، والتبويب الحالي حبة بيضاء تنزلق بين التبويبات */}
-      <div className="nav-bar relative grid min-w-0 grid-cols-5 gap-0.5 overflow-hidden rounded-[26px] p-1.5 min-[380px]:gap-1">
+      <div className="nav-bar relative grid min-w-0 grid-cols-5 gap-0.5 overflow-hidden px-2 pb-[calc(env(safe-area-inset-bottom,0px)+8px)] pt-6 min-[380px]:gap-1">
         {[[8, 30], [27, 70], [46, 22], [63, 78], [81, 40], [93, 64]].map(([l, t], k) => (
           <span key={k} className="spark" style={{ left: `${l}%`, top: `${t}%`, animationDelay: `${k * 0.5}s` }} aria-hidden="true" />
         ))}
