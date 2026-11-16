@@ -4,6 +4,7 @@
 // الرئيسية: واجهة التطبيق — بطاقة الاستعداد، ثم ستة أبواب مصوّرة لأقسامه
 // ============================================================================
 
+import HomeIcon from "./HomeIcons";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -338,7 +339,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 className="icon-shine relative block h-[66px] w-[66px] overflow-hidden rounded-[18px] border border-[#DCEDEA] bg-white"
                 style={{ boxShadow: "0 6px 14px -8px rgba(15,118,110,0.45)", ["--shine-delay" as string]: `${(i % 8) * 0.35}s` }}
               >
-                <img src={`/home-icons/${HOME_ICON_IMG[d.title] ?? HOME_ICON_BY_POS[i] ?? "today"}.webp?v=2`} alt="" width={66} height={66} className="h-full w-full object-cover" draggable={false} />
+                <HomeIcon name={HOME_ICON_IMG[d.title] ?? HOME_ICON_BY_POS[i] ?? "today"} />
               </span>
               <FitText max={12.5} min={9} group="home-ico" className="w-full whitespace-nowrap text-center font-bold text-foreground dark:text-foreground">{d.title}</FitText>
             </motion.button>
