@@ -111,7 +111,9 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
   const st = useApp();
   const fileRef = useRef<HTMLInputElement>(null);
   const [installEvt, setInstallEvt] = useState<InstallPromptEvent | null>(null);
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [section, setSection] = useState<null | "settings" | "gems" | "data">(null);
+  const settingsOpen = section !== null;
+  const setSettingsOpen = (v: boolean) => setSection(v ? "settings" : null);
   const [panel, setPanel] = useState<null | "account" | "tests">(null);
   const push = usePushState();
   useEffect(() => {
@@ -246,6 +248,9 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
         </Card>
       )}
 
+      {/* لوح سفلي بحواف علوية مستديرة ومقبض، فيه المشاركة والقائمة */}
+      <div className="-mx-4 rounded-t-[32px] border-t-[3px] border-[var(--t700)] bg-white px-4 pb-4 pt-3 shadow-[0_-12px_30px_-18px_rgba(0,0,0,0.35)] dark:bg-card lg:mx-0">
+      <span className="mx-auto mb-4 block h-[5px] w-12 rounded-full bg-muted-foreground/25" aria-hidden="true" />
       {/* شارك التطبيق: بطاقة بارزة */}
       <div className="share-banner relative overflow-hidden rounded-[24px] p-4 text-white shadow-[0_10px_24px_-12px_var(--t700)]">
         <span className="absolute -left-6 -top-6 h-24 w-24 rounded-full bg-white/10" aria-hidden="true" />
@@ -265,11 +270,12 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
       </div>
 
       {/* قائمة «حسابي»: كل قسم في صف بأيقونة كبيرة ملونة، وعنوان ووصف، وسهم */}
-      <div className="space-y-1">
+      <div className="mt-4 space-y-1">
         <MenuRow icon={UserRound} color="#2563EB" title="الملف الشخصي" sub={user ? user.email : "سجّل الدخول لتحفظ تقدمك"} onClick={() => setPanel("account")} />
         <MenuRow icon={Trophy} color="#7C3AED" title="الإنجازات والنتائج" sub="اختباراتك السابقة وتقدمك" onClick={() => setPanel("tests")} />
-        <MenuRow icon={Gem} color="#D97706" title="الجواهر" sub={`رصيدك ${ad(wallet.gems)} جوهرة`} onClick={() => setSettingsOpen(true)} />
-        <MenuRow icon={Settings} color="#64748B" title="الإعدادات" sub="الهدف والمظهر والتذكير" onClick={() => setSettingsOpen(true)} />
+        <MenuRow icon={Gem} color="#D97706" title="الجواهر" sub={`رصيدك ${ad(wallet.gems)} جوهرة`} onClick={() => setSection("gems")} />
+        <MenuRow icon={Settings} color="#64748B" title="الإعدادات" sub="الهدف والمظهر والتذكير" onClick={() => setSection("settings")} />
+        <MenuRow icon={Download} color="#0F766E" title="البيانات والأمان" sub="نسخة احتياطية، كلمة المرور، حذف الحساب" onClick={() => setSection("data")} />
         <MenuRow icon={Send} color="#0EA5E9" title="قناة تيليجرام" sub="معلومة وأسئلة يومية" href="https://t.me/MuallimExam" />
         <MenuRow icon={Users} color="#1D4ED8" title="صفحة فيسبوك" sub="تابع جديد تربوي" href="https://www.facebook.com/share/1CHdqGvYz5/" />
         {process.env.NEXT_PUBLIC_LINKEDIN_URL && <MenuRow icon={Users} color="#0A66C2" title="لينكدإن" sub="تابعنا مهنيًا" href={process.env.NEXT_PUBLIC_LINKEDIN_URL} />}
@@ -285,6 +291,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             }}
           />
         )}
+      </div>
       </div>
 
       {panel === "account" && (
@@ -321,8 +328,9 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
       )}
 
       {settingsOpen && (
-        <ScreenShell title="الإعدادات" onClose={() => setSettingsOpen(false)}>
+        <ScreenShell title={section === "gems" ? "الجواهر" : section === "data" ? "البيانات والأمان" : "الإعدادات"} onClose={() => setSection(null)}>
           <div className="space-y-6">
+      {section === "settings" && (<>
       {/* الهدف والإعدادات */}
       <div className="grid gap-6">
         <Card className="space-y-4 p-5">
@@ -411,6 +419,8 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
         </Card>
       </div>
 
+      </>)}
+      {section === "gems" && (<>
       {/* الجواهر */}
         <Card className="p-4">
           <div className="flex items-center gap-2.5">
@@ -465,6 +475,8 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           )}
         </Card>
 
+      </>)}
+      {section === "data" && (<>
       {/* البيانات والحساب: مربعات أفقية متساوية */}
       <div className="grid grid-cols-3 gap-2.5">
         {installEvt && (
@@ -570,6 +582,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           </>
         )}
       </div>
+      </>)}
           </div>
         </ScreenShell>
       )}

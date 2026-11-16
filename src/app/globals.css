@@ -878,8 +878,8 @@ body {
 
 /* الشريط السفلي: لون التطبيق بتدرج، مع نقاط لامعة صغيرة */
 .nav-bar {
-  /* ملتصق بأسفل الشاشة بعرضها، يبدأ شفافًا من الأعلى ثم يشتد لونه */
-  background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--t700) 35%, transparent) 14%, color-mix(in srgb, var(--t700) 88%, #fff) 34%, var(--t700) 70%, color-mix(in srgb, var(--t700) 85%, #000) 100%);
+  /* ملتصق بأسفل الشاشة بعرضها، بحافة علوية شفافة قصيرة ثم لون التطبيق */
+  background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--t700) 80%, #fff) 10%, var(--t700) 55%, color-mix(in srgb, var(--t700) 88%, #000) 100%);
 }
 .nav-bar .spark { position: absolute; width: 3px; height: 3px; border-radius: 99px; background: #fff; opacity: .55; animation: nav-twinkle 3s ease-in-out infinite; }
 @keyframes nav-twinkle { 0%, 100% { opacity: .15; } 50% { opacity: .8; } }

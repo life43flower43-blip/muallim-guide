@@ -159,7 +159,7 @@ function BottomNav({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => v
       )}
     >
       {/* شريط بلون التطبيق متدرج، فيه نقاط لامعة، والتبويب الحالي حبة بيضاء تنزلق بين التبويبات */}
-      <div className="nav-bar relative grid min-w-0 grid-cols-5 gap-0.5 overflow-hidden px-2 pb-[calc(env(safe-area-inset-bottom,0px)+8px)] pt-6 min-[380px]:gap-1">
+      <div className="nav-bar relative grid min-w-0 grid-cols-5 gap-0.5 overflow-hidden px-2 pb-[calc(env(safe-area-inset-bottom,0px)+8px)] pt-3 min-[380px]:gap-1">
         {[[8, 30], [27, 70], [46, 22], [63, 78], [81, 40], [93, 64]].map(([l, t], k) => (
           <span key={k} className="spark" style={{ left: `${l}%`, top: `${t}%`, animationDelay: `${k * 0.5}s` }} aria-hidden="true" />
         ))}
