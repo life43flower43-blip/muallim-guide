@@ -229,6 +229,7 @@ path.link.flow { stroke-dasharray: 7 7; animation: flow .9s linear infinite; opa
 .scene .shead { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .scene .shead b { font-size: 12px; color: var(--h); }
 .scene .sctl { display: flex; gap: 6px; align-items: center; }
+.scene .svid { display: block; width: 100%; border-radius: 10px; background: #000; margin-top: 6px; }
 .scene .stage-svg { position: relative; border-radius: 10px; overflow: hidden; background: color-mix(in srgb, var(--h) 6%, var(--surface)); }
 .scene svg { width: 100%; height: auto; display: block; }
 .scene .sub { min-height: 3.2em; font-size: 14.5px; font-weight: 700; line-height: 1.6; margin: 0; }
@@ -2384,6 +2385,11 @@ const SCENE_VIDEO = { pavlov: "pavlov", reinforce: "reinforce", waittime: "waitt
 
 let sceneTimers = [];
 function mountScene(fig, spec, key) {
+  // للمشهد فيديو بصوت: يُعرض المشغل نفسه بالصوت بدل الرسم الصامت
+  if (SCENE_VIDEO[key]) {
+    fig.innerHTML = `<div class="shead"><b>مشهد قصير</b></div><video class="svid" src="videos/${SCENE_VIDEO[key]}.mp4" controls playsinline preload="metadata"></video>`;
+    return spec.dur * 1000;
+  }
   fig.innerHTML = `<div class="shead"><b>مشهد قصير</b><span class="sctl">${SCENE_VIDEO[key] ? `<a class="btn" href="videos/${SCENE_VIDEO[key]}.mp4" download target="_blank" rel="noopener">⬇ فيديو</a>` : ""}<button class="btn" type="button">▶ أعد المشهد</button></span></div><div class="stage-svg">${spec.svg}</div><p class="sub"></p><div class="sbar"><i></i></div>`;
   const svgEl = fig.querySelector("svg"), sub = fig.querySelector(".sub"), bar = fig.querySelector(".sbar i");
   const play = () => {

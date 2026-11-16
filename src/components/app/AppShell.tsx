@@ -151,6 +151,9 @@ function BottomNav({ tab, onTab, due, onBack, onAccount, accountOpen }: { tab: T
     return () => el.removeEventListener("scroll", onScroll);
   }, [tab]);
   return (
+    <>
+    {/* شريط ثابت بلون أسفل الشريط المتنقل خلف أزرار الهاتف السفلية، يبقى حتى حين يختفي الشريط عند التمرير */}
+    <div aria-hidden="true" className="pointer-events-none fixed inset-x-0 bottom-0 z-[47] lg:hidden" style={{ height: "env(safe-area-inset-bottom, 0px)", background: "color-mix(in srgb, var(--t700) 88%, #000)" }} />
     <nav
       id="bottom-nav"
       aria-label="التنقل الرئيسي"
@@ -195,6 +198,7 @@ function BottomNav({ tab, onTab, due, onBack, onAccount, accountOpen }: { tab: T
         })}
       </div>
     </nav>
+    </>
   );
 }
 
