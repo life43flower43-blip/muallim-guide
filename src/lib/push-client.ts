@@ -73,7 +73,11 @@ async function currentSub(reg: ServiceWorkerRegistration, create: boolean): Prom
 /** يطلب الإذن ويشترك. يعيد true عند النجاح */
 export async function enablePush(): Promise<boolean> {
   if (read() === 'unsupported') return false
-  const perm = await Notification.requestPermission()
+  // لا يبقى الزر معلقًا إن لم يرد الجوال على طلب الإذن
+  const perm = await Promise.race([
+    Notification.requestPermission(),
+    new Promise<NotificationPermission>((r) => setTimeout(() => r(Notification.permission), 20000)),
+  ])
   if (perm !== 'granted') {
     emit()
     return false
