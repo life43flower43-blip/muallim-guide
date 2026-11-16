@@ -48,7 +48,6 @@ import {
 import { spacedDueIds } from "@/lib/srs";
 import { ad, arCount, QUESTION_GEN_FORMS } from "@/lib/arabic";
 import { cn } from "@/lib/utils";
-import ProgressSummary from "./ProgressSummary";
 import type { Tab } from "./AppShell";
 import TestBuilder from "./TestBuilder";
 import { Divided, PageTitle, Stars, pct, GameTile } from "./ui-kit";
@@ -197,9 +196,6 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
           })}
         </div>
       )}
-
-      {/* أرقامك وإنجازاتك في آخر الصفحة */}
-      <ProgressSummary />
 
       {/* المحور المختار في ورقة من الأسفل: ثلاثة أزرار ثم فصوله */}
       {openCourse && (

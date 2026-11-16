@@ -88,6 +88,8 @@ const DOOR_ICON: Record<string, React.ElementType> = {
 };
 // الألوان حسب الموضع لا حسب القسم، فلا يتجاور لونان متقاربان مهما تغيّر الترتيب حسب الهدف
 const POS_BG = ["#0E9384", "#F59E0B", "#2563EB", "#0891D1", "#7C3AED", "#16A34A"];
+/** ترتيب ألوان أيقونات الرئيسية حسب الموضع */
+const ICON_ORDER_BG = ["#F0544F", "#E0A800", "#EC4899", "#F97316", "#16A34A", "#7C3AED", "#2563EB", "#0D9488"];
 /** لون ثابت لكل قسم في الرئيسية، مهما تغير ترتيبه بحسب الهدف */
 const DOOR_BG: Record<string, string> = {
   "اختبر نفسك": "#0E9384",
@@ -263,7 +265,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                   cy="18"
                   r="15.5"
                   fill="none"
-                  stroke="#111111"
+                  stroke="#16A34A"
                   strokeWidth="3.5"
                   strokeLinecap="round"
                   initial={{ strokeDasharray: "0 97.4" }}
@@ -313,7 +315,10 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "#EF4444", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
             ...gridDoors.map((d, k) => ({ title: d.title, icon: DOOR_ICON[d.title] ?? BookOpen, bg: DOOR_BG[d.title] ?? POS_BG[k] ?? "#279488", run: d.run })),
             { title: "البوصلة", icon: Compass, bg: "#F97316", run: () => onGoTab("notebook") },
-          ].map((d, i) => (
+          ]
+            // ألوان الأيقونات بترتيب ثابت حسب موضعها: مرجاني، ذهبي، وردي، برتقالي، أخضر، بنفسجي، أزرق، فيروزي
+            .map((d, i) => ({ ...d, bg: ICON_ORDER_BG[i] ?? d.bg }))
+            .map((d, i) => (
             <motion.button
               key={d.title}
               type="button"

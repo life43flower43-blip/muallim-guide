@@ -66,6 +66,7 @@ import AccountSecurityButtons from "./AccountSecurityButtons";
 import EmailDigestToggle from "./EmailDigestToggle";
 import AccountDetails from "./AccountDetails";
 import PastTests from "./PastTests";
+import ProgressSummary from "./ProgressSummary";
 import { Card, IconTile, PageTitle, ProgressBar, ScreenShell, SecondaryButton, SectionHeader, pct } from "./ui-kit";
 
 interface InstallPromptEvent extends Event {
@@ -265,6 +266,8 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             </button>
           )}
           </Card>
+          {/* أرقامك وإنجازاتك */}
+          <ProgressSummary />
           <MenuGroup title="رصيدك">
             <MenuRow icon={Gem} color="#D97706" title="الجواهر" sub={`رصيدك ${ad(wallet.gems)} جوهرة`} onClick={() => setSection("gems")} />
           </MenuGroup>
