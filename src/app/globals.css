@@ -931,3 +931,8 @@ body {
 .home-doors .hd-dots { position: absolute; inset: 0; pointer-events: none; opacity: .5; background-image: radial-gradient(rgba(201, 151, 28, .35) 1px, transparent 1.2px); background-size: 16px 16px; -webkit-mask-image: linear-gradient(180deg, #000, transparent 70%); mask-image: linear-gradient(180deg, #000, transparent 70%); }
 @keyframes hd-breathe { 0%, 100% { transform: scale(1); opacity: .8; } 50% { transform: scale(1.15); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .home-doors .hd-orb { animation: none; } }
+
+/* ظل ضبابي ملون خلف رسوم «نشاطك» و«مستوى استعدادك» و«راجع أخطاءك»، مثل بقع رموز المحاور */
+.soft-glow { position: absolute; left: 50%; top: 50%; width: 88px; height: 66px; transform: translate(-50%, -50%); border-radius: 50%; filter: blur(12px); opacity: 1; pointer-events: none; z-index: 0; }
+.soft-glow + * { position: relative; z-index: 1; filter: drop-shadow(0 6px 8px rgba(17, 60, 52, .14)); }
+.dark .soft-glow { opacity: .25; }

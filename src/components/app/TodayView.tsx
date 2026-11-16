@@ -57,7 +57,8 @@ function MiniActivity({ sessions }: { sessions: { ts: number; total: number }[] 
   const shade = ["#E8E8E8", "#777777", "#3A3A3A", "#111111"];
   return (
     <div className="flex flex-col items-center gap-1.5" aria-label="نشاطك في آخر ٨ أسابيع">
-      <span className="flex h-[60px] items-center">
+      <span className="relative flex h-[60px] items-center">
+        <span className="soft-glow" style={{ background: "#B5DED3" }} aria-hidden="true" />
       <div className="flex gap-[2.5px] rounded-[10px] bg-white p-[5px] ring-[1.5px] ring-[#111111] dark:bg-card" dir="ltr">
         {cols.map((col, w) => (
           <div key={w} className="flex flex-col gap-[2.5px]">
@@ -260,7 +261,8 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             }}
             className="flex shrink-0 flex-col items-center gap-1.5 text-foreground dark:text-foreground"
           >
-            <span className="flex h-[60px] items-center">
+            <span className="relative flex h-[60px] items-center">
+        <span className="soft-glow" style={{ background: "#B4E8C2" }} aria-hidden="true" />
             <span className="relative h-[44px] w-[44px] shrink-0" aria-hidden="true">
               {/* هالة متموّجة تدور حول الحلقة */}
               <svg viewBox="0 0 50 50" className="energy-aura pointer-events-none absolute -inset-[8px] h-[60px] w-[60px]">
@@ -296,7 +298,8 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             className="flex shrink-0 flex-col items-center gap-1.5 text-foreground dark:text-foreground"
           >
             {/* بطاقتان مكدّستان كبطاقات المراجعة، والعليا تحمل العدد، وسهما مراجعة يدوران حولهما ببطء */}
-            <span className="flex h-[60px] items-center">
+            <span className="relative flex h-[60px] items-center">
+        <span className="soft-glow" style={{ background: "#F6D98E" }} aria-hidden="true" />
             <span className="relative flex h-[44px] w-[44px] items-center justify-center" aria-hidden="true">
               <svg viewBox="0 0 48 48" className="review-spin absolute -inset-[6px] h-[56px] w-[56px]">
                 <path d="M24 4a20 20 0 0 1 18.3 12" fill="none" stroke={due > 0 ? "#C9971C" : "#E6CC86"} strokeWidth="2.4" strokeLinecap="round" />
