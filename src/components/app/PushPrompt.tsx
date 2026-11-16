@@ -1,6 +1,6 @@
 "use client";
-// طلب السماح بالإشعارات (للمسجَّلين فقط) يظهر وحده بعد فتح التطبيق، مثل التطبيقات العادية:
-// نافذة صغيرة بزر «سماح» يفتح نافذة الإذن في الجوال. لا تظهر لمن سمح أو منع، ولمن أجّل تعود بعد ثلاثة أيام.
+// إذن الإشعارات (للمسجَّلين فقط) يُطلب من الجوال مباشرة بعد فتح التطبيق، مثل التطبيقات العادية.
+// إن لم يظهر طلب الجوال تظهر نافذة صغيرة بزر «سماح» بديلًا. لا تظهر لمن سمح أو منع، ولمن أجّل تعود بعد ثلاثة أيام.
 import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
 import { enablePush, usePushState } from "@/lib/push-client";
@@ -22,7 +22,12 @@ export default function PushPrompt() {
       later = Number(localStorage.getItem(LATER_KEY) || 0);
     } catch {}
     if (Date.now() - later < 3 * 86400000) return;
-    const t = setTimeout(() => setShow(true), 2500);
+    // نطلب إذن الجوال مباشرة دون نافذة سؤال منا؛ وإن لم يُحسم (متصفح يشترط ضغطة) نعرض النافذة بديلًا
+    const t = setTimeout(() => {
+      void enablePush().then((ok) => {
+        if (!ok && Notification.permission === "default") setShow(true);
+      });
+    }, 2500);
     return () => clearTimeout(t);
   }, [state, signedIn]);
 
