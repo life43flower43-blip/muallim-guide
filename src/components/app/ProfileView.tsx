@@ -117,7 +117,12 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
   const [panel, setPanel] = useState<null | "account" | "tests">(null);
   const push = usePushState();
   useEffect(() => {
-    const open = () => setSettingsOpen(true);
+    // من قائمة «حسابي»: يفتح القسم المطلوب مباشرة
+    const open = (e: Event) => {
+      const d = (e as CustomEvent).detail;
+      if (d === "tests") setPanel("tests");
+      else setSection(d === "data" ? "data" : "settings");
+    };
     window.addEventListener(OPEN_SETTINGS_EVENT, open);
     return () => window.removeEventListener(OPEN_SETTINGS_EVENT, open);
   }, []);
@@ -220,51 +225,8 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
         title="حسابي"
       />
 
-      {/* لوح سفلي بحواف علوية مستديرة ومقبض، فيه المشاركة والقائمة */}
-      <div className="share-banner -mx-4 -mt-5 pt-3 lg:mx-0 lg:rounded-[28px]">
-      <div className="relative min-h-[calc(100dvh-170px)] rounded-t-[28px] bg-white px-4 pb-4 pt-2.5 shadow-[0_-10px_24px_-14px_rgba(0,0,0,0.3)] dark:bg-card">
-      <span className="mx-auto mb-3 block h-[5px] w-12 rounded-full bg-muted-foreground/25" aria-hidden="true" />
-      {/* شارك التطبيق: بطاقة بارزة */}
-      <button type="button" onClick={shareApp} className="share-banner relative flex w-full items-center gap-3 overflow-hidden rounded-[20px] px-3.5 py-3 text-right text-white shadow-[0_8px_20px_-12px_var(--t700)]">
-        <span className="absolute -left-5 -top-5 h-16 w-16 rounded-full bg-white/10" aria-hidden="true" />
-        <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/15">
-          <Share2 className="h-5 w-5" />
-        </span>
-        <span className="relative min-w-0 flex-1">
-          <FitText max={15.5} min={12} className="block font-extrabold leading-6">شارك تربوي مع زملائك</FitText>
-          <FitText max={12.5} min={10} className="block leading-5 text-white/85">شارك المعرفة، وساعد معلمًا يستعد</FitText>
-        </span>
-        <ChevronLeft className="relative h-5 w-5 shrink-0 text-white/80" />
-      </button>
-
-      {/* قائمة «حسابي»: كل قسم في صف بأيقونة كبيرة ملونة، وعنوان ووصف، وسهم */}
-      <MenuGroup title="حسابك">
-        <MenuRow icon={UserRound} color="#2563EB" title="الملف الشخصي" sub={user ? `${user.name} · المستوى ${ad(levelFromXp(xp))}` : "سجّل الدخول لتحفظ تقدمك"} onClick={() => setPanel("account")} />
-        <MenuRow icon={Trophy} color="#7C3AED" title="الإنجازات والنتائج" sub="اختباراتك السابقة وتقدمك" onClick={() => setPanel("tests")} />
-      </MenuGroup>
-      <MenuGroup title="التطبيق">
-        <MenuRow icon={Settings} color="#64748B" title="الإعدادات" sub="الهدف والمظهر والتذكير" onClick={() => setSection("settings")} />
-        <MenuRow icon={Download} color="#0F766E" title="البيانات والأمان" sub="نسخة احتياطية وكلمة المرور" onClick={() => setSection("data")} />
-      </MenuGroup>
-      {user && (
-        <button
-          type="button"
-          onClick={async () => {
-            await signOut(queryClient);
-            toast({ title: "سُجّل الخروج" });
-          }}
-          className="mt-5 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-[16px] border border-[#F3C9C9] bg-[#FEF4F4] text-[15px] font-extrabold text-[#C0392B] dark:bg-card"
-        >
-          <LogOut className="h-5 w-5" /> تسجيل الخروج
-        </button>
-      )}
-      {/* رقم الإصدار: يبيّن أي نسخة على الجهاز */}
-      <p className="pt-4 text-center text-[11px] text-muted-foreground">الإصدار {APP_VERSION}</p>
-      </div>
-      </div>
-
-      {panel === "account" && (
-        <ScreenShell title="الملف الشخصي" onClose={() => setPanel(null)}>
+      {/* صفحة «حسابي»: بياناتك ومستواك، ثم الجواهر والتواصل؛ وبقية الأقسام في القائمة السفلية */}
+      <div className="space-y-1">
           <Card className="p-4">
           <div className="flex items-center gap-3">
             {user?.avatar ? (
@@ -311,8 +273,20 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             <MenuRow icon={Users} color="#1D4ED8" title="صفحة فيسبوك" sub="جديد تربوي" href="https://www.facebook.com/share/1CHdqGvYz5/" />
             {process.env.NEXT_PUBLIC_LINKEDIN_URL && <MenuRow icon={Users} color="#0A66C2" title="لينكدإن" sub="تابعنا مهنيًا" href={process.env.NEXT_PUBLIC_LINKEDIN_URL} />}
           </MenuGroup>
-        </ScreenShell>
+      {user && (
+        <button
+          type="button"
+          onClick={async () => {
+            await signOut(queryClient);
+            toast({ title: "سُجّل الخروج" });
+          }}
+          className="mt-5 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-[16px] border border-[#F3C9C9] bg-[#FEF4F4] text-[15px] font-extrabold text-[#C0392B] dark:bg-card"
+        >
+          <LogOut className="h-5 w-5" /> تسجيل الخروج
+        </button>
       )}
+      <p className="pt-4 text-center text-[11px] text-muted-foreground">الإصدار {APP_VERSION}</p>
+      </div>
       {panel === "tests" && (
         <ScreenShell title="الإنجازات والنتائج" onClose={() => setPanel(null)}>
           <PastTests />
