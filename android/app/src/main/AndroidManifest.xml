@@ -56,5 +56,10 @@
             </intent-filter>
         </service>
 
+        <!-- يطلب إذن الإشعارات من أندرويد ١٣ فأحدث حين يطلبه الموقع -->
+        <activity
+            android:name="com.google.androidbrowserhelper.trusted.NotificationPermissionRequestActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 </manifest>
