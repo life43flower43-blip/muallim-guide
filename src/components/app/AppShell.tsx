@@ -158,9 +158,11 @@ function BottomNav({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => v
         hidden ? "pointer-events-none translate-y-full opacity-0" : "translate-y-0 opacity-100"
       )}
     >
-      {/* شريط عائم بإطار ذهبي، والحبة الخضراء تنزلق بين التبويبات */}
-      <div>
-      <div className="nav-gold grid min-w-0 flex-1 grid-cols-5 gap-0.5 rounded-[26px] p-1 min-[380px]:gap-1 min-[380px]:p-1.5">
+      {/* شريط بلون التطبيق متدرج، فيه نقاط لامعة، والتبويب الحالي حبة بيضاء تنزلق بين التبويبات */}
+      <div className="nav-bar relative grid min-w-0 grid-cols-5 gap-0.5 overflow-hidden rounded-[26px] p-1.5 min-[380px]:gap-1">
+        {[[8, 30], [27, 70], [46, 22], [63, 78], [81, 40], [93, 64]].map(([l, t], k) => (
+          <span key={k} className="spark" style={{ left: `${l}%`, top: `${t}%`, animationDelay: `${k * 0.5}s` }} aria-hidden="true" />
+        ))}
         {NAV.map((n) => {
           const active = tab === n.id;
           return (
@@ -175,12 +177,12 @@ function BottomNav({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => v
                 <motion.span
                   layoutId="nav-pill"
                   transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                  className="absolute inset-0 rounded-[20px] bg-[var(--t700)]"
+                  className="absolute inset-0 rounded-[20px] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.18)] dark:bg-card"
                   aria-hidden="true"
                 />
               )}
-              <n.icon className={cn("relative h-6 w-6 transition-colors", active ? "text-[#F3DC8E]" : "text-foreground dark:text-foreground")} strokeWidth={active ? 2.4 : 1.9} fill={active ? "currentColor" : "none"} fillOpacity={active ? 0.2 : 0} />
-              <span className={cn("relative whitespace-nowrap text-[clamp(10px,3.1vw,13px)] transition-colors", active ? "font-bold text-white" : "font-medium text-foreground dark:text-foreground")}>{n.label}</span>
+              <n.icon className={cn("relative h-6 w-6 transition-colors", active ? "text-[var(--t700)]" : "text-white/85")} strokeWidth={active ? 2.4 : 1.9} />
+              <span className={cn("relative whitespace-nowrap text-[clamp(10px,3.1vw,13px)] transition-colors", active ? "font-extrabold text-[var(--t700)]" : "font-medium text-white/85")}>{n.label}</span>
               {n.id === "mistakes" && due > 0 && (
                 <span className="absolute right-1/2 top-0.5 translate-x-5 rounded-full bg-destructive px-1.5 text-[10px] font-semibold leading-4 text-white ring-2 ring-white">
                   {ad(Math.min(due, 99))}
@@ -189,7 +191,6 @@ function BottomNav({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => v
             </button>
           );
         })}
-      </div>
       </div>
     </nav>
   );

@@ -863,3 +863,27 @@ body {
 
 /* على الشاشات الصغيرة جدًا (أقل من ٣٥٠ بكسل) تصبح شبكة البطاقات عمودًا واحدًا فلا تُقص العناوين */
 @media (max-width: 349px) { .tiles2 { grid-template-columns: 1fr !important; } .tiles2 > .col-span-2 { grid-column: auto; } }
+
+/* لمعة تتحرك على أيقونات الرئيسية كل بضع ثوانٍ */
+.icon-shine { overflow: hidden; isolation: isolate; }
+.icon-shine::after {
+  content: ""; position: absolute; inset: -30%; z-index: 0; pointer-events: none;
+  background: linear-gradient(115deg, transparent 38%, rgba(255,255,255,0.85) 50%, transparent 62%);
+  transform: translateX(-120%);
+  animation: icon-shine 4.5s ease-in-out infinite;
+  animation-delay: var(--shine-delay, 0s);
+}
+@keyframes icon-shine { 0%, 62% { transform: translateX(-120%); } 82%, 100% { transform: translateX(120%); } }
+@media (prefers-reduced-motion: reduce) { .icon-shine::after { animation: none; display: none; } }
+
+/* الشريط السفلي: لون التطبيق بتدرج، مع نقاط لامعة صغيرة */
+.nav-bar {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--t700) 82%, #fff) 0%, var(--t700) 45%, color-mix(in srgb, var(--t700) 80%, #000) 100%);
+  box-shadow: 0 -8px 24px -10px color-mix(in srgb, var(--t700) 60%, transparent);
+}
+.nav-bar .spark { position: absolute; width: 3px; height: 3px; border-radius: 99px; background: #fff; opacity: .55; animation: nav-twinkle 3s ease-in-out infinite; }
+@keyframes nav-twinkle { 0%, 100% { opacity: .15; } 50% { opacity: .8; } }
+@media (prefers-reduced-motion: reduce) { .nav-bar .spark { animation: none; } }
+
+/* بطاقة المشاركة في «حسابي» */
+.share-banner { background: linear-gradient(135deg, var(--t700) 0%, color-mix(in srgb, var(--t700) 70%, #fff) 100%); }
