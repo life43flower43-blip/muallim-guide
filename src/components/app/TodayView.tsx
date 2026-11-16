@@ -87,7 +87,16 @@ const DOOR_ICON: Record<string, React.ElementType> = {
   "خطة الدرس": NotebookPen,
 };
 // الألوان حسب الموضع لا حسب القسم، فلا يتجاور لونان متقاربان مهما تغيّر الترتيب حسب الهدف
-const POS_BG = ["#0E7F74", "#E08E00", "#2458D6", "#0A8FC2", "#B8860B", "#0F9A62"];
+const POS_BG = ["#0E9384", "#F59E0B", "#2563EB", "#0891D1", "#7C3AED", "#16A34A"];
+/** لون ثابت لكل قسم في الرئيسية، مهما تغير ترتيبه بحسب الهدف */
+const DOOR_BG: Record<string, string> = {
+  "اختبر نفسك": "#0E9384",
+  "المفاهيم التربوية": "#F59E0B",
+  "طرائق التدريس": "#2563EB",
+  "مهارات التدريس": "#0891D1",
+  "المواقف الصفية": "#7C3AED",
+  "خطة الدرس": "#16A34A",
+};
 
 
 export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
@@ -301,9 +310,9 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         // شبكة رموز دائرية ملونة: أربعة في كل صف، والاسم تحت كل رمز
         <div ref={gridRef} className="grid grid-cols-4 gap-x-2 gap-y-5 pt-2">
           {[
-            { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "#E23B2E", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
-            ...gridDoors.map((d, k) => ({ title: d.title, icon: DOOR_ICON[d.title] ?? BookOpen, bg: POS_BG[k] ?? "#279488", run: d.run })),
-            { title: "البوصلة", icon: Compass, bg: "#E2620F", run: () => onGoTab("notebook") },
+            { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "#EF4444", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
+            ...gridDoors.map((d, k) => ({ title: d.title, icon: DOOR_ICON[d.title] ?? BookOpen, bg: DOOR_BG[d.title] ?? POS_BG[k] ?? "#279488", run: d.run })),
+            { title: "البوصلة", icon: Compass, bg: "#F97316", run: () => onGoTab("notebook") },
           ].map((d, i) => (
             <motion.button
               key={d.title}
@@ -318,10 +327,18 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             >
               {/* بطاقة بيضاء بإطار فاتح وظل سفلي مثل بطاقات المحاور، والرمز بلون القسم */}
               <span
-                className="flex h-[58px] w-[58px] items-center justify-center rounded-full border-2 border-b-[4px] bg-white dark:bg-card"
-                style={{ borderColor: `color-mix(in srgb, ${d.bg} 35%, white)`, borderBottomColor: `color-mix(in srgb, ${d.bg} 60%, white)`, color: d.bg }}
+                className="relative flex h-[58px] w-[58px] items-center justify-center rounded-full border-2 border-b-[4px]"
+                style={{
+                  borderColor: `color-mix(in srgb, ${d.bg} 55%, white)`,
+                  borderBottomColor: d.bg,
+                  color: d.bg,
+                  background: `radial-gradient(circle at 30% 25%, #fff 0%, color-mix(in srgb, ${d.bg} 14%, white) 100%)`,
+                  boxShadow: `0 6px 14px -6px color-mix(in srgb, ${d.bg} 55%, transparent)`,
+                }}
               >
-                <d.icon className="h-7 w-7" strokeWidth={2} />
+                {/* لمعة صغيرة أعلى الدائرة */}
+                <span className="absolute left-[11px] top-[8px] h-[7px] w-[13px] -rotate-[25deg] rounded-full bg-white/80" aria-hidden="true" />
+                <d.icon className="relative h-7 w-7" strokeWidth={2.2} />
               </span>
               <FitText max={12.5} min={9} group="home-ico" className="w-full whitespace-nowrap text-center font-bold text-foreground dark:text-foreground">{d.title}</FitText>
             </motion.button>
