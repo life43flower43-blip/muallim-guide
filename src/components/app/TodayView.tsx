@@ -89,7 +89,7 @@ const DOOR_ICON: Record<string, React.ElementType> = {
 // الألوان حسب الموضع لا حسب القسم، فلا يتجاور لونان متقاربان مهما تغيّر الترتيب حسب الهدف
 const POS_BG = ["#0E9384", "#F59E0B", "#2563EB", "#0891D1", "#7C3AED", "#16A34A"];
 /** ترتيب ألوان أيقونات الرئيسية حسب الموضع */
-const ICON_ORDER_BG = ["#F0544F", "#E0A800", "#EC4899", "#F97316", "#16A34A", "#7C3AED", "#2563EB", "#0D9488"];
+const ICON_ORDER_BG = ["#EF4444", "#2563EB", "#16A34A", "#7C3AED", "#0891B2", "#DB2777", "#EA580C", "#475569"];
 /** لون ثابت لكل قسم في الرئيسية، مهما تغير ترتيبه بحسب الهدف */
 const DOOR_BG: Record<string, string> = {
   "اختبر نفسك": "#0E9384",
@@ -334,7 +334,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               <span
                 className="icon-shine relative flex h-[58px] w-[58px] items-center justify-center rounded-full border-2 border-b-[4px]"
                 style={{
-                  borderColor: `color-mix(in srgb, ${d.bg} 55%, white)`,
+                  borderColor: `color-mix(in srgb, ${d.bg} 80%, white)`,
                   borderBottomColor: d.bg,
                   color: d.bg,
                   background: `radial-gradient(circle at 30% 25%, #fff 0%, color-mix(in srgb, ${d.bg} 14%, white) 100%)`,
