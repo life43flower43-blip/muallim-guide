@@ -16,7 +16,7 @@ import { ad } from "@/lib/arabic";
 import type { Tab } from "./AppShell";
 import { FitText } from "./FitText";
 import LicenseBankCard from "./LicenseBankCard";
-import { BookOpen, ChevronLeft, LayoutGrid, ClipboardCheck, Compass, Lightbulb, NotebookPen, Presentation, Shapes, Timer, Users } from "lucide-react";
+import { BookOpen, ChevronLeft, ClipboardCheck, Compass, Lightbulb, NotebookPen, Presentation, Shapes, Timer, Users } from "lucide-react";
 
 type Door = { title: string; img: string; pos?: string; progress: number; run: () => void; special?: boolean };
 
@@ -319,6 +319,13 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       {homeStyle === "icons" ? (
         // شبكة رموز دائرية ملونة: أربعة في كل صف، والاسم تحت كل رمز
         <div ref={gridRef} className="grid grid-cols-4 gap-x-2 gap-y-5 pt-2">
+          {/* لوح الأقسام: خلفية دافئة متدرجة من الذهبي الفاتح إلى الأخضر الفاتح، فيها دوائر ضوء ونقاط ناعمة */}
+          <div className="home-doors col-span-4 relative overflow-hidden rounded-[28px] border border-[#EADFBF] px-2 pb-4 pt-4 dark:border-border">
+            <span className="hd-orb hd-orb1" aria-hidden="true" />
+            <span className="hd-orb hd-orb2" aria-hidden="true" />
+            <span className="hd-dots" aria-hidden="true" />
+            <span className="pointer-events-none absolute right-3 top-2 text-[13px] opacity-70" aria-hidden="true">✨</span>
+            <div className="relative grid grid-cols-4 gap-x-2 gap-y-4">
           {[
             { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "#EF4444", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
             ...gridDoors.map((d, k) => ({ title: d.title, icon: DOOR_ICON[d.title] ?? BookOpen, bg: DOOR_BG[d.title] ?? POS_BG[k] ?? "#279488", run: d.run })),
@@ -353,8 +360,10 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               <FitText max={12.5} min={9} group="home-ico" className="w-full whitespace-nowrap text-center font-bold text-foreground dark:text-foreground">{d.title}</FitText>
             </motion.button>
           ))}
-          {/* المحاور: لوح فاتح فيه بطاقات تُسحب جانبيًا، لكل محور رسمه وسهمه، وزر لعرضها كلها */}
-          <div className="col-span-4 relative overflow-hidden rounded-[26px] border border-[#D6ECE6] bg-gradient-to-b from-[#EEF8F5] to-[#F7FBF9] px-3 pb-3 pt-3.5 dark:border-border dark:from-card dark:to-card">
+            </div>
+          </div>
+          {/* المحاور: لوح فاتح فيه بطاقات تُسحب جانبيًا، لكل محور رسمه وسهمه */}
+          <div className="col-span-4 relative overflow-hidden rounded-[26px] border border-[#D6ECE6] bg-gradient-to-b from-[#EEF8F5] to-[#F7FBF9] px-3 pb-2 pt-3.5 dark:border-border dark:from-card dark:to-card">
             <span className="pointer-events-none absolute -left-2 top-1 text-[34px] opacity-60" aria-hidden="true">🌿</span>
             <div className="mb-3 flex items-center gap-2">
               <span className="text-[22px] leading-none" aria-hidden="true">📖</span>
@@ -367,14 +376,14 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                   key={c.id}
                   type="button"
                   onClick={() => ui.openCourseTab(c.id)}
-                  className="flex w-[118px] shrink-0 snap-start flex-col items-center gap-2 rounded-[20px] border border-[#E6EFEC] bg-white px-2 pb-2.5 pt-3 shadow-[0_6px_16px_-10px_rgba(15,118,110,0.35)] transition active:scale-[0.97] dark:border-border dark:bg-card"
+                  className="flex w-[124px] shrink-0 snap-start flex-col items-center gap-2 rounded-[20px] border border-[#E6EFEC] bg-white px-2 pb-2.5 pt-3 shadow-[0_6px_16px_-10px_rgba(15,118,110,0.35)] transition active:scale-[0.97] dark:border-border dark:bg-card"
                 >
                   <span className="relative flex h-[62px] w-full items-center justify-center">
                     <span className="absolute inset-x-3 inset-y-1 rounded-[50%] blur-[2px]" style={{ background: AXIS_BLOB[k % AXIS_BLOB.length] }} aria-hidden="true" />
                     <span className="emo-float relative text-[38px] leading-none" style={{ animationDelay: `${k * 0.35}s` }} aria-hidden="true">{AXIS_EMO[c.id] ?? "📚"}</span>
                   </span>
                   <span className="flex w-full items-center gap-1.5">
-                    <FitText max={13.5} min={10} className="min-w-0 flex-1 whitespace-nowrap text-center font-extrabold text-foreground">{COURSE_SHORT[c.id] ?? c.name}</FitText>
+                    <span className="flex min-h-[34px] min-w-0 flex-1 items-center justify-center text-center text-[13px] font-extrabold leading-[1.3] text-foreground">{COURSE_SHORT[c.id] ?? c.name}</span>
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-[#9FCFC4] text-[#14857B]" aria-hidden="true">
                       <ChevronLeft className="h-3.5 w-3.5" strokeWidth={3} />
                     </span>
@@ -382,9 +391,6 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 </button>
               ))}
             </div>
-            <button type="button" onClick={() => ui.startLearn()} className="mx-auto mt-2.5 flex h-11 w-[80%] items-center justify-center gap-2 rounded-full bg-[#CFEAE4] text-[14px] font-extrabold text-[#0E3F3A] transition active:scale-[0.97] dark:bg-[var(--t100)] dark:text-foreground">
-              <LayoutGrid className="h-4 w-4 text-[#14857B]" strokeWidth={2.6} aria-hidden="true" /> عرض جميع المحاور
-            </button>
           </div>
         </div>
       ) : (
