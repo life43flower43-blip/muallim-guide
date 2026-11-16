@@ -307,6 +307,8 @@ export default function AppShell() {
         metas = document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]');
       }
       metas.forEach((m) => { m.content = rgb; m.removeAttribute("media"); });
+      // خلفية الصفحة الجذرية بلون أسفل الشريط المتنقل، فيأخذ شريط الهاتف السفلي اللون نفسه
+      document.documentElement.style.backgroundColor = rgb;
     }, 50);
     return () => clearTimeout(t);
   }, [theme, darkMode]);
@@ -359,8 +361,6 @@ export default function AppShell() {
     const t = theme === "navy" ? "navy" : "emerald";
     if (t === "emerald") delete document.documentElement.dataset.theme;
     else document.documentElement.dataset.theme = t;
-    const bg = getComputedStyle(document.documentElement).getPropertyValue("--background").trim();
-    document.querySelectorAll('meta[name="theme-color"]').forEach((m) => bg && m.setAttribute("content", bg));
   }, [theme, dark]);
   useEffect(() => {
     document.documentElement.style.fontSize = fontScale === "large" ? "20px" : fontScale === "bigger" ? "22px" : "";
