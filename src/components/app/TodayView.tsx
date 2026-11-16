@@ -89,6 +89,9 @@ const DOOR_ICON: Record<string, React.ElementType> = {
 // الألوان حسب الموضع لا حسب القسم، فلا يتجاور لونان متقاربان مهما تغيّر الترتيب حسب الهدف
 const POS_BG = ["#0E9384", "#F59E0B", "#2563EB", "#0891D1", "#7C3AED", "#16A34A"];
 /** ترتيب ألوان أيقونات الرئيسية حسب الموضع */
+// رسوم أيقونات الرئيسية: حسب اسم الباب، وإلا حسب موضعه
+const HOME_ICON_IMG: Record<string, string> = { "موقف اليوم": "today", "المحاكاة": "today", "تابع المحاور": "today", "اختبر نفسك": "test", "المواقف الصفية": "situations", "خطة الدرس": "plan", "مهارات التدريس": "skills", "طرائق التدريس": "methods", "المفاهيم التربوية": "concepts", "البوصلة": "compass" };
+const HOME_ICON_BY_POS = ["today", "test", "situations", "plan", "skills", "methods", "concepts", "compass"];
 const ICON_ORDER_BG = ["#EF4444", "#2563EB", "#16A34A", "#7C3AED", "#0891B2", "#DB2777", "#EA580C", "#475569"];
 /** لون ثابت لكل قسم في الرئيسية، مهما تغير ترتيبه بحسب الهدف */
 const DOOR_BG: Record<string, string> = {
@@ -330,21 +333,12 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               }}
               className="flex min-w-0 flex-col items-center gap-1.5"
             >
-              {/* بطاقة بيضاء بإطار فاتح وظل سفلي مثل بطاقات المحاور، والرمز بلون القسم */}
+              {/* رسم توضيحي هادئ في بطاقة مربعة مستديرة الزوايا */}
               <span
-                className="icon-shine relative flex h-[58px] w-[58px] items-center justify-center rounded-full border-2 border-b-[4px]"
-                style={{
-                  borderColor: `color-mix(in srgb, ${d.bg} 80%, white)`,
-                  borderBottomColor: d.bg,
-                  color: d.bg,
-                  background: `radial-gradient(circle at 30% 25%, #fff 0%, color-mix(in srgb, ${d.bg} 14%, white) 100%)`,
-                  boxShadow: `0 6px 14px -6px color-mix(in srgb, ${d.bg} 55%, transparent)`,
-                  ["--shine-delay" as string]: `${(i % 8) * 0.35}s`,
-                }}
+                className="icon-shine relative block h-[66px] w-[66px] overflow-hidden rounded-[18px] border border-[#DCEDEA] bg-white"
+                style={{ boxShadow: "0 6px 14px -8px rgba(15,118,110,0.45)", ["--shine-delay" as string]: `${(i % 8) * 0.35}s` }}
               >
-                {/* لمعة صغيرة أعلى الدائرة */}
-                <span className="absolute left-[11px] top-[8px] h-[7px] w-[13px] -rotate-[25deg] rounded-full bg-white/80" aria-hidden="true" />
-                <d.icon className="relative h-7 w-7" strokeWidth={2.2} />
+                <img src={`/home-icons/${HOME_ICON_IMG[d.title] ?? HOME_ICON_BY_POS[i] ?? "today"}.webp`} alt="" width={66} height={66} className="h-full w-full object-cover" draggable={false} />
               </span>
               <FitText max={12.5} min={9} group="home-ico" className="w-full whitespace-nowrap text-center font-bold text-foreground dark:text-foreground">{d.title}</FitText>
             </motion.button>
