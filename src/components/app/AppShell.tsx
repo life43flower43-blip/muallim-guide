@@ -10,6 +10,7 @@
 
 import { syncPush } from "@/lib/push-client";
 import PushPrompt from "./PushPrompt";
+import AccountDrawer from "./AccountDrawer";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useQueryClient } from "@tanstack/react-query";
@@ -123,7 +124,7 @@ function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: 
   );
 }
 
-function BottomNav({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => void; due: number; onBack: () => void }) {
+function BottomNav({ tab, onTab, due, onBack, onAccount, accountOpen }: { tab: Tab; onTab: (t: Tab) => void; due: number; onBack: () => void; onAccount: () => void; accountOpen: boolean }) {
   // يختفي الشريط تدريجيًا حين يسحب الطالب الصفحة للأسفل، ويعود حين يسحبها للأعلى
   const [hidden, setHidden] = useState(false);
   // ارتفاع الشريط الفعلي (مع مساحة أزرار الهاتف) ليترك المحتوى تحته مسافة تكفي فلا تختفي آخر بطاقة
@@ -154,7 +155,7 @@ function BottomNav({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => v
       id="bottom-nav"
       aria-label="التنقل الرئيسي"
       className={cn(
-        "fixed inset-x-0 bottom-0 z-30 transition-[transform,opacity] duration-300 ease-out lg:hidden",
+        "fixed inset-x-0 bottom-0 z-[48] transition-[transform,opacity] duration-300 ease-out lg:hidden",
         hidden ? "pointer-events-none translate-y-full opacity-0" : "translate-y-0 opacity-100"
       )}
     >
@@ -164,12 +165,13 @@ function BottomNav({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) => v
           <span key={k} className="spark" style={{ left: `${l}%`, top: `${t}%`, animationDelay: `${k * 0.5}s` }} aria-hidden="true" />
         ))}
         {NAV.map((n) => {
-          const active = tab === n.id;
+          const active = n.id === "profile" ? accountOpen || (tab === "profile") : tab === n.id && !accountOpen;
           return (
             <button
               key={n.id}
               type="button"
-              onClick={() => onTab(n.id)}
+              onClick={() => (n.id === "profile" ? onAccount() : onTab(n.id))}
+              data-account-toggle={n.id === "profile" ? "true" : undefined}
               aria-current={active ? "page" : undefined}
               className="relative flex min-h-[58px] flex-col items-center justify-center gap-1 rounded-[20px] py-1.5 transition-transform active:scale-95"
             >
@@ -285,6 +287,7 @@ export default function AppShell() {
   // سجل التبويبات التي زارها المستخدم، ليعيده زر الرجوع خطوة واحدة إلى الخلف
   const tabTrail = useRef<Tab[]>([]);
 
+  const [accountOpen, setAccountOpen] = useState(false);
   const [bankLoaded, setBankLoaded] = useState(false);
   const [bankProgress, setBankProgress] = useState(0);
   const [bankFailed, setBankFailed] = useState(false);
@@ -513,7 +516,8 @@ export default function AppShell() {
             </motion.div>
           </AnimatePresence>
         </main>
-        <BottomNav tab={tab} onTab={go} due={due} onBack={back} />
+        <BottomNav tab={tab} onTab={(t) => { setAccountOpen(false); go(t); }} due={due} onBack={back} onAccount={() => setAccountOpen((v) => !v)} accountOpen={accountOpen} />
+        <AccountDrawer open={accountOpen} onClose={() => setAccountOpen(false)} onOpenProfile={() => go("profile")} />
       </div>
 
       <SafeBoundary full>
