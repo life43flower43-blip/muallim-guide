@@ -316,8 +316,11 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               }}
               className="flex min-w-0 flex-col items-center gap-1.5"
             >
-              {/* دائرة شفافة بإطار ملوّن، والرمز بلون الإطار نفسه */}
-              <span className="flex h-[58px] w-[58px] items-center justify-center rounded-full border-[2.5px] bg-transparent" style={{ borderColor: d.bg, color: d.bg }}>
+              {/* بطاقة بيضاء بإطار فاتح وظل سفلي مثل بطاقات المحاور، والرمز بلون القسم */}
+              <span
+                className="flex h-[58px] w-[58px] items-center justify-center rounded-full border-2 border-b-[4px] bg-white dark:bg-card"
+                style={{ borderColor: `color-mix(in srgb, ${d.bg} 35%, white)`, borderBottomColor: `color-mix(in srgb, ${d.bg} 60%, white)`, color: d.bg }}
+              >
                 <d.icon className="h-7 w-7" strokeWidth={2} />
               </span>
               <FitText max={12.5} min={9} group="home-ico" className="w-full whitespace-nowrap text-center font-bold text-foreground dark:text-foreground">{d.title}</FitText>
