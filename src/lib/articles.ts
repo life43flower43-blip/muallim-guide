@@ -5,6 +5,8 @@ import path from "path";
 export type Article = {
   slug: string;
   title: string;
+  /** عنوان أقصر لنتائج البحث (≤ ٥٢ حرفًا)، والعنوان الكامل يبقى عنوان الصفحة H1 */
+  seoTitle?: string;
   description: string;
   date: string;
   category: string;
@@ -81,6 +83,7 @@ function parse(slug: string, raw: string): Article {
   return {
     slug,
     title: meta.title ?? slug,
+    seoTitle: meta.seoTitle || undefined,
     description: meta.description ?? "",
     date: meta.date ?? "",
     category: meta.category ?? "قضايا تربوية",
