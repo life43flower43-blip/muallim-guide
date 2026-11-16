@@ -215,37 +215,14 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
       .catch(() => toast({ title: "الملف غير صالح" }));
 
   return (
-    <div className="space-y-6">
+    <div>
       <PageTitle
         title="حسابي"
       />
 
-      {/* من أنت والمستوى */}
-      {isLoading ? (
-        <div className="h-28 animate-pulse rounded-[22px] bg-muted" />
-      ) : (
-        <div className="share-banner relative -mx-4 -mt-5 overflow-hidden px-5 pb-12 pt-5 text-white lg:mx-0 lg:rounded-[24px]">
-          <span className="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-white/10" aria-hidden="true" />
-          <span className="absolute bottom-2 left-24 h-20 w-20 rounded-full bg-white/10" aria-hidden="true" />
-          <div className="relative flex items-center gap-3">
-            {user?.avatar ? (
-              <img src={user.avatar} alt="" className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-[#E8C766]" referrerPolicy="no-referrer" />
-            ) : (
-              <span className="shrink-0 rounded-full ring-2 ring-[#E8C766] ring-offset-2 ring-offset-transparent">
-                <DefaultAvatar seed={user?.email ?? user?.name ?? "guest"} className="h-12 w-12" />
-              </span>
-            )}
-            <div className="min-w-0 flex-1">
-              <FitText max={17} min={13} className="font-display font-extrabold text-white">{user ? user.name : "ضيف"}</FitText>
-              <FitText max={12.5} min={10} className="font-bold text-[#FBE7A1]">{`المستوى ${ad(levelFromXp(xp))} · ${levelTitle(levelFromXp(xp))}`}</FitText>
-              <ProgressBar value={(xpInLevel(xp) / LEVEL_XP) * 100} className="mt-1.5" />
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* لوح سفلي بحواف علوية مستديرة ومقبض، فيه المشاركة والقائمة */}
-      <div className="relative -mx-4 -mt-14 rounded-t-[28px] bg-white px-4 pb-4 pt-2.5 shadow-[0_-10px_24px_-14px_rgba(0,0,0,0.3)] dark:bg-card lg:mx-0">
+      <div className="share-banner -mx-4 -mt-5 pt-3 lg:mx-0 lg:rounded-[28px]">
+      <div className="relative min-h-[calc(100dvh-170px)] rounded-t-[28px] bg-white px-4 pb-4 pt-2.5 shadow-[0_-10px_24px_-14px_rgba(0,0,0,0.3)] dark:bg-card">
       <span className="mx-auto mb-3 block h-[5px] w-12 rounded-full bg-muted-foreground/25" aria-hidden="true" />
       {/* شارك التطبيق: بطاقة بارزة */}
       <button type="button" onClick={shareApp} className="share-banner relative flex w-full items-center gap-3 overflow-hidden rounded-[20px] px-3.5 py-3 text-right text-white shadow-[0_8px_20px_-12px_var(--t700)]">
@@ -262,7 +239,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
 
       {/* قائمة «حسابي»: كل قسم في صف بأيقونة كبيرة ملونة، وعنوان ووصف، وسهم */}
       <MenuGroup title="حسابك">
-        <MenuRow icon={UserRound} color="#2563EB" title="الملف الشخصي" sub={user ? user.email : "سجّل الدخول لتحفظ تقدمك"} onClick={() => setPanel("account")} />
+        <MenuRow icon={UserRound} color="#2563EB" title="الملف الشخصي" sub={user ? `${user.name} · المستوى ${ad(levelFromXp(xp))}` : "سجّل الدخول لتحفظ تقدمك"} onClick={() => setPanel("account")} />
         <MenuRow icon={Trophy} color="#7C3AED" title="الإنجازات والنتائج" sub="اختباراتك السابقة وتقدمك" onClick={() => setPanel("tests")} />
       </MenuGroup>
       <MenuGroup title="التطبيق">
@@ -281,11 +258,29 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           <LogOut className="h-5 w-5" /> تسجيل الخروج
         </button>
       )}
+      {/* رقم الإصدار: يبيّن أي نسخة على الجهاز */}
+      <p className="pt-4 text-center text-[11px] text-muted-foreground">الإصدار {APP_VERSION}</p>
+      </div>
       </div>
 
       {panel === "account" && (
         <ScreenShell title="الملف الشخصي" onClose={() => setPanel(null)}>
           <Card className="p-4">
+          <div className="flex items-center gap-3">
+            {user?.avatar ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={user.avatar} alt="" className="h-14 w-14 shrink-0 rounded-full object-cover ring-2 ring-[#E8C766]" referrerPolicy="no-referrer" />
+            ) : (
+              <span className="shrink-0 rounded-full ring-2 ring-[#E8C766] ring-offset-2 ring-offset-white dark:ring-offset-card">
+                <DefaultAvatar seed={user?.email ?? user?.name ?? "guest"} className="h-14 w-14" />
+              </span>
+            )}
+            <div className="min-w-0 flex-1">
+              <FitText max={18} min={13} className="font-display font-extrabold">{user ? user.name : "ضيف"}</FitText>
+              <FitText max={13} min={10} className="font-bold text-[#A87B12]">{`المستوى ${ad(levelFromXp(xp))} · ${levelTitle(levelFromXp(xp))}`}</FitText>
+              <ProgressBar value={(xpInLevel(xp) / LEVEL_XP) * 100} className="mt-1.5" />
+            </div>
+          </div>
           {user && <AccountDetails user={user} />}
           {user && <EmailDigestToggle user={user} />}
           {!user && (
@@ -582,8 +577,6 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           </div>
         </ScreenShell>
       )}
-      {/* رقم الإصدار: يبيّن أي نسخة على الجهاز */}
-      <p className="pt-2 text-center text-[11px] text-muted-foreground">الإصدار {APP_VERSION}</p>
     </div>
   );
 }

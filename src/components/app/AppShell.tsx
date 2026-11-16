@@ -201,10 +201,6 @@ function MobileTopBar({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) =
   // الشعلة بلا رقم: حلقة هدف اليوم وحدها
   const sessions = useApp((s) => s.sessions);
   const goal = Math.min(1, xpToday(sessions) / DAILY_GOAL_XP);
-  const openSettings = () => {
-    onTab("profile");
-    setTimeout(() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT)), 50);
-  };
   if (tab !== "today")
     return (
       <header className="green-head safe-top sticky top-0 z-30 px-2 pb-0.5 lg:hidden">
@@ -250,9 +246,7 @@ function MobileTopBar({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) =
               <span className="absolute -right-1 -top-1 min-w-[20px] rounded-full bg-destructive px-1 text-center text-[11px] font-bold leading-5 text-white">{ad(Math.min(due, 99))}</span>
             )}
           </button>
-          <button type="button" onClick={openSettings} aria-label="الإعدادات" className="flex h-[36px] w-[36px] items-center justify-center rounded-full bg-white text-[#C9971C] dark:bg-card">
-            <Settings className="h-[18px] w-[18px]" strokeWidth={2.2} />
-          </button>
+
         </span>
       </div>
     </header>
