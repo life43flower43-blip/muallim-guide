@@ -16,7 +16,7 @@ import { ad } from "@/lib/arabic";
 import type { Tab } from "./AppShell";
 import { FitText } from "./FitText";
 import LicenseBankCard from "./LicenseBankCard";
-import { BookOpen, ClipboardCheck, Compass, Lightbulb, NotebookPen, Presentation, Shapes, Timer, Users } from "lucide-react";
+import { BookOpen, ChevronLeft, LayoutGrid, ClipboardCheck, Compass, Lightbulb, NotebookPen, Presentation, Shapes, Timer, Users } from "lucide-react";
 
 type Door = { title: string; img: string; pos?: string; progress: number; run: () => void; special?: boolean };
 
@@ -94,6 +94,8 @@ const HOME_ICON_IMG: Record<string, string> = { "موقف اليوم": "today", 
 const HOME_EMOJI: Record<string, string> = { today: "⏰", test: "🎯", situations: "🧑‍🏫", plan: "📝", skills: "🎓", methods: "🧩", concepts: "💡", compass: "🧭" };
 // خلفيات الدوائر نفسها في صفحة التدريب
 const HOME_TONE = ["#FDECE4", "#E3F1FB", "#E6F4EF", "#EEF1FB", "#FBF3DA", "#FDECE4", "#FBF3DA", "#E8F6F6"];
+const AXIS_EMO: Record<string, string> = { M1: "🌱", M2: "❤️🧠", M3: "💡", M4: "📊", M5: "🧑‍🏫", SE1: "🤝", F1: "🏛️", AI1: "🤖", G1: "📚", C1: "🛠️", L1: "🧭", R1: "🧩" };
+const AXIS_BLOB = ["#E3F3DC", "#FBE3E3", "#FDF0CF", "#E1F0FA", "#EDE7FB", "#FDE8DC"];
 const HOME_ICON_BY_POS = ["today", "test", "situations", "plan", "skills", "methods", "concepts", "compass"];
 const ICON_ORDER_BG = ["#EF4444", "#2563EB", "#16A34A", "#7C3AED", "#0891B2", "#DB2777", "#EA580C", "#475569"];
 /** لون ثابت لكل قسم في الرئيسية، مهما تغير ترتيبه بحسب الهدف */
@@ -351,23 +353,38 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               <FitText max={12.5} min={9} group="home-ico" className="w-full whitespace-nowrap text-center font-bold text-foreground dark:text-foreground">{d.title}</FitText>
             </motion.button>
           ))}
-          {/* المحاور في بطاقات ملونة تُسحب جانبيًا */}
-          <div className="col-span-4">
-            <p className="mb-2 flex items-center gap-2 text-[15px] font-extrabold text-foreground dark:text-foreground">
-              <span className="h-4 w-[3px] rounded-full bg-[#D4A017]" aria-hidden="true" /> المحاور
-            </p>
-            <div className="grid grid-cols-3 gap-2">
-              {COURSES.map((c) => (
+          {/* المحاور: لوح فاتح فيه بطاقات تُسحب جانبيًا، لكل محور رسمه وسهمه، وزر لعرضها كلها */}
+          <div className="col-span-4 relative overflow-hidden rounded-[26px] border border-[#D6ECE6] bg-gradient-to-b from-[#EEF8F5] to-[#F7FBF9] px-3 pb-3 pt-3.5 dark:border-border dark:from-card dark:to-card">
+            <span className="pointer-events-none absolute -left-2 top-1 text-[34px] opacity-60" aria-hidden="true">🌿</span>
+            <div className="mb-3 flex items-center gap-2">
+              <span className="text-[22px] leading-none" aria-hidden="true">📖</span>
+              <p className="text-[17px] font-extrabold text-foreground">المحاور</p>
+              <span className="h-px flex-1 bg-gradient-to-l from-[#9FCFC4] to-transparent" aria-hidden="true" />
+            </div>
+            <div className="-mx-3 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-3 pb-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {COURSES.map((c, k) => (
                 <button
                   key={c.id}
                   type="button"
                   onClick={() => ui.openCourseTab(c.id)}
-                  className="flex h-[52px] min-w-0 items-center justify-center rounded-[14px] border-2 border-[#E3EDE8] border-b-[4px] border-b-[#C9DDD3] bg-white px-1.5 text-center text-foreground dark:bg-card dark:text-foreground"
+                  className="flex w-[118px] shrink-0 snap-start flex-col items-center gap-2 rounded-[20px] border border-[#E6EFEC] bg-white px-2 pb-2.5 pt-3 shadow-[0_6px_16px_-10px_rgba(15,118,110,0.35)] transition active:scale-[0.97] dark:border-border dark:bg-card"
                 >
-                  <FitText max={13.5} min={9} group="ax-strip" className="w-full whitespace-nowrap font-extrabold">{COURSE_SHORT[c.id] ?? c.name}</FitText>
+                  <span className="relative flex h-[62px] w-full items-center justify-center">
+                    <span className="absolute inset-x-3 inset-y-1 rounded-[50%] blur-[2px]" style={{ background: AXIS_BLOB[k % AXIS_BLOB.length] }} aria-hidden="true" />
+                    <span className="emo-float relative text-[38px] leading-none" style={{ animationDelay: `${k * 0.35}s` }} aria-hidden="true">{AXIS_EMO[c.id] ?? "📚"}</span>
+                  </span>
+                  <span className="flex w-full items-center gap-1.5">
+                    <FitText max={13.5} min={10} className="min-w-0 flex-1 whitespace-nowrap text-center font-extrabold text-foreground">{COURSE_SHORT[c.id] ?? c.name}</FitText>
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-[#9FCFC4] text-[#14857B]" aria-hidden="true">
+                      <ChevronLeft className="h-3.5 w-3.5" strokeWidth={3} />
+                    </span>
+                  </span>
                 </button>
               ))}
             </div>
+            <button type="button" onClick={() => ui.startLearn()} className="mx-auto mt-2.5 flex h-11 w-[80%] items-center justify-center gap-2 rounded-full bg-[#CFEAE4] text-[14px] font-extrabold text-[#0E3F3A] transition active:scale-[0.97] dark:bg-[var(--t100)] dark:text-foreground">
+              <LayoutGrid className="h-4 w-4 text-[#14857B]" strokeWidth={2.6} aria-hidden="true" /> عرض جميع المحاور
+            </button>
           </div>
         </div>
       ) : (
