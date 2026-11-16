@@ -921,3 +921,13 @@ body {
 .emo-float { display: inline-block; animation: emo-float 3.2s ease-in-out infinite; }
 @keyframes emo-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-2.5px) rotate(-4deg); } }
 @media (prefers-reduced-motion: reduce) { .emo-float { animation: none; } }
+
+/* لوح أقسام الرئيسية: تدرج دافئ مميز، دائرتا ضوء تتنفسان، ونقاط ناعمة */
+.home-doors { background: linear-gradient(160deg, #FFF6DD 0%, #FFFBF1 38%, #EEF8F4 72%, #DDF1EB 100%); box-shadow: 0 10px 24px -16px rgba(180, 140, 40, .45), inset 0 1px 0 #fff; }
+.dark .home-doors { background: linear-gradient(160deg, color-mix(in srgb, #D4A017 14%, var(--card)), var(--card) 50%, color-mix(in srgb, var(--t700) 16%, var(--card))); }
+.home-doors .hd-orb { position: absolute; border-radius: 9999px; pointer-events: none; filter: blur(18px); animation: hd-breathe 6s ease-in-out infinite; }
+.home-doors .hd-orb1 { width: 150px; height: 150px; top: -50px; right: -40px; background: rgba(242, 193, 78, .45); }
+.home-doors .hd-orb2 { width: 170px; height: 170px; bottom: -70px; left: -50px; background: rgba(39, 148, 136, .28); animation-delay: 3s; }
+.home-doors .hd-dots { position: absolute; inset: 0; pointer-events: none; opacity: .5; background-image: radial-gradient(rgba(201, 151, 28, .35) 1px, transparent 1.2px); background-size: 16px 16px; -webkit-mask-image: linear-gradient(180deg, #000, transparent 70%); mask-image: linear-gradient(180deg, #000, transparent 70%); }
+@keyframes hd-breathe { 0%, 100% { transform: scale(1); opacity: .8; } 50% { transform: scale(1.15); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .home-doors .hd-orb { animation: none; } }
