@@ -218,80 +218,69 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
     <div className="space-y-6">
       <PageTitle
         title="حسابي"
-        action={
-          <SecondaryButton onClick={() => setSettingsOpen(true)} aria-label="الإعدادات" className="px-3">
-            <Settings className="h-5 w-5" />
-            <span className="hidden sm:inline">الإعدادات</span>
-          </SecondaryButton>
-        }
       />
 
       {/* من أنت والمستوى */}
       {isLoading ? (
         <div className="h-28 animate-pulse rounded-[22px] bg-muted" />
       ) : (
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
+        <div className="share-banner relative -mx-4 -mt-5 overflow-hidden px-5 pb-12 pt-5 text-white lg:mx-0 lg:rounded-[24px]">
+          <span className="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-white/10" aria-hidden="true" />
+          <span className="absolute bottom-2 left-24 h-20 w-20 rounded-full bg-white/10" aria-hidden="true" />
+          <div className="relative flex items-center gap-3">
             {user?.avatar ? (
-              <img src={user.avatar} alt="" className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-[#E8C766]" referrerPolicy="no-referrer" />
+              <img src={user.avatar} alt="" className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-[#E8C766]" referrerPolicy="no-referrer" />
             ) : (
-              <span className="shrink-0 rounded-full ring-2 ring-[#E8C766] ring-offset-2 ring-offset-white dark:ring-offset-card">
-                <DefaultAvatar seed={user?.email ?? user?.name ?? "guest"} />
+              <span className="shrink-0 rounded-full ring-2 ring-[#E8C766] ring-offset-2 ring-offset-transparent">
+                <DefaultAvatar seed={user?.email ?? user?.name ?? "guest"} className="h-12 w-12" />
               </span>
             )}
             <div className="min-w-0 flex-1">
-              <FitText max={20} min={14} className="font-display font-extrabold">{user ? user.name : "ضيف"}</FitText>
-              <FitText max={14} min={10} className="mt-0.5 font-bold text-[#A87B12]">{`المستوى ${ad(levelFromXp(xp))} · ${levelTitle(levelFromXp(xp))}`}</FitText>
-              <ProgressBar value={(xpInLevel(xp) / LEVEL_XP) * 100} className="mt-2" />
+              <FitText max={17} min={13} className="font-display font-extrabold text-white">{user ? user.name : "ضيف"}</FitText>
+              <FitText max={12.5} min={10} className="font-bold text-[#FBE7A1]">{`المستوى ${ad(levelFromXp(xp))} · ${levelTitle(levelFromXp(xp))}`}</FitText>
+              <ProgressBar value={(xpInLevel(xp) / LEVEL_XP) * 100} className="mt-1.5" />
             </div>
           </div>
-        </Card>
+        </div>
       )}
 
       {/* لوح سفلي بحواف علوية مستديرة ومقبض، فيه المشاركة والقائمة */}
-      <div className="-mx-4 rounded-t-[32px] border-t-[3px] border-[var(--t700)] bg-white px-4 pb-4 pt-3 shadow-[0_-12px_30px_-18px_rgba(0,0,0,0.35)] dark:bg-card lg:mx-0">
-      <span className="mx-auto mb-4 block h-[5px] w-12 rounded-full bg-muted-foreground/25" aria-hidden="true" />
+      <div className="relative -mx-4 -mt-14 rounded-t-[28px] bg-white px-4 pb-4 pt-2.5 shadow-[0_-10px_24px_-14px_rgba(0,0,0,0.3)] dark:bg-card lg:mx-0">
+      <span className="mx-auto mb-3 block h-[5px] w-12 rounded-full bg-muted-foreground/25" aria-hidden="true" />
       {/* شارك التطبيق: بطاقة بارزة */}
-      <div className="share-banner relative overflow-hidden rounded-[24px] p-4 text-white shadow-[0_10px_24px_-12px_var(--t700)]">
-        <span className="absolute -left-6 -top-6 h-24 w-24 rounded-full bg-white/10" aria-hidden="true" />
-        <span className="absolute -bottom-8 left-16 h-20 w-20 rounded-full bg-white/10" aria-hidden="true" />
-        <div className="relative flex items-center gap-3">
-          <button type="button" onClick={shareApp} aria-label="شارك التطبيق" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/15">
-            <Share2 className="h-6 w-6" />
-          </button>
-          <div className="min-w-0 flex-1">
-            <p className="font-display text-[17px] font-extrabold leading-6">شارك تربوي مع زملائك</p>
-            <p className="mt-0.5 text-[13px] leading-5 text-white/85">شارك المعرفة، وساعد معلمًا آخر يستعد</p>
-          </div>
-          <a href="https://t.me/MuallimExam" target="_blank" rel="noopener noreferrer" aria-label="تيليجرام" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/15">
-            <Send className="h-5 w-5" />
-          </a>
-        </div>
-      </div>
+      <button type="button" onClick={shareApp} className="share-banner relative flex w-full items-center gap-3 overflow-hidden rounded-[20px] px-3.5 py-3 text-right text-white shadow-[0_8px_20px_-12px_var(--t700)]">
+        <span className="absolute -left-5 -top-5 h-16 w-16 rounded-full bg-white/10" aria-hidden="true" />
+        <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/15">
+          <Share2 className="h-5 w-5" />
+        </span>
+        <span className="relative min-w-0 flex-1">
+          <FitText max={15.5} min={12} className="block font-extrabold leading-6">شارك تربوي مع زملائك</FitText>
+          <FitText max={12.5} min={10} className="block leading-5 text-white/85">شارك المعرفة، وساعد معلمًا يستعد</FitText>
+        </span>
+        <ChevronLeft className="relative h-5 w-5 shrink-0 text-white/80" />
+      </button>
 
       {/* قائمة «حسابي»: كل قسم في صف بأيقونة كبيرة ملونة، وعنوان ووصف، وسهم */}
-      <div className="mt-4 space-y-1">
+      <MenuGroup title="حسابك">
         <MenuRow icon={UserRound} color="#2563EB" title="الملف الشخصي" sub={user ? user.email : "سجّل الدخول لتحفظ تقدمك"} onClick={() => setPanel("account")} />
         <MenuRow icon={Trophy} color="#7C3AED" title="الإنجازات والنتائج" sub="اختباراتك السابقة وتقدمك" onClick={() => setPanel("tests")} />
-        <MenuRow icon={Gem} color="#D97706" title="الجواهر" sub={`رصيدك ${ad(wallet.gems)} جوهرة`} onClick={() => setSection("gems")} />
+      </MenuGroup>
+      <MenuGroup title="التطبيق">
         <MenuRow icon={Settings} color="#64748B" title="الإعدادات" sub="الهدف والمظهر والتذكير" onClick={() => setSection("settings")} />
-        <MenuRow icon={Download} color="#0F766E" title="البيانات والأمان" sub="نسخة احتياطية، كلمة المرور، حذف الحساب" onClick={() => setSection("data")} />
-        <MenuRow icon={Send} color="#0EA5E9" title="قناة تيليجرام" sub="معلومة وأسئلة يومية" href="https://t.me/MuallimExam" />
-        <MenuRow icon={Users} color="#1D4ED8" title="صفحة فيسبوك" sub="تابع جديد تربوي" href="https://www.facebook.com/share/1CHdqGvYz5/" />
-        {process.env.NEXT_PUBLIC_LINKEDIN_URL && <MenuRow icon={Users} color="#0A66C2" title="لينكدإن" sub="تابعنا مهنيًا" href={process.env.NEXT_PUBLIC_LINKEDIN_URL} />}
-        {user && (
-          <MenuRow
-            icon={LogOut}
-            color="#DC2626"
-            title="تسجيل الخروج"
-            sub="يبقى تقدمك محفوظًا في حسابك"
-            onClick={async () => {
-              await signOut(queryClient);
-              toast({ title: "سُجّل الخروج" });
-            }}
-          />
-        )}
-      </div>
+        <MenuRow icon={Download} color="#0F766E" title="البيانات والأمان" sub="نسخة احتياطية وكلمة المرور" onClick={() => setSection("data")} />
+      </MenuGroup>
+      {user && (
+        <button
+          type="button"
+          onClick={async () => {
+            await signOut(queryClient);
+            toast({ title: "سُجّل الخروج" });
+          }}
+          className="mt-5 flex min-h-[48px] w-full items-center justify-center gap-2 rounded-[16px] border border-[#F3C9C9] bg-[#FEF4F4] text-[15px] font-extrabold text-[#C0392B] dark:bg-card"
+        >
+          <LogOut className="h-5 w-5" /> تسجيل الخروج
+        </button>
+      )}
       </div>
 
       {panel === "account" && (
@@ -319,6 +308,14 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             </button>
           )}
           </Card>
+          <MenuGroup title="رصيدك">
+            <MenuRow icon={Gem} color="#D97706" title="الجواهر" sub={`رصيدك ${ad(wallet.gems)} جوهرة`} onClick={() => setSection("gems")} />
+          </MenuGroup>
+          <MenuGroup title="تابعنا">
+            <MenuRow icon={Send} color="#0EA5E9" title="قناة تيليجرام" sub="معلومة وأسئلة يومية" href="https://t.me/MuallimExam" />
+            <MenuRow icon={Users} color="#1D4ED8" title="صفحة فيسبوك" sub="جديد تربوي" href="https://www.facebook.com/share/1CHdqGvYz5/" />
+            {process.env.NEXT_PUBLIC_LINKEDIN_URL && <MenuRow icon={Users} color="#0A66C2" title="لينكدإن" sub="تابعنا مهنيًا" href={process.env.NEXT_PUBLIC_LINKEDIN_URL} />}
+          </MenuGroup>
         </ScreenShell>
       )}
       {panel === "tests" && (
@@ -379,7 +376,6 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
               </button>
             ))}
           </div>
-          <p className="text-sm font-medium text-secondary-foreground">شكل الرئيسية</p>
           <p className="text-sm font-medium text-secondary-foreground">حجم الخط</p>
           <Segmented label="حجم الخط" value={st.fontScale} onChange={st.setFontScale} options={[["normal", "عادي"], ["large", "كبير"], ["bigger", "أكبر"]] as const} />
           <button
@@ -593,26 +589,36 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
 }
 
 /** مشاركة التطبيق: قائمة المشاركة في الهاتف، وإلا نسخ الرابط */
+/** مجموعة في قائمة «حسابي»: عنوان صغير وصفوف داخل بطاقة واحدة */
+function MenuGroup({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="mt-5">
+      <p className="mb-2 px-1 text-[13px] font-extrabold text-muted-foreground">{title}</p>
+      <div className="divide-y divide-border overflow-hidden rounded-[18px] border border-border bg-white dark:bg-card">{children}</div>
+    </div>
+  );
+}
+
 /** سطر في قائمة «حسابي»: أيقونة دائرية ملونة، عنوان ووصف، وسهم */
 function MenuRow({ icon: Icon, color, title, sub, onClick, href }: { icon: React.ElementType; color: string; title: string; sub: string; onClick?: () => void; href?: string }) {
   const inner = (
     <>
       <span
-        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-white"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white"
         style={{ background: `linear-gradient(145deg, color-mix(in srgb, ${color} 70%, #fff), ${color})`, boxShadow: `0 6px 14px -6px ${color}` }}
       >
-        <Icon className="h-6 w-6" />
+        <Icon className="h-5 w-5" />
       </span>
       <span className="min-w-0 flex-1 text-right">
-        <span className="block text-[17px] font-extrabold leading-7 text-foreground">{title}</span>
-        <span className="block truncate text-[14px] leading-6 text-muted-foreground">{sub}</span>
+        <span className="block truncate text-[15px] font-extrabold leading-6 text-foreground">{title}</span>
+        <span className="block truncate text-[12.5px] leading-5 text-muted-foreground">{sub}</span>
       </span>
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
         <ChevronLeft className="h-4 w-4" />
       </span>
     </>
   );
-  const cls = "flex min-h-[80px] w-full items-center gap-4 rounded-[20px] px-2 py-2 transition active:bg-muted";
+  const cls = "flex min-h-[64px] w-full items-center gap-3 px-3 py-2 transition active:bg-muted";
   return href ? (
     <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
   ) : (
