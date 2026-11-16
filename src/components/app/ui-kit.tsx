@@ -11,6 +11,7 @@ import { FitText } from "./FitText";
 import { ArrowRight, ChevronLeft, CircleCheck, CircleX, EyeOff, Flame, Gem, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createPortal } from "react-dom";
+import { createContext, useContext } from "react";
 import { ad } from "@/lib/arabic";
 
 export function Card({ className, children, ...rest }: React.HTMLAttributes<HTMLDivElement>) {
@@ -244,6 +245,10 @@ export const pct = (v: number) => `${ad(Math.round(v))}٪`;
 // وشريط إجراء سفلي اختياري للخطوة الرئيسية.
 // ============================================================================
 
+// عمق الشاشات المتداخلة: الشاشة الداخلية تُرسم فوق التي تحتويها دائمًا،
+// لأن ترتيب إلحاقها بجسم الصفحة قد يسبق الشاشة الأم فتغطيها الأم بصفحة فارغة
+const ShellDepth = createContext(0);
+
 export function ScreenShell({
   title,
   onClose,
@@ -266,8 +271,10 @@ export function ScreenShell({
   bare?: boolean;
 }) {
   // تُرسم الشاشة في جسم الصفحة مباشرة، فلا يحصرها حاوٍ متحرك ولا يظهر الشريط السفلي فوقها
+  const depth = useContext(ShellDepth);
   const node = (
-    <div className="fixed inset-0 z-50 flex flex-col bg-background">
+    <ShellDepth.Provider value={depth + 1}>
+    <div className="fixed inset-0 z-50 flex flex-col bg-background" style={depth ? { zIndex: 50 + depth } : undefined}>
       <header className="green-head safe-top relative shrink-0 px-2 pb-1.5">
         <HeaderArt />
         <div className={cn("mx-auto flex min-h-[46px] items-center gap-2 px-1", wide ? "max-w-5xl" : "max-w-3xl")}>
@@ -307,6 +314,7 @@ export function ScreenShell({
         </div>
       )}
     </div>
+    </ShellDepth.Provider>
   );
   return typeof document === "undefined" ? node : createPortal(node, document.body);
 }
