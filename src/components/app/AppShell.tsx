@@ -158,8 +158,8 @@ function BottomNav({ tab, onTab, due, onBack, onAccount, accountOpen }: { tab: T
       id="bottom-nav"
       aria-label="التنقل الرئيسي"
       className={cn(
-        "fixed inset-x-0 bottom-0 z-[48] transition-[transform,opacity] duration-300 ease-out lg:hidden",
-        hidden ? "pointer-events-none translate-y-full opacity-0" : "translate-y-0 opacity-100"
+        "fixed inset-x-0 bottom-0 z-[48] transition-[transform,opacity] duration-700 ease-in-out lg:hidden",
+        hidden ? "pointer-events-none translate-y-6 opacity-0" : "translate-y-0 opacity-100"
       )}
     >
       {/* شريط بلون التطبيق متدرج، فيه نقاط لامعة، والتبويب الحالي حبة بيضاء تنزلق بين التبويبات */}
