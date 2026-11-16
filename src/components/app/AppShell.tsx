@@ -288,6 +288,28 @@ export default function AppShell() {
   const tabTrail = useRef<Tab[]>([]);
 
   const [accountOpen, setAccountOpen] = useState(false);
+  // شريط حالة الهاتف بلون أعلى شريط العنوان (كما في أوريندو): يتبع لون التطبيق المختار
+  useEffect(() => {
+    const t = setTimeout(() => {
+      // لون الشريط الأغمق (أعلى شريط العنوان): لون التطبيق مغمقًا ١٢٪، بصيغة سداسية يقبلها الهاتف
+      const c = getComputedStyle(document.documentElement).getPropertyValue("--t700").trim() || "#279488";
+      const hex = /^#([0-9a-f]{6})$/i.test(c) ? c.slice(1) : "279488";
+      const rgb =
+        "#" +
+        [0, 2, 4]
+          .map((i) => Math.round(parseInt(hex.slice(i, i + 2), 16) * 0.88).toString(16).padStart(2, "0"))
+          .join("");
+      let metas = document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]');
+      if (!metas.length) {
+        const m = document.createElement("meta");
+        m.name = "theme-color";
+        document.head.appendChild(m);
+        metas = document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]');
+      }
+      metas.forEach((m) => { m.content = rgb; m.removeAttribute("media"); });
+    }, 50);
+    return () => clearTimeout(t);
+  }, [theme, darkMode]);
   const [bankLoaded, setBankLoaded] = useState(false);
   const [bankProgress, setBankProgress] = useState(0);
   const [bankFailed, setBankFailed] = useState(false);
