@@ -916,3 +916,8 @@ body {
 .home-ill .hi-needle { transform-origin: 32px 34px; animation: hi-needle 5s ease-in-out infinite; }
 @keyframes hi-needle { 0%, 100% { transform: rotate(30deg); } 50% { transform: rotate(60deg); } 70% { transform: rotate(40deg); } }
 @media (prefers-reduced-motion: reduce) { .home-ill * { animation-duration: 0s !important; animation-iteration-count: 1 !important; } .home-ill .hi-check, .home-ill .hi-draw, .home-ill .hi-line { stroke-dashoffset: 0; } }
+
+/* رموز الرئيسية: طفو بطيء هادئ يعطيها حياة */
+.emo-float { display: inline-block; animation: emo-float 3.2s ease-in-out infinite; }
+@keyframes emo-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-2.5px) rotate(-4deg); } }
+@media (prefers-reduced-motion: reduce) { .emo-float { animation: none; } }
