@@ -653,14 +653,14 @@ body {
 
 /* شريط العنوان متصل بأعلى الشاشة وجانبيها، بلون شريط حالة الهاتف نفسه، وحوافه السفلى مستديرة */
 .green-head {
+  /* شريط العنوان بشكل الشريط السفلي نفسه: لون التطبيق متدرج، وحافة سفلية شفافة قصيرة */
   overflow: hidden;
-  background: #FFFFFF;
-  color: #111111;
+  background: linear-gradient(0deg, transparent 0%, color-mix(in srgb, var(--t700) 80%, #fff) 12%, var(--t700) 50%, color-mix(in srgb, var(--t700) 88%, #000) 100%);
+  color: #fff;
+  padding-bottom: 14px !important;
 }
-.dark .green-head {
-  background: var(--background);
-  color: var(--foreground);
-}
+.green-head .head-art { display: none; }
+.green-head h1 { color: #fff; }
 .green-head > :not(.head-art) {
   position: relative;
   z-index: 1;

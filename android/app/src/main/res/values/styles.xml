@@ -4,7 +4,7 @@
     <color name="navbar">#228278</color>
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@color/white</item>
-        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:statusBarColor">@color/navbar</item>
         <item name="android:navigationBarColor">@color/navbar</item>
     </style>
 </resources>

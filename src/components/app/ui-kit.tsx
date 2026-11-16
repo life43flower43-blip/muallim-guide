@@ -10,6 +10,7 @@
 import { FitText } from "./FitText";
 import { ArrowRight, ChevronLeft, CircleCheck, CircleX, EyeOff, Flame, Gem, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { createPortal } from "react-dom";
 import { ad } from "@/lib/arabic";
 
 export function Card({ className, children, ...rest }: React.HTMLAttributes<HTMLDivElement>) {
@@ -264,7 +265,8 @@ export function ScreenShell({
   /** محتوى يملأ المساحة كلها بلا حشوة ولا تمرير (إطار مضمّن مثلًا) */
   bare?: boolean;
 }) {
-  return (
+  // تُرسم الشاشة في جسم الصفحة مباشرة، فلا يحصرها حاوٍ متحرك ولا يظهر الشريط السفلي فوقها
+  const node = (
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
       <header className="green-head safe-top relative shrink-0 px-2 pb-1.5">
         <HeaderArt />
@@ -306,6 +308,7 @@ export function ScreenShell({
       )}
     </div>
   );
+  return typeof document === "undefined" ? node : createPortal(node, document.body);
 }
 
 /** شارة صغيرة: محايدة أو بلون دلالي */
