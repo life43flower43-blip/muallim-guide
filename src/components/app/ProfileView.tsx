@@ -266,16 +266,31 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
         </Card>
       )}
 
-      {/* تابع تربوي في كل منصاته */}
-      <div className="rounded-[20px] border border-[#ECE3C4] bg-white p-3 dark:border-border dark:bg-card">
-        <p className="text-center text-[13px] font-bold text-foreground">تابعنا</p>
-        <div className="mt-2 grid grid-cols-3 gap-2">
-          {process.env.NEXT_PUBLIC_LINKEDIN_URL && <a href={process.env.NEXT_PUBLIC_LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-foreground">لينكدإن</a>}
-          {process.env.NEXT_PUBLIC_X_URL && <a href={process.env.NEXT_PUBLIC_X_URL} target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-foreground">X</a>}
-          <a href="https://t.me/MuallimExam" target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-foreground">تيليجرام</a>
-          <a href="https://www.facebook.com/share/1CHdqGvYz5/" target="_blank" rel="noopener noreferrer" className="flex min-h-[40px] items-center justify-center rounded-[14px] bg-[var(--t050)] text-[13px] font-extrabold text-foreground">فيسبوك</a>
-          <button type="button" onClick={shareApp} className="glow-pulse relative isolate flex min-h-[40px] items-center justify-center rounded-[14px] bg-[#D4A017] text-[13px] font-extrabold text-foreground">شارك التطبيق</button>
+      {/* شارك التطبيق: بطاقة بارزة */}
+      <div className="share-banner relative overflow-hidden rounded-[24px] p-4 text-white shadow-[0_10px_24px_-12px_var(--t700)]">
+        <span className="absolute -left-6 -top-6 h-24 w-24 rounded-full bg-white/10" aria-hidden="true" />
+        <span className="absolute -bottom-8 left-16 h-20 w-20 rounded-full bg-white/10" aria-hidden="true" />
+        <div className="relative flex items-center gap-3">
+          <button type="button" onClick={shareApp} aria-label="شارك التطبيق" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/15">
+            <Share2 className="h-6 w-6" />
+          </button>
+          <div className="min-w-0 flex-1">
+            <p className="font-display text-[17px] font-extrabold leading-6">شارك تربوي مع زملائك</p>
+            <p className="mt-0.5 text-[13px] leading-5 text-white/85">شارك المعرفة، وساعد معلمًا آخر يستعد</p>
+          </div>
+          <a href="https://t.me/MuallimExam" target="_blank" rel="noopener noreferrer" aria-label="تيليجرام" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/15">
+            <Send className="h-5 w-5" />
+          </a>
         </div>
+      </div>
+
+      {/* قائمة منظمة: أيقونة ملونة، عنوان ووصف، وسهم */}
+      <div className="divide-y divide-border overflow-hidden rounded-[22px] border border-border bg-white dark:bg-card">
+        <MenuRow icon={Settings} color="#64748B" title="الإعدادات" sub="الهدف والمظهر والتذكير والجواهر" onClick={() => setSettingsOpen(true)} />
+        <MenuRow icon={Gem} color="#7C3AED" title="الجواهر" sub={`رصيدك ${ad(wallet.gems)} جوهرة`} onClick={() => setSettingsOpen(true)} />
+        <MenuRow icon={Send} color="#0EA5E9" title="قناة تيليجرام" sub="معلومة وأسئلة يومية" href="https://t.me/MuallimExam" />
+        <MenuRow icon={Users} color="#2563EB" title="صفحة فيسبوك" sub="تابع جديد تربوي" href="https://www.facebook.com/share/1CHdqGvYz5/" />
+        {process.env.NEXT_PUBLIC_LINKEDIN_URL && <MenuRow icon={Users} color="#0A66C2" title="لينكدإن" sub="تابعنا مهنيًا" href={process.env.NEXT_PUBLIC_LINKEDIN_URL} />}
       </div>
 
       <PastTests />
@@ -540,6 +555,33 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
 }
 
 /** مشاركة التطبيق: قائمة المشاركة في الهاتف، وإلا نسخ الرابط */
+/** سطر في قائمة «حسابي»: أيقونة دائرية ملونة، عنوان ووصف، وسهم */
+function MenuRow({ icon: Icon, color, title, sub, onClick, href }: { icon: React.ElementType; color: string; title: string; sub: string; onClick?: () => void; href?: string }) {
+  const inner = (
+    <>
+      <span
+        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-white"
+        style={{ background: `linear-gradient(145deg, color-mix(in srgb, ${color} 70%, #fff), ${color})`, boxShadow: `0 6px 14px -6px ${color}` }}
+      >
+        <Icon className="h-[22px] w-[22px]" />
+      </span>
+      <span className="min-w-0 flex-1 text-right">
+        <span className="block text-[15.5px] font-extrabold leading-6 text-foreground">{title}</span>
+        <span className="block truncate text-[13px] leading-5 text-muted-foreground">{sub}</span>
+      </span>
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+        <ChevronLeft className="h-4 w-4" />
+      </span>
+    </>
+  );
+  const cls = "flex min-h-[72px] w-full items-center gap-3 px-4 py-2.5 transition active:bg-muted";
+  return href ? (
+    <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
+  ) : (
+    <button type="button" onClick={onClick} className={cls}>{inner}</button>
+  );
+}
+
 async function shareApp() {
   const url = `${window.location.origin}/tatbeeq`;
   const text = "تطبيق تربوي: آلاف الأسئلة بشرح لكل إجابة للاستعداد لاختبار الرخصة المهنية للمعلمين، مجانًا";

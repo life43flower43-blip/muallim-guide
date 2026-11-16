@@ -327,13 +327,14 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             >
               {/* بطاقة بيضاء بإطار فاتح وظل سفلي مثل بطاقات المحاور، والرمز بلون القسم */}
               <span
-                className="relative flex h-[58px] w-[58px] items-center justify-center rounded-full border-2 border-b-[4px]"
+                className="icon-shine relative flex h-[58px] w-[58px] items-center justify-center rounded-full border-2 border-b-[4px]"
                 style={{
                   borderColor: `color-mix(in srgb, ${d.bg} 55%, white)`,
                   borderBottomColor: d.bg,
                   color: d.bg,
                   background: `radial-gradient(circle at 30% 25%, #fff 0%, color-mix(in srgb, ${d.bg} 14%, white) 100%)`,
                   boxShadow: `0 6px 14px -6px color-mix(in srgb, ${d.bg} 55%, transparent)`,
+                  ["--shine-delay" as string]: `${(i % 8) * 0.35}s`,
                 }}
               >
                 {/* لمعة صغيرة أعلى الدائرة */}
