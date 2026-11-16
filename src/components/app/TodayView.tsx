@@ -4,7 +4,6 @@
 // الرئيسية: واجهة التطبيق — بطاقة الاستعداد، ثم ستة أبواب مصوّرة لأقسامه
 // ============================================================================
 
-import HomeIcon from "./HomeIcons";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -92,6 +91,9 @@ const POS_BG = ["#0E9384", "#F59E0B", "#2563EB", "#0891D1", "#7C3AED", "#16A34A"
 /** ترتيب ألوان أيقونات الرئيسية حسب الموضع */
 // رسوم أيقونات الرئيسية: حسب اسم الباب، وإلا حسب موضعه
 const HOME_ICON_IMG: Record<string, string> = { "موقف اليوم": "today", "المحاكاة": "today", "تابع المحاور": "today", "اختبر نفسك": "test", "المواقف الصفية": "situations", "خطة الدرس": "plan", "مهارات التدريس": "skills", "طرائق التدريس": "methods", "المفاهيم التربوية": "concepts", "البوصلة": "compass" };
+const HOME_EMOJI: Record<string, string> = { today: "⏰", test: "🎯", situations: "🧑‍🏫", plan: "📝", skills: "🎓", methods: "🧩", concepts: "💡", compass: "🧭" };
+// خلفيات الدوائر نفسها في صفحة التدريب
+const HOME_TONE = ["#FDECE4", "#E3F1FB", "#E6F4EF", "#EEF1FB", "#FBF3DA", "#FDECE4", "#FBF3DA", "#E8F6F6"];
 const HOME_ICON_BY_POS = ["today", "test", "situations", "plan", "skills", "methods", "concepts", "compass"];
 const ICON_ORDER_BG = ["#EF4444", "#2563EB", "#16A34A", "#7C3AED", "#0891B2", "#DB2777", "#EA580C", "#475569"];
 /** لون ثابت لكل قسم في الرئيسية، مهما تغير ترتيبه بحسب الهدف */
@@ -334,13 +336,18 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               }}
               className="flex min-w-0 flex-col items-center gap-1.5"
             >
-              {/* رسم توضيحي هادئ في بطاقة مربعة مستديرة الزوايا */}
-              <span
-                className="icon-shine relative block h-[66px] w-[66px] overflow-hidden rounded-[18px] border border-[#DCEDEA] bg-white"
-                style={{ boxShadow: "0 6px 14px -8px rgba(15,118,110,0.45)", ["--shine-delay" as string]: `${(i % 8) * 0.35}s` }}
-              >
-                <HomeIcon name={HOME_ICON_IMG[d.title] ?? HOME_ICON_BY_POS[i] ?? "today"} />
-              </span>
+              {/* بطاقة بيضاء بحافة سفلية بارزة مثل بطاقات صفحة التدريب، وفيها رمز ملون في دائرة فاتحة يطفو ببطء */}
+              {(() => {
+                const ic = HOME_ICON_IMG[d.title] ?? HOME_ICON_BY_POS[i] ?? "today";
+                const tone = HOME_TONE[HOME_ICON_BY_POS.indexOf(ic) % HOME_TONE.length] ?? HOME_TONE[0];
+                return (
+                  <span className="icon-shine relative flex h-[66px] w-[66px] items-center justify-center rounded-[22px] border-2 border-[#E3EDE8] border-b-[5px] border-b-[#C9DDD3] bg-white dark:border-border dark:bg-card" style={{ ["--shine-delay" as string]: `${(i % 8) * 0.35}s` }}>
+                    <span className="relative flex h-[46px] w-[46px] items-center justify-center rounded-full" style={{ background: tone }}>
+                      <span className="emo-float text-[27px] leading-none" style={{ animationDelay: `${i * 0.4}s` }} aria-hidden="true">{HOME_EMOJI[ic]}</span>
+                    </span>
+                  </span>
+                );
+              })()}
               <FitText max={12.5} min={9} group="home-ico" className="w-full whitespace-nowrap text-center font-bold text-foreground dark:text-foreground">{d.title}</FitText>
             </motion.button>
           ))}
