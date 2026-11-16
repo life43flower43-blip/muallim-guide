@@ -293,8 +293,8 @@ path.link.flow { stroke-dasharray: 7 7; animation: flow .9s linear infinite; opa
   .embed body { padding-block: 10px 0; }
   .embed .stage { height: calc(100dvh - 128px); min-height: 360px; }
   .embed aside.panel {
-    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; height: 64dvh;
-    border-radius: 22px 22px 0 0; border-bottom: 0; padding: 0 18px calc(18px + env(safe-area-inset-bottom, 0px));
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; height: 78dvh; overflow-y: auto;
+    border-radius: 22px 22px 0 0; border-bottom: 0; padding: 0 18px calc(130px + env(safe-area-inset-bottom, 0px));
     transform: translateY(105%); transition: transform .35s cubic-bezier(.2,.7,.2,1);
   }
   .embed aside.panel.open { transform: none; }
