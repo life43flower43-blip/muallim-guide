@@ -139,7 +139,8 @@ export function Cover({ id, title, courseId, label, className = "", compact = fa
   const src = photoFor(id);
   return (
     <span className={`relative block overflow-hidden bg-[#DDE8E2] ${className}`}>
-      {src ? <img src={src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: "50% 45%" }} /> : <Drawn id={id} title={title} courseId={courseId} small={compact} />}
+      {/* في رأس الصفحة للصورة وصف (لبحث الصور وقارئات الشاشة)، وفي البطاقات زخرفية لأن عنوان الرابط بجانبها */}
+      {src ? <img src={src} alt={compact ? "" : `صورة توضيحية: ${title}`} loading={compact ? "lazy" : "eager"} className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: "50% 45%" }} /> : <Drawn id={id} title={title} courseId={courseId} small={compact} />}
       {compact ? (
         label && <span className="absolute bottom-2 start-2 max-w-[85%] truncate rounded-md px-2 py-0.5 text-[11px] font-bold text-white" style={{ background: `${m.color}E6` }}>{label}</span>
       ) : (
