@@ -820,8 +820,8 @@ body {
 .mind-wrap::before,
 .mind-wrap::after {
   content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 20px; pointer-events: none;
-  border: 2.5px solid rgba(212, 160, 23, .95);
-  box-shadow: 0 0 16px 3px rgba(212, 160, 23, .6), inset 0 0 12px rgba(243, 220, 142, .6);
+  border: 3.5px solid rgba(203, 213, 225, .98);
+  box-shadow: 0 0 20px 5px rgba(176, 190, 208, .7), inset 0 0 14px rgba(241, 245, 249, .8);
   opacity: 0; will-change: transform, opacity;
   animation: mw-pulse 3s cubic-bezier(.22, .61, .36, 1) infinite;
 }
@@ -829,12 +829,12 @@ body {
 @keyframes mw-pulse {
   0% { transform: scale(1, 1); opacity: 1; }
   60% { opacity: .35; }
-  100% { transform: scale(1.09, 1.6); opacity: 0; }
+  100% { transform: scale(1.12, 1.75); opacity: 0; }
 }
 /* توهج ناعم يتنفس خلف البطاقة */
 .mind-wrap .mw-halo {
-  position: absolute; inset: -6px; z-index: -1; border-radius: 26px; pointer-events: none;
-  background: radial-gradient(60% 90% at 50% 50%, rgba(243, 220, 142, .55), rgba(212, 160, 23, 0) 75%);
+  position: absolute; inset: -9px; z-index: -1; border-radius: 28px; pointer-events: none;
+  background: radial-gradient(60% 90% at 50% 50%, rgba(226, 232, 240, .7), rgba(148, 163, 184, 0) 75%);
   filter: blur(8px); opacity: .35; will-change: opacity, transform;
   animation: mw-breathe 3s ease-in-out infinite;
 }

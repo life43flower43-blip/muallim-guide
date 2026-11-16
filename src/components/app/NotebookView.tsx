@@ -103,14 +103,14 @@ export default function NotebookView() {
       <PageTitle title="البوصلة" />
 
       {/* مدخل الخرائط الذهنية المتحركة: بطاقة داكنة مميزة فيها شبكة أفكار تنبض بهدوء */}
-      {/* موجات ذهبية خفيفة تتدفق من حواف البطاقة إلى الخارج */}
+      {/* موجات فضية خفيفة تتدفق من حواف البطاقة إلى الخارج */}
       <div className="mind-wrap relative">
       {/* هالة ضوئية ناعمة؛ والموجتان من ::before و::after في globals.css */}
       <span className="mw-halo" aria-hidden="true" />
       <button
         type="button"
         onClick={() => useUi.getState().startMind()}
-        className="mind-card relative flex w-full items-center gap-3 overflow-hidden rounded-[20px] bg-gradient-to-l from-[#7B4FD6] to-[#5B3BB0] px-3 py-2.5 text-right text-white ring-2 ring-[#D4A017] transition active:scale-[0.98]"
+        className="mind-card relative flex w-full items-center gap-3 overflow-hidden rounded-[20px] bg-gradient-to-l from-[#7B4FD6] to-[#5B3BB0] px-3 py-2.5 text-right text-white ring-[3px] ring-[#CBD5E1] transition active:scale-[0.98]"
       >
         <svg viewBox="0 0 64 64" className="h-11 w-11 shrink-0 overflow-visible" aria-hidden="true">
           <g stroke="#D4A017" strokeWidth="2" strokeLinecap="round" opacity="0.85">
