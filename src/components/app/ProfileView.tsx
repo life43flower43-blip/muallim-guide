@@ -112,6 +112,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
   const fileRef = useRef<HTMLInputElement>(null);
   const [installEvt, setInstallEvt] = useState<InstallPromptEvent | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [panel, setPanel] = useState<null | "account" | "tests">(null);
   const push = usePushState();
   useEffect(() => {
     const open = () => setSettingsOpen(true);
@@ -242,27 +243,6 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
               <ProgressBar value={(xpInLevel(xp) / LEVEL_XP) * 100} className="mt-2" />
             </div>
           </div>
-          {user && <AccountDetails user={user} />}
-          {user && <EmailDigestToggle user={user} />}
-          {!user && (
-            <details open className="group mt-3 border-t border-border pt-3">
-              <summary className="flex min-h-[40px] cursor-pointer list-none items-center justify-between gap-2 text-[14px] font-bold text-foreground">
-                <span>سجّل الدخول لتحفظ تقدمك على كل أجهزتك</span>
-                <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C] transition group-open:-rotate-90" />
-              </summary>
-              <div className="pt-2"><AuthPanel /></div>
-            </details>
-          )}
-          {st.examDate && (
-            <button type="button" onClick={() => setSettingsOpen(true)} className="mt-4 flex min-h-[44px] w-full items-center gap-3 border-t border-border pt-4 text-right text-sm">
-              <CalendarClock className="h-5 w-5 shrink-0 text-[#C9971C]" />
-              <span className="min-w-0 flex-1">
-                <FitText max={14} min={10} className="font-bold">{daysLeft !== null && daysLeft >= 0 ? `اختبارك بعد ${arCount(daysLeft, DAY_FORMS)}` : "موعد اختبارك"}</FitText>
-                <FitText max={12} min={9} className="text-muted-foreground">{dateFmt.format(new Date(st.examDate))}</FitText>
-              </span>
-              <ChevronLeft className="h-4 w-4 text-[#C9971C]" />
-            </button>
-          )}
         </Card>
       )}
 
@@ -284,16 +264,61 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
         </div>
       </div>
 
-      {/* قائمة منظمة: أيقونة ملونة، عنوان ووصف، وسهم */}
-      <div className="divide-y divide-border overflow-hidden rounded-[22px] border border-border bg-white dark:bg-card">
-        <MenuRow icon={Settings} color="#64748B" title="الإعدادات" sub="الهدف والمظهر والتذكير والجواهر" onClick={() => setSettingsOpen(true)} />
-        <MenuRow icon={Gem} color="#7C3AED" title="الجواهر" sub={`رصيدك ${ad(wallet.gems)} جوهرة`} onClick={() => setSettingsOpen(true)} />
+      {/* قائمة «حسابي»: كل قسم في صف بأيقونة كبيرة ملونة، وعنوان ووصف، وسهم */}
+      <div className="space-y-1">
+        <MenuRow icon={UserRound} color="#2563EB" title="الملف الشخصي" sub={user ? user.email : "سجّل الدخول لتحفظ تقدمك"} onClick={() => setPanel("account")} />
+        <MenuRow icon={Trophy} color="#7C3AED" title="الإنجازات والنتائج" sub="اختباراتك السابقة وتقدمك" onClick={() => setPanel("tests")} />
+        <MenuRow icon={Gem} color="#D97706" title="الجواهر" sub={`رصيدك ${ad(wallet.gems)} جوهرة`} onClick={() => setSettingsOpen(true)} />
+        <MenuRow icon={Settings} color="#64748B" title="الإعدادات" sub="الهدف والمظهر والتذكير" onClick={() => setSettingsOpen(true)} />
         <MenuRow icon={Send} color="#0EA5E9" title="قناة تيليجرام" sub="معلومة وأسئلة يومية" href="https://t.me/MuallimExam" />
-        <MenuRow icon={Users} color="#2563EB" title="صفحة فيسبوك" sub="تابع جديد تربوي" href="https://www.facebook.com/share/1CHdqGvYz5/" />
+        <MenuRow icon={Users} color="#1D4ED8" title="صفحة فيسبوك" sub="تابع جديد تربوي" href="https://www.facebook.com/share/1CHdqGvYz5/" />
         {process.env.NEXT_PUBLIC_LINKEDIN_URL && <MenuRow icon={Users} color="#0A66C2" title="لينكدإن" sub="تابعنا مهنيًا" href={process.env.NEXT_PUBLIC_LINKEDIN_URL} />}
+        {user && (
+          <MenuRow
+            icon={LogOut}
+            color="#DC2626"
+            title="تسجيل الخروج"
+            sub="يبقى تقدمك محفوظًا في حسابك"
+            onClick={async () => {
+              await signOut(queryClient);
+              toast({ title: "سُجّل الخروج" });
+            }}
+          />
+        )}
       </div>
 
-      <PastTests />
+      {panel === "account" && (
+        <ScreenShell title="الملف الشخصي" onClose={() => setPanel(null)}>
+          <Card className="p-4">
+          {user && <AccountDetails user={user} />}
+          {user && <EmailDigestToggle user={user} />}
+          {!user && (
+            <details open className="group mt-3 border-t border-border pt-3">
+              <summary className="flex min-h-[40px] cursor-pointer list-none items-center justify-between gap-2 text-[14px] font-bold text-foreground">
+                <span>سجّل الدخول لتحفظ تقدمك على كل أجهزتك</span>
+                <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C] transition group-open:-rotate-90" />
+              </summary>
+              <div className="pt-2"><AuthPanel /></div>
+            </details>
+          )}
+          {st.examDate && (
+            <button type="button" onClick={() => setSettingsOpen(true)} className="mt-4 flex min-h-[44px] w-full items-center gap-3 border-t border-border pt-4 text-right text-sm">
+              <CalendarClock className="h-5 w-5 shrink-0 text-[#C9971C]" />
+              <span className="min-w-0 flex-1">
+                <FitText max={14} min={10} className="font-bold">{daysLeft !== null && daysLeft >= 0 ? `اختبارك بعد ${arCount(daysLeft, DAY_FORMS)}` : "موعد اختبارك"}</FitText>
+                <FitText max={12} min={9} className="text-muted-foreground">{dateFmt.format(new Date(st.examDate))}</FitText>
+              </span>
+              <ChevronLeft className="h-4 w-4 text-[#C9971C]" />
+            </button>
+          )}
+          </Card>
+        </ScreenShell>
+      )}
+      {panel === "tests" && (
+        <ScreenShell title="الإنجازات والنتائج" onClose={() => setPanel(null)}>
+          <PastTests />
+        </ScreenShell>
+      )}
 
       {settingsOpen && (
         <ScreenShell title="الإعدادات" onClose={() => setSettingsOpen(false)}>
@@ -560,21 +585,21 @@ function MenuRow({ icon: Icon, color, title, sub, onClick, href }: { icon: React
   const inner = (
     <>
       <span
-        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-white"
+        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-white"
         style={{ background: `linear-gradient(145deg, color-mix(in srgb, ${color} 70%, #fff), ${color})`, boxShadow: `0 6px 14px -6px ${color}` }}
       >
-        <Icon className="h-[22px] w-[22px]" />
+        <Icon className="h-6 w-6" />
       </span>
       <span className="min-w-0 flex-1 text-right">
-        <span className="block text-[15.5px] font-extrabold leading-6 text-foreground">{title}</span>
-        <span className="block truncate text-[13px] leading-5 text-muted-foreground">{sub}</span>
+        <span className="block text-[17px] font-extrabold leading-7 text-foreground">{title}</span>
+        <span className="block truncate text-[14px] leading-6 text-muted-foreground">{sub}</span>
       </span>
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
         <ChevronLeft className="h-4 w-4" />
       </span>
     </>
   );
-  const cls = "flex min-h-[72px] w-full items-center gap-3 px-4 py-2.5 transition active:bg-muted";
+  const cls = "flex min-h-[80px] w-full items-center gap-4 rounded-[20px] px-2 py-2 transition active:bg-muted";
   return href ? (
     <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
   ) : (
