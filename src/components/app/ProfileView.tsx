@@ -111,7 +111,10 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
   const st = useApp();
   const fileRef = useRef<HTMLInputElement>(null);
   const [installEvt, setInstallEvt] = useState<InstallPromptEvent | null>(null);
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [section, setSection] = useState<null | "settings" | "gems" | "data">(null);
+  const settingsOpen = section !== null;
+  const setSettingsOpen = (v: boolean) => setSection(v ? "settings" : null);
+  const [panel, setPanel] = useState<null | "account" | "tests">(null);
   const push = usePushState();
   useEffect(() => {
     const open = () => setSettingsOpen(true);
@@ -242,6 +245,58 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
               <ProgressBar value={(xpInLevel(xp) / LEVEL_XP) * 100} className="mt-2" />
             </div>
           </div>
+        </Card>
+      )}
+
+      {/* لوح سفلي بحواف علوية مستديرة ومقبض، فيه المشاركة والقائمة */}
+      <div className="-mx-4 rounded-t-[32px] border-t-[3px] border-[var(--t700)] bg-white px-4 pb-4 pt-3 shadow-[0_-12px_30px_-18px_rgba(0,0,0,0.35)] dark:bg-card lg:mx-0">
+      <span className="mx-auto mb-4 block h-[5px] w-12 rounded-full bg-muted-foreground/25" aria-hidden="true" />
+      {/* شارك التطبيق: بطاقة بارزة */}
+      <div className="share-banner relative overflow-hidden rounded-[24px] p-4 text-white shadow-[0_10px_24px_-12px_var(--t700)]">
+        <span className="absolute -left-6 -top-6 h-24 w-24 rounded-full bg-white/10" aria-hidden="true" />
+        <span className="absolute -bottom-8 left-16 h-20 w-20 rounded-full bg-white/10" aria-hidden="true" />
+        <div className="relative flex items-center gap-3">
+          <button type="button" onClick={shareApp} aria-label="شارك التطبيق" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/15">
+            <Share2 className="h-6 w-6" />
+          </button>
+          <div className="min-w-0 flex-1">
+            <p className="font-display text-[17px] font-extrabold leading-6">شارك تربوي مع زملائك</p>
+            <p className="mt-0.5 text-[13px] leading-5 text-white/85">شارك المعرفة، وساعد معلمًا آخر يستعد</p>
+          </div>
+          <a href="https://t.me/MuallimExam" target="_blank" rel="noopener noreferrer" aria-label="تيليجرام" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/15">
+            <Send className="h-5 w-5" />
+          </a>
+        </div>
+      </div>
+
+      {/* قائمة «حسابي»: كل قسم في صف بأيقونة كبيرة ملونة، وعنوان ووصف، وسهم */}
+      <div className="mt-4 space-y-1">
+        <MenuRow icon={UserRound} color="#2563EB" title="الملف الشخصي" sub={user ? user.email : "سجّل الدخول لتحفظ تقدمك"} onClick={() => setPanel("account")} />
+        <MenuRow icon={Trophy} color="#7C3AED" title="الإنجازات والنتائج" sub="اختباراتك السابقة وتقدمك" onClick={() => setPanel("tests")} />
+        <MenuRow icon={Gem} color="#D97706" title="الجواهر" sub={`رصيدك ${ad(wallet.gems)} جوهرة`} onClick={() => setSection("gems")} />
+        <MenuRow icon={Settings} color="#64748B" title="الإعدادات" sub="الهدف والمظهر والتذكير" onClick={() => setSection("settings")} />
+        <MenuRow icon={Download} color="#0F766E" title="البيانات والأمان" sub="نسخة احتياطية، كلمة المرور، حذف الحساب" onClick={() => setSection("data")} />
+        <MenuRow icon={Send} color="#0EA5E9" title="قناة تيليجرام" sub="معلومة وأسئلة يومية" href="https://t.me/MuallimExam" />
+        <MenuRow icon={Users} color="#1D4ED8" title="صفحة فيسبوك" sub="تابع جديد تربوي" href="https://www.facebook.com/share/1CHdqGvYz5/" />
+        {process.env.NEXT_PUBLIC_LINKEDIN_URL && <MenuRow icon={Users} color="#0A66C2" title="لينكدإن" sub="تابعنا مهنيًا" href={process.env.NEXT_PUBLIC_LINKEDIN_URL} />}
+        {user && (
+          <MenuRow
+            icon={LogOut}
+            color="#DC2626"
+            title="تسجيل الخروج"
+            sub="يبقى تقدمك محفوظًا في حسابك"
+            onClick={async () => {
+              await signOut(queryClient);
+              toast({ title: "سُجّل الخروج" });
+            }}
+          />
+        )}
+      </div>
+      </div>
+
+      {panel === "account" && (
+        <ScreenShell title="الملف الشخصي" onClose={() => setPanel(null)}>
+          <Card className="p-4">
           {user && <AccountDetails user={user} />}
           {user && <EmailDigestToggle user={user} />}
           {!user && (
@@ -263,41 +318,19 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
               <ChevronLeft className="h-4 w-4 text-[#C9971C]" />
             </button>
           )}
-        </Card>
+          </Card>
+        </ScreenShell>
+      )}
+      {panel === "tests" && (
+        <ScreenShell title="الإنجازات والنتائج" onClose={() => setPanel(null)}>
+          <PastTests />
+        </ScreenShell>
       )}
 
-      {/* شارك التطبيق: بطاقة بارزة */}
-      <div className="share-banner relative overflow-hidden rounded-[24px] p-4 text-white shadow-[0_10px_24px_-12px_var(--t700)]">
-        <span className="absolute -left-6 -top-6 h-24 w-24 rounded-full bg-white/10" aria-hidden="true" />
-        <span className="absolute -bottom-8 left-16 h-20 w-20 rounded-full bg-white/10" aria-hidden="true" />
-        <div className="relative flex items-center gap-3">
-          <button type="button" onClick={shareApp} aria-label="شارك التطبيق" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/15">
-            <Share2 className="h-6 w-6" />
-          </button>
-          <div className="min-w-0 flex-1">
-            <p className="font-display text-[17px] font-extrabold leading-6">شارك تربوي مع زملائك</p>
-            <p className="mt-0.5 text-[13px] leading-5 text-white/85">شارك المعرفة، وساعد معلمًا آخر يستعد</p>
-          </div>
-          <a href="https://t.me/MuallimExam" target="_blank" rel="noopener noreferrer" aria-label="تيليجرام" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/15">
-            <Send className="h-5 w-5" />
-          </a>
-        </div>
-      </div>
-
-      {/* قائمة منظمة: أيقونة ملونة، عنوان ووصف، وسهم */}
-      <div className="divide-y divide-border overflow-hidden rounded-[22px] border border-border bg-white dark:bg-card">
-        <MenuRow icon={Settings} color="#64748B" title="الإعدادات" sub="الهدف والمظهر والتذكير والجواهر" onClick={() => setSettingsOpen(true)} />
-        <MenuRow icon={Gem} color="#7C3AED" title="الجواهر" sub={`رصيدك ${ad(wallet.gems)} جوهرة`} onClick={() => setSettingsOpen(true)} />
-        <MenuRow icon={Send} color="#0EA5E9" title="قناة تيليجرام" sub="معلومة وأسئلة يومية" href="https://t.me/MuallimExam" />
-        <MenuRow icon={Users} color="#2563EB" title="صفحة فيسبوك" sub="تابع جديد تربوي" href="https://www.facebook.com/share/1CHdqGvYz5/" />
-        {process.env.NEXT_PUBLIC_LINKEDIN_URL && <MenuRow icon={Users} color="#0A66C2" title="لينكدإن" sub="تابعنا مهنيًا" href={process.env.NEXT_PUBLIC_LINKEDIN_URL} />}
-      </div>
-
-      <PastTests />
-
       {settingsOpen && (
-        <ScreenShell title="الإعدادات" onClose={() => setSettingsOpen(false)}>
+        <ScreenShell title={section === "gems" ? "الجواهر" : section === "data" ? "البيانات والأمان" : "الإعدادات"} onClose={() => setSection(null)}>
           <div className="space-y-6">
+      {section === "settings" && (<>
       {/* الهدف والإعدادات */}
       <div className="grid gap-6">
         <Card className="space-y-4 p-5">
@@ -386,6 +419,8 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
         </Card>
       </div>
 
+      </>)}
+      {section === "gems" && (<>
       {/* الجواهر */}
         <Card className="p-4">
           <div className="flex items-center gap-2.5">
@@ -440,6 +475,8 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           )}
         </Card>
 
+      </>)}
+      {section === "data" && (<>
       {/* البيانات والحساب: مربعات أفقية متساوية */}
       <div className="grid grid-cols-3 gap-2.5">
         {installEvt && (
@@ -545,6 +582,7 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
           </>
         )}
       </div>
+      </>)}
           </div>
         </ScreenShell>
       )}
@@ -560,21 +598,21 @@ function MenuRow({ icon: Icon, color, title, sub, onClick, href }: { icon: React
   const inner = (
     <>
       <span
-        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-white"
+        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-white"
         style={{ background: `linear-gradient(145deg, color-mix(in srgb, ${color} 70%, #fff), ${color})`, boxShadow: `0 6px 14px -6px ${color}` }}
       >
-        <Icon className="h-[22px] w-[22px]" />
+        <Icon className="h-6 w-6" />
       </span>
       <span className="min-w-0 flex-1 text-right">
-        <span className="block text-[15.5px] font-extrabold leading-6 text-foreground">{title}</span>
-        <span className="block truncate text-[13px] leading-5 text-muted-foreground">{sub}</span>
+        <span className="block text-[17px] font-extrabold leading-7 text-foreground">{title}</span>
+        <span className="block truncate text-[14px] leading-6 text-muted-foreground">{sub}</span>
       </span>
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
         <ChevronLeft className="h-4 w-4" />
       </span>
     </>
   );
-  const cls = "flex min-h-[72px] w-full items-center gap-3 px-4 py-2.5 transition active:bg-muted";
+  const cls = "flex min-h-[80px] w-full items-center gap-4 rounded-[20px] px-2 py-2 transition active:bg-muted";
   return href ? (
     <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
   ) : (
