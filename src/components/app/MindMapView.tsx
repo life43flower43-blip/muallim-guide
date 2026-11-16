@@ -13,7 +13,7 @@ export default function MindMapView() {
   // يتبع الإطار سمة التطبيق الحالية (فاتح أو داكن)
   const [src] = useState(() => {
     const dark = typeof document !== "undefined" && document.documentElement.classList.contains("dark");
-    return `/tools/mindmap.html?embed=1&theme=${dark ? "dark" : "light"}`;
+    return `/tools/mindmap.html?v=2&embed=1&theme=${dark ? "dark" : "light"}`;
   });
   // الخريطة تطلب تدريبًا على مفهوم: نغلقها ونفتح جلسة بأسئلته
   useEffect(() => {
