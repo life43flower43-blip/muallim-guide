@@ -125,8 +125,10 @@ function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: 
 }
 
 function BottomNav({ tab, onTab, due, onBack, onAccount, accountOpen }: { tab: Tab; onTab: (t: Tab) => void; due: number; onBack: () => void; onAccount: () => void; accountOpen: boolean }) {
-  // يختفي الشريط تدريجيًا حين يسحب الطالب الصفحة للأسفل، ويعود حين يسحبها للأعلى
-  const [hidden, setHidden] = useState(false);
+  // في الرئيسية يبقى الشريط ظاهرًا دائمًا. وفي غيرها يبهت تدريجيًا مع سحب الصفحة للأسفل
+  // (كلما نزل الطالب أكثر قلّ وضوحه حتى يختفي)، ويعود تدريجيًا حين يسحبها للأعلى
+  const [fade, setFade] = useState(0); // ٠ ظاهر تمامًا، ١ مختفٍ
+  const hidden = fade > 0.7;
   // ارتفاع الشريط الفعلي (مع مساحة أزرار الهاتف) ليترك المحتوى تحته مسافة تكفي فلا تختفي آخر بطاقة
   useEffect(() => {
     const nav = document.getElementById("bottom-nav");
@@ -140,11 +142,14 @@ function BottomNav({ tab, onTab, due, onBack, onAccount, accountOpen }: { tab: T
   useEffect(() => {
     const el = document.getElementById("main-scroll");
     if (!el) return;
+    setFade(0);
+    if (tab === "today") return;
     let last = el.scrollTop;
+    let f = 0;
     const onScroll = () => {
       const y = el.scrollTop;
-      if (y > last + 6 && y > 40) setHidden(true);
-      else if (y < last - 6 || y <= 40) setHidden(false);
+      f = y <= 40 ? 0 : Math.max(0, Math.min(1, f + (y - last) / 160));
+      setFade(f);
       last = y;
     };
     el.addEventListener("scroll", onScroll, { passive: true });
@@ -158,9 +163,10 @@ function BottomNav({ tab, onTab, due, onBack, onAccount, accountOpen }: { tab: T
       id="bottom-nav"
       aria-label="التنقل الرئيسي"
       className={cn(
-        "fixed inset-x-0 bottom-0 z-[48] transition-[transform,opacity] duration-700 ease-in-out lg:hidden",
-        hidden ? "pointer-events-none translate-y-6 opacity-0" : "translate-y-0 opacity-100"
+        "fixed inset-x-0 bottom-0 z-[48] transition-[transform,opacity] duration-300 ease-out lg:hidden",
+        hidden && "pointer-events-none"
       )}
+      style={{ opacity: 1 - fade, transform: `translateY(${fade * 28}px)` }}
     >
       {/* شريط بلون التطبيق متدرج، فيه نقاط لامعة، والتبويب الحالي حبة بيضاء تنزلق بين التبويبات */}
       <div className="nav-bar relative grid min-w-0 grid-cols-5 gap-0.5 overflow-hidden px-2 pb-[calc(env(safe-area-inset-bottom,0px)+8px)] pt-3 min-[380px]:gap-1">
