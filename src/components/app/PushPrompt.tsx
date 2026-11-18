@@ -1,22 +1,19 @@
 "use client";
-// إذن الإشعارات (للمسجَّلين فقط) يُطلب من الجوال مباشرة بعد فتح التطبيق، مثل التطبيقات العادية.
+// إذن الإشعارات (للجميع، ضيوفًا ومسجَّلين) يُطلب من الجوال مباشرة بعد فتح التطبيق، مثل التطبيقات العادية.
 // إن لم يظهر طلب الجوال تظهر نافذة صغيرة بزر «سماح» بديلًا. لا تظهر لمن سمح أو منع، ولمن أجّل تعود بعد ثلاثة أيام.
 import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
 import { enablePush, usePushState } from "@/lib/push-client";
-import { useAccount } from "@/lib/account-client";
 
 const LATER_KEY = "turbawy-push-later";
 
 export default function PushPrompt() {
   const state = usePushState();
-  const { user } = useAccount();
-  const signedIn = !!user;
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!signedIn || state !== "off" || typeof Notification === "undefined" || Notification.permission !== "default") return;
+    if (state !== "off" || typeof Notification === "undefined" || Notification.permission !== "default") return;
     let later = 0;
     try {
       later = Number(localStorage.getItem(LATER_KEY) || 0);
@@ -29,9 +26,9 @@ export default function PushPrompt() {
       });
     }, 2500);
     return () => clearTimeout(t);
-  }, [state, signedIn]);
+  }, [state]);
 
-  if (!show || !signedIn) return null;
+  if (!show) return null;
   const close = () => {
     try {
       localStorage.setItem(LATER_KEY, String(Date.now()));
