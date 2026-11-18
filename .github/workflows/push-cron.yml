@@ -1,0 +1,30 @@
+# مرسل احتياطي للإشعار اليومي: يستدعي /api/push/cron في موعد المساء (٧ مساءً بتوقيت مكة)
+# لا يتكرر الإشعار: الخادم يرسل لكل جهاز مرة واحدة في اليوم مهما تكرر الاستدعاء
+name: push-cron
+
+on:
+  schedule:
+    - cron: "45 15 * * *" # ٦:٤٥ مساءً بتوقيت مكة، فيصل قرابة السابعة مع تأخر جدولة GitHub
+    - cron: "15 16 * * *" # محاولة ثانية إن تأخرت الأولى
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: "morning | noon | evening"
+        default: "evening"
+
+permissions:
+  contents: read
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SLOT: ${{ github.event.inputs.slot || 'evening' }}
+    steps:
+      - name: Send
+        run: |
+          TOKEN=$(printf '%s' "turbawy-push-cron:$DATABASE_URL" | sha256sum | cut -d' ' -f1)
+          curl -sS -m 60 -H "x-push-token: $TOKEN" "https://muallim-guide.vercel.app/api/push/cron?slot=$SLOT"
+          echo
