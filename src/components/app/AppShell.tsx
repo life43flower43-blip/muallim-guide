@@ -226,7 +226,7 @@ function MobileTopBar({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) =
       </header>
     );
   return (
-    <header className="green-head green-head-home safe-top sticky top-0 z-30 px-2 pb-4 lg:hidden">
+    <header className="green-head green-head-home safe-top sticky top-0 z-30 px-2 pb-3 lg:hidden">
         <HeaderArt />
       <div className="flex h-11 items-center justify-between gap-2 px-2.5">
         <span className="flex min-w-0 items-center gap-2 overflow-hidden">
