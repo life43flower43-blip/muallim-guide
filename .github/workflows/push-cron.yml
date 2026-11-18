@@ -25,6 +25,6 @@ jobs:
     steps:
       - name: Send
         run: |
-          TOKEN=$(printf '%s' "turbawy-push-cron:$DATABASE_URL" | sha256sum | cut -d' ' -f1)
+          TOKEN=$(python3 -c "import os,hashlib,urllib.parse as u;p=u.unquote(u.urlsplit(os.environ['DATABASE_URL']).password or '');print(hashlib.sha256(('turbawy-push-cron:'+p).encode()).hexdigest())")
           curl -sS -m 60 -H "x-push-token: $TOKEN" "https://muallim-guide.vercel.app/api/push/cron?slot=$SLOT"
           echo

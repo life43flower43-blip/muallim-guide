@@ -90,8 +90,10 @@ function dueToday(today: string, lastStudy: string | null, lastSent: string | nu
 export async function GET(request: NextRequest) {
   const secret = process.env.CRON_SECRET
   // مرسل احتياطي من GitHub Actions: مفتاح مشتق من رابط قاعدة البيانات الذي يعرفه الطرفان سرًّا
-  const db_url = process.env.DATABASE_URL ?? ''
-  const ghToken = db_url ? createHash('sha256').update('turbawy-push-cron:' + db_url).digest('hex') : ''
+  // (كلمة سر قاعدة البيانات وحدها، لأن رابط Vercel قد يختلف عن رابط GitHub في المضيف أو الخيارات)
+  let dbPass = ''
+  try { dbPass = decodeURIComponent(new URL(process.env.DATABASE_URL ?? '').password) } catch {}
+  const ghToken = dbPass ? createHash('sha256').update('turbawy-push-cron:' + dbPass).digest('hex') : ''
   const okGh = !!ghToken && request.headers.get('x-push-token') === ghToken
   if (!okGh && (!secret || request.headers.get('authorization') !== `Bearer ${secret}`)) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
