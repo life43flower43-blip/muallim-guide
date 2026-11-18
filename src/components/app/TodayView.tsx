@@ -340,7 +340,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               <p className="text-[15px] font-extrabold text-foreground">المحاور</p>
               <span className="h-px flex-1 bg-gradient-to-l from-[#9FCFC4] to-transparent" aria-hidden="true" />
             </div>
-            <div className="-mx-3 flex snap-x gap-2 overflow-x-auto px-3 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="-mx-3 flex snap-x scroll-px-4 gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {COURSES.map((c, k) => (
                 <button
                   key={c.id}
