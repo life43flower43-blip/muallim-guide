@@ -126,6 +126,36 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const [cardH, setCardH] = useState<number | null>(null);
   const [tileH, setTileH] = useState<number | null>(null);
 
+  // الرئيسية بالأيقونات: تصغر مربعات الأقسام حتى يظهر قسم المحاور كاملًا فوق الشريط السفلي على أي هاتف وأي حجم خط
+  useEffect(() => {
+    let tries = 0;
+    const fit = () => {
+      const ax = document.getElementById("home-axes");
+      const nav = document.getElementById("bottom-nav");
+      const root = document.getElementById("home-root");
+      if (!ax || !nav || !root || window.innerWidth >= 1024) return;
+      const cur = parseFloat(getComputedStyle(root).getPropertyValue("--tile")) || 80;
+      const over = ax.getBoundingClientRect().bottom - (nav.getBoundingClientRect().top - 10);
+      if (over > 1 && cur > 40 && tries++ < 16) {
+        root.style.setProperty("--tile", `${Math.max(40, cur - Math.ceil(over / 2))}px`);
+        requestAnimationFrame(fit);
+      }
+    };
+    const reset = () => {
+      tries = 0;
+      document.getElementById("home-root")?.style.setProperty("--tile", "80px");
+      requestAnimationFrame(() => requestAnimationFrame(fit));
+    };
+    const t = setTimeout(reset, 120);
+    const t2 = setTimeout(() => requestAnimationFrame(fit), 900); // بعد تحميل الخطوط والصور
+    window.addEventListener("resize", reset);
+    return () => {
+      clearTimeout(t);
+      clearTimeout(t2);
+      window.removeEventListener("resize", reset);
+    };
+  }, []);
+
   // تمتد البطاقات لتملأ الشاشة حتى تستقر فوق الشريط السفلي مباشرة
   useEffect(() => {
     const fit = () => {
@@ -209,7 +239,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const gridDoors = (ORDER[goal] ?? ORDER.job).map(byTitle);
 
   return (
-    <div className="mx-auto -mt-3 flex max-w-2xl flex-col justify-between gap-3 min-h-[calc(100dvh-var(--nav-h,96px)-118px)] lg:mt-0 lg:min-h-0 lg:justify-start">
+    <div id="home-root" className="mx-auto -mt-3 flex max-w-2xl flex-col justify-between gap-3 min-h-[calc(100dvh-var(--nav-h,96px)-118px)] lg:mt-0 lg:min-h-0 lg:justify-start">
       {/* بنك الرخصة كاملًا: أهم باب للطلاب، في أعلى الصفحة */}
       <LicenseBankCard />
 
@@ -294,7 +324,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             <span className="hd-orb hd-orb2" aria-hidden="true" />
             <span className="hd-dots" aria-hidden="true" />
             <span className="pointer-events-none absolute right-3 top-2 text-[13px] opacity-70" aria-hidden="true">✨</span>
-            <div className="relative grid grid-cols-4 gap-x-2 gap-y-5">
+            <div className="relative grid grid-cols-4 gap-x-2 gap-y-[calc(var(--tile,80px)*0.25)]">
           {[
             { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "#EF4444", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
             ...gridDoors.map((d, k) => ({ title: d.title, icon: DOOR_ICON[d.title] ?? BookOpen, bg: DOOR_BG[d.title] ?? POS_BG[k] ?? "#279488", run: d.run })),
@@ -319,21 +349,21 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 const ic = HOME_ICON_IMG[d.title] ?? HOME_ICON_BY_POS[i] ?? "today";
                 const tone = HOME_TONE[HOME_ICON_BY_POS.indexOf(ic) % HOME_TONE.length] ?? HOME_TONE[0];
                 return (
-                  <span className="icon-shine relative flex h-[80px] w-[80px] items-center justify-center rounded-[24px] border-2 border-[#E3EDE8] border-b-[5px] border-b-[#C9DDD3] bg-white dark:border-border dark:bg-card" style={{ ["--shine-delay" as string]: `${(i % 8) * 0.35}s` }}>
-                    <span className="relative flex h-[62px] w-[62px] items-center justify-center rounded-full" style={{ background: tone }}>
+                  <span className="icon-shine relative flex h-[var(--tile,80px)] w-[var(--tile,80px)] items-center justify-center rounded-[24px] border-2 border-[#E3EDE8] border-b-[5px] border-b-[#C9DDD3] bg-white dark:border-border dark:bg-card" style={{ ["--shine-delay" as string]: `${(i % 8) * 0.35}s` }}>
+                    <span className="relative flex h-[calc(var(--tile,80px)*0.78)] w-[calc(var(--tile,80px)*0.78)] items-center justify-center rounded-full" style={{ background: tone }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={`/emoji/${ic}.webp`} alt="" width={46} height={46} className="emo-float h-[46px] w-[46px]" style={{ animationDelay: `${i * 0.4}s` }} draggable={false} />
+                      <img src={`/emoji/${ic}.webp`} alt="" width={46} height={46} className="emo-float h-[calc(var(--tile,80px)*0.58)] w-[calc(var(--tile,80px)*0.58)]" style={{ animationDelay: `${i * 0.4}s` }} draggable={false} />
                     </span>
                   </span>
                 );
               })()}
-              <FitText max={13.5} min={8.5} className="w-full whitespace-nowrap text-center font-bold leading-5 text-foreground dark:text-foreground">{d.title}</FitText>
+              <FitText max={13.5} min={8.5} group="home-ico" className="w-full whitespace-nowrap text-center font-bold leading-5 text-foreground dark:text-foreground">{d.title}</FitText>
             </motion.button>
           ))}
             </div>
           </div>
           {/* المحاور: لوح فاتح فيه بطاقات تُسحب جانبيًا، لكل محور رسمه وسهمه */}
-          <div className="col-span-4 relative overflow-hidden rounded-[26px] border border-[#D6ECE6] bg-gradient-to-b from-[#EEF8F5] to-[#F7FBF9] px-3 pb-1.5 pt-2 dark:border-border dark:from-card dark:to-card">
+          <div id="home-axes" className="col-span-4 relative overflow-hidden rounded-[26px] border border-[#D6ECE6] bg-gradient-to-b from-[#EEF8F5] to-[#F7FBF9] px-3 pb-1.5 pt-2 dark:border-border dark:from-card dark:to-card">
             <span className="pointer-events-none absolute -left-2 top-1 text-[34px] opacity-60" aria-hidden="true">🌿</span>
             <div className="mb-1.5 flex items-center gap-2">
               <span className="text-[18px] leading-none" aria-hidden="true">📖</span>
@@ -356,7 +386,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={`/emoji/${AXIS_IMG[c.id] ?? "ax-G1"}.webp`} alt="" className={cn("emo-float relative h-9 object-contain", c.id === "M2" ? "w-14" : "w-9")} style={{ animationDelay: `${k * 0.35}s` }} draggable={false} />
                   </span>
-                  <FitText max={12} min={8.5} className="w-full whitespace-nowrap text-center font-extrabold leading-5 text-foreground">{COURSE_SHORT[c.id] ?? c.name}</FitText>
+                  <FitText max={12} min={8.5} group="ax-card" className="w-full whitespace-nowrap text-center font-extrabold leading-5 text-foreground">{COURSE_SHORT[c.id] ?? c.name}</FitText>
                 </button>
               ))}
             </div>
