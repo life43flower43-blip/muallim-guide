@@ -57,7 +57,7 @@ function MiniActivity({ sessions }: { sessions: { ts: number; total: number }[] 
   const shade = ["#E8E8E8", "#777777", "#3A3A3A", "#111111"];
   return (
     <div className="flex flex-col items-center gap-1.5" aria-label="نشاطك في آخر ٨ أسابيع">
-      <span className="relative flex h-[58px] items-center">
+      <span className="stat-sm relative flex h-[50px] items-center">
         <span className="soft-glow" style={{ background: "#B5DED3" }} aria-hidden="true" />
       <div className="flex gap-[2.5px] rounded-[10px] bg-white p-[5px] ring-[1.5px] ring-[#111111] dark:bg-card" dir="ltr">
         {cols.map((col, w) => (
@@ -257,7 +257,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             }}
             className="flex shrink-0 flex-col items-center gap-1.5 text-foreground dark:text-foreground"
           >
-            <span className="relative flex h-[58px] items-center">
+            <span className="stat-sm relative flex h-[50px] items-center">
         <span className="soft-glow" style={{ background: "#B4E8C2" }} aria-hidden="true" />
             <span className="relative h-[44px] w-[44px] shrink-0" aria-hidden="true">
               {/* هالة متموّجة تدور حول الحلقة */}
@@ -294,7 +294,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             className="flex shrink-0 flex-col items-center gap-1.5 text-foreground dark:text-foreground"
           >
             {/* بطاقتان مكدّستان كبطاقات المراجعة، والعليا تحمل العدد، وسهما مراجعة يدوران حولهما ببطء */}
-            <span className="relative flex h-[58px] items-center">
+            <span className="stat-sm relative flex h-[50px] items-center">
         <span className="soft-glow" style={{ background: "#F6D98E" }} aria-hidden="true" />
             <span className="relative flex h-[44px] w-[44px] items-center justify-center" aria-hidden="true">
               <svg viewBox="0 0 48 48" className="review-spin absolute -inset-[6px] h-[56px] w-[56px]">
@@ -319,11 +319,10 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         // شبكة رموز دائرية ملونة: أربعة في كل صف، والاسم تحت كل رمز
         <div className="contents">
           {/* لوح الأقسام: خلفية دافئة متدرجة من الذهبي الفاتح إلى الأخضر الفاتح، فيها دوائر ضوء ونقاط ناعمة */}
-          <div className="home-doors col-span-4 relative overflow-hidden rounded-[28px] border border-[#EADFBF] px-2 pb-3 pt-3.5 dark:border-border">
+          <div className="home-doors col-span-4 relative overflow-hidden rounded-[28px] border border-[#D6ECE6] px-2 pb-3 pt-3.5 dark:border-border">
             <span className="hd-orb hd-orb1" aria-hidden="true" />
             <span className="hd-orb hd-orb2" aria-hidden="true" />
             <span className="hd-dots" aria-hidden="true" />
-            <span className="pointer-events-none absolute right-3 top-2 text-[13px] opacity-70" aria-hidden="true">✨</span>
             <div className="relative grid grid-cols-4 gap-x-2 gap-y-[calc(var(--tile,80px)*0.25)]">
           {[
             { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "#EF4444", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
