@@ -103,6 +103,8 @@ export async function GET(request: NextRequest) {
   }
   if (!pushConfigured()) return NextResponse.json({ error: 'push_not_configured' }, { status: 503 })
   const raw = request.nextUrl.searchParams.get('slot') ?? 'evening'
+  // إرسال تجريبي فوري (من المرسل الاحتياطي فقط): يتجاوز قاعدة «مرة في اليوم»
+  const force = okGh && request.nextUrl.searchParams.get('force') === '1'
   const slot = (SLOTS as readonly string[]).includes(raw) ? raw : 'evening'
 
   const now = new Date()
@@ -113,7 +115,7 @@ export async function GET(request: NextRequest) {
   let errors = 0
   for (const s of subs) {
     const today = localDay(s.tzOffset, now)
-    if (!dueToday(today, s.lastStudyDay, s.lastSentDay, localDay(s.tzOffset, s.createdAt))) {
+    if (!force && !dueToday(today, s.lastStudyDay, s.lastSentDay, localDay(s.tzOffset, s.createdAt))) {
       skipped++
       continue
     }
