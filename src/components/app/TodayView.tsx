@@ -209,12 +209,12 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const gridDoors = (ORDER[goal] ?? ORDER.job).map(byTitle);
 
   return (
-    <div className="mx-auto -mt-1 max-w-2xl space-y-3 lg:mt-0">
+    <div className="mx-auto -mt-3 max-w-2xl space-y-2.5 lg:mt-0">
       {/* بنك الرخصة كاملًا: أهم باب للطلاب، في أعلى الصفحة */}
       <LicenseBankCard />
 
       {/* مستوى الاستعداد فوق غصن الأيام، على اليسار */}
-      <motion.div ref={statsRef} {...rise(9)} className="flex flex-col-reverse gap-2">
+      <motion.div ref={statsRef} {...rise(9)} className="flex flex-col-reverse gap-1.5">
         {/* شريط الأسبوع: غصن بسبع أوراق، تصير الورقة ذهبية في كل يوم درست فيه الطالبة */}
         <div className="relative min-w-0 px-2" aria-label="أيام دراستك هذا الأسبوع">
           <svg className="absolute inset-x-6 top-[13px] h-[6px] w-[calc(100%-48px)]" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
@@ -321,7 +321,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       {/* أبواب التطبيق */}
       {homeStyle === "icons" ? (
         // شبكة رموز دائرية ملونة: أربعة في كل صف، والاسم تحت كل رمز
-        <div ref={gridRef} className="grid grid-cols-4 gap-x-2 gap-y-5 pt-2">
+        <div ref={gridRef} className="grid grid-cols-4 gap-x-2 gap-y-4 pt-0.5">
           {/* لوح الأقسام: خلفية دافئة متدرجة من الذهبي الفاتح إلى الأخضر الفاتح، فيها دوائر ضوء ونقاط ناعمة */}
           <div className="home-doors col-span-4 relative overflow-hidden rounded-[28px] border border-[#EADFBF] px-2 pb-4 pt-4 dark:border-border">
             <span className="hd-orb hd-orb1" aria-hidden="true" />

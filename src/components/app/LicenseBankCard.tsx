@@ -24,7 +24,7 @@ export default function LicenseBankCard() {
       <span className="min-w-0 flex-1">
         <FitText max={15} min={11} className="block w-full whitespace-nowrap font-extrabold leading-5">محاكاة الرخصة المهنية</FitText>
         <span className="mt-0.5 block truncate text-[12px] leading-4 text-white/75">
-          {done ? `أنجزت ${ad(done)} من ${ad(total)} سؤالًا` : `${ad(total)} سؤالًا مرتبة بالمحاور`}
+          {done ? (pct >= 1 ? `تقدّمك ${ad(pct)}٪ · تابع من حيث توقفت` : "بدأت رحلتك · تابع من حيث توقفت") : `${ad(total)} سؤالًا مرتبة بالمحاور`}
         </span>
         {done > 0 && (
           <span className="mt-1.5 block h-1 overflow-hidden rounded-full bg-white/20">
