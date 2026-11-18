@@ -15,6 +15,7 @@ import {
   Share2,
   Users,
   Send,
+  Globe,
   BookOpen,
   CalendarClock,
   CheckCircle2,
@@ -272,6 +273,8 @@ export default function ProfileView({ onGoTab }: { onGoTab: (t: Tab) => void }) 
             <MenuRow icon={Gem} color="#D97706" title="الجواهر" sub={`رصيدك ${ad(wallet.gems)} جوهرة`} onClick={() => setSection("gems")} />
           </MenuGroup>
           <MenuGroup title="تابعنا">
+            {/* رابط الموقع من التطبيق، بوسوم UTM يعرف بها Google Analytics أن الزيارة جاءت من التطبيق */}
+            <MenuRow icon={Globe} color="#14857B" title="موقع تربوي" sub="مقالات ومفاهيم وأدوات للمعلم" href="https://muallim-guide.vercel.app/?utm_source=turbawy_app&utm_medium=app&utm_campaign=app_to_site" onClick={() => (window as unknown as { gtag?: (...a: unknown[]) => void }).gtag?.("event", "open_site_from_app")} />
             <MenuRow icon={Send} color="#0EA5E9" title="قناة تيليجرام" sub="معلومة وأسئلة يومية" href="https://t.me/MuallimExam" />
             <MenuRow icon={Users} color="#1D4ED8" title="صفحة فيسبوك" sub="جديد تربوي" href="https://www.facebook.com/share/1CHdqGvYz5/" />
             {process.env.NEXT_PUBLIC_LINKEDIN_URL && <MenuRow icon={Users} color="#0A66C2" title="لينكدإن" sub="تابعنا مهنيًا" href={process.env.NEXT_PUBLIC_LINKEDIN_URL} />}
@@ -590,7 +593,7 @@ function MenuRow({ icon: Icon, color, title, sub, onClick, href }: { icon: React
   );
   const cls = "flex min-h-[64px] w-full items-center gap-3 px-3 py-2 transition active:bg-muted";
   return href ? (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
+    <a href={href} target="_blank" rel="noopener noreferrer" onClick={onClick} className={cls}>{inner}</a>
   ) : (
     <button type="button" onClick={onClick} className={cls}>{inner}</button>
   );

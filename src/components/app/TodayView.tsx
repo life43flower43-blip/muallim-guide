@@ -333,30 +333,30 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             </div>
           </div>
           {/* المحاور: لوح فاتح فيه بطاقات تُسحب جانبيًا، لكل محور رسمه وسهمه */}
-          <div className="col-span-4 relative overflow-hidden rounded-[26px] border border-[#D6ECE6] bg-gradient-to-b from-[#EEF8F5] to-[#F7FBF9] px-3 pb-2 pt-3.5 dark:border-border dark:from-card dark:to-card">
+          <div className="col-span-4 relative overflow-hidden rounded-[26px] border border-[#D6ECE6] bg-gradient-to-b from-[#EEF8F5] to-[#F7FBF9] px-3 pb-2 pt-2.5 dark:border-border dark:from-card dark:to-card">
             <span className="pointer-events-none absolute -left-2 top-1 text-[34px] opacity-60" aria-hidden="true">🌿</span>
-            <div className="mb-3 flex items-center gap-2">
-              <span className="text-[22px] leading-none" aria-hidden="true">📖</span>
-              <p className="text-[17px] font-extrabold text-foreground">المحاور</p>
+            <div className="mb-2 flex items-center gap-2">
+              <span className="text-[18px] leading-none" aria-hidden="true">📖</span>
+              <p className="text-[15px] font-extrabold text-foreground">المحاور</p>
               <span className="h-px flex-1 bg-gradient-to-l from-[#9FCFC4] to-transparent" aria-hidden="true" />
             </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="-mx-3 flex snap-x gap-2 overflow-x-auto px-3 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {COURSES.map((c, k) => (
                 <button
                   key={c.id}
                   type="button"
                   onClick={() => ui.openCourseTab(c.id)}
-                  className="relative flex min-w-0 flex-col items-center gap-1.5 rounded-[16px] border border-[#E6EFEC] bg-white px-1.5 pb-2 pt-2.5 shadow-[0_4px_12px_-8px_rgba(15,118,110,0.35)] transition active:scale-[0.97] dark:border-border dark:bg-card"
+                  className="relative flex w-[96px] shrink-0 snap-start flex-col items-center gap-1 rounded-[16px] border border-[#E6EFEC] bg-white px-1.5 pb-1.5 pt-2 shadow-[0_4px_12px_-8px_rgba(15,118,110,0.35)] transition active:scale-[0.97] dark:border-border dark:bg-card"
                 >
                   <span className="absolute left-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full border-[1.5px] border-[#9FCFC4] text-[#14857B]" aria-hidden="true">
                     <ChevronLeft className="h-3 w-3" strokeWidth={3} />
                   </span>
-                  <span className="relative flex h-[42px] w-full items-center justify-center">
-                    <span className="absolute inset-x-4 inset-y-0.5 rounded-[50%] blur-[2px]" style={{ background: AXIS_BLOB[k % AXIS_BLOB.length] }} aria-hidden="true" />
+                  <span className="relative flex h-[38px] w-full items-center justify-center">
+                    <span className="absolute inset-x-3 inset-y-0.5 rounded-[50%] blur-[2px]" style={{ background: AXIS_BLOB[k % AXIS_BLOB.length] }} aria-hidden="true" />
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`/emoji/${AXIS_IMG[c.id] ?? "ax-G1"}.webp`} alt="" className={cn("emo-float relative h-8 object-contain", c.id === "M2" ? "w-12" : "w-8")} style={{ animationDelay: `${k * 0.35}s` }} draggable={false} />
+                    <img src={`/emoji/${AXIS_IMG[c.id] ?? "ax-G1"}.webp`} alt="" className={cn("emo-float relative h-7 object-contain", c.id === "M2" ? "w-11" : "w-7")} style={{ animationDelay: `${k * 0.35}s` }} draggable={false} />
                   </span>
-                  <span className="flex min-h-[30px] w-full items-center justify-center text-center text-[12px] font-extrabold leading-[15px] text-foreground">{COURSE_SHORT[c.id] ?? c.name}</span>
+                  <span className="flex min-h-[30px] w-full items-center justify-center text-center text-[11.5px] font-extrabold leading-[15px] text-foreground">{COURSE_SHORT[c.id] ?? c.name}</span>
                 </button>
               ))}
             </div>
