@@ -127,7 +127,9 @@ function SideNav({ tab, onTab, due }: { tab: Tab; onTab: (t: Tab) => void; due: 
 function BottomNav({ tab, onTab, due, onBack, onAccount, accountOpen }: { tab: Tab; onTab: (t: Tab) => void; due: number; onBack: () => void; onAccount: () => void; accountOpen: boolean }) {
   // في الرئيسية يبقى الشريط ظاهرًا دائمًا. وفي غيرها يبهت تدريجيًا مع سحب الصفحة للأسفل
   // (كلما نزل الطالب أكثر قلّ وضوحه حتى يختفي)، ويعود تدريجيًا حين يسحبها للأعلى
-  const [fade, setFade] = useState(0); // ٠ ظاهر تمامًا، ١ مختفٍ
+  // درجة البهتان لكل تبويب على حدة: ٠ ظاهر تمامًا، ١ مختفٍ (تعود صفرًا تلقائيًا عند تغيير التبويب)
+  const [fadeOf, setFadeOf] = useState<{ tab: Tab; f: number }>({ tab, f: 0 });
+  const fade = fadeOf.tab === tab ? fadeOf.f : 0;
   const hidden = fade > 0.7;
   // ارتفاع الشريط الفعلي (مع مساحة أزرار الهاتف) ليترك المحتوى تحته مسافة تكفي فلا تختفي آخر بطاقة
   useEffect(() => {
@@ -142,14 +144,13 @@ function BottomNav({ tab, onTab, due, onBack, onAccount, accountOpen }: { tab: T
   useEffect(() => {
     const el = document.getElementById("main-scroll");
     if (!el) return;
-    setFade(0);
     if (tab === "today") return;
     let last = el.scrollTop;
     let f = 0;
     const onScroll = () => {
       const y = el.scrollTop;
       f = y <= 40 ? 0 : Math.max(0, Math.min(1, f + (y - last) / 160));
-      setFade(f);
+      setFadeOf({ tab, f });
       last = y;
     };
     el.addEventListener("scroll", onScroll, { passive: true });
