@@ -57,7 +57,7 @@ function MiniActivity({ sessions }: { sessions: { ts: number; total: number }[] 
   const shade = ["#E8E8E8", "#777777", "#3A3A3A", "#111111"];
   return (
     <div className="flex flex-col items-center gap-1.5" aria-label="نشاطك في آخر ٨ أسابيع">
-      <span className="relative flex h-[52px] items-center">
+      <span className="relative flex h-[58px] items-center">
         <span className="soft-glow" style={{ background: "#B5DED3" }} aria-hidden="true" />
       <div className="flex gap-[2.5px] rounded-[10px] bg-white p-[5px] ring-[1.5px] ring-[#111111] dark:bg-card" dir="ltr">
         {cols.map((col, w) => (
@@ -227,7 +227,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             }}
             className="flex shrink-0 flex-col items-center gap-1.5 text-foreground dark:text-foreground"
           >
-            <span className="relative flex h-[52px] items-center">
+            <span className="relative flex h-[58px] items-center">
         <span className="soft-glow" style={{ background: "#B4E8C2" }} aria-hidden="true" />
             <span className="relative h-[44px] w-[44px] shrink-0" aria-hidden="true">
               {/* هالة متموّجة تدور حول الحلقة */}
@@ -264,7 +264,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             className="flex shrink-0 flex-col items-center gap-1.5 text-foreground dark:text-foreground"
           >
             {/* بطاقتان مكدّستان كبطاقات المراجعة، والعليا تحمل العدد، وسهما مراجعة يدوران حولهما ببطء */}
-            <span className="relative flex h-[52px] items-center">
+            <span className="relative flex h-[58px] items-center">
         <span className="soft-glow" style={{ background: "#F6D98E" }} aria-hidden="true" />
             <span className="relative flex h-[44px] w-[44px] items-center justify-center" aria-hidden="true">
               <svg viewBox="0 0 48 48" className="review-spin absolute -inset-[6px] h-[56px] w-[56px]">
@@ -289,12 +289,12 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
         // شبكة رموز دائرية ملونة: أربعة في كل صف، والاسم تحت كل رمز
         <div ref={gridRef} className="grid grid-cols-4 gap-x-2 gap-y-4 pt-0.5">
           {/* لوح الأقسام: خلفية دافئة متدرجة من الذهبي الفاتح إلى الأخضر الفاتح، فيها دوائر ضوء ونقاط ناعمة */}
-          <div className="home-doors col-span-4 relative overflow-hidden rounded-[28px] border border-[#EADFBF] px-2 pb-2.5 pt-3 dark:border-border">
+          <div className="home-doors col-span-4 relative overflow-hidden rounded-[28px] border border-[#EADFBF] px-2 pb-3 pt-3.5 dark:border-border">
             <span className="hd-orb hd-orb1" aria-hidden="true" />
             <span className="hd-orb hd-orb2" aria-hidden="true" />
             <span className="hd-dots" aria-hidden="true" />
             <span className="pointer-events-none absolute right-3 top-2 text-[13px] opacity-70" aria-hidden="true">✨</span>
-            <div className="relative grid grid-cols-4 gap-x-2 gap-y-2.5">
+            <div className="relative grid grid-cols-4 gap-x-2 gap-y-5">
           {[
             { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "#EF4444", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
             ...gridDoors.map((d, k) => ({ title: d.title, icon: DOOR_ICON[d.title] ?? BookOpen, bg: DOOR_BG[d.title] ?? POS_BG[k] ?? "#279488", run: d.run })),
@@ -319,15 +319,15 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 const ic = HOME_ICON_IMG[d.title] ?? HOME_ICON_BY_POS[i] ?? "today";
                 const tone = HOME_TONE[HOME_ICON_BY_POS.indexOf(ic) % HOME_TONE.length] ?? HOME_TONE[0];
                 return (
-                  <span className="icon-shine relative flex h-[60px] w-[60px] items-center justify-center rounded-[20px] border-2 border-[#E3EDE8] border-b-[5px] border-b-[#C9DDD3] bg-white dark:border-border dark:bg-card" style={{ ["--shine-delay" as string]: `${(i % 8) * 0.35}s` }}>
-                    <span className="relative flex h-[46px] w-[46px] items-center justify-center rounded-full" style={{ background: tone }}>
+                  <span className="icon-shine relative flex h-[80px] w-[80px] items-center justify-center rounded-[24px] border-2 border-[#E3EDE8] border-b-[5px] border-b-[#C9DDD3] bg-white dark:border-border dark:bg-card" style={{ ["--shine-delay" as string]: `${(i % 8) * 0.35}s` }}>
+                    <span className="relative flex h-[62px] w-[62px] items-center justify-center rounded-full" style={{ background: tone }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={`/emoji/${ic}.webp`} alt="" width={32} height={32} className="emo-float h-8 w-8" style={{ animationDelay: `${i * 0.4}s` }} draggable={false} />
+                      <img src={`/emoji/${ic}.webp`} alt="" width={46} height={46} className="emo-float h-[46px] w-[46px]" style={{ animationDelay: `${i * 0.4}s` }} draggable={false} />
                     </span>
                   </span>
                 );
               })()}
-              <FitText max={12.5} min={8.5} className="w-full whitespace-nowrap text-center font-bold leading-5 text-foreground dark:text-foreground">{d.title}</FitText>
+              <FitText max={13.5} min={8.5} className="w-full whitespace-nowrap text-center font-bold leading-5 text-foreground dark:text-foreground">{d.title}</FitText>
             </motion.button>
           ))}
             </div>
@@ -346,15 +346,15 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                   key={c.id}
                   type="button"
                   onClick={() => ui.openCourseTab(c.id)}
-                  className="relative flex w-[96px] shrink-0 snap-start flex-col items-center gap-0.5 rounded-[16px] border border-[#E6EFEC] bg-white px-1.5 pb-1 pt-1.5 shadow-[0_4px_12px_-8px_rgba(15,118,110,0.35)] transition active:scale-[0.97] dark:border-border dark:bg-card"
+                  className="relative flex w-[110px] shrink-0 snap-start flex-col items-center gap-0.5 rounded-[16px] border border-[#E6EFEC] bg-white px-1.5 pb-1 pt-1.5 shadow-[0_4px_12px_-8px_rgba(15,118,110,0.35)] transition active:scale-[0.97] dark:border-border dark:bg-card"
                 >
                   <span className="absolute left-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full border-[1.5px] border-[#9FCFC4] bg-white text-[#14857B] dark:bg-card" aria-hidden="true">
                     <ChevronLeft className="h-3 w-3" strokeWidth={3} />
                   </span>
-                  <span className="relative flex h-[32px] w-full items-center justify-center">
+                  <span className="relative flex h-[44px] w-full items-center justify-center">
                     <span className="absolute inset-x-3 inset-y-0.5 rounded-[50%] blur-[2px]" style={{ background: AXIS_BLOB[k % AXIS_BLOB.length] }} aria-hidden="true" />
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`/emoji/${AXIS_IMG[c.id] ?? "ax-G1"}.webp`} alt="" className={cn("emo-float relative h-7 object-contain", c.id === "M2" ? "w-11" : "w-7")} style={{ animationDelay: `${k * 0.35}s` }} draggable={false} />
+                    <img src={`/emoji/${AXIS_IMG[c.id] ?? "ax-G1"}.webp`} alt="" className={cn("emo-float relative h-9 object-contain", c.id === "M2" ? "w-14" : "w-9")} style={{ animationDelay: `${k * 0.35}s` }} draggable={false} />
                   </span>
                   <FitText max={12} min={8.5} className="w-full whitespace-nowrap text-center font-extrabold leading-5 text-foreground">{COURSE_SHORT[c.id] ?? c.name}</FitText>
                 </button>
