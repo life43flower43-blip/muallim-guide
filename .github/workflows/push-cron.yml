@@ -11,6 +11,9 @@ on:
       slot:
         description: "morning | noon | evening"
         default: "evening"
+      force:
+        description: "1 = إرسال فوري تجريبي حتى لو أُرسل اليوم"
+        default: "0"
 
 permissions:
   contents: read
@@ -22,11 +25,12 @@ jobs:
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       SLOT: ${{ github.event.inputs.slot || 'evening' }}
+      FORCE: ${{ github.event.inputs.force || '0' }}
     steps:
       - name: Send
         run: |
           sudo apt-get install -y -qq postgresql-client >/dev/null
           TOKEN=$(openssl rand -hex 24)
           psql "$DATABASE_URL" -q -c "INSERT INTO \"TelegramPost\" (key, \"createdAt\") VALUES ('pushcron:$TOKEN', now());"
-          curl -sS -m 60 -H "x-push-token: $TOKEN" "https://muallim-guide.vercel.app/api/push/cron?slot=$SLOT"
+          curl -sS -m 60 -H "x-push-token: $TOKEN" "https://muallim-guide.vercel.app/api/push/cron?slot=$SLOT&force=$FORCE"
           echo
