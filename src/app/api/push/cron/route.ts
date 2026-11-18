@@ -8,7 +8,6 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { createHash } from 'crypto'
 import { lastPushError, localDay, pushConfigured, sendPush, type PushPayload } from '@/lib/push'
 import { MASTERED_REPETITIONS } from '@/lib/spaced-repetition'
 import { publicBank } from '@/lib/public-bank'
@@ -89,12 +88,16 @@ function dueToday(today: string, lastStudy: string | null, lastSent: string | nu
 
 export async function GET(request: NextRequest) {
   const secret = process.env.CRON_SECRET
-  // مرسل احتياطي من GitHub Actions: مفتاح مشتق من رابط قاعدة البيانات الذي يعرفه الطرفان سرًّا
-  // (كلمة سر قاعدة البيانات وحدها، لأن رابط Vercel قد يختلف عن رابط GitHub في المضيف أو الخيارات)
-  let dbPass = ''
-  try { dbPass = decodeURIComponent(new URL(process.env.DATABASE_URL ?? '').password) } catch {}
-  const ghToken = dbPass ? createHash('sha256').update('turbawy-push-cron:' + dbPass).digest('hex') : ''
-  const okGh = !!ghToken && request.headers.get('x-push-token') === ghToken
+  // مرسل احتياطي من GitHub Actions: يكتب رمزًا مؤقتًا في قاعدة البيانات (لا يملك ذلك إلا من يملك رابطها) ثم يرسله هنا
+  const tok = request.headers.get('x-push-token') ?? ''
+  let okGh = false
+  if (/^[a-f0-9]{32,64}$/.test(tok)) {
+    const row = await db.telegramPost.findUnique({ where: { key: 'pushcron:' + tok } }).catch(() => null)
+    if (row && Date.now() - row.createdAt.getTime() < 10 * 60 * 1000) {
+      okGh = true
+      await db.telegramPost.delete({ where: { key: row.key } }).catch(() => null)
+    }
+  }
   if (!okGh && (!secret || request.headers.get('authorization') !== `Bearer ${secret}`)) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
