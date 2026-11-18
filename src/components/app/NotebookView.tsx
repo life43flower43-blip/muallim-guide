@@ -99,7 +99,7 @@ export default function NotebookView() {
   const current = chapters[Math.min(chIndex, chapters.length - 1)];
 
   return (
-    <div className="mx-auto max-w-2xl space-y-5">
+    <div className="mx-auto max-w-2xl space-y-3">
       <PageTitle title="البوصلة" />
 
       {/* مدخل الخرائط الذهنية المتحركة: بطاقة داكنة مميزة فيها شبكة أفكار تنبض بهدوء */}
@@ -110,9 +110,9 @@ export default function NotebookView() {
       <button
         type="button"
         onClick={() => useUi.getState().startMind()}
-        className="mind-card relative flex w-full items-center gap-3 overflow-hidden rounded-[20px] bg-gradient-to-l from-[#7B4FD6] to-[#5B3BB0] px-3 py-2.5 text-right text-white ring-[3px] ring-[#CBD5E1] transition active:scale-[0.98]"
+        className="mind-card relative flex w-full items-center gap-3 overflow-hidden rounded-[20px] bg-gradient-to-l from-[#7B4FD6] to-[#5B3BB0] px-3 py-1.5 text-right text-white ring-[3px] ring-[#CBD5E1] transition active:scale-[0.98]"
       >
-        <svg viewBox="0 0 64 64" className="h-11 w-11 shrink-0 overflow-visible" aria-hidden="true">
+        <svg viewBox="0 0 64 64" className="h-9 w-9 shrink-0 overflow-visible" aria-hidden="true">
           <g stroke="#D4A017" strokeWidth="2" strokeLinecap="round" opacity="0.85">
             <path className="mc-line" d="M32 32 L12 14" /><path className="mc-line" d="M32 32 L54 16" style={{ animationDelay: ".3s" }} />
             <path className="mc-line" d="M32 32 L10 46" style={{ animationDelay: ".6s" }} /><path className="mc-line" d="M32 32 L52 50" style={{ animationDelay: ".9s" }} />
@@ -135,15 +135,15 @@ export default function NotebookView() {
       </div>
 
       {current ? (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {/* المحور والفصل في محدِّد واحد، وسهمان صغيران للتنقل بين الفصول */}
-          <div className="flex items-center gap-1 rounded-[20px] border border-[var(--t075)] bg-white p-1.5 dark:border-border dark:bg-card">
+          <div className="flex items-center gap-1 rounded-[20px] border border-[var(--t075)] bg-white p-1 dark:border-border dark:bg-card">
             <button type="button" aria-label="المحطة السابقة" disabled={chIndex <= 0} onClick={() => setChIndex(chIndex - 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#C9971C] disabled:opacity-25">
               <ChevronRight className="h-5 w-5" strokeWidth={2.5} />
             </button>
-            <button type="button" onClick={() => setPicking(true)} className="min-w-0 flex-1 rounded-[14px] px-1 py-1 text-center transition active:scale-[0.98]">
-              <FitText max={14} min={11} className="text-center font-bold leading-6 text-[#C9971C]">{`${COURSE_SHORT[courseId] ?? ""} ▾`}</FitText>
-              <FitText max={20} min={12} className="text-center font-extrabold leading-7 text-foreground">{chapterLabel(current.chapter)}</FitText>
+            <button type="button" onClick={() => setPicking(true)} className="min-w-0 flex-1 rounded-[14px] px-1 py-0.5 text-center transition active:scale-[0.98]">
+              <FitText max={14} min={11} className="text-center font-bold leading-5 text-[#C9971C]">{`${COURSE_SHORT[courseId] ?? ""} ▾`}</FitText>
+              <FitText max={20} min={12} className="text-center font-extrabold leading-6 text-foreground">{chapterLabel(current.chapter)}</FitText>
             </button>
             <button type="button" aria-label="المحطة التالية" disabled={chIndex >= chapters.length - 1} onClick={() => setChIndex(chIndex + 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#C9971C] disabled:opacity-25">
               <ChevronLeft className="h-5 w-5" strokeWidth={2.5} />
@@ -151,7 +151,7 @@ export default function NotebookView() {
           </div>
 
           {/* أقسام الدفتر تحت محدد الفصل */}
-          <div role="tablist" aria-label="أقسام الدفتر" className="grid grid-cols-3 gap-1 rounded-[22px] border border-[#ECE3C4] bg-white p-1 dark:bg-card">
+          <div role="tablist" aria-label="أقسام الدفتر" className="sticky top-1 z-20 grid grid-cols-3 gap-1 rounded-[22px] border border-[#ECE3C4] bg-white p-1 shadow-[0_6px_14px_-12px_rgba(0,0,0,0.35)] dark:bg-card">
             {PARTS.map((p) => (
               <button
                 key={p.id}
