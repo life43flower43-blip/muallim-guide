@@ -1,0 +1,30 @@
+# مراجعة صور المفاهيم بنموذج رؤية: يطبع القرارات في السجل فقط ولا يعدّل شيئًا
+name: review-concept-images
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "عدد المفاهيم (0 للكل)"
+        default: "0"
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow
+      - name: Review
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          LIMIT: ${{ github.event.inputs.limit }}
+        run: python scripts/review-concept-images.py
