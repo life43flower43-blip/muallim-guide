@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { pushConfigured, sendPush } from '@/lib/push'
 import { checkRateLimit, getClientIP, rateLimitResponse, RATE_LIMITS } from '@/lib/rate-limit'
 
 export const dynamic = 'force-dynamic'
@@ -24,11 +25,16 @@ export async function POST(request: NextRequest) {
   const tzOffset = Number.isFinite(body.tzOffset) ? Math.max(-840, Math.min(840, Math.round(body.tzOffset))) : 0
   const slot = ['morning', 'noon', 'evening'].includes(body.slot) ? body.slot : undefined
   const userId = await getCurrentUser()
-  await db.pushSubscription.upsert({
+  const isNew = !(await db.pushSubscription.findUnique({ where: { endpoint: sub.endpoint }, select: { id: true } }))
+  const saved = await db.pushSubscription.upsert({
     where: { endpoint: sub.endpoint },
     create: { endpoint: sub.endpoint, p256dh: sub.keys.p256dh, auth: sub.keys.auth, tzOffset, userId, ...(slot ? { slot } : {}) },
     update: { p256dh: sub.keys.p256dh, auth: sub.keys.auth, tzOffset, ...(slot ? { slot } : {}), ...(userId ? { userId } : {}) },
   })
+  // جهاز جديد: إشعار ترحيب فوري يؤكد لصاحبه أن الإشعارات تعمل
+  if (isNew && pushConfigured()) {
+    await sendPush(saved, { title: 'تم تفعيل الإشعارات ✅', body: 'سيصلك من تربوي تذكير واحد كل يوم بما تراجعه.', url: '/app', tag: 'welcome' }).catch(() => null)
+  }
   return NextResponse.json({ ok: true })
 }
 

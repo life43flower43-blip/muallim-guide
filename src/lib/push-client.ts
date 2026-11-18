@@ -4,6 +4,8 @@
 import { useSyncExternalStore } from 'react'
 
 const KEY = 'turbawy-push-endpoint'
+// من أوقف الإشعارات بنفسه من الإعدادات؛ غيره يُشترك تلقائيًا ما دام إذن الجوال ممنوحًا
+const OFF_KEY = 'turbawy-push-off'
 const VAPID = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? ''
 
 export type PushState = 'unsupported' | 'denied' | 'on' | 'off'
@@ -86,6 +88,7 @@ export async function enablePush(): Promise<boolean> {
     const reg = await navigator.serviceWorker.ready
     const sub = await currentSub(reg, true)
     if (!sub) return false
+    try { localStorage.removeItem(OFF_KEY) } catch {}
     const res = await fetch('/api/push/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -102,6 +105,7 @@ export async function enablePush(): Promise<boolean> {
 }
 
 export async function disablePush(): Promise<void> {
+  try { localStorage.setItem(OFF_KEY, '1') } catch {}
   try {
     const reg = await navigator.serviceWorker.ready
     const sub = await reg.pushManager.getSubscription()
@@ -136,7 +140,7 @@ async function syncPushInner(): Promise<string> {
     if (read() === 'unsupported') return 'unsupported'
     if (Notification.permission !== 'granted') return `perm-${Notification.permission}`
     const reg = await navigator.serviceWorker.ready
-    const sub = await currentSub(reg, !!localStorage.getItem(KEY)) // لا ننشئ اشتراكًا لمن لم يفعّلها
+    const sub = await currentSub(reg, !localStorage.getItem(OFF_KEY)) // الإذن ممنوح: نشترك تلقائيًا إلا لمن أوقفها بنفسه
     if (!sub) return 'no-sub'
     // على شبكة جوال بطيئة: مهلة أطول ومحاولة ثانية
     let res: Response | null = null
