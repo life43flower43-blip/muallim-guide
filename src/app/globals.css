@@ -927,7 +927,8 @@ body {
 @media (prefers-reduced-motion: reduce) { .emo-float { animation: none; } }
 
 /* لوح أقسام الرئيسية: تدرج دافئ مميز، دائرتا ضوء تتنفسان، ونقاط ناعمة */
-.home-doors { background: linear-gradient(160deg, #FFF6DD 0%, #FFFBF1 38%, #EEF8F4 72%, #DDF1EB 100%); box-shadow: 0 10px 24px -16px rgba(180, 140, 40, .45), inset 0 1px 0 #fff; }
+.home-doors { background: linear-gradient(180deg, #F4FAF8 0%, #EEF7F4 100%); box-shadow: 0 8px 20px -16px rgba(15, 118, 110, .35), inset 0 1px 0 #fff; }
+.home-doors .hd-orb, .home-doors .hd-dots { display: none; }
 .dark .home-doors { background: linear-gradient(160deg, color-mix(in srgb, #D4A017 14%, var(--card)), var(--card) 50%, color-mix(in srgb, var(--t700) 16%, var(--card))); }
 .home-doors .hd-orb { position: absolute; border-radius: 9999px; pointer-events: none; filter: blur(18px); animation: hd-breathe 6s ease-in-out infinite; }
 .home-doors .hd-orb1 { width: 150px; height: 150px; top: -50px; right: -40px; background: rgba(242, 193, 78, .45); }
@@ -940,3 +941,6 @@ body {
 .soft-glow { position: absolute; left: 50%; top: 50%; width: 70px; height: 52px; transform: translate(-50%, -50%); border-radius: 50%; filter: blur(14px); opacity: .45; pointer-events: none; z-index: 0; }
 .soft-glow + * { position: relative; z-index: 1; filter: drop-shadow(0 3px 4px rgba(17, 60, 52, .08)); }
 .dark .soft-glow { opacity: .25; }
+
+/* صف «نشاطك» و«مستوى استعدادك» و«راجع أخطاءك» أصغر قليلًا */
+.stat-sm { transform: scale(.86); transform-origin: center; }
