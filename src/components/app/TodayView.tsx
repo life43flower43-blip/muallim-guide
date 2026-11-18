@@ -215,40 +215,6 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
 
       {/* مستوى الاستعداد فوق غصن الأيام، على اليسار */}
       <motion.div ref={statsRef} {...rise(9)} className="flex flex-col-reverse gap-1.5">
-        {/* شريط الأسبوع: غصن بسبع أوراق، تصير الورقة ذهبية في كل يوم درست فيه الطالبة */}
-        <div className="relative min-w-0 px-2" aria-label="أيام دراستك هذا الأسبوع">
-          <svg className="absolute inset-x-6 top-[13px] h-[6px] w-[calc(100%-48px)]" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M0 3C12 0 20 6 33 3S54 0 66 3 88 6 100 3" stroke="#111111" strokeWidth="1.2" fill="none" vectorEffect="non-scaling-stroke" />
-          </svg>
-          <div className="relative flex items-start justify-between">
-            {week.map((d, i) => (
-              <span key={d.label} className="flex w-9 flex-col items-center gap-1">
-                <svg
-                  viewBox="0 0 24 24"
-                  className={cn("h-[30px] w-[30px] transition-transform", d.today && "scale-110")}
-                  style={{ transform: `rotate(${i % 2 ? 28 : -28}deg)` }}
-                  aria-hidden="true"
-                >
-                  <defs>
-                    <linearGradient id={`leafGold${i}`} x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0" stopColor="#F3DC8E" />
-                      <stop offset="1" stopColor="#D4A017" />
-                    </linearGradient>
-                  </defs>
-                  <path
-                    d="M12 2C6.5 6 4.5 11.5 6 17c1.2 3.2 4 5 6 5s4.8-1.8 6-5c1.5-5.5-.5-11-6-15Z"
-                    fill={d.done ? `url(#leafGold${i})` : d.today ? "#111111" : d.future ? "none" : "#FFFFFF"}
-                    stroke={d.done ? "#C9971C" : "#111111"}
-                    strokeWidth={d.today ? 1.8 : 1.3}
-                    strokeDasharray={d.future ? "2.5 2" : undefined}
-                  />
-                  <path d="M12 6v14M12 11l-3-2.5M12 15l3-2.5" stroke={d.done || d.today ? "#FFFFFF" : "#111111"} strokeWidth="1.1" strokeLinecap="round" fill="none" />
-                </svg>
-                <span className={cn("text-[12px] leading-none", d.today ? "font-extrabold text-[#111111]" : d.done ? "font-bold text-[#B8860B]" : "font-bold text-[#111111]")}>{d.label}</span>
-              </span>
-            ))}
-          </div>
-        </div>
         {/* مستوى الاستعداد وبجانبه خريطة النشاط المصغّرة، يسارًا فوق غصن الأيام */}
         <div className="flex items-start justify-around px-2">
           <MiniActivity sessions={sessions} />
@@ -355,7 +321,8 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 return (
                   <span className="icon-shine relative flex h-[66px] w-[66px] items-center justify-center rounded-[22px] border-2 border-[#E3EDE8] border-b-[5px] border-b-[#C9DDD3] bg-white dark:border-border dark:bg-card" style={{ ["--shine-delay" as string]: `${(i % 8) * 0.35}s` }}>
                     <span className="relative flex h-[46px] w-[46px] items-center justify-center rounded-full" style={{ background: tone }}>
-                      <span className="emo-float text-[27px] leading-none" style={{ animationDelay: `${i * 0.4}s` }} aria-hidden="true">{HOME_EMOJI[ic]}</span>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={`/emoji/${ic}.webp`} alt="" width={32} height={32} className="emo-float h-8 w-8" style={{ animationDelay: `${i * 0.4}s` }} draggable={false} />
                     </span>
                   </span>
                 );

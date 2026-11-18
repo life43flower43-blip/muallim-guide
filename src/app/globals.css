@@ -937,6 +937,6 @@ body {
 @media (prefers-reduced-motion: reduce) { .home-doors .hd-orb { animation: none; } }
 
 /* ظل ضبابي ملون خلف رسوم «نشاطك» و«مستوى استعدادك» و«راجع أخطاءك»، مثل بقع رموز المحاور */
-.soft-glow { position: absolute; left: 50%; top: 50%; width: 88px; height: 66px; transform: translate(-50%, -50%); border-radius: 50%; filter: blur(12px); opacity: 1; pointer-events: none; z-index: 0; }
-.soft-glow + * { position: relative; z-index: 1; filter: drop-shadow(0 6px 8px rgba(17, 60, 52, .14)); }
+.soft-glow { position: absolute; left: 50%; top: 50%; width: 70px; height: 52px; transform: translate(-50%, -50%); border-radius: 50%; filter: blur(14px); opacity: .45; pointer-events: none; z-index: 0; }
+.soft-glow + * { position: relative; z-index: 1; filter: drop-shadow(0 3px 4px rgba(17, 60, 52, .08)); }
 .dark .soft-glow { opacity: .25; }
