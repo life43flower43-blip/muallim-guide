@@ -94,5 +94,5 @@ with open("src/lib/concept-images.ts", "w") as f:
     f.write("export const CONCEPT_IMAGES = new Set<string>([\n")
     for i in ids:
         f.write(f'  "{i}",\n')
-    f.write("]);\n\nexport const conceptImage = (id: string) => (CONCEPT_IMAGES.has(id) ? `/concepts/${id}.jpg` : null);\n")
+    f.write("]);\n\nexport const conceptImage = (id: string) => (CONCEPT_IMAGES.has(id) ? `/concepts/${id}.jpg?v=2` : null);\n")
 print(f"صور اليوم: {made}، المجموع: {len(ids)} من {len(concepts)}")
