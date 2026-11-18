@@ -209,7 +209,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   const gridDoors = (ORDER[goal] ?? ORDER.job).map(byTitle);
 
   return (
-    <div className="mx-auto -mt-3 max-w-2xl space-y-2 lg:mt-0">
+    <div className="mx-auto -mt-3 flex max-w-2xl flex-col justify-between gap-3 min-h-[calc(100dvh-var(--nav-h,96px)-118px)] lg:mt-0 lg:min-h-0 lg:justify-start">
       {/* بنك الرخصة كاملًا: أهم باب للطلاب، في أعلى الصفحة */}
       <LicenseBankCard />
 
@@ -287,7 +287,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       {/* أبواب التطبيق */}
       {homeStyle === "icons" ? (
         // شبكة رموز دائرية ملونة: أربعة في كل صف، والاسم تحت كل رمز
-        <div ref={gridRef} className="grid grid-cols-4 gap-x-2 gap-y-4 pt-0.5">
+        <div className="contents">
           {/* لوح الأقسام: خلفية دافئة متدرجة من الذهبي الفاتح إلى الأخضر الفاتح، فيها دوائر ضوء ونقاط ناعمة */}
           <div className="home-doors col-span-4 relative overflow-hidden rounded-[28px] border border-[#EADFBF] px-2 pb-3 pt-3.5 dark:border-border">
             <span className="hd-orb hd-orb1" aria-hidden="true" />
@@ -340,13 +340,13 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               <p className="text-[15px] font-extrabold text-foreground">المحاور</p>
               <span className="h-px flex-1 bg-gradient-to-l from-[#9FCFC4] to-transparent" aria-hidden="true" />
             </div>
-            <div className="-mx-3 flex snap-x scroll-px-4 gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex snap-x scroll-px-1 gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {COURSES.map((c, k) => (
                 <button
                   key={c.id}
                   type="button"
                   onClick={() => ui.openCourseTab(c.id)}
-                  className="relative flex w-[110px] shrink-0 snap-start flex-col items-center gap-0.5 rounded-[16px] border border-[#E6EFEC] bg-white px-1.5 pb-1 pt-1.5 shadow-[0_4px_12px_-8px_rgba(15,118,110,0.35)] transition active:scale-[0.97] dark:border-border dark:bg-card"
+                  className="relative flex w-[104px] shrink-0 snap-start flex-col items-center gap-0.5 rounded-[16px] border border-[#E6EFEC] bg-white px-1.5 pb-1 pt-1.5 shadow-[0_4px_12px_-8px_rgba(15,118,110,0.35)] transition active:scale-[0.97] dark:border-border dark:bg-card"
                 >
                   <span className="absolute left-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full border-[1.5px] border-[#9FCFC4] bg-white text-[#14857B] dark:bg-card" aria-hidden="true">
                     <ChevronLeft className="h-3 w-3" strokeWidth={3} />
