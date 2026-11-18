@@ -16,14 +16,14 @@ export default function LicenseBankCard() {
     <button
       type="button"
       onClick={startBank}
-      className="flex w-full min-w-0 items-center gap-3 rounded-[20px] bg-[var(--t800)] px-4 py-3.5 text-right text-white shadow-sm transition active:scale-[0.98]"
+      className="flex w-full min-w-0 items-center gap-3 rounded-[18px] bg-[var(--t800)] px-3 py-2.5 text-right text-white shadow-sm transition active:scale-[0.98]"
     >
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[#F3DC8E] text-[#3a2c05]">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[#F3DC8E] text-[#3a2c05]">
         <Library className="h-5 w-5" />
       </span>
       <span className="min-w-0 flex-1">
-        <FitText max={16} min={11} className="block w-full whitespace-nowrap font-extrabold leading-6">محاكاة الرخصة المهنية</FitText>
-        <span className="block truncate text-[12.5px] leading-5 text-white/75">
+        <FitText max={15} min={11} className="block w-full whitespace-nowrap font-extrabold leading-5">محاكاة الرخصة المهنية</FitText>
+        <span className="mt-0.5 block truncate text-[12px] leading-4 text-white/75">
           {done ? `أنجزت ${ad(done)} من ${ad(total)} سؤالًا` : `${ad(total)} سؤالًا مرتبة بالمحاور`}
         </span>
         {done > 0 && (
@@ -32,7 +32,9 @@ export default function LicenseBankCard() {
           </span>
         )}
       </span>
-      <ChevronLeft className="h-5 w-5 shrink-0 text-white/70" />
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/15" aria-hidden="true">
+        <ChevronLeft className="h-4 w-4 text-white" strokeWidth={2.5} />
+      </span>
     </button>
   );
 }
