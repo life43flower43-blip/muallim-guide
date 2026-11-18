@@ -8,7 +8,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { localDay, pushConfigured, sendPush, type PushPayload } from '@/lib/push'
+import { createHash } from 'crypto'
+import { lastPushError, localDay, pushConfigured, sendPush, type PushPayload } from '@/lib/push'
 import { MASTERED_REPETITIONS } from '@/lib/spaced-repetition'
 import { publicBank } from '@/lib/public-bank'
 
@@ -88,7 +89,11 @@ function dueToday(today: string, lastStudy: string | null, lastSent: string | nu
 
 export async function GET(request: NextRequest) {
   const secret = process.env.CRON_SECRET
-  if (!secret || request.headers.get('authorization') !== `Bearer ${secret}`) {
+  // مرسل احتياطي من GitHub Actions: مفتاح مشتق من رابط قاعدة البيانات الذي يعرفه الطرفان سرًّا
+  const db_url = process.env.DATABASE_URL ?? ''
+  const ghToken = db_url ? createHash('sha256').update('turbawy-push-cron:' + db_url).digest('hex') : ''
+  const okGh = !!ghToken && request.headers.get('x-push-token') === ghToken
+  if (!okGh && (!secret || request.headers.get('authorization') !== `Bearer ${secret}`)) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
   if (!pushConfigured()) return NextResponse.json({ error: 'push_not_configured' }, { status: 503 })
@@ -100,6 +105,7 @@ export async function GET(request: NextRequest) {
   let sent = 0
   let removed = 0
   let skipped = 0
+  let errors = 0
   for (const s of subs) {
     const today = localDay(s.tzOffset, now)
     if (!dueToday(today, s.lastStudyDay, s.lastSentDay, localDay(s.tzOffset, s.createdAt))) {
@@ -138,7 +144,7 @@ export async function GET(request: NextRequest) {
     } else if (res === 'ok') {
       await db.pushSubscription.update({ where: { id: s.id }, data: { lastSentDay: today } })
       sent++
-    }
+    } else errors++
   }
-  return NextResponse.json({ ok: true, slot, sent, removed, skipped, total: subs.length })
+  return NextResponse.json({ ok: true, slot, sent, removed, skipped, errors, total: subs.length, lastError: errors ? lastPushError : undefined })
 }
