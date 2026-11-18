@@ -327,7 +327,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                   </span>
                 );
               })()}
-              <span className="flex min-h-[30px] w-full items-start justify-center text-center text-[12px] font-bold leading-[15px] text-foreground dark:text-foreground">{d.title}</span>
+              <FitText max={12.5} min={8.5} className="w-full whitespace-nowrap text-center font-bold leading-5 text-foreground dark:text-foreground">{d.title}</FitText>
             </motion.button>
           ))}
             </div>
@@ -348,7 +348,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                   onClick={() => ui.openCourseTab(c.id)}
                   className="relative flex w-[96px] shrink-0 snap-start flex-col items-center gap-0.5 rounded-[16px] border border-[#E6EFEC] bg-white px-1.5 pb-1 pt-1.5 shadow-[0_4px_12px_-8px_rgba(15,118,110,0.35)] transition active:scale-[0.97] dark:border-border dark:bg-card"
                 >
-                  <span className="absolute left-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full border-[1.5px] border-[#9FCFC4] text-[#14857B]" aria-hidden="true">
+                  <span className="absolute left-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full border-[1.5px] border-[#9FCFC4] bg-white text-[#14857B] dark:bg-card" aria-hidden="true">
                     <ChevronLeft className="h-3 w-3" strokeWidth={3} />
                   </span>
                   <span className="relative flex h-[32px] w-full items-center justify-center">
@@ -356,7 +356,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={`/emoji/${AXIS_IMG[c.id] ?? "ax-G1"}.webp`} alt="" className={cn("emo-float relative h-7 object-contain", c.id === "M2" ? "w-11" : "w-7")} style={{ animationDelay: `${k * 0.35}s` }} draggable={false} />
                   </span>
-                  <span className="flex min-h-[30px] w-full items-center justify-center text-center text-[11.5px] font-extrabold leading-[15px] text-foreground">{COURSE_SHORT[c.id] ?? c.name}</span>
+                  <FitText max={12} min={8.5} className="w-full whitespace-nowrap text-center font-extrabold leading-5 text-foreground">{COURSE_SHORT[c.id] ?? c.name}</FitText>
                 </button>
               ))}
             </div>
