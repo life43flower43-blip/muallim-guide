@@ -1,4 +1,4 @@
-// /api/push/ping — يسجل أن صاحب هذا الجهاز درس اليوم، فلا يُذكَّر الليلة
+// /api/push/ping — يسجل أن صاحب هذا الجهاز درس اليوم، فيصله تشجيع بدل التذكير
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 

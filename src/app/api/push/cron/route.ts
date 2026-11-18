@@ -1,7 +1,7 @@
 // ============================================================================
 // /api/push/cron?slot=morning|noon|evening — الإشعارات التحفيزية، يستدعيها مجدول Vercel ثلاث مرات يوميًا
 // كل جهاز يتلقى تذكيرًا واحدًا على الأكثر في اليوم، في الوقت الذي اختاره صاحبه،
-// ولا يُذكَّر من درس اليوم. ومن طال غيابه تقل التذكيرات تدريجيًا حتى لا تزعجه:
+// ومن درس اليوم يصله تشجيع على إكمال سلسلته بدل التذكير. ومن طال غيابه تقل التذكيرات تدريجيًا حتى لا تزعجه:
 //   حتى ٧ أيام: يوميًا · حتى ٣٠ يومًا: كل ثلاثة أيام · بعدها: مرة في الأسبوع
 // محمي بـ CRON_SECRET (يرسله Vercel في ترويسة Authorization تلقائيًّا).
 // ============================================================================
@@ -55,6 +55,11 @@ const ON_TRACK: PushPayload[] = [
   { title: 'سلسلتك مشتعلة 🔥', body: 'درست أمس، فلا تقطعها اليوم.' },
   { title: 'أداء رائع أمس 👏', body: 'استمر، يوم آخر يقرّبك من هدفك.' },
 ]
+const STUDIED_TODAY: PushPayload[] = [
+  { title: 'أحسنت اليوم 👏', body: 'درست اليوم، وسلسلة أيامك مستمرة. نراك غدًا!' },
+  { title: 'يوم مثمر ✨', body: 'ما تعلمته اليوم يثبت أكثر بمراجعة قصيرة غدًا.' },
+  { title: 'سلسلتك محفوظة 🔥', body: 'أنجزت درس اليوم، استمر على هذا الإيقاع.' },
+]
 const MISTAKES = (n: string, one: boolean): PushPayload[] => [
   { title: 'حان موعد مراجعة أخطائك', body: one ? 'خطأ واحد ينتظر المراجعة قبل أن يُنسى.' : `${n} أخطاء تنتظر المراجعة قبل أن تُنسى.` },
   { title: 'أخطاؤك فرصتك 💪', body: one ? 'راجع خطأك الآن وحوّله إلى إجابة صحيحة.' : `${n} أخطاء تنتظرك، صحّحها اليوم ولن تتكرر.` },
@@ -97,7 +102,7 @@ export async function GET(request: NextRequest) {
   let skipped = 0
   for (const s of subs) {
     const today = localDay(s.tzOffset, now)
-    if (s.lastStudyDay === today || !dueToday(today, s.lastStudyDay, s.lastSentDay, localDay(s.tzOffset, s.createdAt))) {
+    if (!dueToday(today, s.lastStudyDay, s.lastSentDay, localDay(s.tzOffset, s.createdAt))) {
       skipped++
       continue
     }
@@ -118,6 +123,9 @@ export async function GET(request: NextRequest) {
       if (due > 0 && seed % 2 === 0) {
         payload = pick(MISTAKES(due.toLocaleString('ar-u-nu-arab'), due === 1), seed)
         url = '/app?tab=mistakes'
+      } else if (s.lastStudyDay === today) {
+        payload = pick(STUDIED_TODAY, seed) // درس اليوم: تشجيع بدل التذكير
+        url = '/app'
       } else if (s.lastStudyDay && dayDiff(today, s.lastStudyDay) === 1) {
         payload = pick(ON_TRACK, seed) // درس أمس: تشجيع على إكمال السلسلة
         url = '/app'

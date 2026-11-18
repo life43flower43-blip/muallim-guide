@@ -1,0 +1,21 @@
+# حالة الإشعارات اليومية: أعداد الأجهزة المشتركة وآخر يوم أُرسل فيه تذكير، بلا أي بيانات شخصية
+name: حالة الإشعارات
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  status:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - name: الأجهزة المشتركة حسب الموعد
+        run: |
+          sudo apt-get install -y -qq postgresql-client >/dev/null
+          psql "$DATABASE_URL" -c 'SELECT slot, count(*) AS devices, count("userId") AS linked, max("lastSentDay") AS last_sent, max("lastStudyDay") AS last_study, max("createdAt")::date AS newest FROM "PushSubscription" GROUP BY slot ORDER BY slot;'
+          psql "$DATABASE_URL" -c 'SELECT "lastSentDay", count(*) FROM "PushSubscription" GROUP BY 1 ORDER BY 1 DESC NULLS LAST LIMIT 10;'
