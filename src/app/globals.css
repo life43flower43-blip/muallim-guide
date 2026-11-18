@@ -660,6 +660,10 @@ body {
   padding-bottom: 14px !important;
 }
 .green-head .head-art { display: none; }
+/* رأس الرئيسية: أقصر، وينتقل من الفيروزي إلى الأبيض بتدرج أطول وأنعم */
+.green-head-home {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--t700) 88%, #000) 0%, var(--t700) 42%, color-mix(in srgb, var(--t700) 72%, #fff) 68%, color-mix(in srgb, var(--t700) 30%, transparent) 86%, transparent 100%);
+}
 .green-head h1 { color: #fff; }
 .green-head > :not(.head-art) {
   position: relative;

@@ -226,16 +226,16 @@ function MobileTopBar({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) =
       </header>
     );
   return (
-    <header className="green-head safe-top sticky top-0 z-30 px-2 pb-2 lg:hidden">
+    <header className="green-head green-head-home safe-top sticky top-0 z-30 px-2 pb-4 lg:hidden">
         <HeaderArt />
-      <div className="flex items-center justify-between gap-2 px-2.5 pb-1 pt-1">
+      <div className="flex h-11 items-center justify-between gap-2 px-2.5">
         <span className="flex min-w-0 items-center gap-2 overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icons/logo-128.png" alt="" className="h-11 w-11 shrink-0 rounded-[14px] bg-white object-contain p-0.5 ring-1 ring-[#D4A017]/70" />
-          <span className="shrink-0 whitespace-nowrap font-display text-[clamp(20px,6.8vw,28px)] font-extrabold leading-9">تربوي</span>
+          <img src="/icons/logo-128.png" alt="" className="h-9 w-9 shrink-0 rounded-[11px] bg-white object-contain p-0.5 ring-1 ring-[#D4A017]/70" />
+          <span className="shrink-0 whitespace-nowrap font-display text-[22px] font-extrabold leading-none">تربوي</span>
         </span>
-        <span className="flex shrink-0 items-center gap-1">
-          <span className="flex items-center gap-1 rounded-full bg-white p-[4px] max-[360px]:hidden text-base font-extrabold text-[#C9971C] dark:bg-card" aria-label={`هدف اليوم ${ad(Math.round(goal * 100))}٪`}>
+        <span className="flex shrink-0 items-center gap-2">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white max-[360px]:hidden text-base font-extrabold text-[#C9971C] dark:bg-card" aria-label={`هدف اليوم ${ad(Math.round(goal * 100))}٪`}>
             {/* حلقة هدف اليوم تمتلئ بالذهبي حول الشعلة، وتتوهج عند اكتمالها */}
             <span className={cn("relative h-[28px] w-[28px] rounded-full", goal >= 1 && "ring-2 ring-[#F3DC8E]")}>
               <GoalBurst done={goal >= 1} />
@@ -253,8 +253,8 @@ function MobileTopBar({ tab, onTab, due, onBack }: { tab: Tab; onTab: (t: Tab) =
             </span>
             
           </span>
-          <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-[36px] w-[36px] items-center justify-center rounded-full bg-white text-[#111111] dark:bg-card">
-            <Bell className="h-[18px] w-[18px]" strokeWidth={2.2} />
+          <button type="button" onClick={() => onTab("mistakes")} aria-label={due > 0 ? `${ad(due)} أخطاء مستحقة` : "الإشعارات"} className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#111111] dark:bg-card">
+            <Bell className="h-5 w-5" strokeWidth={2.2} />
             {due > 0 && (
               <span className="absolute -right-1 -top-1 min-w-[20px] rounded-full bg-destructive px-1 text-center text-[11px] font-bold leading-5 text-white">{ad(Math.min(due, 99))}</span>
             )}
