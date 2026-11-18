@@ -19,3 +19,4 @@ jobs:
           sudo apt-get install -y -qq postgresql-client >/dev/null
           psql "$DATABASE_URL" -c 'SELECT slot, count(*) AS devices, count("userId") AS linked, max("lastSentDay") AS last_sent, max("lastStudyDay") AS last_study, max("createdAt")::date AS newest FROM "PushSubscription" GROUP BY slot ORDER BY slot;'
           psql "$DATABASE_URL" -c 'SELECT "lastSentDay", count(*) FROM "PushSubscription" GROUP BY 1 ORDER BY 1 DESC NULLS LAST LIMIT 10;'
+          psql "$DATABASE_URL" -c "SELECT \"lastAt\", version, count, left(message, 260) AS message FROM \"ClientError\" WHERE message LIKE 'diag%' OR message LIKE 'push%' ORDER BY \"lastAt\" DESC LIMIT 8;"
