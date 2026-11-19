@@ -14,9 +14,8 @@ function Detail({ c, onBack }: { c: Comparison; onBack: () => void }) {
     <ScreenShell title="المقارنات" onBack={onBack}>
       {/* رأسا المفهومين متقابلين */}
       <div className="sticky top-0 z-10 -mx-4 bg-background/95 px-4 pb-2 pt-1 backdrop-blur">
-        <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-2">
+        <div className="grid grid-cols-2 items-stretch gap-2">
           <div className="flex items-center justify-center rounded-[16px] px-2 py-2.5 text-center text-[15px] font-extrabold leading-6 text-white" style={{ background: A }}>{c.a}</div>
-          <span className="flex items-center text-[13px] font-extrabold text-muted-foreground">مقابل</span>
           <div className="flex items-center justify-center rounded-[16px] px-2 py-2.5 text-center text-[15px] font-extrabold leading-6 text-white" style={{ background: B }}>{c.b}</div>
         </div>
       </div>
