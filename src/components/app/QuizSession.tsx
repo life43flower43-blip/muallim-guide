@@ -662,7 +662,6 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className={`text-base font-extrabold leading-7 ${graded ? "text-foreground" : "text-[#C0392B]"}`}>{graded ? PRAISE[idx % PRAISE.length] : "إجابة غير صحيحة"}</p>
-                    {!graded && <p className="text-[14px] font-semibold leading-6 text-secondary-foreground">الإجابة الصحيحة مظلّلة بالأخضر في الأعلى.</p>}
                     {!graded && conf === "sure" && <p className="text-sm font-bold leading-6 text-[#A87B12]">كنت متأكدًا، فهذا تصور خاطئ. سيعود إليك السؤال قريبًا.</p>}
                     {graded && conf === "guess" && <p className="text-sm font-bold leading-6 text-[#A87B12]">أصبت بالتخمين، فسيعود إليك غدًا.</p>}
                   </div>

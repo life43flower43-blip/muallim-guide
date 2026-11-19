@@ -78,43 +78,35 @@ export default function LicenseBankView() {
 
   return (
     <ScreenShell title="اختبار محاكاة الرخصة المهنية" onClose={close}>
-      <div className="space-y-5">
+      <div className="space-y-3">
         {/* البطاقة الكبرى: حجم البنك وما أنجزه الطالب */}
-        <section className="rounded-[24px] bg-[var(--t800)] p-5 text-white">
-          <p className="text-[13px] font-bold text-[#F3DC8E]">بنك أسئلة الرخصة المهنية كاملًا</p>
-          <p className="mt-1 font-display text-[30px] font-extrabold leading-[1.3]">{ad(all.total)} سؤالًا</p>
-          <p className="text-[13.5px] leading-6 text-white/80">في {ad(tree.length)} محورًا، ولكل سؤال شرح.</p>
-          <div className="mt-4">
-            <div className="mb-1.5 flex items-center justify-between text-[13px] font-bold">
-              <span>{all.done ? `أنجزت ${ad(all.done)}` : "لم تبدأ بعد"}</span>
-              <span>{all.done ? `الدقة ${ad(pctOf(all.correct, all.done))}٪` : ""}</span>
-            </div>
-            <ProgressBar value={Math.max(all.done ? 1.5 : 0, pctOf(all.done, all.total))} color="#D4A017" height={8} className="bg-white/20" />
+        <section className="rounded-[20px] bg-[var(--t800)] px-4 py-3 text-white">
+          <div className="flex items-center justify-between text-[13px] font-bold">
+            <span>{`${ad(all.total)} سؤالًا`}{all.done ? ` · أنجزت ${ad(all.done)}` : ""}</span>
+            <span>{all.done ? `الدقة ${ad(pctOf(all.correct, all.done))}٪` : ""}</span>
           </div>
-          <div className="mt-4 space-y-2">
-            <button type="button" onClick={resumeAll} className="flex min-h-[48px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-[16px] bg-[#F3DC8E] px-3 font-extrabold text-[#3a2c05]">
-              <PlayCircle className="h-5 w-5 shrink-0" /> {all.done ? "تابع من حيث توقفت" : "ابدأ من السؤال الأول"}
+          <ProgressBar value={Math.max(all.done ? 1.5 : 0, pctOf(all.done, all.total))} color="#C5E5DF" height={6} className="mt-2 bg-white/20" />
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <button type="button" onClick={resumeAll} className="flex min-h-[42px] items-center justify-center gap-1.5 whitespace-nowrap rounded-[14px] bg-white px-2 text-[14px] font-extrabold text-[var(--t800)]">
+              <PlayCircle className="h-4 w-4 shrink-0" /> {all.done ? "تابع" : "ابدأ"}
             </button>
-            <button type="button" onClick={startExamsim} className="flex min-h-[44px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-[16px] bg-white/15 px-3 font-bold text-white">
-              <Timer className="h-5 w-5 shrink-0" /> اختبار بوقت حقيقي
+            <button type="button" onClick={startExamsim} className="flex min-h-[42px] items-center justify-center gap-1.5 whitespace-nowrap rounded-[14px] bg-white/15 px-2 text-[14px] font-bold text-white">
+              <Timer className="h-4 w-4 shrink-0" /> بوقت حقيقي
             </button>
           </div>
         </section>
 
         {/* المحاور: كل محور يفتح فصوله */}
-        <section className="space-y-2.5">
+        <section className="space-y-2">
           {tree.map(({ course, chapters, qids }) => {
             const s = stat(qids, attempts);
             const isOpen = open === course.id;
             return (
-              <div key={course.id} className="overflow-hidden rounded-[20px] border-2 border-[#E3EDE8] bg-white dark:border-border dark:bg-card">
-                <button type="button" onClick={() => setOpen(isOpen ? null : course.id)} aria-expanded={isOpen} className="flex w-full items-center gap-3 p-3.5 text-right">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--t100)] text-[22px]" aria-hidden="true">{COURSE_EMO[course.id] ?? "📚"}</span>
+              <div key={course.id} className="overflow-hidden rounded-[16px] border border-[#E3EDE8] bg-white dark:border-border dark:bg-card">
+                <button type="button" onClick={() => setOpen(isOpen ? null : course.id)} aria-expanded={isOpen} className="flex w-full items-center gap-3 px-3 py-2.5 text-right">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--t100)] text-[18px]" aria-hidden="true">{COURSE_EMO[course.id] ?? "📚"}</span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate font-extrabold leading-6 text-foreground">{COURSE_SHORT[course.id] ?? course.name}</span>
-                    <span className="mt-0.5 block truncate text-[12.5px] text-muted-foreground">
-                      {ad(s.total)} سؤالًا · أنجزت {ad(pctOf(s.done, s.total))}٪
-                    </span>
                     <ProgressBar value={pctOf(s.done, s.total)} height={4} className="mt-1.5" />
                   </span>
                   <ChevronDown className={cn("h-5 w-5 shrink-0 text-muted-foreground transition", isOpen && "rotate-180")} />
