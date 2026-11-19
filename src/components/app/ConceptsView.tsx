@@ -340,8 +340,6 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
   const readConcept = useApp((s) => s.readConcept);
   const conceptReads = useApp((s) => s.conceptReads);
   const attempts = useApp((s) => s.attempts);
-  const notes = useApp((s) => s.notes);
-  const studentExamples = useApp((s) => s.studentExamples);
   const setLastConcept = useApp((s) => s.setLastConcept);
   const setLastStudy = useApp((s) => s.setLastStudy);
   const startQuiz = useUi((s) => s.startQuiz);
@@ -512,16 +510,9 @@ export function ConceptReader({ conceptId, onClose, embedded = false }: { concep
               <Dumbbell className="h-5 w-5 shrink-0 text-foreground" />
               <span className="min-w-0 flex-1">
                 <span className="block text-base font-medium">تدرّب على هذا المفهوم</span>
-                <span className="text-sm text-muted-foreground">{arCount(qs.length, QUESTION_FORMS)} بشرح كامل</span>
               </span>
-              <ChevronLeft className="h-4 w-4 shrink-0 text-[#C9971C]" />
+              <ChevronLeft className="h-4 w-4 shrink-0 text-[#168477]" />
             </button>
-            <Disclosure icon={StickyNote} title="ملاحظاتي" count={(notes[c.id] ?? []).length}>
-              <MyNotes conceptId={c.id} />
-            </Disclosure>
-            <Disclosure icon={GraduationCap} title="أمثلة من تخصصي" count={(studentExamples[c.id] ?? []).length}>
-              <MyExamples conceptId={c.id} />
-            </Disclosure>
           </Divided>}
 
           {referencesFor(c).length > 0 && (
