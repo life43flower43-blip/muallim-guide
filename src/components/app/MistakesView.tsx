@@ -27,20 +27,20 @@ function MistakeCard({ item, onConcept }: { item: MistakeItem; onConcept: () => 
   const q = item.question;
   const { base } = splitReason(q.reason);
   return (
-    <div className="rounded-[22px] border border-[var(--t075)] bg-white p-4 dark:border-border dark:bg-card">
+    <div className="rounded-[18px] border border-[#E6F1EE] bg-white px-4 py-3.5 shadow-[0_4px_14px_-12px_rgba(22,132,119,0.35)] dark:border-border dark:bg-card">
       {/* سطر واحد: الفصل (المحور في عنوان القسم)، وعدد مرات الخطأ */}
       <div className="mb-2 flex items-center gap-2 text-sm">
         <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: COURSE_COLOR[item.courseId] ?? "var(--primary)" }} aria-hidden="true" />
         <span className="min-w-0 flex-1 truncate font-bold text-muted-foreground">{item.concept?.chapter ?? COURSE_SHORT[item.courseId] ?? "عام"}</span>
         {item.mistakeCount > 1 && <span dir="ltr" className="shrink-0 rounded-full bg-danger-soft px-2 text-xs font-bold leading-6 text-destructive">×{ad(item.mistakeCount)}</span>}
       </div>
-      <p className="font-bold leading-8">{q.question}</p>
+      <p className="text-[15.5px] font-bold leading-8">{q.question}</p>
 
       {!revealed ? (
         <button
           type="button"
           onClick={() => setRevealed(true)}
-          className="mt-3 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[16px] bg-[#FBF3DA] text-sm font-bold text-[#A87B12] transition active:scale-[0.98]"
+          className="mt-3 flex min-h-[40px] w-full items-center justify-center gap-2 rounded-[14px] border border-[#C5E5DF] bg-[#F1F8F6] text-[14px] font-bold text-[#168477] transition dark:bg-white/5 active:scale-[0.98]"
         >
           <Eye className="h-4 w-4" /> اكشف الإجابة
         </button>
@@ -52,7 +52,7 @@ function MistakeCard({ item, onConcept }: { item: MistakeItem; onConcept: () => 
           </p>
           <p className="text-sm leading-7 text-secondary-foreground">{base}</p>
           {item.concept && (
-            <button type="button" onClick={onConcept} className="inline-flex min-h-[40px] items-center gap-1.5 text-sm font-bold text-[#C9971C]">
+            <button type="button" onClick={onConcept} className="inline-flex min-h-[40px] items-center gap-1.5 text-sm font-bold text-[#168477]">
               <BookOpen className="h-4 w-4" /> اقرأ المفهوم
             </button>
           )}
@@ -69,22 +69,22 @@ function CourseSection({ group, items, expanded, onToggle, onReview, onConcept }
 }) {
   const shown = expanded ? items.slice(0, 30) : items.slice(0, SECTION_PREVIEW);
   return (
-    <section className="space-y-3" aria-label={COURSE_SHORT[group.courseId] ?? group.name}>
-      <div className="flex items-center gap-2 rounded-[18px] border border-[var(--t075)] bg-white px-3 py-2 dark:border-border dark:bg-card">
+    <section className="space-y-2" aria-label={COURSE_SHORT[group.courseId] ?? group.name}>
+      <div className="flex items-center gap-2 rounded-[16px] bg-[#F4FAF8] px-3 py-2 dark:bg-card">
         <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: COURSE_COLOR[group.courseId] ?? "var(--primary)" }} aria-hidden="true" />
-        <h2 className="min-w-0 flex-1 truncate text-base font-bold">{COURSE_SHORT[group.courseId] ?? group.name}</h2>
+        <h2 className="min-w-0 flex-1 truncate text-[15px] font-extrabold">{COURSE_SHORT[group.courseId] ?? group.name}</h2>
         <span className="shrink-0 rounded-full bg-danger-soft px-2 text-sm font-bold leading-6 text-destructive" aria-label={arCount(group.count, ERROR_OBJ_FORMS)}>{ad(group.count)}</span>
-        <button type="button" onClick={onReview} className="inline-flex min-h-[36px] shrink-0 items-center gap-1 rounded-full bg-[var(--t100)] px-3 text-sm font-bold text-foreground transition active:scale-[0.97]">
+        <button type="button" onClick={onReview} className="inline-flex min-h-[36px] shrink-0 items-center gap-1 rounded-full bg-[#168477] px-3 text-[13px] font-bold text-white transition active:scale-[0.97]">
           <RotateCcw className="h-3.5 w-3.5" /> راجع
         </button>
       </div>
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="grid gap-2 lg:grid-cols-2">
         {shown.map((it) => (
           <MistakeCard key={it.id} item={it} onConcept={() => it.concept && onConcept(it.concept.id)} />
         ))}
       </div>
       {items.length > SECTION_PREVIEW && (
-        <button type="button" onClick={onToggle} aria-expanded={expanded} className="flex min-h-[40px] w-full items-center justify-center gap-1 text-sm font-bold text-[#C9971C]">
+        <button type="button" onClick={onToggle} aria-expanded={expanded} className="flex min-h-[40px] w-full items-center justify-center gap-1 text-sm font-bold text-[#168477]">
           {expanded ? "عرض أقل" : `عرض الكل (${ad(items.length)})`}
           <ChevronDown className={cn("h-4 w-4 transition-transform", expanded && "rotate-180")} />
         </button>
@@ -95,7 +95,7 @@ function CourseSection({ group, items, expanded, onToggle, onReview, onConcept }
 
 export default function MistakesView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <DailyReviewCard />
       <MistakesBody onGoTab={onGoTab} />
     </div>
@@ -139,7 +139,7 @@ function MistakesBody({ onGoTab }: { onGoTab: (t: Tab) => void }) {
 
   if (open === 0 && data.refresh.length === 0) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-3">
         <PageTitle title="أخطائي" sub="كل خطأ يعود إليك في موعده حتى تجيبه صحيحًا مرتين متباعدتين" />
         <EmptyState
           icon={PartyPopper}
@@ -152,7 +152,7 @@ function MistakesBody({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <PageTitle title="أخطائي" />
 
       {/* زر المراجعة */}
@@ -173,7 +173,7 @@ function MistakesBody({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               onClick={() => setCourse(g.courseId)}
               className={cn(
                 "min-h-[36px] shrink-0 whitespace-nowrap rounded-full border px-3.5 text-sm font-bold transition-colors",
-                course === g.courseId ? "border-transparent bg-[var(--t700)] text-white" : "border-[#ECE3C4] bg-white text-muted-foreground dark:bg-card"
+                course === g.courseId ? "border-transparent bg-[var(--t700)] text-white" : "border-[#DCEEEA] bg-white text-muted-foreground dark:bg-card"
               )}
             >
               {g.courseId ? COURSE_SHORT[g.courseId] ?? g.name : g.name} {ad(g.count)}

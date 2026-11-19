@@ -927,7 +927,7 @@ body {
 @media (prefers-reduced-motion: reduce) { .emo-float { animation: none; } }
 
 /* لوح أقسام الرئيسية: تدرج دافئ مميز، دائرتا ضوء تتنفسان، ونقاط ناعمة */
-.home-doors { background: linear-gradient(180deg, #F4FAF8 0%, #EEF7F4 100%); box-shadow: 0 8px 20px -16px rgba(15, 118, 110, .35), inset 0 1px 0 #fff; }
+.home-doors { background: #FFFFFF; box-shadow: 0 8px 20px -16px rgba(15, 118, 110, .35), inset 0 1px 0 #fff; }
 .home-doors .hd-orb, .home-doors .hd-dots { display: none; }
 .dark .home-doors { background: linear-gradient(160deg, color-mix(in srgb, #D4A017 14%, var(--card)), var(--card) 50%, color-mix(in srgb, var(--t700) 16%, var(--card))); }
 .home-doors .hd-orb { position: absolute; border-radius: 9999px; pointer-events: none; filter: blur(18px); animation: hd-breathe 6s ease-in-out infinite; }
