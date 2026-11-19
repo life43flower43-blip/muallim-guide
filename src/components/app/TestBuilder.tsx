@@ -43,7 +43,6 @@ function Segmented<T extends string>({ value, onChange, options, label }: { valu
           )}
         >
           <span className="block text-[13.5px] font-bold leading-5">{o.title}</span>
-          {o.sub && <span className="block text-[11px] leading-4 text-muted-foreground">{o.sub}</span>}
         </button>
       ))}
     </div>
@@ -213,9 +212,13 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
           </Card>
         </div>
 
-        <section>
-          <SectionHeader title="المحاور والمحطات" sub={`اخترت ${ad(picked.size)} من ${ad(allKeys.length)} محطة`} />
-          <Card className="overflow-hidden">
+        {/* المحاور اختيارية: مطوية افتراضيًا، وكلها مختارة */}
+        <details className="group">
+          <summary className="flex min-h-[44px] cursor-pointer list-none items-center justify-between rounded-[14px] border border-border bg-card px-3 text-[14px] font-extrabold text-foreground">
+            <span>اختيار المحاور</span>
+            <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
+          </summary>
+          <Card className="mt-2 overflow-hidden">
             <button
               type="button"
               onClick={() => toggleKeys(allKeys, allState !== "on")}
@@ -244,9 +247,6 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
                         <CheckBox state={state} />
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-[14px]">{COURSE_SHORT[c.id] ?? c.name}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {ad(on)} من {ad(keys.length)} محطة
-                          </span>
                         </span>
                         <span className="text-sm text-muted-foreground">{ad(countOf(keys))}</span>
                       </button>
@@ -287,7 +287,7 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
               })}
             </div>
           </Card>
-        </section>
+        </details>
       </div>
     </ScreenShell>
   );

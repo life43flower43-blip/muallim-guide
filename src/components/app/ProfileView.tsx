@@ -584,7 +584,6 @@ function MenuRow({ icon: Icon, color, title, sub, onClick, href }: { icon: React
       </span>
       <span className="min-w-0 flex-1 text-right">
         <span className="block truncate text-[15px] font-extrabold leading-6 text-foreground">{title}</span>
-        <span className="block truncate text-[12.5px] leading-5 text-muted-foreground">{sub}</span>
       </span>
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
         <ChevronLeft className="h-4 w-4" />

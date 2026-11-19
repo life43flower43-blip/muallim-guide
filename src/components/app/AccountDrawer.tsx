@@ -112,7 +112,6 @@ export default function AccountDrawer({ open, onClose, onOpenProfile }: { open: 
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block text-[15px] font-bold leading-tight text-foreground">{it.label}</span>
-                    <span className="mt-0.5 block truncate text-[11.5px] text-muted-foreground">{it.sub}</span>
                   </span>
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 dark:bg-white/10">
                     <ChevronLeft className="h-4 w-4 text-slate-400" strokeWidth={2.5} />

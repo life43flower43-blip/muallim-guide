@@ -174,7 +174,6 @@ export function ListRow({
       {icon && <IconTile icon={icon} color={color} />}
       <span className="min-w-0 flex-1">
         <span className="block truncate text-base font-bold text-foreground">{title}</span>
-        {sub && <span className="mt-0.5 block truncate text-sm text-muted-foreground">{sub}</span>}
         {children}
       </span>
       {badge !== undefined && badge > 0 && (
