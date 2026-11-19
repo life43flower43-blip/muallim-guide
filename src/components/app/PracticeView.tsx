@@ -53,6 +53,7 @@ import TestBuilder from "./TestBuilder";
 import GlossaryView from "./GlossaryView";
 import ProblemsView from "./ProblemsView";
 import MythsView from "./MythsView";
+import ComparisonsView from "./ComparisonsView";
 import { Divided, PageTitle, Stars, pct, GameTile, ScreenShell } from "./ui-kit";
 
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
@@ -205,7 +206,8 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
       {tool?.href === "/glossary" && <GlossaryView onClose={() => setTool(null)} />}
       {tool?.href === "/classroom-problems" && <ProblemsView onClose={() => setTool(null)} />}
       {tool?.href === "/misconceptions" && <MythsView onClose={() => setTool(null)} />}
-      {tool && !["/glossary", "/classroom-problems", "/misconceptions"].includes(tool.href) && (
+      {tool?.href === "/comparisons" && <ComparisonsView onClose={() => setTool(null)} />}
+      {tool && !["/glossary", "/classroom-problems", "/misconceptions", "/comparisons"].includes(tool.href) && (
         <ScreenShell title={tool.title} onBack={() => setTool(null)} wide bare>
           <iframe src={`${tool.href}?in_app=1`} title={tool.title} className="absolute inset-0 h-full w-full border-0 bg-[#F4F7F5]" />
         </ScreenShell>
