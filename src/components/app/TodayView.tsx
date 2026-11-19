@@ -16,7 +16,7 @@ import { ad } from "@/lib/arabic";
 import type { Tab } from "./AppShell";
 import { FitText } from "./FitText";
 import LicenseBankCard from "./LicenseBankCard";
-import { BookOpen, ChevronLeft, ClipboardCheck, Compass, Lightbulb, NotebookPen, Presentation, Shapes, Timer, Users } from "lucide-react";
+import { BookOpen, ChevronLeft, ClipboardCheck, Lightbulb, NotebookPen, Presentation, Shapes, Timer, Users } from "lucide-react";
 
 type Door = { title: string; img: string; pos?: string; progress: number; run: () => void; special?: boolean };
 
@@ -134,7 +134,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
       const nav = document.getElementById("bottom-nav");
       const root = document.getElementById("home-root");
       if (!ax || !nav || !root || window.innerWidth >= 1024) return;
-      const cur = parseFloat(getComputedStyle(root).getPropertyValue("--tile")) || 80;
+      const cur = parseFloat(getComputedStyle(root).getPropertyValue("--tile")) || 96;
       const over = ax.getBoundingClientRect().bottom - (nav.getBoundingClientRect().top - 10);
       if (over > 1 && cur > 40 && tries++ < 16) {
         root.style.setProperty("--tile", `${Math.max(40, cur - Math.ceil(over / 2))}px`);
@@ -143,7 +143,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
     };
     const reset = () => {
       tries = 0;
-      document.getElementById("home-root")?.style.setProperty("--tile", "80px");
+      document.getElementById("home-root")?.style.setProperty("--tile", "96px");
       requestAnimationFrame(() => requestAnimationFrame(fit));
     };
     const t = setTimeout(reset, 120);
@@ -323,11 +323,10 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             <span className="hd-orb hd-orb1" aria-hidden="true" />
             <span className="hd-orb hd-orb2" aria-hidden="true" />
             <span className="hd-dots" aria-hidden="true" />
-            <div className="relative grid grid-cols-4 gap-x-2 gap-y-[calc(var(--tile,80px)*0.25)]">
+            <div className="relative grid grid-cols-3 gap-x-3 gap-y-[calc(var(--tile,96px)*0.22)]">
           {[
             { title: goal === "university" ? "تابع المحاور" : goal === "teacher" ? "موقف اليوم" : "المحاكاة", icon: Timer, bg: "#EF4444", run: () => (goal === "university" ? ui.startLearn() : goal === "teacher" ? ui.startSim() : ui.startExamsim()) },
-            ...gridDoors.map((d, k) => ({ title: d.title, icon: DOOR_ICON[d.title] ?? BookOpen, bg: DOOR_BG[d.title] ?? POS_BG[k] ?? "#279488", run: d.run })),
-            { title: "البوصلة", icon: Compass, bg: "#F97316", run: () => onGoTab("notebook") },
+            ...gridDoors.filter((d) => d.title !== "اختبر نفسك").map((d, k) => ({ title: d.title, icon: DOOR_ICON[d.title] ?? BookOpen, bg: DOOR_BG[d.title] ?? POS_BG[k] ?? "#279488", run: d.run })),
           ]
             // ألوان الأيقونات بترتيب ثابت حسب موضعها: مرجاني، ذهبي، وردي، برتقالي، أخضر، بنفسجي، أزرق، فيروزي
             .map((d, i) => ({ ...d, bg: ICON_ORDER_BG[i] ?? d.bg }))
@@ -348,10 +347,10 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
                 const ic = HOME_ICON_IMG[d.title] ?? HOME_ICON_BY_POS[i] ?? "today";
                 const tone = HOME_TONE[HOME_ICON_BY_POS.indexOf(ic) % HOME_TONE.length] ?? HOME_TONE[0];
                 return (
-                  <span className="icon-shine relative flex h-[var(--tile,80px)] w-[var(--tile,80px)] items-center justify-center rounded-[24px] border-2 border-[#E3EDE8] border-b-[5px] border-b-[#C9DDD3] bg-white dark:border-border dark:bg-card" style={{ ["--shine-delay" as string]: `${(i % 8) * 0.35}s` }}>
-                    <span className="relative flex h-[calc(var(--tile,80px)*0.78)] w-[calc(var(--tile,80px)*0.78)] items-center justify-center rounded-full" style={{ background: tone }}>
+                  <span className="icon-shine relative flex h-[var(--tile,96px)] w-[var(--tile,96px)] items-center justify-center rounded-[24px] border-2 border-[#E3EDE8] border-b-[5px] border-b-[#C9DDD3] bg-white dark:border-border dark:bg-card" style={{ ["--shine-delay" as string]: `${(i % 8) * 0.35}s` }}>
+                    <span className="relative flex h-[calc(var(--tile,96px)*0.78)] w-[calc(var(--tile,96px)*0.78)] items-center justify-center rounded-full" style={{ background: tone }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={`/emoji/${ic}.webp`} alt="" width={46} height={46} className="emo-float h-[calc(var(--tile,80px)*0.58)] w-[calc(var(--tile,80px)*0.58)]" style={{ animationDelay: `${i * 0.4}s` }} draggable={false} />
+                      <img src={`/emoji/${ic}.webp`} alt="" width={46} height={46} className="emo-float h-[calc(var(--tile,96px)*0.58)] w-[calc(var(--tile,96px)*0.58)]" style={{ animationDelay: `${i * 0.4}s` }} draggable={false} />
                     </span>
                   </span>
                 );
