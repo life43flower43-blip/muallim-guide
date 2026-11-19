@@ -1,8 +1,9 @@
 "use client";
 // المعجم التربوي داخل التطبيق: كل المفاهيم مرتبة هجائيًّا (دون «ال» التعريف)، مع بحث فوري
-// وشريط حروف ثابت ينقل إلى الحرف، والضغط على المصطلح يفتح صفحة قراءته في التطبيق نفسه.
+// وشريط حروف ثابت ينقل إلى الحرف. الضغط على المصطلح يُظهر بطاقة تعريف قصيرة (التعريف ومثال ومصطلحات قريبة)،
+// ومنها يمكن فتح الشرح الكامل.
 import { useMemo, useRef, useState } from "react";
-import { CircleCheck, Search, X } from "lucide-react";
+import { BookOpen, CircleCheck, Search, X } from "lucide-react";
 import { CONCEPTS, COURSE_SHORT } from "@/lib/qbank";
 import { useApp } from "@/lib/store";
 import { ad } from "@/lib/arabic";
@@ -33,6 +34,9 @@ export default function GlossaryView({ onClose }: { onClose: () => void }) {
   const reads = useApp((s) => s.conceptReads);
   const [q, setQ] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
+  const [defId, setDefId] = useState<string | null>(null);
+  const def = defId ? CONCEPTS.find((c) => c.id === defId) : undefined;
+  const related = def ? CONCEPTS.filter((c) => c.courseId === def.courseId && c.chapter === def.chapter && c.id !== def.id).slice(0, 4) : [];
   const [active, setActive] = useState<string>("ا");
   const refs = useRef<Record<string, HTMLElement | null>>({});
 
@@ -60,11 +64,11 @@ export default function GlossaryView({ onClose }: { onClose: () => void }) {
     refs.current[L]?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const Row = ({ id, title, courseId }: { id: string; title: string; courseId: string }) => (
-    <button type="button" onClick={() => setOpenId(id)} className="flex min-h-[52px] w-full items-center gap-3 border-b border-[var(--t075)] px-1 text-right last:border-b-0 active:bg-[var(--t050)] dark:border-border">
+  const Row = ({ id, title, rule }: { id: string; title: string; courseId: string; rule?: string }) => (
+    <button type="button" onClick={() => setDefId(id)} className="flex min-h-[56px] w-full items-center gap-3 border-b border-[var(--t075)] px-1 py-1.5 text-right last:border-b-0 active:bg-[var(--t050)] dark:border-border">
       <span className="min-w-0 flex-1">
         <span className="block truncate text-[15px] font-bold leading-6 text-foreground">{title}</span>
-        <span className="block truncate text-[12px] leading-5 text-muted-foreground">{COURSE_SHORT[courseId] ?? ""}</span>
+        {rule && <span className="block truncate text-[12.5px] leading-5 text-muted-foreground">{rule}</span>}
       </span>
       {reads[id] ? <CircleCheck className="h-4 w-4 shrink-0 text-[#168477]" aria-label="قرأته" /> : null}
     </button>
@@ -98,7 +102,7 @@ export default function GlossaryView({ onClose }: { onClose: () => void }) {
         {results ? (
           results.length ? (
             <div className="mt-2 rounded-[18px] border border-[var(--t075)] bg-white px-3 dark:border-border dark:bg-card">
-              {results.map((c) => <Row key={c.id} id={c.id} title={c.title} courseId={c.courseId} />)}
+              {results.map((c) => <Row key={c.id} id={c.id} title={c.title} courseId={c.courseId} rule={c.rule} />)}
             </div>
           ) : (
             <p className="py-10 text-center text-sm text-muted-foreground">لا مصطلح مطابق، جرّب كلمة أقصر</p>
@@ -112,13 +116,43 @@ export default function GlossaryView({ onClose }: { onClose: () => void }) {
                   <span className="text-[12px] text-muted-foreground">{ad(items.length)}</span>
                 </div>
                 <div className="rounded-[18px] border border-[var(--t075)] bg-white px-3 dark:border-border dark:bg-card">
-                  {items.map(({ c }) => <Row key={c.id} id={c.id} title={c.title} courseId={c.courseId} />)}
+                  {items.map(({ c }) => <Row key={c.id} id={c.id} title={c.title} courseId={c.courseId} rule={c.rule} />)}
                 </div>
               </section>
             ))}
           </div>
         )}
       </ScreenShell>
+      {/* بطاقة التعريف: لوح من أسفل الشاشة بالتعريف القصير ومثال ومصطلحات من الموضوع نفسه */}
+      {def && (
+        <div className="fixed inset-0 z-[70] flex items-end bg-black/40" onClick={() => setDefId(null)}>
+          <div role="dialog" aria-label={def.title} onClick={(e) => e.stopPropagation()} className="safe-bottom max-h-[80dvh] w-full overflow-y-auto rounded-t-[28px] bg-white px-5 pb-4 pt-3 dark:bg-card">
+            <span className="mx-auto mb-3 block h-1.5 w-12 rounded-full bg-border" aria-hidden="true" />
+            <h3 className="text-[20px] font-extrabold leading-8 text-foreground">{def.title}</h3>
+            <span className="mt-1 inline-block rounded-full bg-[#C5E5DF]/60 px-2.5 py-0.5 text-[12px] font-bold text-[#168477]">{COURSE_SHORT[def.courseId] ?? ""}</span>
+            <p className="mt-3 text-[16px] font-bold leading-8 text-foreground">{def.rule || def.explanation.split(/(?<=[.؟!])\s/)[0]}</p>
+            {(def.examples?.[0] || def.example) && (
+              <div className="mt-3 rounded-[16px] border-r-[3px] border-r-[#168477] bg-[#F1F8F6] px-4 py-3 dark:bg-white/5">
+                <p className="text-[12px] font-extrabold text-[#168477]">مثال</p>
+                <p className="mt-1 text-[14px] leading-7 text-foreground">{def.examples?.[0] ?? def.example}</p>
+              </div>
+            )}
+            {related.length > 0 && (
+              <div className="mt-4">
+                <p className="mb-2 text-[13px] font-extrabold text-muted-foreground">مصطلحات قريبة</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {related.map((r) => (
+                    <button key={r.id} type="button" onClick={() => setDefId(r.id)} className="rounded-full border border-[#C5E5DF] bg-white px-3 py-1.5 text-[13px] font-bold text-foreground dark:bg-card">{r.title}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+            <button type="button" onClick={() => { setOpenId(def.id); setDefId(null); }} className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-[16px] bg-[#168477] text-[15px] font-extrabold text-white">
+              <BookOpen className="h-4 w-4" /> اقرأ الشرح الكامل
+            </button>
+          </div>
+        </div>
+      )}
       {openId && <ConceptReader conceptId={openId} onClose={() => setOpenId(null)} />}
     </>
   );
