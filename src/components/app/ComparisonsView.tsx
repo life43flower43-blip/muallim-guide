@@ -55,7 +55,7 @@ export default function ComparisonsView({ onClose }: { onClose: () => void }) {
                   {list.map((c) => (
                     <button key={c.slug} type="button" onClick={() => setOpen(c)} className="flex w-full items-center gap-2 rounded-[16px] border border-[var(--t075)] bg-white px-3 py-2.5 text-right active:scale-[0.99] dark:border-border dark:bg-card">
                       <span className="min-w-0 flex-1 text-[14.5px] font-bold leading-6 text-foreground">
-                        <span style={{ color: A }}>{c.a}</span>{" "}
+                        <span className="text-[#111111] dark:text-foreground">{c.a}</span>{" "}
                         <span className="text-[12px] font-extrabold text-muted-foreground">مقابل</span>{" "}
                         <span style={{ color: B }}>{c.b}</span>
                       </span>
