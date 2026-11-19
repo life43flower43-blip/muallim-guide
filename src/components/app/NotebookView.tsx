@@ -61,7 +61,7 @@ function Examples({ concepts }: { concepts: Concept[] }) {
   return (
     <ul className="space-y-3">
       {items.map(({ c, ex }) => (
-        <li key={c.id} className="rounded-[20px] border border-[var(--t075)] border-r-2 border-r-[#D4A017] bg-white px-5 py-4 dark:border-border dark:bg-card">
+        <li key={c.id} className="rounded-[20px] border border-[var(--t075)] border-r-2 border-r-[#168477] bg-white px-5 py-4 dark:border-border dark:bg-card">
           <p className="text-[15px] font-normal leading-7 text-foreground">{ex}</p>
         </li>
       ))}
@@ -73,7 +73,7 @@ function Rules({ concepts }: { concepts: Concept[] }) {
   return (
     <ul className="space-y-3">
       {concepts.map((c) => (
-        <li key={c.id} className="rounded-[20px] border border-[var(--t075)] border-r-2 border-r-[#D4A017] bg-white px-5 py-4 dark:border-border dark:bg-card">
+        <li key={c.id} className="rounded-[20px] border border-[var(--t075)] border-r-2 border-r-[#168477] bg-white px-5 py-4 dark:border-border dark:bg-card">
           <p className="text-[15px] font-normal leading-7 text-foreground">{c.rule}</p>
         </li>
       ))}
@@ -152,7 +152,7 @@ export default function NotebookView() {
           </div>
 
           {/* أقسام الدفتر تحت محدد الفصل */}
-          <div role="tablist" aria-label="أقسام الدفتر" className="sticky top-1 z-20 grid grid-cols-3 gap-1 rounded-[22px] border border-[#ECE3C4] bg-white p-1 shadow-[0_6px_14px_-12px_rgba(0,0,0,0.35)] dark:bg-card">
+          <div role="tablist" aria-label="أقسام الدفتر" className="sticky top-1 z-20 grid grid-cols-3 gap-1 rounded-[22px] border border-[#C5E5DF] bg-white p-1 shadow-[0_6px_14px_-12px_rgba(0,0,0,0.35)] dark:bg-card">
             {PARTS.map((p) => (
               <button
                 key={p.id}
