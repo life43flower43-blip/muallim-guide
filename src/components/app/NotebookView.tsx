@@ -4,6 +4,7 @@
 // البوصلة: خريطة ذهنية لكل فصل، وقواعده في جمل قصيرة، وأمثلة واقعية من الصف
 // ============================================================================
 
+import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useApp } from "@/lib/store";
@@ -160,11 +161,13 @@ export default function NotebookView() {
                 aria-selected={part === p.id}
                 onClick={() => setPart(p.id)}
                 className={cn(
-                  "min-h-[44px] min-w-0 rounded-[18px] px-1 font-bold transition active:scale-[0.98]",
-                  part === p.id ? "bg-[var(--t700)] text-white" : "text-muted-foreground"
+                  "relative min-h-[44px] min-w-0 rounded-[18px] px-1 font-bold transition-colors duration-300 active:scale-[0.98]",
+                  part === p.id ? "text-white" : "text-[#4B5A57] dark:text-foreground/75"
                 )}
               >
-                <FitText max={16} min={10} group="nb-tabs" className="text-center">{p.label}</FitText>
+                {/* الخلفية الخضراء تنزلق بنعومة إلى التبويب المختار */}
+                {part === p.id && <motion.span layoutId="nb-tab-pill" className="absolute inset-0 rounded-[18px] bg-[var(--t700)]" transition={{ type: "spring", stiffness: 380, damping: 32 }} aria-hidden="true" />}
+                <span className="relative block"><FitText max={16} min={10} group="nb-tabs" className="text-center">{p.label}</FitText></span>
               </button>
             ))}
           </div>
