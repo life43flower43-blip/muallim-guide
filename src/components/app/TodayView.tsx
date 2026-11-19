@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { dayStr, dayXpOf, useApp } from "@/lib/store";
 import { useUi } from "@/lib/ui-store";
 import { useMistakes } from "@/lib/mistakes-client";
+import { spacedDueIds } from "@/lib/srs";
 import { COURSES, COURSE_SHORT, CONCEPTS, conceptsOfCourse } from "@/lib/qbank";
 import { overallReadiness } from "@/lib/practice-bank";
 import { ad } from "@/lib/arabic";
@@ -205,7 +206,11 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   // أيام الأسبوع من السبت إلى الجمعة: يمتلئ بالذهبي كل يوم درست فيه الطالبة
   const sessions = useApp((s) => s.sessions);
   const { data: mistakes } = useMistakes();
-  const due = mistakes?.stats.due ?? 0;
+  const mistakesDue = mistakes?.stats.due ?? 0;
+  // مراجعة اليوم: ما حان موعد تذكّره، وإن لم يكن شيء فأخطاء حان موعدها
+  const attemptsAll = useApp((s) => s.attempts);
+  const reviewIds = useMemo(() => spacedDueIds(attemptsAll), [attemptsAll]);
+  const due = reviewIds.length ? Math.min(reviewIds.length, 15) : mistakesDue;
   // الرئيسية بالرموز الدائرية دائمًا (بطلب صاحبة التطبيق)
   const homeStyle = "icons" as "icons" | "photos";
   const week = useMemo(() => {
@@ -289,7 +294,8 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
             type="button"
             onClick={() => {
               tick();
-              onGoTab("mistakes");
+              if (reviewIds.length) ui.startQuiz({ mode: "training", label: "مراجعة اليوم", qids: reviewIds.slice(0, 15) });
+              else onGoTab("mistakes");
             }}
             className="flex shrink-0 flex-col items-center gap-1.5 text-foreground dark:text-foreground"
           >
@@ -309,7 +315,7 @@ export default function TodayView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
               </span>
             </span>
             </span>
-            <span className="whitespace-nowrap text-[12px] font-bold leading-4 text-foreground dark:text-foreground">راجع أخطاءك</span>
+            <span className="whitespace-nowrap text-[12px] font-bold leading-4 text-foreground dark:text-foreground">مراجعة اليوم</span>
           </button>
         </div>
       </motion.div>

@@ -18,7 +18,6 @@ import { ad, arCount, ERROR_OBJ_FORMS, splitReason } from "@/lib/arabic";
 import { cn } from "@/lib/utils";
 import type { Tab } from "./AppShell";
 import { ConceptReader } from "./ConceptsView";
-import DailyReviewCard from "./DailyReviewCard";
 import { EmptyState, PageTitle, PrimaryButton } from "./ui-kit";
 
 
@@ -96,7 +95,6 @@ function CourseSection({ group, items, expanded, onToggle, onReview, onConcept }
 export default function MistakesView({ onGoTab }: { onGoTab: (t: Tab) => void }) {
   return (
     <div className="space-y-3">
-      <DailyReviewCard />
       <MistakesBody onGoTab={onGoTab} />
     </div>
   );
