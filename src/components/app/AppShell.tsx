@@ -144,7 +144,7 @@ function BottomNav({ tab, onTab, due, onBack, onAccount, accountOpen }: { tab: T
   useEffect(() => {
     const el = document.getElementById("main-scroll");
     if (!el) return;
-    if (tab === "today") return;
+    if (tab === "today" || tab === "practice") return;
     let last = el.scrollTop;
     let f = 0;
     const onScroll = () => {
