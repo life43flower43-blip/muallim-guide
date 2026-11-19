@@ -127,7 +127,6 @@ export default function NotebookView() {
         </svg>
         <span className="min-w-0 flex-1">
           <FitText max={16} min={12} className="font-extrabold leading-6 text-white">الخرائط الذهنية المتحركة</FitText>
-          <FitText max={12} min={9} className="leading-5 text-[#FCEBB6]">إحدى عشرة خريطة · مشاهد قصيرة · تدريب مباشر</FitText>
         </span>
         {/* موجات طاقة تندفع إلى الأمام نحو السهم */}
         <span className="mc-push pointer-events-none absolute inset-0" aria-hidden="true" />

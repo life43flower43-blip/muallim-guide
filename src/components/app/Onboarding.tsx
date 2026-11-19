@@ -79,7 +79,6 @@ export default function Onboarding() {
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-base font-semibold">{g.title}</span>
-                      <span className="mt-0.5 block text-sm leading-5 text-muted-foreground">{g.sub}</span>
                     </span>
                     <span className={cn("flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2", on ? "border-primary bg-primary text-primary-foreground" : "border-input")}>
                       {on && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
