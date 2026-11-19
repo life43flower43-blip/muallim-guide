@@ -65,8 +65,8 @@ export default function ComparisonsView({ onClose }: { onClose: () => void }) {
             {list.map((c) => (
               <Row key={c.slug} onClick={() => setOpen(c)}>
                 <span className="text-[#111111] dark:text-foreground">{c.a.replace(/\s*\(.*?\)/g, "")}</span>{" "}
-                <span className="text-[12px] font-extrabold text-muted-foreground">مقابل</span>{" "}
-                <span style={{ color: B }}>{c.b.replace(/\s*\(.*?\)/g, "")}</span>
+                <span className="text-[13px] font-bold text-[#111111] dark:text-foreground">مقابل</span>{" "}
+                <span className="text-[#111111] dark:text-foreground">{c.b.replace(/\s*\(.*?\)/g, "")}</span>
               </Row>
             ))}
           </div>
