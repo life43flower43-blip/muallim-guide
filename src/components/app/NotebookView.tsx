@@ -33,9 +33,9 @@ function CausalMap({ map }: { map: ChapterMap }) {
           {ch.steps.map((st, k) => (
             <li key={k} className="relative pb-2 pr-6 last:pb-0">
               {/* الخط العمودي والنقطة */}
-              {k < ch.steps.length - 1 && <span className="absolute bottom-0 right-[7px] top-4 w-[2px] bg-[var(--t150)]" aria-hidden="true" />}
+              {k < ch.steps.length - 1 && <span className="absolute bottom-0 right-[7px] top-4 w-[2px] bg-[#C5E5DF]" aria-hidden="true" />}
               <span
-                className={cn("absolute right-0 top-[9px] h-4 w-4 rounded-full border-[3px] border-white dark:border-card", k === 0 ? "bg-[var(--t800)]" : k === ch.steps.length - 1 ? "bg-[#D4A017]" : "bg-[var(--t300)]")}
+                className={cn("absolute right-0 top-[9px] h-4 w-4 rounded-full border-[3px] border-white dark:border-card", k === 0 ? "bg-[#168477]" : k === ch.steps.length - 1 ? "bg-[#C5E5DF]" : "bg-[#79BFB3]")}
                 aria-hidden="true"
               />
               {/* الجملة كلها في سطر واحد: يصغر الخط قليلًا عند الحاجة بدل نزول الكلمات */}
@@ -138,15 +138,15 @@ export default function NotebookView() {
       {current ? (
         <div className="space-y-3">
           {/* المحور والفصل في محدِّد واحد، وسهمان صغيران للتنقل بين الفصول */}
-          <div className="flex items-center gap-1 rounded-[20px] border border-[var(--t075)] bg-white p-1 dark:border-border dark:bg-card">
-            <button type="button" aria-label="المحطة السابقة" disabled={chIndex <= 0} onClick={() => setChIndex(chIndex - 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#C9971C] disabled:opacity-25">
+          <div className="flex items-center gap-1 rounded-[20px] border border-[#111111] bg-white p-1 dark:border-border dark:bg-card">
+            <button type="button" aria-label="المحطة السابقة" disabled={chIndex <= 0} onClick={() => setChIndex(chIndex - 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#168477] disabled:opacity-25">
               <ChevronRight className="h-5 w-5" strokeWidth={2.5} />
             </button>
             <button type="button" onClick={() => setPicking(true)} className="min-w-0 flex-1 rounded-[14px] px-1 py-0.5 text-center transition active:scale-[0.98]">
-              <FitText max={14} min={11} className="text-center font-bold leading-5 text-[#C9971C]">{`${COURSE_SHORT[courseId] ?? ""} ▾`}</FitText>
+              <FitText max={14} min={11} className="text-center font-bold leading-5 text-[#168477]">{`${COURSE_SHORT[courseId] ?? ""} ▾`}</FitText>
               <FitText max={20} min={12} className="text-center font-extrabold leading-6 text-foreground">{chapterLabel(current.chapter)}</FitText>
             </button>
-            <button type="button" aria-label="المحطة التالية" disabled={chIndex >= chapters.length - 1} onClick={() => setChIndex(chIndex + 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#C9971C] disabled:opacity-25">
+            <button type="button" aria-label="المحطة التالية" disabled={chIndex >= chapters.length - 1} onClick={() => setChIndex(chIndex + 1)} className="flex h-10 w-8 shrink-0 items-center justify-center rounded-full text-[#168477] disabled:opacity-25">
               <ChevronLeft className="h-5 w-5" strokeWidth={2.5} />
             </button>
           </div>
