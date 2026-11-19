@@ -64,11 +64,10 @@ export default function GlossaryView({ onClose }: { onClose: () => void }) {
     refs.current[L]?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const Row = ({ id, title, rule }: { id: string; title: string; courseId: string; rule?: string }) => (
-    <button type="button" onClick={() => setDefId(id)} className="flex min-h-[56px] w-full items-center gap-3 border-b border-[var(--t075)] px-1 py-1.5 text-right last:border-b-0 active:bg-[var(--t050)] dark:border-border">
+  const Row = ({ id, title }: { id: string; title: string; courseId: string; rule?: string }) => (
+    <button type="button" onClick={() => setDefId(id)} className="flex min-h-[50px] w-full items-center gap-3 border-b border-[var(--t075)] px-1 py-1 text-right last:border-b-0 active:bg-[var(--t050)] dark:border-border">
       <span className="min-w-0 flex-1">
         <span className="block truncate text-[15px] font-bold leading-6 text-foreground">{title}</span>
-        {rule && <span className="block truncate text-[12.5px] leading-5 text-muted-foreground">{rule}</span>}
       </span>
       {reads[id] ? <CircleCheck className="h-4 w-4 shrink-0 text-[#168477]" aria-label="قرأته" /> : null}
     </button>
