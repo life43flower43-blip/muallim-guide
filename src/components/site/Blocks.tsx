@@ -74,7 +74,7 @@ export function SectionTitle({ title, more, color = "#136F5C" }: { title: string
 
 export function Crumbs({ items }: { items: { href?: string; label: string }[] }) {
   return (
-    <nav aria-label="مسار التنقل" className="mb-5 flex flex-wrap items-center gap-1.5 text-[13px] text-[#6B8077]">
+    <nav data-chrome aria-label="مسار التنقل" className="mb-5 flex flex-wrap items-center gap-1.5 text-[13px] text-[#6B8077]">
       <Link href="/" className="hover:text-[#136F5C]">الرئيسية</Link>
       {items.map((it, i) => (
         <span key={i} className="flex items-center gap-1.5">
@@ -160,7 +160,7 @@ export function WithSidebar({ children }: { children: React.ReactNode }) {
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
       <div className="min-w-0">{children}</div>
-      <Sidebar />
+      <div data-chrome className="contents"><Sidebar /></div>
     </div>
   );
 }
