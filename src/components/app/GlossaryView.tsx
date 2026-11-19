@@ -124,10 +124,9 @@ export default function GlossaryView({ onClose }: { onClose: () => void }) {
       </ScreenShell>
       {/* بطاقة التعريف: لوح من أسفل الشاشة بالتعريف القصير ومثال ومصطلحات من الموضوع نفسه */}
       {def && (
-        <div className="fixed inset-0 z-[70] flex items-end bg-black/40" onClick={() => setDefId(null)}>
-          <div role="dialog" aria-label={def.title} onClick={(e) => e.stopPropagation()} className="safe-bottom max-h-[80dvh] w-full overflow-y-auto rounded-t-[28px] bg-white px-5 pb-4 pt-3 dark:bg-card">
-            <span className="mx-auto mb-3 block h-1.5 w-12 rounded-full bg-border" aria-hidden="true" />
-            <h3 className="text-[20px] font-extrabold leading-8 text-foreground">{def.title}</h3>
+        <ScreenShell title="المعجم التربوي" onBack={() => setDefId(null)}>
+          <div>
+            <h3 className="text-[22px] font-extrabold leading-9 text-foreground">{def.title}</h3>
             <span className="mt-1 inline-block rounded-full bg-[#C5E5DF]/60 px-2.5 py-0.5 text-[12px] font-bold text-[#168477]">{COURSE_SHORT[def.courseId] ?? ""}</span>
             <p className="mt-3 text-[16px] font-bold leading-8 text-foreground">{def.rule || def.explanation.split(/(?<=[.؟!])\s/)[0]}</p>
             {(def.examples?.[0] || def.example) && (
@@ -150,7 +149,7 @@ export default function GlossaryView({ onClose }: { onClose: () => void }) {
               <BookOpen className="h-4 w-4" /> اقرأ الشرح الكامل
             </button>
           </div>
-        </div>
+        </ScreenShell>
       )}
       {openId && <ConceptReader conceptId={openId} onClose={() => setOpenId(null)} />}
     </>
