@@ -38,11 +38,12 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
           ]),
         }}
       />
+      {/* داخل التطبيق (إطار مضمّن) تُخفى ترويسة الموقع وتذييله، فتظهر الصفحة جزءًا من التطبيق */}
+      <script dangerouslySetInnerHTML={{ __html: `try{if(window.self!==window.top){document.documentElement.classList.add("in-app")}}catch(e){document.documentElement.classList.add("in-app")}` }} />
       {ADS && <Script async strategy="afterInteractive" crossOrigin="anonymous" src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADS}`} />}
-      <SiteHeader />
+      <div data-chrome className="contents"><SiteHeader /></div>
       <main className="mx-auto max-w-6xl select-none px-4 pb-24 pt-6 md:pb-6 [&_input]:select-text [&_textarea]:select-text">{children}</main>
-      <SiteFooter />
-      <AppBar />
+      <div data-chrome className="contents"><SiteFooter /><AppBar /></div>
       <CopyGuard />
     </div>
   );
