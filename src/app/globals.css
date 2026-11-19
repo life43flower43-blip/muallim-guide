@@ -944,3 +944,7 @@ body {
 
 /* صف «نشاطك» و«مستوى استعدادك» و«راجع أخطاءك» أصغر قليلًا */
 .stat-sm { transform: scale(.86); transform-origin: center; }
+
+/* صفحات الموقع داخل التطبيق: بلا ترويسة ولا تذييل */
+html.in-app [data-chrome] { display: none !important; }
+html.in-app main { padding-bottom: 24px; }

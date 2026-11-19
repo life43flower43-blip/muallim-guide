@@ -50,7 +50,7 @@ import { ad, arCount, QUESTION_GEN_FORMS } from "@/lib/arabic";
 import { cn } from "@/lib/utils";
 import type { Tab } from "./AppShell";
 import TestBuilder from "./TestBuilder";
-import { Divided, PageTitle, Stars, pct, GameTile } from "./ui-kit";
+import { Divided, PageTitle, Stars, pct, GameTile, ScreenShell } from "./ui-kit";
 
 const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
 
@@ -116,6 +116,8 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
   const ui = useUi();
   const [open, setOpen] = useState<string | null>(null);
   const [builder, setBuilder] = useState(false);
+  // أدوات الرخصة تُفتح داخل التطبيق في شاشة كاملة، لا تنقل الطالب إلى الموقع
+  const [tool, setTool] = useState<{ href: string; title: string } | null>(null);
   const [view, setView] = useState<"tests" | "courses">("tests");
 
   const answered = useMemo(() => Object.keys(attempts).length, [attempts]);
@@ -183,7 +185,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
           <p className="col-span-2 mt-3 font-extrabold text-foreground dark:text-foreground">أدوات الرخصة</p>
           <div className="col-span-2 grid grid-cols-2 gap-2.5 tiles2">
             {LICENSE_TOOLS.map((t, k) => (
-              <Tile key={t.href} tone={k + 4} emoji={t.emoji} sub={t.sub} icon={t.icon} title={t.title} onClick={() => { window.location.href = t.href; }} />
+              <Tile key={t.href} tone={k + 4} emoji={t.emoji} sub={t.sub} icon={t.icon} title={t.title} onClick={() => setTool({ href: t.href, title: t.title })} />
             ))}
           </div>
         </div>
@@ -195,6 +197,12 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
             return <GameTile key={c.id} tone={k} emoji={COURSE_EMO[c.id] ?? "📚"} title={COURSE_SHORT[c.id] ?? c.name} meta={stars > 0 ? `★ ${ad(stars)}` : undefined} onClick={() => setOpen(c.id)} />;
           })}
         </div>
+      )}
+
+      {tool && (
+        <ScreenShell title={tool.title} onBack={() => setTool(null)} wide bare>
+          <iframe src={`${tool.href}?in_app=1`} title={tool.title} className="absolute inset-0 h-full w-full border-0 bg-[#F4F7F5]" />
+        </ScreenShell>
       )}
 
       {/* المحور المختار في ورقة من الأسفل: ثلاثة أزرار ثم فصوله */}
