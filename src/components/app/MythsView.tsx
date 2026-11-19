@@ -1,7 +1,7 @@
 "use client";
 // مفاهيم خاطئة داخل التطبيق: عبارة واحدة في كل شاشة، مع شريط تقدم وعدّاد للصح والخطأ.
 // يحكم المتعلم «صحيحة» أو «خاطئة»، فيظهر الصواب وسببه وأثره في الصف، ثم «التالي» أو «السابق».
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, CircleCheck, CircleX, Lightbulb, School, X } from "lucide-react";
 import { MISCONCEPTIONS } from "@/lib/misconceptions";
 import { ad } from "@/lib/arabic";
@@ -10,6 +10,11 @@ import { ScreenShell } from "./ui-kit";
 
 export default function MythsView({ onClose }: { onClose: () => void }) {
   const total = MISCONCEPTIONS.length;
+  // الشريط المتنقل يبقى ظاهرًا فوق هذه الشاشة، وأزرارها فوقه مباشرة
+  useEffect(() => {
+    document.documentElement.classList.add("nav-over");
+    return () => document.documentElement.classList.remove("nav-over");
+  }, []);
   const [i, setI] = useState(0);
   const [answers, setAnswers] = useState<Record<string, boolean>>({});
   const m = MISCONCEPTIONS[i];

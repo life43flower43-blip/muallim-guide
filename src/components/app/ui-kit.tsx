@@ -305,7 +305,7 @@ export function ScreenShell({
       </div>
       {/* الشريط السفلي: زر الرجوع في مكانه الثابت قرب الإبهام، ثم أزرار الشاشة؛ لا يغطي المحتوى أبدًا */}
       {(footer || onBack || onClose) && (
-        <div className="safe-bottom shrink-0 border-t border-[var(--t075)] bg-white/95 backdrop-blur dark:border-border dark:bg-card">
+        <div className="shell-footer safe-bottom shrink-0 border-t border-[var(--t075)] bg-white/95 backdrop-blur dark:border-border dark:bg-card">
           <div className={cn("mx-auto flex items-center gap-2.5 px-4 py-2.5", wide ? "max-w-5xl" : "max-w-3xl")}>
             {(onBack || onClose) && <BackButton onClick={(onBack ?? onClose)!} className="h-11 w-11" />}
             {footer && <div className="flex min-w-0 flex-1 gap-2.5">{footer}</div>}

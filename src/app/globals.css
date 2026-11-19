@@ -948,3 +948,7 @@ body {
 /* صفحات الموقع داخل التطبيق: بلا ترويسة ولا تذييل */
 html.in-app [data-chrome] { display: none !important; }
 html.in-app main { padding-bottom: 24px; }
+
+/* شاشات يبقى فوقها الشريط المتنقل ظاهرًا (مفاهيم خاطئة) */
+html.nav-over #bottom-nav { z-index: 60; opacity: 1 !important; transform: none !important; pointer-events: auto !important; }
+html.nav-over .shell-footer { margin-bottom: var(--nav-h, 88px); padding-bottom: 6px; }
