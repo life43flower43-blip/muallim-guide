@@ -40,34 +40,38 @@ function Detail({ c, onBack }: { c: Comparison; onBack: () => void }) {
 }
 
 export default function ComparisonsView({ onClose }: { onClose: () => void }) {
+  // كالكتاب: المجموعات أولًا، ثم مقارنات المجموعة، ثم المقارنة نفسها
+  const [group, setGroup] = useState<string | null>(null);
   const [open, setOpen] = useState<Comparison | null>(null);
+  const list = group ? COMPARISONS.filter((c) => c.group === group) : [];
+  const Row = ({ children, onClick }: { children: React.ReactNode; onClick: () => void }) => (
+    <button type="button" onClick={onClick} className="flex min-h-[52px] w-full items-center gap-2 border-b border-[var(--t075)] px-1 text-right last:border-b-0 active:bg-[var(--t050)] dark:border-border">
+      <span className="min-w-0 flex-1 truncate text-[15px] font-bold text-foreground">{children}</span>
+      <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground" />
+    </button>
+  );
   return (
     <>
       <ScreenShell title="المقارنات" onBack={onClose}>
-        <div className="space-y-5">
-          {COMPARISON_GROUPS.map((g) => {
-            const list = COMPARISONS.filter((c) => c.group === g);
-            if (!list.length) return null;
-            return (
-              <section key={g}>
-                <h2 className="mb-2 px-1 text-[16px] font-extrabold text-[#168477]">{g}</h2>
-                <div className="space-y-2">
-                  {list.map((c) => (
-                    <button key={c.slug} type="button" onClick={() => setOpen(c)} className="flex w-full items-center gap-2 rounded-[16px] border border-[var(--t075)] bg-white px-3 py-2.5 text-right active:scale-[0.99] dark:border-border dark:bg-card">
-                      <span className="min-w-0 flex-1 text-[14.5px] font-bold leading-6 text-foreground">
-                        <span className="text-[#111111] dark:text-foreground">{c.a}</span>{" "}
-                        <span className="text-[12px] font-extrabold text-muted-foreground">مقابل</span>{" "}
-                        <span style={{ color: B }}>{c.b}</span>
-                      </span>
-                      <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground" />
-                    </button>
-                  ))}
-                </div>
-              </section>
-            );
-          })}
+        <div className="rounded-[18px] border border-[var(--t075)] bg-white px-3 dark:border-border dark:bg-card">
+          {COMPARISON_GROUPS.filter((g) => COMPARISONS.some((c) => c.group === g)).map((g) => (
+            <Row key={g} onClick={() => setGroup(g)}>{g}</Row>
+          ))}
         </div>
       </ScreenShell>
+      {group && (
+        <ScreenShell title={group} onBack={() => setGroup(null)}>
+          <div className="rounded-[18px] border border-[var(--t075)] bg-white px-3 dark:border-border dark:bg-card">
+            {list.map((c) => (
+              <Row key={c.slug} onClick={() => setOpen(c)}>
+                <span className="text-[#111111] dark:text-foreground">{c.a.replace(/\s*\(.*?\)/g, "")}</span>{" "}
+                <span className="text-[12px] font-extrabold text-muted-foreground">مقابل</span>{" "}
+                <span style={{ color: B }}>{c.b.replace(/\s*\(.*?\)/g, "")}</span>
+              </Row>
+            ))}
+          </div>
+        </ScreenShell>
+      )}
       {open && <Detail c={open} onBack={() => setOpen(null)} />}
     </>
   );
