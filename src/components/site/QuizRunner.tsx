@@ -180,7 +180,7 @@ export default function QuizRunner({ questions, title, onConceptPage = false }: 
       {right && questions.length > 1 && <p className="mt-4 text-center font-bold text-[#1E7B4A]">إجابة صحيحة ✓</p>}
       {picked !== null && !(right && questions.length > 1) && (
         <div className={`mt-4 rounded-xl p-4 ${picked === q.correct ? "bg-[#EAF6EF]" : "bg-[#FFF6E5]"}`}>
-          <p className="font-bold text-[#14302A]">{picked === q.correct ? "إجابة صحيحة" : "إجابة غير صحيحة، والصحيحة مظللة بالأخضر"}</p>
+          <p className="font-bold text-[#14302A]">{picked === q.correct ? "إجابة صحيحة" : "إجابة غير صحيحة"}</p>
           {!right && <p className="mt-1 text-[14px] leading-7 text-[#3A5249]">{q.reason}</p>}
           {!right && !onConceptPage && <Link href={q.href} className="mt-2 inline-flex items-center gap-1 text-[13px] font-bold text-[#136F5C]">اقرأ شرح «{q.concept}» <ChevronLeft className="h-4 w-4" /></Link>}
           {questions.length === 1 ? (
