@@ -38,12 +38,12 @@ function Segmented<T extends string>({ value, onChange, options, label }: { valu
           aria-checked={value === o.id}
           onClick={() => onChange(o.id)}
           className={cn(
-            "rounded-xl border p-3 text-right transition-colors",
+            "rounded-xl border px-2.5 py-2 text-right transition-colors",
             value === o.id ? "border-primary bg-accent ring-1 ring-primary" : "border-border bg-card hover:bg-muted/60"
           )}
         >
-          <span className="block text-sm font-medium">{o.title}</span>
-          {o.sub && <span className="mt-0.5 block text-xs leading-5 text-muted-foreground">{o.sub}</span>}
+          <span className="block text-[13.5px] font-bold leading-5">{o.title}</span>
+          {o.sub && <span className="block text-[11px] leading-4 text-muted-foreground">{o.sub}</span>}
         </button>
       ))}
     </div>
@@ -133,23 +133,23 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
         </>
       }
     >
-      <div className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-start">
-        <div className="space-y-7">
+      <div className="grid gap-4 lg:grid-cols-[1fr_1fr] lg:items-start">
+        <div className="space-y-3.5">
           <section>
-            <SectionHeader title="النمط" />
+            <h3 className="mb-1.5 text-[14px] font-extrabold text-foreground">النمط</h3>
             <Segmented
               label="النمط"
               value={mode}
               onChange={setMode}
               options={[
-                { id: "tutor", title: "تعلّم", sub: "الإجابة والشرح بعد كل سؤال" },
-                { id: "timed", title: "اختبار موقوت", sub: "دقيقة لكل سؤال، والشرح في التقرير" },
+                { id: "tutor", title: "تعلّم", sub: "الشرح بعد كل سؤال" },
+                { id: "timed", title: "اختبار موقوت", sub: "دقيقة لكل سؤال" },
               ]}
             />
           </section>
 
           <section>
-            <SectionHeader title="مصدر الأسئلة" />
+            <h3 className="mb-1.5 text-[14px] font-extrabold text-foreground">مصدر الأسئلة</h3>
             <Segmented
               label="مصدر الأسئلة"
               value={pool}
@@ -163,7 +163,7 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
           </section>
 
           <section>
-            <SectionHeader title="الصعوبة" />
+            <h3 className="mb-1.5 text-[14px] font-extrabold text-foreground">الصعوبة</h3>
             <div className="flex flex-wrap gap-2">
               {DIFFS.map((d) => {
                 const on = diffs.includes(d);
@@ -174,11 +174,11 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
                     aria-pressed={on}
                     onClick={() => setDiffs((prev) => (on ? (prev.length > 1 ? prev.filter((x) => x !== d) : prev) : [...prev, d]))}
                     className={cn(
-                      "flex min-h-[40px] items-center gap-2 rounded-full border px-4 text-sm transition-colors",
+                      "flex min-h-[32px] items-center gap-1.5 rounded-full border px-3 text-[13px] transition-colors",
                       on ? "border-primary bg-accent text-accent-foreground" : "border-border bg-card text-secondary-foreground hover:bg-muted"
                     )}
                   >
-                    {on && <Check className="h-4 w-4" />}
+                    {on && <Check className="h-3.5 w-3.5" />}
                     {d}
                   </button>
                 );
@@ -187,8 +187,8 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
           </section>
 
           <section>
-            <SectionHeader title="عدد الأسئلة" />
-            <div role="radiogroup" aria-label="عدد الأسئلة" className="grid grid-cols-4 rounded-xl bg-muted p-1">
+            <h3 className="mb-1.5 text-[14px] font-extrabold text-foreground">عدد الأسئلة</h3>
+            <div role="radiogroup" aria-label="عدد الأسئلة" className="grid grid-cols-4 rounded-xl bg-muted p-0.5">
               {SIZES.map((s) => (
                 <button
                   key={s}
@@ -196,7 +196,7 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
                   role="radio"
                   aria-checked={size === s}
                   onClick={() => setSize(s)}
-                  className={cn("min-h-[40px] rounded-lg text-sm transition-colors", size === s ? "bg-card font-medium text-foreground shadow-sm" : "text-muted-foreground")}
+                  className={cn("min-h-[32px] rounded-lg text-[13px] transition-colors", size === s ? "bg-card font-medium text-foreground shadow-sm" : "text-muted-foreground")}
                 >
                   {ad(s)}
                 </button>
@@ -205,7 +205,7 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
             {total > 0 && total < size && <p className="mt-2 text-sm text-muted-foreground">المتاح {arCount(total, QUESTION_FORMS)} فقط بهذه الاختيارات.</p>}
           </section>
 
-          <Card className="flex items-start gap-3 p-4 text-sm leading-6 text-secondary-foreground">
+          <Card className="flex items-start gap-2.5 p-3 text-[12.5px] leading-6 text-secondary-foreground">
             {mode === "timed" ? <Timer className="mt-0.5 h-5 w-5 shrink-0 text-foreground" /> : <GraduationCap className="mt-0.5 h-5 w-5 shrink-0 text-foreground" />}
             {mode === "timed"
               ? "كالاختبار الحقيقي: لا تظهر الإجابات حتى تنهي، ثم تقرير يحلل أداءك حسب المحطة والثقة والزمن."
@@ -219,10 +219,10 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
             <button
               type="button"
               onClick={() => toggleKeys(allKeys, allState !== "on")}
-              className="flex min-h-[52px] w-full items-center gap-3 border-b border-border bg-muted/40 px-4 text-right"
+              className="flex min-h-[44px] w-full items-center gap-3 border-b border-border bg-muted/40 px-3 text-right"
             >
               <CheckBox state={allState} />
-              <span className="flex-1 text-base font-medium">كل المحاور</span>
+              <span className="flex-1 text-[14px] font-medium">كل المحاور</span>
               <span className="text-sm text-muted-foreground">{ad(countOf(allKeys))}</span>
             </button>
             <div className="divide-y divide-border">
@@ -233,17 +233,17 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
                 const isOpen = openCourse === c.id;
                 return (
                   <div key={c.id}>
-                    <div className="flex min-h-[56px] items-center">
+                    <div className="flex min-h-[46px] items-center">
                       <button
                         type="button"
                         role="checkbox"
                         aria-checked={state === "some" ? "mixed" : state === "on"}
                         onClick={() => toggleKeys(keys, state !== "on")}
-                        className="flex min-h-[56px] min-w-0 flex-1 items-center gap-3 px-4 text-right"
+                        className="flex min-h-[46px] min-w-0 flex-1 items-center gap-3 px-3 text-right"
                       >
                         <CheckBox state={state} />
                         <span className="min-w-0 flex-1">
-                          <span className="block truncate text-base">{COURSE_SHORT[c.id] ?? c.name}</span>
+                          <span className="block truncate text-[14px]">{COURSE_SHORT[c.id] ?? c.name}</span>
                           <span className="text-xs text-muted-foreground">
                             {ad(on)} من {ad(keys.length)} محطة
                           </span>
@@ -255,7 +255,7 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
                         onClick={() => setOpenCourse(isOpen ? null : c.id)}
                         aria-expanded={isOpen}
                         aria-label={`فصول ${c.name}`}
-                        className="flex h-14 w-12 shrink-0 items-center justify-center text-muted-foreground hover:bg-muted"
+                        className="flex h-[46px] w-11 shrink-0 items-center justify-center text-muted-foreground hover:bg-muted"
                       >
                         <ChevronDown className={cn("h-5 w-5 transition-transform", isOpen && "rotate-180")} />
                       </button>
@@ -272,7 +272,7 @@ export default function TestBuilder({ onClose }: { onClose: () => void }) {
                               role="checkbox"
                               aria-checked={isOn}
                               onClick={() => toggleKeys([k], !isOn)}
-                              className="flex min-h-[48px] w-full items-center gap-3 pl-4 pr-8 text-right"
+                              className="flex min-h-[42px] w-full items-center gap-3 pl-3 pr-7 text-right"
                             >
                               <CheckBox state={isOn ? "on" : "off"} />
                               <span className="min-w-0 flex-1 text-sm leading-6">{chapterLabel(ch)}</span>
