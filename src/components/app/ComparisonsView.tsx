@@ -25,9 +25,9 @@ function Detail({ c, onBack }: { c: Comparison; onBack: () => void }) {
         {c.rows.map((r) => (
           <section key={r.k} className="overflow-hidden rounded-[18px] border border-[var(--t075)] bg-white dark:border-border dark:bg-card">
             <h3 className="border-b border-[var(--t075)] bg-[#F1F8F6] px-4 py-2 text-[14px] font-extrabold text-foreground dark:border-border dark:bg-white/5">{r.k}</h3>
-            <div className="grid grid-cols-2 divide-x divide-x-reverse divide-[var(--t075)] dark:divide-border">
+            <div className="grid grid-cols-2">
               <p className="border-t-[3px] px-3 py-3 text-[14px] leading-7 text-foreground" style={{ borderTopColor: A }}>{r.a}</p>
-              <p className="border-t-[3px] px-3 py-3 text-[14px] leading-7 text-foreground" style={{ borderTopColor: B }}>{r.b}</p>
+              <p className="border-r-2 border-t-[3px] border-r-[#C5E5DF] px-3 py-3 text-[14px] leading-7 text-foreground dark:border-r-border" style={{ borderTopColor: B }}>{r.b}</p>
             </div>
           </section>
         ))}
