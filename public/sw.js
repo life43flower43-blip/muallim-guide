@@ -1,13 +1,17 @@
 // عامل خدمة: شبكة أولاً للتنقل والأصول، كاش أولاً لبنك البيانات الكبير
 // v32 — الواجهة الجديدة: الحسابات والجواهر والتدريب والأخطاء منقولة من أوريندو
-const CACHE = "turbawy-v339";
+const CACHE = "turbawy-v340";
 // كاش مستقل لبنك البيانات: لا يُحذف عند تحديث الواجهة، فلا يُعاد تنزيل البنك الكبير مع كل تحديث
 const DATA_CACHE = "turbawy-data";
-const SHELL = ["/app", "/manifest.json", "/icons/icon-192-v4.png", "/icons/icon-512-v4.png"];
+const SHELL = ["/app", "/manifest.json", "/icons/icon-192-v4.png", "/icons/icon-512-v4.png", "/icons/logo-128.png"];
+// رموز الرئيسية والمحاور: تُحفظ مع التطبيق فتظهر دون اتصال
+const EMOJI = ["/emoji/ax-AI1.webp", "/emoji/ax-C1.webp", "/emoji/ax-F1.webp", "/emoji/ax-G1.webp", "/emoji/ax-M1.webp", "/emoji/ax-M2.webp", "/emoji/ax-M4.webp", "/emoji/ax-SE1.webp", "/emoji/compass.webp", "/emoji/concepts.webp", "/emoji/methods.webp", "/emoji/plan.webp", "/emoji/situations.webp", "/emoji/skills.webp", "/emoji/test.webp", "/emoji/today.webp"];
+
+const OFFLINE_HTML = '<!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><body style="margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center;font-family:system-ui,sans-serif;background:#fff;color:#14302A;text-align:center"><div><p style="font-size:40px;margin:0">📶</p><p style="font-size:17px;font-weight:700">هذه الصفحة تحتاج اتصالًا بالإنترنت</p></div></body></html>';
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
-    caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())
+    caches.open(CACHE).then((c) => c.addAll(SHELL).then(() => c.addAll(EMOJI).catch(() => {}))).then(() => self.skipWaiting())
   );
 });
 
@@ -37,9 +41,13 @@ self.addEventListener("fetch", (e) => {
           }
           return res;
         })
-        .catch(() =>
-          caches.match(url.pathname.startsWith("/app") ? "/app" : e.request).then((hit) => hit || caches.match("/app")).then((hit) => hit || Response.error())
-        )
+        .catch(() => {
+          // صفحة مضمّنة داخل التطبيق (أدوات الرخصة): لا نعرض التطبيق داخل نفسه، بل رسالة قصيرة
+          if (url.searchParams.has("in_app") || url.pathname.startsWith("/tools/")) {
+            return caches.match(e.request).then((hit) => hit || new Response(OFFLINE_HTML, { headers: { "Content-Type": "text/html; charset=utf-8" } }));
+          }
+          return caches.match(url.pathname.startsWith("/app") ? "/app" : e.request).then((hit) => hit || caches.match("/app")).then((hit) => hit || Response.error());
+        })
     );
     return;
   }
@@ -67,7 +75,7 @@ self.addEventListener("fetch", (e) => {
 
   // ٣) أصول التطبيق: شبكة أولاً مع تحديث الكاش في الخلفية —
   //    بحيث لا يبقى المستخدم على حزمة جافاسكربت قديمة أبدًا ما دام متصلًا
-  if (url.pathname.startsWith("/_next/") || url.pathname.startsWith("/icons/")) {
+  if (url.pathname.startsWith("/_next/") || url.pathname.startsWith("/icons/") || url.pathname.startsWith("/emoji/") || url.pathname.startsWith("/concepts/")) {
     e.respondWith(
       fetch(e.request)
         .then((res) => {
