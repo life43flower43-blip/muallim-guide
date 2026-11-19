@@ -158,6 +158,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
   const [graded, setGraded] = useState<null | boolean>(null);
   const [conf, setConf] = useState<Confidence | null>(null);
   const [showWhy, setShowWhy] = useState(false);
+  // التلميح: فكرة المفهوم في سطر دون كشف الإجابة، يُفتح لكل سؤال على حدة
+  const [hintFor, setHintFor] = useState<string | null>(null);
   const [readerId, setReaderId] = useState<string | null>(null);
   const [exiting, setExiting] = useState(false);
   const [finished, setFinished] = useState(false);
@@ -562,22 +564,34 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
     if (showFeedback && o.isCorrect) return "border-[var(--t700)] bg-[var(--t100)] text-foreground dark:bg-[var(--t700)]/15 dark:text-[var(--t300)]";
     if (showFeedback && isSel) return "border-[#F0B4B4] bg-[#FFF6F6] text-foreground dark:bg-[#FF4B4B]/10";
     if (isSel) return "border-[var(--t700)] bg-[var(--t050)] text-foreground dark:bg-[var(--t800)]/15 dark:text-foreground";
-    return "border-[#E3EDE8] border-b-[#C9DDD3] bg-white text-foreground dark:border-border dark:bg-card";
+    return "border-transparent bg-[#F1F5F4] text-foreground dark:bg-card";
   };
 
   return (
     <>
       <div className="fixed inset-0 z-40 flex flex-col bg-background">
-        {/* الرأس: إغلاق وشريط تقدم سميك */}
-        <header className="safe-top mx-auto flex w-full max-w-[720px] items-center gap-3 px-4 pb-1 pt-3">
-          <BackButton onClick={exit} />
-          <div className="flex h-2.5 flex-1 justify-start overflow-hidden rounded-full bg-[var(--t075)]" role="progressbar" aria-valuenow={Math.round(progress)} aria-valuemin={0} aria-valuemax={100}>
-            <motion.div className="h-full rounded-full bg-[var(--t700)]" animate={{ width: `${Math.max(progress, 3)}%` }} transition={{ type: "spring", stiffness: 120, damping: 20 }} />
+        {/* الرأس: عدّاد الصح والخطأ، ورقم السؤال، والوقت، ثم شريط التقدم */}
+        <header className="safe-top mx-auto w-full max-w-[720px] px-4 pb-1 pt-3">
+          <div className="flex items-center gap-2">
+            <BackButton onClick={exit} />
+            {instantFeedback && (
+              <>
+            <span className="flex h-8 items-center gap-1 rounded-full bg-[#DCF2E3] px-3 text-[14px] font-extrabold text-[#1E7A45]">
+              <Check className="h-4 w-4" strokeWidth={3} /> {ad(review.filter((r) => r.ok).length)}
+            </span>
+            <span className="flex h-8 items-center gap-1 rounded-full bg-[#FBE1E1] px-3 text-[14px] font-extrabold text-[#B42A2A]">
+              <X className="h-4 w-4" strokeWidth={3} /> {ad(review.filter((r) => !r.ok).length)}
+            </span>
+              </>
+            )}
+            <span className="ms-auto shrink-0 whitespace-nowrap text-[14px] font-bold text-muted-foreground">
+              <bdi>{ad(idx + 1)} / {ad(questions.length)}</bdi>
+            </span>
+            {config.timeLimitSec ? <Timer seconds={config.timeLimitSec} onTimeout={() => setFinished(true)} /> : null}
           </div>
-          <span className="shrink-0 whitespace-nowrap text-sm font-bold text-foreground dark:text-muted-foreground">
-            <bdi>{ad(idx + 1)} من {ad(questions.length)}</bdi>
-          </span>
-          {config.timeLimitSec ? <Timer seconds={config.timeLimitSec} onTimeout={() => setFinished(true)} /> : null}
+          <div className="mt-2.5 flex h-1.5 justify-start overflow-hidden rounded-full bg-[#C5E5DF]/60" role="progressbar" aria-valuenow={Math.round(progress)} aria-valuemin={0} aria-valuemax={100}>
+            <motion.div className="h-full rounded-full bg-[#168477]" animate={{ width: `${Math.max(progress, 3)}%` }} transition={{ type: "spring", stiffness: 120, damping: 20 }} />
+          </div>
         </header>
 
         {/* السؤال والخيارات */}
@@ -594,10 +608,8 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
               {combo >= 3 && !answered && (
                 <p className="mb-3 text-base font-bold text-[#D4A017]">{ad(combo)} إجابات صحيحة متتالية!</p>
               )}
-              <h2 className="relative overflow-hidden rounded-[22px] bg-[var(--t050)] px-4 py-3.5 font-display text-[16px] font-bold leading-7 text-foreground dark:bg-card">
-                <span className="absolute inset-y-3 right-0 w-1 rounded-l-full bg-[var(--t600)]" aria-hidden="true" />
-                {q.question}
-              </h2>
+              <p className="text-[13px] font-extrabold text-[#168477]">{`السؤال ${ad(idx + 1)}`}</p>
+              <h2 className="mt-1 font-display text-[19px] font-extrabold leading-9 text-foreground">{q.question}</h2>
 
               <div className={q.type === "tf" ? "mt-4 grid grid-cols-2 gap-2.5" : "mt-4 space-y-2.5"}>
                 {opts.map((o, i) => (
@@ -606,25 +618,35 @@ export default function QuizSession({ config }: { config: QuizConfig }) {
                     type="button"
                     disabled={answered}
                     onClick={() => choose(o.text)}
-                    className={`flex min-h-[52px] w-full items-center gap-2.5 rounded-[18px] border-2 border-b-4 px-3.5 py-3 text-right text-[15px] font-medium leading-7 transition active:translate-y-[1px] ${optClass(o)} ${
+                    className={`flex min-h-[56px] w-full items-center gap-3 rounded-[20px] border-2 px-3.5 py-3 text-right text-[15.5px] font-medium leading-7 transition active:translate-y-[1px] ${optClass(o)} ${
                       q.type === "tf" ? "justify-center text-center font-bold" : ""
                     }`}
                   >
                     {q.type === "mcq" && (
-                      // دائرة الاختيار: تمتلئ بالأخضر عند الاختيار، وتظهر علامة صح أو خطأ بعد التحقق
+                      // حرف الخيار (أ ب ج د): يصير علامة صح أو خطأ بعد التحقق
                       <span
-                        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${
-                          showFeedback && o.isCorrect ? "border-[var(--t700)] bg-[var(--t700)] text-white" : showFeedback && selected === o.text ? "border-[#E58A8A] bg-[#E58A8A] text-white" : selected === o.text ? "border-[var(--t700)] bg-[var(--t700)]" : "border-[var(--t150)]"
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[14px] font-extrabold ${
+                          showFeedback && o.isCorrect ? "bg-[#168477] text-white" : showFeedback && selected === o.text ? "bg-[#D64545] text-white" : selected === o.text ? "bg-[#168477] text-white" : "bg-white text-[#168477] dark:bg-background"
                         }`}
                         aria-hidden="true"
                       >
-                        {showFeedback && o.isCorrect ? <Check className="h-3.5 w-3.5" strokeWidth={3.5} /> : showFeedback && selected === o.text ? <X className="h-3.5 w-3.5" strokeWidth={3.5} /> : selected === o.text ? <span className="h-2 w-2 rounded-full bg-white" /> : null}
+                        {showFeedback && o.isCorrect ? <Check className="h-4 w-4" strokeWidth={3.5} /> : showFeedback && selected === o.text ? <X className="h-4 w-4" strokeWidth={3.5} /> : "أبجدهوزح"[i]}
                       </span>
                     )}
                     <span className={q.type === "mcq" ? "min-w-0 flex-1" : ""}>{o.text}</span>
                   </button>
                 ))}
               </div>
+              {/* تلميح: فكرة المفهوم دون كشف الإجابة */}
+              {!answered && instantFeedback && concept?.rule && (
+                <div className="mt-4">
+                  <button type="button" onClick={() => setHintFor(hintFor === q.id ? null : q.id)} className="flex min-h-[36px] items-center gap-1.5 text-[14px] font-bold text-[#168477]" aria-expanded={hintFor === q.id}>
+                    <Lightbulb className="h-4 w-4" /> تلميح
+                    <ChevronDown className={`h-4 w-4 transition-transform ${hintFor === q.id ? "rotate-180" : ""}`} />
+                  </button>
+                  {hintFor === q.id && <p className="mt-1 rounded-[16px] bg-[#F1F8F6] px-4 py-3 text-[14px] leading-7 text-foreground dark:bg-white/5">{concept.rule}</p>}
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
         </main>
