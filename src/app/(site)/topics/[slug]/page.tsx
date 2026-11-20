@@ -6,6 +6,7 @@ import { SITE_URL, SITE_NAME, publicBank } from "@/lib/public-bank";
 import { arDate, articleCourse } from "@/lib/articles";
 import { TOPICS, topicArticles, topicBody, topicBySlug, topicConcepts, topicImage } from "@/lib/topics";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Crumbs, PageHero, Tile, WithSidebar } from "@/components/site/Blocks";
 
 export const revalidate = 3600;
@@ -96,7 +97,7 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
             </details>
           )}
           <article className="mt-4 text-[17.5px] leading-[2.05] text-[#24403A] [&_h2]:mb-3 [&_h2]:mt-9 [&_h2]:font-display [&_h2]:text-[22px] [&_h2]:font-extrabold [&_h2]:leading-[1.5] [&_h2]:text-[#14302A] [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:font-display [&_h3]:text-[19px] [&_h3]:font-extrabold [&_h3]:text-[#14302A] [&_li]:mb-2 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:ps-6 [&_p]:my-4 [&_strong]:text-[#14302A] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:ps-6 [&_li::marker]:text-[#136F5C] [&_a]:font-bold [&_a]:text-[#136F5C] [&_a]:underline">
-            <ReactMarkdown components={{ h2: ({ children }) => <h2 id={`s-${++hi}`} className="scroll-mt-20">{children}</h2> }}>{body}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ table: ({ children }) => <div className="md-table"><table>{children}</table></div>, h2: ({ children }) => <h2 id={`s-${++hi}`} className="scroll-mt-20">{children}</h2> }}>{body}</ReactMarkdown>
           </article>
         </>
       )}

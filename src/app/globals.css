@@ -952,3 +952,9 @@ html.in-app main { padding-bottom: 24px; }
 /* شاشات يبقى فوقها الشريط المتنقل ظاهرًا (مفاهيم خاطئة) */
 html.nav-over #bottom-nav { z-index: 60; opacity: 1 !important; transform: none !important; pointer-events: auto !important; }
 html.nav-over .shell-footer { margin-bottom: var(--nav-h, 88px); padding-bottom: 6px; }
+
+/* جداول المقالات: تمرير أفقي على الجوال وحدود خفيفة */
+.md-table { overflow-x: auto; margin: 1.25rem 0; border: 1px solid #E2ECE6; border-radius: 14px; }
+.md-table table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.8; }
+.md-table th { background: #EEF5F1; color: #0E3B32; font-weight: 800; text-align: right; padding: 8px 12px; white-space: nowrap; }
+.md-table td { padding: 8px 12px; border-top: 1px solid #E2ECE6; vertical-align: top; min-width: 110px; }
