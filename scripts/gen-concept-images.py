@@ -32,11 +32,10 @@ for cid in order:
 todo = todo[:COUNT]
 
 STYLE = (
-    "A clean, modern educational editorial illustration in soft flat style with gentle shading, "
-    "calm green and teal palette with small warm accents, white background space. "
-    "Setting: an Arab school in the Gulf region; teachers and students wear modest clothing "
-    "(women and girls in hijab, men in thobe or smart casual). Friendly, respectful, realistic proportions. "
-    "Absolutely no text, letters, numbers, labels, logos or watermarks anywhere in the image. 16:9 landscape."
+    "A clean, modern flat vector editorial illustration with a soft grainy pastel gradient background "
+    "and gentle shading. Adults only (teachers or young adult students), men in smart casual clothes; "
+    "do not draw any headscarf, hijab or veil, and no children cartoon style, not photorealistic. "
+    "Absolutely no text, letters, numbers, labels, logos, watermarks or writing of any language anywhere. 16:9 landscape."
 )
 
 def prompt(c):
