@@ -52,6 +52,7 @@ import TestBuilder from "./TestBuilder";
 import GlossaryView from "./GlossaryView";
 import ProblemsView from "./ProblemsView";
 import MythsView from "./MythsView";
+import SolvedView from "./SolvedView";
 import ComparisonsView from "./ComparisonsView";
 import { Divided, PageTitle, Stars, pct, GameTile, ScreenShell } from "./ui-kit";
 
@@ -209,6 +210,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
       {tool?.href === "/classroom-problems" && <ProblemsView onClose={() => setTool(null)} />}
       {tool?.href === "/misconceptions" && <MythsView onClose={() => setTool(null)} />}
       {tool?.href === "/comparisons" && <ComparisonsView onClose={() => setTool(null)} />}
+      {tool?.href === "/license-questions" && <SolvedView onClose={() => setTool(null)} />}
       {tool?.href === "#license-guide" && (
         <ScreenShell title="دليل الرخصة" onBack={() => setTool(null)}>
           <div className="grid grid-cols-2 gap-2.5 tiles2">
@@ -223,7 +225,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
           )}
         </ScreenShell>
       )}
-      {tool && !["/glossary", "/classroom-problems", "/misconceptions", "/comparisons", "#license-guide"].includes(tool.href) && (
+      {tool && !["/glossary", "/classroom-problems", "/misconceptions", "/comparisons", "/license-questions", "#license-guide"].includes(tool.href) && (
         <ScreenShell title={tool.title} onBack={() => setTool(null)} wide bare>
           <iframe src={`${tool.href}?in_app=1`} title={tool.title} className="absolute inset-0 h-full w-full border-0 bg-[#F4F7F5]" />
         </ScreenShell>
