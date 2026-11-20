@@ -1,0 +1,53 @@
+# إضافة صورة مفهوم من رابط: تُنزَّل وتُصغَّر إلى 1200×675 وتُحفظ في public/concepts/<id>.jpg
+name: add-concept-image
+
+on:
+  workflow_dispatch:
+    inputs:
+      id:
+        description: "رقم المفهوم"
+        required: true
+      url:
+        description: "رابط الصورة"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  add:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - run: pip install pillow
+      - name: Download and save
+        env:
+          CID: ${{ github.event.inputs.id }}
+          URL: ${{ github.event.inputs.url }}
+        run: |
+          [[ "$CID" =~ ^[A-Z]+[0-9]+$ ]] || { echo "bad id"; exit 1; }
+          curl -sfL -o /tmp/in.img "$URL"
+          python - <<'PY'
+          import os, re
+          from PIL import Image, ImageOps
+          cid = os.environ["CID"]
+          im = ImageOps.fit(Image.open("/tmp/in.img").convert("RGB"), (1200, 675), Image.LANCZOS)
+          im.save(f"public/concepts/{cid}.jpg", "JPEG", quality=82, optimize=True)
+          p = "src/lib/concept-images.ts"; s = open(p).read()
+          if f'"{cid}"' not in s:
+              s = s.replace("new Set<string>([", f'new Set<string>(["{cid}", ', 1)
+              open(p, "w").write(s)
+          PY
+      - name: Commit
+        env:
+          CID: ${{ github.event.inputs.id }}
+        run: |
+          git config user.name "turbawy-bot"
+          git config user.email "turbawy-bot@users.noreply.github.com"
+          git add public/concepts src/lib/concept-images.ts
+          git diff --cached --quiet && exit 0
+          git commit -m "Concept image: $CID"
+          git pull --rebase origin main
+          git push origin HEAD:main
