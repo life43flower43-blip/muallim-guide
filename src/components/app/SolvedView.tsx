@@ -2,12 +2,15 @@
 // أسئلة محلولة داخل التطبيق: قائمة المحاور، والضغط على محور يفتح أسئلته في محرك التدريب نفسه:
 // إجابة فورية بالصح والخطأ والشرح، وعدّادات، وتُحفظ الأخطاء في «أخطائي».
 import { useMemo } from "react";
-import { ChevronLeft } from "lucide-react";
 import { CONCEPTS, COURSES, COURSE_SHORT, QUESTIONS, useQbankDetail } from "@/lib/qbank";
 import type { Question } from "@/lib/types";
 import { useUi } from "@/lib/ui-store";
 import { ad } from "@/lib/arabic";
-import { ScreenShell } from "./ui-kit";
+import { GameTile, ScreenShell } from "./ui-kit";
+
+const EMO: Record<string, string> = {
+  M1: "🌱", M2: "🧠", M3: "💡", M4: "📊", M5: "🧑‍🏫", SE1: "🤝", F1: "🏛️", AI1: "🤖", G1: "📚", C1: "🛠️", L1: "🧭", R1: "🧩",
+};
 
 const PER_COURSE = 12;
 
@@ -41,13 +44,9 @@ export default function SolvedView({ onClose }: { onClose: () => void }) {
         {!ready ? (
           <p className="py-10 text-center text-sm text-muted-foreground">جارٍ تحميل الأسئلة…</p>
         ) : (
-          <div className="rounded-[18px] border border-[var(--t075)] bg-white px-3 dark:border-border dark:bg-card">
-            {groups.map((x) => (
-              <button key={x.id} type="button" onClick={() => start(x)} className="flex min-h-[52px] w-full items-center gap-2 border-b border-[var(--t075)] px-1 text-right last:border-b-0 active:bg-[var(--t050)] dark:border-border">
-                <span className="min-w-0 flex-1 truncate text-[15px] font-bold text-foreground">{x.name}</span>
-                <span className="text-[13px] font-bold text-muted-foreground">{ad(x.qs.length)}</span>
-                <ChevronLeft className="h-4 w-4 shrink-0 text-muted-foreground" />
-              </button>
+          <div className="grid grid-cols-2 gap-2.5">
+            {groups.map((x, k) => (
+              <GameTile key={x.id} tone={k} emoji={EMO[x.id] ?? "📚"} title={x.name} meta={ad(x.qs.length)} onClick={() => start(x)} />
             ))}
           </div>
         )}

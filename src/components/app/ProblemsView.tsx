@@ -4,11 +4,12 @@
 import { useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { PROBLEMS, type Problem } from "@/lib/site-problems";
-import { ScreenShell } from "./ui-kit";
+import { GameTile, ScreenShell } from "./ui-kit";
+import { ad } from "@/lib/arabic";
 
 const GROUPS = [
-  { kind: "class", title: "إدارة الصف والتعامل مع الطلاب" },
-  { kind: "skill", title: "مهارات التدريس" },
+  { kind: "class", title: "إدارة الصف", emoji: "🏫" },
+  { kind: "skill", title: "مهارات التدريس", emoji: "🧑‍🏫" },
 ] as const;
 
 function Block({ label, color, children }: { label: string; color: string; children: React.ReactNode }) {
@@ -48,26 +49,30 @@ function Detail({ p, onBack }: { p: Problem; onBack: () => void }) {
 }
 
 export default function ProblemsView({ onClose }: { onClose: () => void }) {
+  const [kind, setKind] = useState<string | null>(null);
   const [open, setOpen] = useState<Problem | null>(null);
+  const g = GROUPS.find((x) => x.kind === kind);
   return (
     <>
       <ScreenShell title="مشكلات صفية" onBack={onClose}>
-        <div className="space-y-5">
-          {GROUPS.map((g) => (
-            <section key={g.kind}>
-              <h2 className="mb-2 px-1 text-[16px] font-extrabold text-[#168477]">{g.title}</h2>
-              <div className="rounded-[18px] border border-[var(--t075)] bg-white px-3 dark:border-border dark:bg-card">
-                {PROBLEMS.filter((p) => p.kind === g.kind).map((p) => (
-                  <button key={p.id} type="button" onClick={() => setOpen(p)} className="flex min-h-[52px] w-full items-center gap-3 border-b border-[var(--t075)] px-1 text-right last:border-b-0 active:bg-[var(--t050)] dark:border-border">
-                    <span className="min-w-0 flex-1 truncate text-[15px] font-bold text-foreground">{p.title}</span>
-                    <ChevronLeft className="h-4 w-4 shrink-0 text-[#168477]" />
-                  </button>
-                ))}
-              </div>
-            </section>
+        <div className="grid grid-cols-2 gap-2.5">
+          {GROUPS.map((x, k) => (
+            <GameTile key={x.kind} tone={k} emoji={x.emoji} title={x.title} meta={ad(PROBLEMS.filter((p) => p.kind === x.kind).length)} onClick={() => setKind(x.kind)} />
           ))}
         </div>
       </ScreenShell>
+      {g && (
+        <ScreenShell title={g.title} onBack={() => setKind(null)}>
+          <div className="rounded-[18px] border border-[var(--t075)] bg-white px-3 dark:border-border dark:bg-card">
+            {PROBLEMS.filter((p) => p.kind === g.kind).map((p) => (
+              <button key={p.id} type="button" onClick={() => setOpen(p)} className="flex min-h-[52px] w-full items-center gap-3 border-b border-[var(--t075)] px-1 text-right last:border-b-0 active:bg-[var(--t050)] dark:border-border">
+                <span className="min-w-0 flex-1 truncate text-[15px] font-bold text-foreground">{p.title}</span>
+                <ChevronLeft className="h-4 w-4 shrink-0 text-[#168477]" />
+              </button>
+            ))}
+          </div>
+        </ScreenShell>
+      )}
       {open && <Detail p={open} onBack={() => setOpen(null)} />}
     </>
   );
