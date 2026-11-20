@@ -181,8 +181,8 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
       {view === "tests" ? (
         <div className="grid grid-cols-2 gap-2.5 tiles2">
           <Tile tone={0} emoji="🛠️" sub="اختر المحاور والعدد" icon={SlidersHorizontal} title="أنشئ اختبارك" onClick={() => setBuilder(true)} />
-          <Tile tone={1} emoji="⏱️" sub="كل المحاور بوقت محدد" icon={Timer} title="اختبار شامل" meta={best["ALL::exam"] !== undefined ? pct(best["ALL::exam"]) : undefined} onClick={() => ui.startQuiz({ mode: "exam", label: "اختبار تجريبي شامل", qids: fullMockExam(), timeLimitSec: EXAM_SECONDS * 2, topicKey: "ALL::exam" })} />
           <Tile tone={2} emoji="🎯" sub="اعرف من أين تبدأ" icon={Gauge} title="تحديد المستوى" onClick={ui.startPlacement} />
+          <Tile tone={1} emoji="⏱️" sub="كل المحاور بوقت محدد" icon={Timer} title="اختبار شامل" meta={best["ALL::exam"] !== undefined ? pct(best["ALL::exam"]) : undefined} onClick={() => ui.startQuiz({ mode: "exam", label: "اختبار تجريبي شامل", qids: fullMockExam(), timeLimitSec: EXAM_SECONDS * 2, topicKey: "ALL::exam" })} />
           <Tile tone={3} emoji="🌍" icon={Globe} title="اختبارات الدول" onClick={() => setTool({ href: "/teacher-exams", title: "اختبارات الدول" })} />
           {/* أدوات الرخصة من الموقع: تفتح في الصفحة نفسها */}
           <p className="col-span-2 mt-3 font-extrabold text-foreground dark:text-foreground">أدوات الرخصة</p>
