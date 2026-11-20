@@ -3,8 +3,11 @@
 // المفهومان في رأسين ملوّنين، ثم بطاقة لكل وجه مقارنة فيها الطرفان متقابلان، ثم «كيف تميّز بينهما».
 import { useState } from "react";
 import { ChevronLeft, Lightbulb } from "lucide-react";
+import { ad } from "@/lib/arabic";
 import { COMPARISONS, COMPARISON_GROUPS, type Comparison } from "@/lib/comparisons";
-import { ScreenShell } from "./ui-kit";
+import { GameTile, ScreenShell } from "./ui-kit";
+
+const GROUP_EMO = ["🧠", "🌱", "📊", "🧑‍🏫", "🤝", "🏫"];
 
 const A = "#168477";
 const B = "#7C5CC4";
@@ -53,9 +56,9 @@ export default function ComparisonsView({ onClose }: { onClose: () => void }) {
   return (
     <>
       <ScreenShell title="المقارنات" onBack={onClose}>
-        <div className="rounded-[18px] border border-[var(--t075)] bg-white px-3 dark:border-border dark:bg-card">
+        <div className="grid grid-cols-2 gap-2.5">
           {COMPARISON_GROUPS.filter((g) => COMPARISONS.some((c) => c.group === g)).map((g) => (
-            <Row key={g} onClick={() => setGroup(g)}>{g}</Row>
+            <GameTile key={g} tone={COMPARISON_GROUPS.indexOf(g)} emoji={GROUP_EMO[COMPARISON_GROUPS.indexOf(g)]} title={g} meta={ad(COMPARISONS.filter((c) => c.group === g).length)} onClick={() => setGroup(g)} />
           ))}
         </div>
       </ScreenShell>
