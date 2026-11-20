@@ -23,8 +23,7 @@ import {
   Users,
   Scale,
   ListChecks,
-  Calculator,
-  CalendarCheck,
+  BookMarked,
   GraduationCap,
   Globe,
   BookA,
@@ -61,14 +60,17 @@ const chapterLabel = (ch: string) => ch.replace(/^[أ-ي]ـ?\.\s*/, "");
 /** مربع إجراء موحّد: رمز ذهبي في دائرة، والعنوان تحته في سطر واحد */
 const LICENSE_TOOLS = [
   { icon: Scale, title: "المقارنات", href: "/comparisons", emoji: "⚖️", sub: "مفاهيم يكثر الخلط بينها" },
-  { icon: ListChecks, title: "المعايير العشرة", href: "/standards", emoji: "📋", sub: "ما يقيسه الاختبار" },
-  { icon: Calculator, title: "حاسبة الرخصة", href: "/license-calculator", emoji: "🧮", sub: "قدّر مستواك" },
-  { icon: CalendarCheck, title: "اختبار الأسبوع", href: "/weekly-test", emoji: "🗓️", sub: "٢٠ سؤالًا كل أحد" },
-  { icon: GraduationCap, title: "أدلة التخصصات", href: "/specialized", emoji: "🎓", sub: "اختبار تخصصك" },
-  { icon: BookA, title: "المعجم", href: "/glossary", emoji: "📖", sub: "المصطلحات بإيجاز" },
-  { icon: MessagesSquare, title: "مشكلات صفية", href: "/classroom-problems", emoji: "💬", sub: "مواقف وحلولها" },
   { icon: Lightbulb, title: "مفاهيم خاطئة", href: "/misconceptions", emoji: "💡", sub: "أفكار شائعة خاطئة" },
+  { icon: BookA, title: "المعجم التربوي", href: "/glossary", emoji: "📖", sub: "المصطلحات بإيجاز" },
+  { icon: MessagesSquare, title: "مشكلات صفية", href: "/classroom-problems", emoji: "💬", sub: "مواقف وحلولها" },
+  { icon: BookMarked, title: "دليل الرخصة", href: "#license-guide", emoji: "🧭", sub: "المعايير وأدلة التخصصات" },
   { icon: ListChecks, title: "أسئلة محلولة", href: "/license-questions", emoji: "✅", sub: "أسئلة مع شرح إجاباتها" },
+];
+
+// محتوى «دليل الرخصة»: صفحات من الموقع تفتح داخل التطبيق
+const GUIDE_ITEMS = [
+  { icon: ListChecks, title: "المعايير العشرة", href: "/standards", emoji: "📋" },
+  { icon: GraduationCap, title: "أدلة التخصصات", href: "/specialized", emoji: "🎓" },
 ];
 
 // ألوان الأيقونات: لكل بطاقة لونها حتى لا تتشابه
@@ -121,6 +123,7 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
   const [builder, setBuilder] = useState(false);
   // أدوات الرخصة تُفتح داخل التطبيق في شاشة كاملة، لا تنقل الطالب إلى الموقع
   const [tool, setTool] = useState<{ href: string; title: string } | null>(null);
+  const [page, setPage] = useState<{ href: string; title: string } | null>(null);
   const [view, setView] = useState<"tests" | "courses">("tests");
 
   const answered = useMemo(() => Object.keys(attempts).length, [attempts]);
@@ -206,7 +209,21 @@ export default function PracticeView({ onGoTab }: { onGoTab: (t: Tab) => void })
       {tool?.href === "/classroom-problems" && <ProblemsView onClose={() => setTool(null)} />}
       {tool?.href === "/misconceptions" && <MythsView onClose={() => setTool(null)} />}
       {tool?.href === "/comparisons" && <ComparisonsView onClose={() => setTool(null)} />}
-      {tool && !["/glossary", "/classroom-problems", "/misconceptions", "/comparisons"].includes(tool.href) && (
+      {tool?.href === "#license-guide" && (
+        <ScreenShell title="دليل الرخصة" onBack={() => setTool(null)}>
+          <div className="grid grid-cols-2 gap-2.5 tiles2">
+            {GUIDE_ITEMS.map((g, k) => (
+              <Tile key={g.href} tone={k + 4} emoji={g.emoji} icon={g.icon} title={g.title} onClick={() => setPage({ href: g.href, title: g.title })} />
+            ))}
+          </div>
+          {page && (
+            <ScreenShell title={page.title} onBack={() => setPage(null)} wide bare>
+              <iframe src={`${page.href}?in_app=1`} title={page.title} className="absolute inset-0 h-full w-full border-0 bg-[#F4F7F5]" />
+            </ScreenShell>
+          )}
+        </ScreenShell>
+      )}
+      {tool && !["/glossary", "/classroom-problems", "/misconceptions", "/comparisons", "#license-guide"].includes(tool.href) && (
         <ScreenShell title={tool.title} onBack={() => setTool(null)} wide bare>
           <iframe src={`${tool.href}?in_app=1`} title={tool.title} className="absolute inset-0 h-full w-full border-0 bg-[#F4F7F5]" />
         </ScreenShell>
