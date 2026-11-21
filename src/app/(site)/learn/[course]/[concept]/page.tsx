@@ -69,6 +69,18 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
       concept: c.title,
     }));
   const examples = c.examples?.length ? c.examples : [c.example];
+  // سؤال وجواب مباشر في أول الصفحة: يساعد البحث على عرض الجواب مقتطفًا مميزًا
+  const parts = c.title.split(/[:؟]/).map((x) => x.replace(/\s*\(.*?\)/g, "").trim()).filter(Boolean);
+  const key = (parts[0].length < 4 && parts[1] ? parts[1] : parts[0]).replace(/^تعريف /, "");
+  // صيغة السؤال تناسب أسماء المفاهيم المعرّفة، والعناوين الأسئلة تبقى كما هي، وغيرها عنوان قصير
+  const askTitle = /^(متى|كيف|لماذا|ما الذي|هل )/.test(key)
+    ? `${key}؟`
+    : /^(ال|مفهوم|نظرية|مبدأ|استراتيجية|قانون|معامل|مهارة|أسلوب|طريقة|نموذج|اختبار|مقياس)/.test(key)
+      ? `ما المقصود ب${key}؟`
+      : `«${key}» باختصار`;
+  const sentences = c.explanation.replace(/\n+/g, " ").split(/(?<=[.؟!])\s+/);
+  let answer = sentences[0] ?? "";
+  if (answer.length < 60 && sentences[1]) answer += " " + sentences[1];
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -93,6 +105,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
         dangerouslySetInnerHTML={{
           __html: JSON.stringify([
             jsonLd,
+            { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: [{ "@type": "Question", name: askTitle, acceptedAnswer: { "@type": "Answer", text: answer } }] },
             {
               "@context": "https://schema.org",
               "@type": "BreadcrumbList",
@@ -121,6 +134,10 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
           </header>
 
           <div id="concept-text" className="space-y-7">
+          <section>
+            <h2 className="font-display text-[21px] font-extrabold leading-[1.6] text-[#14302A]">{askTitle}</h2>
+            <p className="mt-2 text-[17.5px] font-bold leading-[1.9] text-[#24403A]">{answer}</p>
+          </section>
           {c.rule && (
             <div className="rounded-xl border-s-4 border-[#136F5C] bg-[#EEF5F1] px-4 py-3.5">
               <p className="text-[13px] font-extrabold text-[#136F5C]">الفكرة باختصار</p>
@@ -129,7 +146,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
           )}
 
           <section className="space-y-4">
-            {paragraphs(c.explanation).map((p, i) => (
+            {paragraphs(c.explanation).map((p, i) => (i === 0 ? p.replace(answer, "").trim() : p)).filter(Boolean).map((p, i) => (
               <p key={i} className="text-[17px] leading-[1.95] text-[#24403A]">{p}</p>
             ))}
           </section>
