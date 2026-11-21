@@ -27,13 +27,16 @@ export async function generateMetadata({ params }: { params: Promise<{ course: s
   const c = find(course, concept);
   if (!c) return {};
   const url = `${SITE_URL}/learn/${course}/${concept}`;
+  // العنوان: إن كان للمفهوم عنوان فرعي (فيه نقطتان) يُكتفى به، وإلا يُضاف «شرح مبسط مع أمثلة»، مع حد للطول حتى لا يقصه البحث
+  const t = c.title.includes(":") || c.title.length > 38 ? c.title : `${c.title}: شرح مبسط مع أمثلة`;
+  // الوصف يبدأ بتعريف المفهوم نفسه، وهو الجواب المباشر عما يبحث عنه القارئ
+  const desc = summary(c.explanation);
   return {
-    // عنوان بنية البحث الشائعة («شرح»، «أمثلة»)، ووصف يبدأ بالسؤال الذي يكتبه الباحث
-    title: `${c.title}: شرح مبسط مع أمثلة | ${SITE_NAME}`,
-    description: summary(`ما هو ${c.title}؟ ${c.explanation}`),
+    title: t.length > 52 ? { absolute: t } : `${t} | ${SITE_NAME}`,
+    description: desc,
     keywords: [c.title, `ما هو ${c.title}`, `شرح ${c.title}`, `تعريف ${c.title}`, chapterLabel(c.chapter), publicBank().courses[course], "اختبار الرخصة المهنية للمعلمين", "مفاهيم تربوية"],
     alternates: { canonical: url },
-    openGraph: { title: `${c.title}: شرح مبسط مع أمثلة`, description: summary(`ما هو ${c.title}؟ ${c.explanation}`), url, siteName: SITE_NAME, locale: "ar_AR", type: "article", images: [{ url: "/og.jpg", width: 1200, height: 630 }] },
+    openGraph: { title: t, description: desc, url, siteName: SITE_NAME, locale: "ar_AR", type: "article", images: [{ url: "/og.jpg", width: 1200, height: 630 }] },
   };
 }
 
