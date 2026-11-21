@@ -17,7 +17,7 @@
 1. ✅ منشور: كم درجة النجاح؟ (بند ٢) — content/articles/passing-score-cutoffs.md
 2. ✅ منشور: مواعيد الاختبار والتسجيل (بند ٣) — content/articles/exam-dates-registration-steps.md
 3. ✅ منشور: كيف تُحسب درجتك؟ (بند ٥) — content/articles/score-calculation-formula.md
-4. مجالات التربوي العام وأوزانها (بند ٩)
+4. مجالات التربوي العام وأوزانها (بند ٩) — الأرقام الرسمية الموثقة جاهزة في docs/sources/item4-tarbawi-domains.md
 5. أخبار وتحديثات الرخصة المهنية (بند ٣٠)
 6. إكمال «ما هو اختبار الرخصة؟ الدليل الشامل» بالأرقام الرسمية (بند ١)
 
