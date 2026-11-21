@@ -3,7 +3,7 @@
 // اختبار تفاعلي في الموقع: سؤال في كل مرة، وتصحيح فوري مع التفسير، ثم النتيجة ودعوة إلى التطبيق
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, XCircle, RotateCcw, Smartphone, ChevronLeft } from "lucide-react";
+import { CheckCircle2, XCircle, RotateCcw, Smartphone, ChevronLeft, Share2 } from "lucide-react";
 import type { SiteQ } from "@/lib/site-nav";
 
 const AR = "٠١٢٣٤٥٦٧٨٩";
@@ -99,6 +99,21 @@ function Report({ questions, answers }: { questions: SiteQ[]; answers: boolean[]
   );
 }
 
+/** مشاركة النتيجة: نص قصير برابط النموذج، عبر المشاركة في الجوال أو واتساب */
+function ShareResult({ pct, right, total }: { pct: number; right: number; total: number }) {
+  const text = `حصلت على ${ad(pct)}٪ (${ad(right)} من ${ad(total)}) في نموذج اختبار الرخصة المهنية على موقع تربوي. جرّب نفسك:`;
+  const url = "https://muallim-guide.vercel.app/practice-test";
+  const share = async () => {
+    if (navigator.share) {
+      try { await navigator.share({ text, url }); return; } catch { return; }
+    }
+    window.open(`https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`, "_blank", "noopener");
+  };
+  return (
+    <button type="button" onClick={share} className="inline-flex items-center gap-1.5 rounded-xl bg-[#25D366] px-4 py-2 text-[14px] font-bold text-white"><Share2 className="h-4 w-4" /> شارك نتيجتك</button>
+  );
+}
+
 /** خلط الخيارات مع الحفاظ على رقم الإجابة الصحيحة */
 function shuffleOptions(q: SiteQ): SiteQ {
   const order = q.options.map((_, k) => k);
@@ -164,7 +179,10 @@ export default function QuizRunner({ questions: initial, pool, title, onConceptP
           <p className="mt-1 text-[14px] leading-7 text-white/85">اختبار محاكٍ كامل بزمن حقيقي، وتحليل لكل محور، ومراجعة لأخطائك في موعدها. مجانًا.</p>
           <Link prefetch={false} href="/app?open=examsim" className="mt-3 inline-flex items-center gap-2 rounded-xl bg-[#7C5CFF] px-5 py-2.5 font-bold text-white"><Smartphone className="h-5 w-5" /> ابدأ اختبار المحاكاة</Link>
         </div>
-        <button type="button" onClick={restart} className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-bold text-[#136F5C]"><RotateCcw className="h-4 w-4" /> أعد المحاولة</button>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-4">
+          {pool && <ShareResult pct={pct} right={right} total={questions.length} />}
+          <button type="button" onClick={restart} className="inline-flex items-center gap-1.5 text-[14px] font-bold text-[#136F5C]"><RotateCcw className="h-4 w-4" /> أعد المحاولة</button>
+        </div>
       </div>
     );
   }
