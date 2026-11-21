@@ -18,6 +18,8 @@ import { Tile, Crumbs, SectionTitle, ShareRow, WithSidebar, TelegramCard } from 
 import AdSlot from "@/components/site/AdSlot";
 import { ARTICLE_COVERS } from "@/lib/article-covers";
 import ReadProgress from "@/components/site/ReadProgress";
+import ListenButton from "@/components/site/ListenButton";
+import { withConceptLinks } from "@/lib/concept-links";
 
 // المقالات المجدولة تظهر في موعدها دون إعادة بناء
 export const revalidate = 3600;
@@ -105,6 +107,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-[#6B8077]">
             <Link href={`/articles/c/${CAT_SLUGS[a.category] ?? "issues"}`} className="rounded-md px-2 py-0.5 font-bold text-white" style={{ background: courseMeta(course).color }}>{a.category}</Link>
             <span>{arDate(a.date)}</span>
+            <ListenButton targetId="article-body" />
           </div>
           <p className="mt-3 border-s-4 ps-4 text-[17px] leading-8 text-[#3A5249]" style={{ borderColor: courseMeta(course).color }}>{a.description}</p>
 
@@ -119,8 +122,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             </details>
           )}
 
-          <div className="mt-7 text-[17.5px] leading-[2.05] text-[#24403A] [&_h2]:mb-3 [&_h2]:mt-9 [&_h2]:font-display [&_h2]:text-[22px] [&_h2]:font-extrabold [&_h2]:leading-[1.5] [&_h2]:text-[#14302A] [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:font-display [&_h3]:text-[19px] [&_h3]:font-extrabold [&_h3]:text-[#14302A] [&_li]:mb-2 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:ps-6 [&_p]:my-4 [&_strong]:text-[#14302A] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:ps-6 [&_li::marker]:text-[#136F5C] [&_a]:font-bold [&_a]:text-[#136F5C] [&_a]:underline [&_blockquote]:my-4 [&_blockquote]:rounded-xl [&_blockquote]:border-s-4 [&_blockquote]:border-[#136F5C] [&_blockquote]:bg-[#EEF5F1] [&_blockquote]:px-4 [&_blockquote]:py-1 [&_img]:my-6 [&_img]:h-auto [&_img]:w-full [&_img]:rounded-2xl">
-            <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ table: ({ children }) => <div className="md-table"><table>{children}</table></div>, h2: ({ children }) => <h2 id={`s-${++hi}`} className="scroll-mt-20">{children}</h2>, img: ({ src, alt }) => <img src={typeof src === "string" ? src : ""} alt={alt ?? ""} loading="lazy" width={1200} height={675} /> }}>{withInternalLinks(a, all)}</ReactMarkdown>
+          <div id="article-body" className="mt-7 text-[17.5px] leading-[2.05] text-[#24403A] [&_h2]:mb-3 [&_h2]:mt-9 [&_h2]:font-display [&_h2]:text-[22px] [&_h2]:font-extrabold [&_h2]:leading-[1.5] [&_h2]:text-[#14302A] [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:font-display [&_h3]:text-[19px] [&_h3]:font-extrabold [&_h3]:text-[#14302A] [&_li]:mb-2 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:ps-6 [&_p]:my-4 [&_strong]:text-[#14302A] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:ps-6 [&_li::marker]:text-[#136F5C] [&_a]:font-bold [&_a]:text-[#136F5C] [&_a]:underline [&_blockquote]:my-4 [&_blockquote]:rounded-xl [&_blockquote]:border-s-4 [&_blockquote]:border-[#136F5C] [&_blockquote]:bg-[#EEF5F1] [&_blockquote]:px-4 [&_blockquote]:py-1 [&_img]:my-6 [&_img]:h-auto [&_img]:w-full [&_img]:rounded-2xl">
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ table: ({ children }) => <div className="md-table"><table>{children}</table></div>, h2: ({ children }) => <h2 id={`s-${++hi}`} className="scroll-mt-20">{children}</h2>, img: ({ src, alt }) => <img src={typeof src === "string" ? src : ""} alt={alt ?? ""} loading="lazy" width={1200} height={675} /> }}>{withConceptLinks(withInternalLinks(a, all))}</ReactMarkdown>
           </div>
 
           {/* المراجع ومن راجع المحتوى */}
