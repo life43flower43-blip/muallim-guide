@@ -99,7 +99,23 @@ function Report({ questions, answers }: { questions: SiteQ[]; answers: boolean[]
   );
 }
 
-export default function QuizRunner({ questions, title, onConceptPage = false }: { questions: SiteQ[]; title?: string; onConceptPage?: boolean }) {
+/** خلط الخيارات مع الحفاظ على رقم الإجابة الصحيحة */
+function shuffleOptions(q: SiteQ): SiteQ {
+  const order = q.options.map((_, k) => k).sort(() => Math.random() - 0.5);
+  return { ...q, options: order.map((k) => q.options[k]), correct: order.indexOf(q.correct) };
+}
+
+/** عينة عشوائية من المجموعة بالعدد المطلوب، بخيارات مخلوطة */
+function sample(pool: SiteQ[], n: number): SiteQ[] {
+  return [...pool].sort(() => Math.random() - 0.5).slice(0, n).map(shuffleOptions);
+}
+
+export default function QuizRunner({ questions: initial, pool, title, onConceptPage = false }: { questions: SiteQ[]; pool?: SiteQ[]; title?: string; onConceptPage?: boolean }) {
+  // مع وجود مجموعة أكبر: كل محاولة جديدة تأخذ أسئلة مختلفة وترتيب خيارات مختلفًا
+  const [questions, setQuestions] = useState(initial);
+  useEffect(() => {
+    if (pool) setQuestions(initial.map(shuffleOptions));
+  }, []);
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [answers, setAnswers] = useState<boolean[]>([]);
@@ -122,7 +138,10 @@ export default function QuizRunner({ questions, title, onConceptPage = false }: 
     const t = setTimeout(next, 700);
     return () => clearTimeout(t);
   }, [right]);
-  const restart = () => { setI(0); setPicked(null); setAnswers([]); };
+  const restart = () => {
+    if (pool) setQuestions(sample(pool, initial.length));
+    setI(0); setPicked(null); setAnswers([]);
+  };
 
   if (done) {
     const right = answers.filter(Boolean).length;
@@ -134,6 +153,7 @@ export default function QuizRunner({ questions, title, onConceptPage = false }: 
         <p className="mt-2 font-display text-[48px] font-extrabold text-[#136F5C]"><bdi dir="rtl">{ad(pct)}٪</bdi></p>
         <p className="text-[15px] text-[#4D635A]">أجبت إجابة صحيحة عن {ad(right)} من {ad(questions.length)}</p>
         <p className="mt-3 font-bold text-[#14302A]">{msg}</p>
+        {pool && <p className="mt-1 text-[12.5px] text-[#6B8077]">نتيجة إرشادية للتدريب، وليست درجة النجاح الرسمية.</p>}
         <Report questions={questions} answers={answers} />
         <div className="mt-5 rounded-2xl bg-[#136F5C] p-5 text-white">
           <p className="font-display text-[18px] font-extrabold">تابع في تطبيق تربوي</p>

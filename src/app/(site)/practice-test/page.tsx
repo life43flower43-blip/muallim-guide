@@ -14,7 +14,9 @@ export const metadata: Metadata = {
 };
 
 export default function PracticeTest() {
-  const questions = pickQuestions(20);
+  // مجموعة أكبر متوازنة بين المحاور: المحاولة الأولى أول عشرين، وكل إعادة عشرون مختلفة
+  const pool = pickQuestions(140);
+  const questions = pool.slice(0, 20);
   return (
     <WithSidebar>
       <Crumbs items={[{ label: "نموذج اختبار تربوي" }]} />
@@ -26,7 +28,7 @@ export default function PracticeTest() {
         </ul>
       </PageHero>
       <div className="mt-6">
-        <QuizRunner questions={questions} title="نتيجة نموذج الاختبار" />
+        <QuizRunner questions={questions} pool={pool} title="نتيجة نموذج الاختبار" />
       </div>
       <section className="mt-8 rounded-2xl border border-[#E2ECE6] bg-white p-5 leading-8 text-[#3A5249]">
         <h2 className="font-display text-[19px] font-extrabold text-[#14302A]">عن هذا النموذج</h2>
