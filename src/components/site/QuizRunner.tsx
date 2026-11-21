@@ -101,21 +101,18 @@ function Report({ questions, answers }: { questions: SiteQ[]; answers: boolean[]
 
 /** خلط الخيارات مع الحفاظ على رقم الإجابة الصحيحة */
 function shuffleOptions(q: SiteQ): SiteQ {
-  const order = q.options.map((_, k) => k).sort(() => Math.random() - 0.5);
+  const order = q.options.map((_, k) => k);
+  for (let k = order.length - 1; k > 0; k--) {
+    const j = Math.floor(Math.random() * (k + 1));
+    [order[k], order[j]] = [order[j], order[k]];
+  }
   return { ...q, options: order.map((k) => q.options[k]), correct: order.indexOf(q.correct) };
-}
-
-/** عينة عشوائية من المجموعة بالعدد المطلوب، بخيارات مخلوطة */
-function sample(pool: SiteQ[], n: number): SiteQ[] {
-  return [...pool].sort(() => Math.random() - 0.5).slice(0, n).map(shuffleOptions);
 }
 
 export default function QuizRunner({ questions: initial, pool, title, onConceptPage = false }: { questions: SiteQ[]; pool?: SiteQ[]; title?: string; onConceptPage?: boolean }) {
   // مع وجود مجموعة أكبر: كل محاولة جديدة تأخذ أسئلة مختلفة وترتيب خيارات مختلفًا
   const [questions, setQuestions] = useState(initial);
-  useEffect(() => {
-    if (pool) setQuestions(initial.map(shuffleOptions));
-  }, []);
+  const [attempt, setAttempt] = useState(0);
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [answers, setAnswers] = useState<boolean[]>([]);
@@ -139,7 +136,14 @@ export default function QuizRunner({ questions: initial, pool, title, onConceptP
     return () => clearTimeout(t);
   }, [right]);
   const restart = () => {
-    if (pool) setQuestions(sample(pool, initial.length));
+    if (pool) {
+      // المجموعة مرتبة بالتناوب بين المحاور، فكل شريحة متوازنة ومختلفة عن سابقتها
+      const n = initial.length;
+      const slices = Math.max(1, Math.floor(pool.length / n));
+      const k = (attempt + 1) % slices;
+      setAttempt(attempt + 1);
+      setQuestions(pool.slice(k * n, k * n + n).map(shuffleOptions));
+    }
     setI(0); setPicked(null); setAnswers([]);
   };
 
