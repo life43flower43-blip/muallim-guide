@@ -1,5 +1,6 @@
 // مراجع المقالات: كتب ودراسات معروفة تستند إليها أفكار كل مقال. تُعرض في نهاية المقال تحت «المراجع»
 // نذكر المرجع بلغته الأصلية كما هو متعارف عليه في الكتابة الأكاديمية
+const ETEC_RULES = "هيئة تقويم التعليم والتدريب: ضوابط الرخص المهنية للوظائف التعليمية، نسخة ١٤٤٥هـ، etec.gov.sa";
 const ETEC = "هيئة تقويم التعليم والتدريب: الرخص المهنية للمعلمين، etec.gov.sa";
 const HATTIE = "Hattie, J. (2009). Visible Learning: A Synthesis of over 800 Meta-Analyses Relating to Achievement. Routledge.";
 const MARZANO = "Marzano, R. J. (2003). Classroom Management That Works. ASCD.";
@@ -174,4 +175,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "special-education-inclusion-exam": [TOMLINSON, "UNESCO. (1994). The Salamanca Statement and Framework for Action on Special Needs Education."],
   "thinking-skills-in-exam": [ANDERSON],
   "prep-options-compared": [DUNLOSKY],
+  "passing-score-cutoffs": [ETEC, ETEC_RULES],
+  "exam-dates-registration-steps": [ETEC],
+  "score-calculation-formula": [ETEC, ETEC_RULES],
 };
