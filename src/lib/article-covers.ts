@@ -64,6 +64,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "emotional-intelligence-students",
   "erikson-stages",
   "essay-questions",
+  "exam-dates-registration-steps",
   "exam-review-week",
   "explicit-instruction",
   "extracurricular",
