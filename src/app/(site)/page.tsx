@@ -137,16 +137,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* المحاور: كل محاور الإعداد التربوي في شبكة واحدة */}
+      {/* المحاور: صف أفقي قابل للسحب في الهاتف، وشبكة مرتبة في الشاشات الواسعة */}
       <section>
         <SectionTitle title="تصفّح المحاور" more={{ href: "/learn", label: "كل المحاور" }} />
-        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:px-0 lg:grid-cols-5 [&::-webkit-scrollbar]:hidden" aria-label="محاور الإعداد التربوي">
           {courses.map((c) => (
-            <li key={c.id}>
-              <Link href={`/learn/${c.id}`} className="flex h-full items-center gap-2 rounded-2xl border border-[#E2ECE6] bg-white p-2.5 hover:border-[#136F5C]">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[20px]" style={{ background: `${courseMeta(c.id).color}1A` }} aria-hidden="true">{COURSE_EMOJI[c.id] ?? "📘"}</span>
+            <li key={c.id} className="shrink-0 snap-start sm:shrink">
+              <Link href={`/learn/${c.id}`} className="flex h-full w-36 flex-col items-center justify-center gap-1.5 rounded-2xl border border-[#E2ECE6] bg-white p-3 text-center hover:border-[#136F5C] sm:w-auto sm:flex-row sm:gap-2 sm:p-2.5 sm:text-right">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-[24px] sm:h-10 sm:w-10 sm:text-[20px]" style={{ background: `${courseMeta(c.id).color}1A` }} aria-hidden="true">{COURSE_EMOJI[c.id] ?? "📘"}</span>
                 <span className="min-w-0">
-                  <span className="block whitespace-nowrap font-display text-[clamp(11px,3vw,14px)] font-extrabold leading-6 text-[#14302A]">{courseMeta(c.id).short}</span>
+                  <span className="block font-display text-[14px] font-extrabold leading-6 text-[#14302A] sm:whitespace-nowrap sm:text-[clamp(11px,3vw,14px)]">{courseMeta(c.id).short}</span>
                   <span className="block text-[12.5px] text-[#6B8077]">{ad(c.concepts.length)} مفهومًا</span>
                 </span>
               </Link>
