@@ -57,6 +57,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "dysgraphia",
   "dyslexia-classroom",
   "early-intervention",
+  "edtech-in-teacher-exam",
   "education-myths",
   "educational-supervision",
   "effective-feedback",
