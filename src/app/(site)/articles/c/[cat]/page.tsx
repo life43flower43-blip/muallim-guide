@@ -2,9 +2,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SITE_URL } from "@/lib/public-bank";
-import { ARTICLE_CATS, allArticles, arDate, articleCats, articleCourse, catBySlug } from "@/lib/articles";
+import { ARTICLE_CATS, allArticles, articleCats, articleCourse, catBySlug } from "@/lib/articles";
 import { courseMeta } from "@/lib/site-nav";
-import { ArticleCard, Crumbs, Tile, WithSidebar, PageHero } from "@/components/site/Blocks";
+import { ArticleCard, Crumbs, GridCard, GridWithAds, WithSidebar, PageHero } from "@/components/site/Blocks";
 import CatChips from "@/components/site/CatChips";
 
 // المقالات المجدولة تظهر في موعدها دون إعادة بناء
@@ -38,9 +38,7 @@ export default async function ArticleCategory({ params }: { params: Promise<{ ca
       <div className="mt-6 space-y-5">
         <ArticleCard a={first} wide />
         {rest.length > 0 && (
-          <div className="grid gap-3 sm:grid-cols-2">
-            {rest.map((a) => <Tile key={a.slug} href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={arDate(a.date)} />)}
-          </div>
+<GridWithAds items={rest.map((a) => <GridCard key={a.slug} href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} badge={a.category} />)} />
         )}
       </div>
     </WithSidebar>

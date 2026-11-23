@@ -7,6 +7,7 @@ import { courseMeta } from "@/lib/site-nav";
 import TodayDate from "./TodayDate";
 import SearchBox from "./SearchBox";
 import MobileBar from "./MobileBar";
+import ScrollHeader from "./ScrollHeader";
 
 /** قائمة «الرخصة المهنية»: كل ما يحتاجه المتقدم للاختبار */
 export const LICENSE = [
@@ -81,8 +82,23 @@ export function SiteHeader() {
         </div>
       </div>
 
+      {/* الشريط المختصر عند النزول: الشعار والبحث والقائمة */}
+      <ScrollHeader>
+        <Link href="/" className="flex shrink-0 items-center gap-1.5">
+          <img src="/icons/logo-128.png" alt="" className="h-9 w-9 object-contain" />
+          <span className="font-display text-[20px] font-extrabold text-[#136F5C] max-[379px]:hidden">تربوي</span>
+        </Link>
+        <div className="min-w-0 flex-1"><SearchBox /></div>
+        <MobileBar
+          nav={[{ href: "/", label: "الرئيسية" }, { href: "/articles", label: "المقالات" }, { href: "/learn", label: "المحاور" }, { href: "/tatbeeq", label: "التطبيق" }]}
+          groups={[{ title: "الرخصة المهنية", items: LICENSE }, { title: "مصادر التعلم", items: RESOURCES }, { title: "عن تربوي", items: [{ href: "/about", label: "من نحن" }, { href: "/contact", label: "اتصل بنا" }] }]}
+          courses={courses.map((c) => ({ href: `/learn/${c.id}`, label: courseMeta(c.id).short }))}
+          menuOnly
+        />
+      </ScrollHeader>
+
       {/* قائمة الأقسام الرئيسية */}
-      <nav className="sticky top-0 z-20 bg-[#136F5C]">
+      <nav className="bg-[#136F5C]">
         <ul className="mx-auto flex max-w-6xl items-stretch overflow-x-auto px-2 md:overflow-visible text-[15px] font-bold text-white [scrollbar-width:none]">
           {MAIN_NAV.map((n) =>
             n.drop ? (

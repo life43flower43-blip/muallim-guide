@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/public-bank";
-import { allArticles, arDate, articleCourse } from "@/lib/articles";
-import { ArticleCard, Crumbs, Tile, WithSidebar, PageHero } from "@/components/site/Blocks";
+import { allArticles, articleCourse } from "@/lib/articles";
+import { ArticleCard, Crumbs, GridCard, GridWithAds, WithSidebar, PageHero } from "@/components/site/Blocks";
 import CatChips from "@/components/site/CatChips";
 
 // المقالات المجدولة تظهر في موعدها دون إعادة بناء
@@ -22,9 +22,7 @@ export default function ArticlesIndex() {
       <div className="mt-4"><CatChips /></div>
       <div className="mt-6 space-y-5">
         <ArticleCard a={first} wide />
-        <div className="grid gap-3 sm:grid-cols-2">
-          {rest.map((a) => <Tile key={a.slug} href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={arDate(a.date)} />)}
-        </div>
+<GridWithAds items={rest.map((a) => <GridCard key={a.slug} href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} badge={a.category} />)} />
       </div>
     </WithSidebar>
   );

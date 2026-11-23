@@ -42,7 +42,7 @@ function Burger({ open }: { open: boolean }) {
   );
 }
 
-export default function MobileBar({ nav, groups = [], courses }: { nav: L[]; groups?: { title: string; items: L[] }[]; courses: L[] }) {
+export default function MobileBar({ nav, groups = [], courses, menuOnly = false }: { nav: L[]; groups?: { title: string; items: L[] }[]; courses: L[]; menuOnly?: boolean }) {
   const [panel, setPanel] = useState<"none" | "search" | "menu">("none");
   const [showCourses, setShowCourses] = useState(false);
   const path = usePathname();
@@ -61,9 +61,11 @@ export default function MobileBar({ nav, groups = [], courses }: { nav: L[]; gro
 
   return (
     <div className="ms-auto flex items-center gap-1 md:hidden">
-      <button type="button" aria-label="بحث" onClick={() => setPanel(panel === "search" ? "none" : "search")} className={`${btn} ${panel === "search" ? "bg-[#EEF5F1]" : ""}`}>
-        {panel === "search" ? <X className="h-6 w-6" /> : <Search className="h-6 w-6" strokeWidth={2.2} />}
-      </button>
+      {!menuOnly && (
+        <button type="button" aria-label="بحث" onClick={() => setPanel(panel === "search" ? "none" : "search")} className={`${btn} ${panel === "search" ? "bg-[#EEF5F1]" : ""}`}>
+          {panel === "search" ? <X className="h-6 w-6" /> : <Search className="h-6 w-6" strokeWidth={2.2} />}
+        </button>
+      )}
       <button type="button" aria-label="القائمة" aria-expanded={panel === "menu"} onClick={() => setPanel(panel === "menu" ? "none" : "menu")} className={btn}>
         <Burger open={panel === "menu"} />
       </button>

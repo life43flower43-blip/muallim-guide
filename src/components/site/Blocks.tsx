@@ -222,6 +222,41 @@ export function Tile({ href, id, title, courseId, meta, card = false }: { href: 
   );
 }
 
+/** بطاقة شبكة: الصورة في الأعلى وعليها شارة التصنيف بلون المحور، والعنوان تحتها (عمودان في الهاتف) */
+export function GridCard({ href, id, title, courseId, badge }: { href: string; id: string; title: string; courseId: string; badge: string }) {
+  const color = courseMeta(courseId).color;
+  return (
+    <Link href={href} className="group flex flex-col overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white transition hover:shadow-[0_0_0_2px_var(--c)]" style={{ ["--c" as string]: color }}>
+      <span className="relative block">
+        <MiniCover id={id} title={title} courseId={courseId} className="aspect-[16/10] w-full" />
+        <span className="absolute start-2 top-2 max-w-[85%] truncate rounded-lg px-2 py-0.5 text-[11.5px] font-bold text-white shadow-sm" style={{ background: color }}>{badge}</span>
+      </span>
+      <span className="block flex-1 p-2.5"><span className="line-clamp-3 text-[14.5px] font-bold leading-6 text-[#14302A]">{title}</span></span>
+    </Link>
+  );
+}
+
+/** شبكة بطاقات مقسمة إلى مجموعات من ست بطاقات، بين كل مجموعتين مساحة إعلان */
+export function GridWithAds({ items, every = 6 }: { items: React.ReactNode[]; every?: number }) {
+  const groups: React.ReactNode[][] = [];
+  for (let i = 0; i < items.length; i += every) groups.push(items.slice(i, i + every));
+  return (
+    <div>
+      {groups.map((g, i) => (
+        <div key={i}>
+          {i > 0 && <AdSlot />}
+          <div className={i > 0 ? "mt-3" : ""}><CardGrid>{g}</CardGrid></div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** شبكة بطاقات بعمودين في الهاتف وثلاثة في الشاشة الواسعة */
+export function CardGrid({ children }: { children: React.ReactNode }) {
+  return <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{children}</div>;
+}
+
 export const conceptTile = (c: Concept) => (
   <Tile key={c.id} href={href(c)} id={c.id} title={c.title} courseId={c.courseId} meta={courseMeta(c.courseId).short} />
 );

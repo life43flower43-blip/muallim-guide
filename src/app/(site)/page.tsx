@@ -3,13 +3,14 @@ import { topicForTag } from "@/lib/topics";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AlertTriangle, BookOpenText, ChevronDown, FileQuestion, Layers, Network, Scale, School, Search } from "lucide-react";
-import { SITE_URL, courseList, publicBank } from "@/lib/public-bank";
+import { SITE_URL, chapterLabel, courseChapters, courseList, publicBank } from "@/lib/public-bank";
 import { allArticles } from "@/lib/articles";
 import { courseMeta, pickQuestions, COURSE_EMOJI } from "@/lib/site-nav";
 import DailyQuestion from "@/components/site/DailyQuestion";
 import SearchBox from "@/components/site/SearchBox";
 import CatChips from "@/components/site/CatChips";
-import { ArticleCard, SectionTitle, TelegramCard, Tile } from "@/components/site/Blocks";
+import { ArticleCard, CardGrid, GridCard, SectionTitle, TelegramCard } from "@/components/site/Blocks";
+import AdSlot from "@/components/site/AdSlot";
 import { RotateOne, Shuffle } from "@/components/site/Rotate";
 import { articleCourse } from "@/lib/articles";
 import { ad } from "@/lib/arabic";
@@ -31,15 +32,6 @@ const FAQ = [
   { q: "هل يطابق الاختبار الرسمي في بلدي؟", a: "يغطي المحاور التربوية المشتركة في أغلب هذه الاختبارات، لكنه ليس الاختبار الرسمي. راجع دليل الاختبار في بلدك لمعرفة المحاور وأوزانها." },
   { q: "ما الفرق بين الموقع والتطبيق؟", a: "الموقع للقراءة: مقالات تربوية وشرح المفاهيم والمصطلحات. والتطبيق للتدريب: أسئلة مع التفسير، واختبارات بزمن، ومراجعة لأخطائك. يفتح التطبيق من المتصفح، ويمكن تثبيته على الهاتف." },
 ];
-
-/** صف بطاقات يمرّ أفقيًا في الهاتف، وشبكة في الشاشات الكبيرة */
-function Rail({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 xl:grid-cols-3">
-      {children}
-    </div>
-  );
-}
 
 export default function Home() {
   const b = publicBank();
@@ -87,6 +79,8 @@ export default function Home() {
         </div>
       </section>
 
+      <AdSlot />
+
       {/* أحدث المقالات */}
       <section>
         <SectionTitle title="أحدث المقالات" more={{ href: "/articles", label: "كل المقالات" }} />
@@ -94,7 +88,7 @@ export default function Home() {
         <div className="space-y-5">
           {/* مقال مميز مختلف في كل زيارة من أحدث ١٢ مقالًا، وبقية الشريط مخلوطة */}
           <RotateOne ids={articles.slice(0, 12).map((a) => a.slug)}>{articles.slice(0, 12).map((a) => <ArticleCard key={a.slug} a={a} wide />)}</RotateOne>
-          <Rail><Shuffle show={6}>{articles.slice(0, 24).map((a) => <Tile key={a.slug} card href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} meta={a.category} />)}</Shuffle></Rail>
+          <CardGrid><Shuffle show={8}>{articles.slice(0, 24).map((a) => <GridCard key={a.slug} href={`/articles/${a.slug}`} id={a.slug} title={a.title} courseId={articleCourse(a)} badge={a.category} />)}</Shuffle></CardGrid>
         </div>
       </section>
 
@@ -137,22 +131,34 @@ export default function Home() {
         </div>
       </section>
 
-      {/* المحاور: صف أفقي قابل للسحب في الهاتف، وشبكة مرتبة في الشاشات الواسعة */}
+      <AdSlot />
+
+      {/* المحاور: صندوق لكل محور بأيقونته، وتحته فصوله روابط */}
       <section>
         <SectionTitle title="تصفّح المحاور" more={{ href: "/learn", label: "كل المحاور" }} />
-        <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:px-0 lg:grid-cols-5 [&::-webkit-scrollbar]:hidden" aria-label="محاور الإعداد التربوي">
-          {courses.map((c) => (
-            <li key={c.id} className="shrink-0 snap-start sm:shrink">
-              <Link href={`/learn/${c.id}`} className="flex h-full w-36 flex-col items-center justify-center gap-1.5 rounded-2xl border border-[#E2ECE6] bg-white p-3 text-center hover:border-[#136F5C] sm:w-auto sm:flex-row sm:gap-2 sm:p-2.5 sm:text-right">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-[24px] sm:h-10 sm:w-10 sm:text-[20px]" style={{ background: `${courseMeta(c.id).color}1A` }} aria-hidden="true">{COURSE_EMOJI[c.id] ?? "📘"}</span>
-                <span className="min-w-0">
-                  <span className="block font-display text-[14px] font-extrabold leading-6 text-[#14302A] sm:whitespace-nowrap sm:text-[clamp(11px,3vw,14px)]">{courseMeta(c.id).short}</span>
-                  <span className="block text-[12.5px] text-[#6B8077]">{ad(c.concepts.length)} مفهومًا</span>
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {courses.map((c) => {
+            const m = courseMeta(c.id);
+            const chs = courseChapters(c.id);
+            return (
+              <section key={c.id} className="overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
+                <Link href={`/learn/${c.id}`} className="flex items-center gap-3 border-b-2 px-4 py-3" style={{ borderColor: m.color }}>
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[22px]" style={{ background: `${m.color}1A` }} aria-hidden="true">{COURSE_EMOJI[c.id] ?? "📘"}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-display text-[17px] font-extrabold text-[#14302A]">{m.short}</span>
+                    <span className="block text-[12.5px] text-[#6B8077]">{ad(c.concepts.length)} مفهومًا</span>
+                  </span>
+                </Link>
+                <ul className="px-4 py-2">
+                  {chs.slice(0, 8).map((ch, i) => (
+                    <li key={ch.chapter}><Link href={`/learn/${c.id}#ch-${i + 1}`} className="block py-1.5 text-[15px] text-[#24403A] hover:text-[#168477]">{chapterLabel(ch.chapter)}</Link></li>
+                  ))}
+                  {chs.length > 8 && <li><Link href={`/learn/${c.id}`} className="block py-1.5 text-[14px] font-bold" style={{ color: m.color }}>كل الفصول ←</Link></li>}
+                </ul>
+              </section>
+            );
+          })}
+        </div>
       </section>
 
       {/* مصادر التعلم */}
