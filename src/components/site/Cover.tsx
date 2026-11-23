@@ -3,7 +3,7 @@ import { createElement } from "react";
 import { ARTICLE_COVERS } from "@/lib/article-covers";
 import { conceptImage } from "@/lib/concept-images";
 import {
-  Accessibility, Activity, Baby, BookOpen, Brain, BrainCircuit, ChartBar, ClipboardCheck, Compass, Cpu, Ear, Eye, FileQuestion,
+  Accessibility, Activity, Baby, BookOpen, Brain, BrainCircuit, ChartBar, ClipboardCheck, Compass, Cpu, Ear, Eye,
   Flame, Gauge, GraduationCap, Hand, HeartHandshake, Heart, Lightbulb, ListChecks, Map, MessageCircle, Mic, Network, Palette,
   PenLine, Presentation, Puzzle, Repeat, Ruler, Scale, School, Search, ShieldCheck, Sigma, Smile, Sparkles, Sprout, Target,
   Timer, Trophy, Users, Languages, Layers, Gamepad2, Shapes, ShieldAlert, BatteryLow, Smartphone, Zap, TriangleAlert, Feather,
@@ -48,7 +48,7 @@ const RULES: [RegExp, LucideIcon][] = [
   [/دافع|حافز|تحفيز|رغبة/, Flame],
   [/تعزيز|عقاب|ثواب|مكافأ|إشراط/, Trophy],
   [/ثبات|صدق|معامل|إحصا|درجات|متوسط|انحراف|توزيع/, ChartBar],
-  [/اختبار|سؤال|أسئلة|بنود|مفردات/, FileQuestion],
+  [/اختبار|سؤال|أسئلة|بنود|مفردات/, ClipboardCheck],
   [/تقويم|قياس|تقييم/, ClipboardCheck],
   [/مواصفات|جدول/, ListChecks],
   [/هدف|أهداف/, Target],
