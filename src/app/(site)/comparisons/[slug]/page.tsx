@@ -6,6 +6,10 @@ import { ChevronLeft, KeyRound } from "lucide-react";
 import { SITE_URL, SITE_NAME, summary } from "@/lib/public-bank";
 import { COMPARISONS, comparisonBySlug } from "@/lib/comparisons";
 import { Crumbs, ShareRow, WithSidebar } from "@/components/site/Blocks";
+import depthData from "../../../../../content/comparison-depth.json";
+
+type Depth = { d: { h: string; p: string }[]; q: { q: string; a: string; why: string } };
+const DEPTH = depthData as Record<string, Depth>;
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -69,6 +73,38 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
           <p className="flex items-center gap-2 text-[14px] font-extrabold text-[#136F5C]"><KeyRound className="h-4 w-4" /> مفتاح التمييز في الاختبار</p>
           <p className="mt-1.5 text-[16px] leading-8 text-[#14302A]">{c.tip}</p>
         </div>
+
+        {DEPTH[c.slug] && (
+          <div className="mt-7 space-y-7">
+            {DEPTH[c.slug].d.map((s) => {
+              const lines = s.p.split("\n");
+              const isItem = (l: string) => l.startsWith("• ") || /^\d+\. /.test(l);
+              const first = lines.findIndex(isItem);
+              const last = lines.length - 1 - [...lines].reverse().findIndex(isItem);
+              const para = (l: string) => <p key={l} className="text-[17px] leading-[1.95] text-[#24403A]">{l}</p>;
+              return (
+                <section key={s.h} className="space-y-3">
+                  <h2 className="font-display text-[21px] font-extrabold leading-[1.6] text-[#14302A]">{s.h}</h2>
+                  {first < 0 ? lines.map(para) : (
+                    <>
+                      {lines.slice(0, first).map(para)}
+                      <ul className="list-disc space-y-2 ps-5 marker:text-[#168477]">
+                        {lines.slice(first, last + 1).filter(isItem).map((l) => <li key={l} className="text-[17px] leading-[1.9] text-[#24403A]">{l.replace(/^(• |\d+\. )/, "")}</li>)}
+                      </ul>
+                      {lines.slice(last + 1).map(para)}
+                    </>
+                  )}
+                </section>
+              );
+            })}
+            <section className="rounded-xl border border-[#C5E5DF] p-4">
+              <h2 className="font-display text-[19px] font-extrabold text-[#14302A]">سؤال محلول</h2>
+              <p className="mt-2 text-[17px] font-bold leading-[1.9] text-[#14302A]">{DEPTH[c.slug].q.q}</p>
+              <p className="mt-3 text-[16px] leading-8 text-[#14302A]"><span className="font-extrabold text-[#168477]">الإجابة: </span>{DEPTH[c.slug].q.a}</p>
+              <p className="mt-2 text-[16px] leading-8 text-[#24403A]"><span className="font-extrabold">التفسير: </span>{DEPTH[c.slug].q.why}</p>
+            </section>
+          </div>
+        )}
 
         <div className="mt-6 border-t border-[#EEF3F0] pt-5"><ShareRow path={path} title={`الفرق بين ${c.a} و${c.b}`} /></div>
       </article>
