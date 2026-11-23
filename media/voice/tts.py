@@ -31,19 +31,16 @@ def call_once(model, text):
     part = data["candidates"][0]["content"]["parts"][0]["inlineData"]
     return base64.b64decode(part["data"]), part.get("mimeType", "")
 
-model = None
-for name, text in lines:
-    last = None
-    for m in ([model] if model else MODELS):
-        try:
-            pcm, mime = call(m, text)
-            model = m
-            break
-        except Exception as e:  # جرّب النموذج التالي
-            last = e
-            print("فشل", m, e, file=sys.stderr)
-    else:
-        raise SystemExit(f"تعذر توليد {name}: {last}")
-    with wave.open(os.path.join(here, f"{name}.wav"), "wb") as w:
-        w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(pcm)
-    print(name, model, mime, len(pcm) / 48000, "ثانية")
+# طلب واحد للنص كله (الحد المجاني للطلبات قليل)، مع وقفة قصيرة بين الجمل
+full = " ... ".join(t for _, t in lines)
+for m in MODELS:
+    try:
+        pcm, mime = call(m, full)
+        break
+    except Exception as e:
+        print("فشل", m, e, file=sys.stderr)
+else:
+    raise SystemExit("تعذر توليد الصوت")
+with wave.open(os.path.join(here, "voice.wav"), "wb") as w:
+    w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(pcm)
+print("voice", m, mime, len(pcm) / 48000, "ثانية")
