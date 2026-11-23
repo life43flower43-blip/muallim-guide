@@ -28,6 +28,14 @@ export function generateStaticParams() {
   return allArticles().map((a) => ({ slug: a.slug }));
 }
 
+/** صورة المقال داخل النص بعد الفقرة الأولى، إن لم يكن في النص صورة أصلًا (فلا تتكرر الصورة في الصفحة) */
+function withCoverInside(md: string, slug: string, title: string): string {
+  if (md.includes("![") || !ARTICLE_COVERS.has(slug)) return md;
+  const i = md.indexOf("\n\n");
+  const img = `\n\n![${title}](/covers/${slug}.jpg)\n\n`;
+  return i === -1 ? md + img : md.slice(0, i) + img + md.slice(i + 2);
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const a = articleBySlug((await params).slug);
   if (!a) return {};
@@ -120,7 +128,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           )}
 
           <div id="article-body" className="mt-7 text-[17.5px] leading-[2.05] text-[#24403A] [&_h2]:mb-3 [&_h2]:mt-9 [&_h2]:font-display [&_h2]:text-[22px] [&_h2]:font-extrabold [&_h2]:leading-[1.5] [&_h2]:text-[#14302A] [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:font-display [&_h3]:text-[19px] [&_h3]:font-extrabold [&_h3]:text-[#14302A] [&_li]:mb-2 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:ps-6 [&_p]:my-4 [&_strong]:text-[#14302A] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:ps-6 [&_li::marker]:text-[#136F5C] [&_a]:font-bold [&_a]:text-[#136F5C] [&_a]:underline [&_blockquote]:my-4 [&_blockquote]:rounded-xl [&_blockquote]:border-s-4 [&_blockquote]:border-[#136F5C] [&_blockquote]:bg-[#EEF5F1] [&_blockquote]:px-4 [&_blockquote]:py-1 [&_img]:my-6 [&_img]:h-auto [&_img]:w-full [&_img]:rounded-2xl">
-            <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ table: ({ children }) => <div className="md-table"><table>{children}</table></div>, h2: ({ children }) => <h2 id={`s-${++hi}`} className="scroll-mt-20">{children}</h2>, img: ({ src, alt }) => <img src={typeof src === "string" ? src : ""} alt={alt ?? ""} loading="lazy" width={1200} height={675} /> }}>{withConceptLinks(withInternalLinks(a, all))}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ table: ({ children }) => <div className="md-table"><table>{children}</table></div>, h2: ({ children }) => <h2 id={`s-${++hi}`} className="scroll-mt-20">{children}</h2>, img: ({ src, alt }) => <img src={typeof src === "string" ? src : ""} alt={alt ?? ""} loading="lazy" width={1200} height={675} /> }}>{withCoverInside(withConceptLinks(withInternalLinks(a, all)), a.slug, a.title)}</ReactMarkdown>
           </div>
 
           {/* المراجع ومن راجع المحتوى */}
