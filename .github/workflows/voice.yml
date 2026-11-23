@@ -1,0 +1,21 @@
+# توليد التعليق الصوتي لفيديو الموقع على فرع media-voice فقط، ثم حفظ الملفات في الفرع نفسه
+name: voice
+on:
+  push:
+    branches: [media-voice]
+    paths: ["media/voice/lines.json", "media/voice/tts.py"]
+permissions:
+  contents: write
+jobs:
+  tts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 media/voice/tts.py
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add media/voice/*.wav
+          git commit -m "التعليق الصوتي للفيديو" && git push
