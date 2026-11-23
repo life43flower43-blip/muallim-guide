@@ -155,6 +155,8 @@ export function Sidebar() {
       <Widget title="مختارات للقراءة">
         <div className="space-y-4">{pickedConcepts(4).map((c) => <PostRow key={c.id} c={c} />)}</div>
       </Widget>
+
+      <AdSlot />
     </aside>
   );
 }
@@ -163,7 +165,10 @@ export function Sidebar() {
 export function WithSidebar({ children }: { children: React.ReactNode }) {
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-      <div className="min-w-0">{children}</div>
+      <div className="min-w-0">
+        {children}
+        <AdSlot />
+      </div>
       <div data-chrome className="contents"><Sidebar /></div>
     </div>
   );

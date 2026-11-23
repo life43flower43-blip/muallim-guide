@@ -6,6 +6,7 @@ import { AlertTriangle, CheckCircle2, CircleDot, Smartphone } from "lucide-react
 import { SITE_URL, publicBank } from "@/lib/public-bank";
 import { PROBLEMS, problemBySlug, type ProblemOption } from "@/lib/site-problems";
 import { Crumbs, ShareRow, WithSidebar } from "@/components/site/Blocks";
+import AdSlot from "@/components/site/AdSlot";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -59,6 +60,8 @@ export default async function Problem({ params }: { params: Promise<{ id: string
             <p className="mt-2 text-[17px] leading-9 text-[#24403A]">{s.intro}</p>
             <p className="mt-3 rounded-xl border-s-4 border-[#B4532A] bg-[#FBF1EC] p-4 font-bold leading-8 text-[#5A2A14]">{s.startText}</p>
           </section>
+
+          <AdSlot />
 
           {GROUPS.map((g) => {
             const opts = s.options.filter((o) => o.rating === g.r);
