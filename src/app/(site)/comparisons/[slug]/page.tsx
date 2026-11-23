@@ -6,6 +6,7 @@ import { ChevronLeft, KeyRound } from "lucide-react";
 import { SITE_URL, SITE_NAME, summary } from "@/lib/public-bank";
 import { COMPARISONS, comparisonBySlug } from "@/lib/comparisons";
 import { Crumbs, ShareRow, WithSidebar } from "@/components/site/Blocks";
+import AdSlot from "@/components/site/AdSlot";
 import depthData from "../../../../../content/comparison-depth.json";
 
 type Depth = { d: { h: string; p: string }[]; q: { q: string; a: string; why: string } };
@@ -73,6 +74,8 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
           <p className="flex items-center gap-2 text-[14px] font-extrabold text-[#136F5C]"><KeyRound className="h-4 w-4" /> مفتاح التمييز في الاختبار</p>
           <p className="mt-1.5 text-[16px] leading-8 text-[#14302A]">{c.tip}</p>
         </div>
+
+        <AdSlot />
 
         {DEPTH[c.slug] && (
           <div className="mt-7 space-y-7">

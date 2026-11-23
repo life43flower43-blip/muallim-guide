@@ -84,8 +84,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   // نص المقال يُقسم عند عنوان في منتصفه، ليوضع إعلان بين الجزأين
   const fullMd = withCoverInside(withConceptLinks(withInternalLinks(a, all)), a.slug, a.title);
   const h2At = [...fullMd.matchAll(/\n## /g)].map((m) => m.index!);
-  const cut = h2At.length >= 4 ? h2At[Math.floor(h2At.length / 2)] : -1;
-  const parts = cut > 0 ? [fullMd.slice(0, cut), fullMd.slice(cut)] : [fullMd];
+  // إعلان بعد كل ثلاثة أقسام من المقال
+  const cuts = h2At.filter((_, i) => i > 0 && i % 3 === 0);
+  const parts = [0, ...cuts].map((at, i, arr) => fullMd.slice(at, arr[i + 1] ?? fullMd.length));
   const jsonLd = [
     {
       "@context": "https://schema.org",
