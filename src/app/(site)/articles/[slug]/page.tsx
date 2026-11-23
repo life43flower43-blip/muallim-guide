@@ -13,7 +13,7 @@ import { CAT_SLUGS, allArticles, arDate, articleBySlug, articleCourse } from "@/
 import { withInternalLinks } from "@/lib/internal-links";
 import { courseMeta } from "@/lib/site-nav";
 import { ad } from "@/lib/arabic";
-import { Cover, MiniCover } from "@/components/site/Cover";
+import { MiniCover } from "@/components/site/Cover";
 import { Tile, Crumbs, SectionTitle, ShareRow, WithSidebar, TelegramCard } from "@/components/site/Blocks";
 import AdSlot from "@/components/site/AdSlot";
 import { ARTICLE_COVERS } from "@/lib/article-covers";
@@ -100,7 +100,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       <Crumbs items={[{ href: "/articles", label: "مقالات تربوية" }, { href: `/articles/c/${CAT_SLUGS[a.category] ?? "issues"}`, label: a.category }]} />
 
       <article className="overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
-        <Cover id={a.slug} title={a.title} courseId={course} label={a.category} className="h-60 sm:h-80" />
         <div className="p-5 sm:p-8">
           <h1 className="font-display text-[27px] font-extrabold leading-[1.5] sm:text-[33px]">{a.title}</h1>
           <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-[#6B8077]">
