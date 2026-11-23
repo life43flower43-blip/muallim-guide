@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import QuizRunner from "@/components/site/QuizRunner";
-import ListenButton from "@/components/site/ListenButton";
 import type { SiteQ } from "@/lib/site-nav";
 import { ConceptDiagram } from "@/components/app/Diagrams";
 import { referencesFor } from "@/lib/references";
@@ -129,7 +128,6 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
             <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-[#6B8077]">
               <CatBadge id={course} />
               <span>{chapterLabel(c.chapter)}</span>
-              <ListenButton targetId="concept-text" />
             </div>
           </header>
 

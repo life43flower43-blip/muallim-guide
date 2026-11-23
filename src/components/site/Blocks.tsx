@@ -95,6 +95,10 @@ function Widget({ title, children }: { title: string; children: React.ReactNode 
   );
 }
 
+const COURSE_EMO: Record<string, string> = {
+  M1: "🌱", M2: "🧠", M3: "💡", M4: "📊", M5: "🧑‍🏫", SE1: "🤝", F1: "🏛️", AI1: "🤖", G1: "📚", C1: "🛠️", L1: "🧭", R1: "🧩",
+};
+
 /** الشريط الجانبي: بحث، والتطبيق، والتصنيفات، وأحدث المقالات، ومختارات */
 export function Sidebar() {
   const courses = courseList().filter((c) => c.concepts.length > 0);
@@ -112,16 +116,16 @@ export function Sidebar() {
       </section>
 
       <Widget title="التصنيفات">
-        <ul className="divide-y divide-[#EEF3F0] text-[15px]">
+        {/* صف أفقي يُسحب: أيقونة واسم وعدد لكل محور */}
+        <div className="no-scrollbar -mx-1 flex gap-2.5 overflow-x-auto px-1 pb-1">
           {courses.map((c) => (
-            <li key={c.id}>
-              <Link href={`/learn/${c.id}`} className="flex items-center justify-between gap-2 py-2 hover:text-[#136F5C]">
-                <span className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full" style={{ background: courseMeta(c.id).color }} />{courseMeta(c.id).short}</span>
-                <span className="rounded-full bg-[#EEF5F1] px-2 text-[12px] font-bold text-[#136F5C]">{ad(c.concepts.length)}</span>
-              </Link>
-            </li>
+            <Link key={c.id} href={`/learn/${c.id}`} className="flex shrink-0 items-center gap-2 rounded-2xl border border-[#E2ECE6] bg-white py-2 pe-3 ps-2 hover:border-[#136F5C]">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full text-[22px]" style={{ background: `${courseMeta(c.id).color}1A` }} aria-hidden="true">{COURSE_EMO[c.id] ?? "📚"}</span>
+              <span className="whitespace-nowrap text-[14.5px] font-bold text-[#14302A]">{courseMeta(c.id).short}</span>
+              <span className="rounded-full bg-[#EEF5F1] px-2 text-[12px] font-bold text-[#136F5C]">{ad(c.concepts.length)}</span>
+            </Link>
           ))}
-        </ul>
+        </div>
       </Widget>
 
       <AdSlot />
