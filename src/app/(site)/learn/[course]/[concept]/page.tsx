@@ -33,7 +33,8 @@ export async function generateMetadata({ params }: { params: Promise<{ course: s
   // العنوان: إن كان للمفهوم عنوان فرعي (فيه نقطتان) يُكتفى به، وإلا يُضاف «شرح مبسط مع أمثلة»، مع حد للطول حتى لا يقصه البحث
   const t = c.title.includes(":") || c.title.length > 38 ? c.title : `${c.title}: شرح مبسط مع أمثلة`;
   // الوصف يبدأ بتعريف المفهوم نفسه، وهو الجواب المباشر عما يبحث عنه القارئ
-  const desc = summary(c.explanation);
+  // «الفكرة باختصار» أوضح جواب للباحث، ثم يكمل الوصف من أول الشرح
+  const desc = summary(c.rule ? `${c.rule} ${c.explanation}` : c.explanation);
   return {
     title: t.length > 52 ? { absolute: t } : `${t} | ${SITE_NAME}`,
     description: desc,
