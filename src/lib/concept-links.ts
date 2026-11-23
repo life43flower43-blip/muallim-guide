@@ -57,3 +57,16 @@ export function withConceptLinks(md: string): string {
     })
     .join("\n");
 }
+
+/** معرّفات الدروس التي يذكرها المقال نصًا (لقسم «دروس مرتبطة» آخر المقال)، بترتيب ورودها */
+export function conceptIdsInText(md: string, max = 6): string[] {
+  const out: string[] = [];
+  const text = md.replace(/\[[^\]]*\]\(([^)]*)\)/g, " ");
+  const hits: { at: number; id: string }[] = [];
+  for (const t of targets()) {
+    const m = t.re.exec(text);
+    if (m) hits.push({ at: m.index, id: t.href.split("/").pop()! });
+  }
+  for (const h of hits.sort((a, b) => a.at - b.at)) if (!out.includes(h.id)) out.push(h.id);
+  return out.slice(0, max);
+}

@@ -14,11 +14,13 @@ import { withInternalLinks } from "@/lib/internal-links";
 import { courseMeta } from "@/lib/site-nav";
 import { ad } from "@/lib/arabic";
 import { MiniCover } from "@/components/site/Cover";
-import { Tile, Crumbs, SectionTitle, ShareRow, WithSidebar, TelegramCard } from "@/components/site/Blocks";
+import { Crumbs, SectionTitle, ShareRow, WithSidebar, TelegramCard, GridCard, CardGrid } from "@/components/site/Blocks";
+import HelpfulVote from "@/components/site/HelpfulVote";
+import { publicBank } from "@/lib/public-bank";
 import AdSlot from "@/components/site/AdSlot";
 import { ARTICLE_COVERS } from "@/lib/article-covers";
 import ReadProgress from "@/components/site/ReadProgress";
-import { withConceptLinks } from "@/lib/concept-links";
+import { withConceptLinks, conceptIdsInText } from "@/lib/concept-links";
 
 // المقالات المجدولة تظهر في موعدها دون إعادة بناء
 export const revalidate = 3600;
@@ -69,7 +71,21 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   let hi = 0;
   const path = `/articles/${a.slug}`;
   const all = allArticles();
-  const related = [...all.filter((x) => x.slug !== a.slug && x.category === a.category), ...all.filter((x) => x.slug !== a.slug && x.category !== a.category)].slice(0, 4);
+  // ذات الصلة: الأكثر اشتراكًا في الوسوم، ثم التصنيف نفسه
+  const others = all.filter((x) => x.slug !== a.slug);
+  const score = (x: (typeof all)[number]) => x.tags.filter((t) => a.tags.includes(t)).length * 2 + (x.category === a.category ? 1 : 0);
+  const related = [...others].sort((x, y) => score(y) - score(x) || y.date.localeCompare(x.date)).slice(0, 6);
+  const sameCat = others.filter((x) => x.category === a.category && !related.includes(x)).slice(0, 6);
+  // الدروس التي يذكرها المقال، ثم دروس من محوره إن قلّت
+  const bank = publicBank();
+  const byId = new Map(bank.concepts.map((c) => [c.id, c]));
+  const lessonIds = conceptIdsInText(a.body, 6);
+  const lessons = [...lessonIds.map((id) => byId.get(id)!).filter(Boolean), ...bank.concepts.filter((c) => c.courseId === course && !lessonIds.includes(c.id))].slice(0, 6);
+  // نص المقال يُقسم عند عنوان في منتصفه، ليوضع إعلان بين الجزأين
+  const fullMd = withCoverInside(withConceptLinks(withInternalLinks(a, all)), a.slug, a.title);
+  const h2At = [...fullMd.matchAll(/\n## /g)].map((m) => m.index!);
+  const cut = h2At.length >= 4 ? h2At[Math.floor(h2At.length / 2)] : -1;
+  const parts = cut > 0 ? [fullMd.slice(0, cut), fullMd.slice(cut)] : [fullMd];
   const jsonLd = [
     {
       "@context": "https://schema.org",
@@ -118,19 +134,39 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <p className="mt-3 border-s-4 ps-4 text-[17px] leading-8 text-[#3A5249]" style={{ borderColor: courseMeta(course).color }}>{a.description}</p>
 
           {heads.length > 2 && (
-            <details className="group mt-6 rounded-2xl p-4" style={{ background: `${courseMeta(course).color}0F` }} aria-label="محتويات المقال">
-              <summary className="flex cursor-pointer list-none items-center justify-between font-display text-[16px] font-extrabold [&::-webkit-details-marker]:hidden" style={{ color: courseMeta(course).color }}>في هذا المقال<span className="text-[14px] transition group-open:rotate-180">▾</span></summary>
+            <nav className="mt-6 rounded-2xl p-4" style={{ background: `${courseMeta(course).color}0F` }} aria-label="محتويات المقال">
+              <p className="font-display text-[16px] font-extrabold" style={{ color: courseMeta(course).color }}>محتويات المقال</p>
               <ol className="mt-2 space-y-1.5 text-[15px]">
                 {heads.map((h, i) => (
                   <li key={h}><a href={`#s-${i + 1}`} className="flex gap-2 leading-7 text-[#24403A] hover:underline"><span className="font-bold" style={{ color: courseMeta(course).color }}>{ad(i + 1)}.</span>{h}</a></li>
                 ))}
               </ol>
-            </details>
+            </nav>
           )}
 
+          {related.length >= 2 && (
+            <div className="mt-4 rounded-2xl border border-[#C5E5DF] px-4 py-3">
+              <p className="text-[14px] font-extrabold text-[#14302A]">ذات صلة</p>
+              <ul className="mt-1 space-y-1">
+                {related.slice(0, 2).map((r) => (
+                  <li key={r.slug}><Link href={`/articles/${r.slug}`} className="text-[15px] font-bold leading-7 text-[#168477] hover:underline">{r.title}</Link></li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <AdSlot />
+
           <div id="article-body" className="mt-7 text-[17.5px] leading-[2.05] text-[#24403A] [&_h2]:mb-3 [&_h2]:mt-9 [&_h2]:font-display [&_h2]:text-[22px] [&_h2]:font-extrabold [&_h2]:leading-[1.5] [&_h2]:text-[#14302A] [&_h3]:mb-2 [&_h3]:mt-6 [&_h3]:font-display [&_h3]:text-[19px] [&_h3]:font-extrabold [&_h3]:text-[#14302A] [&_li]:mb-2 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:ps-6 [&_p]:my-4 [&_strong]:text-[#14302A] [&_ul]:my-4 [&_ul]:list-disc [&_ul]:ps-6 [&_li::marker]:text-[#136F5C] [&_a]:font-bold [&_a]:text-[#136F5C] [&_a]:underline [&_blockquote]:my-4 [&_blockquote]:rounded-xl [&_blockquote]:border-s-4 [&_blockquote]:border-[#136F5C] [&_blockquote]:bg-[#EEF5F1] [&_blockquote]:px-4 [&_blockquote]:py-1 [&_img]:my-6 [&_img]:h-auto [&_img]:w-full [&_img]:rounded-2xl">
-            <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ table: ({ children }) => <div className="md-table"><table>{children}</table></div>, h2: ({ children }) => <h2 id={`s-${++hi}`} className="scroll-mt-20">{children}</h2>, img: ({ src, alt }) => <img src={typeof src === "string" ? src : ""} alt={alt ?? ""} loading="lazy" width={1200} height={675} /> }}>{withCoverInside(withConceptLinks(withInternalLinks(a, all)), a.slug, a.title)}</ReactMarkdown>
+            {parts.map((md, k) => (
+              <div key={k}>
+                {k > 0 && <AdSlot />}
+                <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ table: ({ children }) => <div className="md-table"><table>{children}</table></div>, h2: ({ children }) => <h2 id={`s-${++hi}`} className="scroll-mt-20">{children}</h2>, img: ({ src, alt }) => <img src={typeof src === "string" ? src : ""} alt={alt ?? ""} loading="lazy" width={1200} height={675} /> }}>{md}</ReactMarkdown>
+              </div>
+            ))}
           </div>
+
+          <HelpfulVote id={a.slug} />
 
           {/* المراجع ومن راجع المحتوى */}
           {(ARTICLE_REFS[a.slug]?.length ?? 0) > 0 && (
@@ -169,9 +205,25 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       </article>
 
       <section className="mt-8">
-        <SectionTitle title="مقالات قد تهمك" more={{ href: "/articles", label: "كل المقالات" }} />
-        <div className="grid gap-3 sm:grid-cols-2">{related.map((r) => <Tile key={r.slug} href={`/articles/${r.slug}`} id={r.slug} title={r.title} courseId={articleCourse(r)} meta={r.category} />)}</div>
+        <SectionTitle title="مقالات ذات صلة" more={{ href: "/articles", label: "كل المقالات" }} />
+        <CardGrid>{related.map((r) => <GridCard key={r.slug} href={`/articles/${r.slug}`} id={r.slug} title={r.title} courseId={articleCourse(r)} badge={r.category} />)}</CardGrid>
       </section>
+
+      {lessons.length > 0 && (
+        <section className="mt-8">
+          <SectionTitle title="دروس مرتبطة" more={{ href: "/learn", label: "كل المحاور" }} />
+          <CardGrid>{lessons.map((c) => <GridCard key={c.id} href={`/learn/${c.courseId}/${c.id}`} id={c.id} title={c.title} courseId={c.courseId} badge={courseMeta(c.courseId).short} />)}</CardGrid>
+        </section>
+      )}
+
+      <AdSlot />
+
+      {sameCat.length > 0 && (
+        <section className="mt-8">
+          <SectionTitle title={`من تصنيف ${a.category}`} more={{ href: `/articles/c/${CAT_SLUGS[a.category] ?? "issues"}`, label: "كل مقالات التصنيف" }} />
+          <CardGrid>{sameCat.map((r) => <GridCard key={r.slug} href={`/articles/${r.slug}`} id={r.slug} title={r.title} courseId={articleCourse(r)} badge={r.category} />)}</CardGrid>
+        </section>
+      )}
     </WithSidebar>
   );
 }

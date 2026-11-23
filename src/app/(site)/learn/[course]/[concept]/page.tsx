@@ -147,6 +147,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
               <p className="mt-1 text-[16px] font-bold leading-8 text-[#14302A]">{c.rule}</p>
             </div>
           )}
+          <AdSlot />
 
           <section className="space-y-4">
             {paragraphs(c.explanation).map((p, i) => (i === 0 ? p.replace(answer, "").trim() : p)).filter(Boolean).map((p, i) => (
