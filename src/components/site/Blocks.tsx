@@ -229,7 +229,7 @@ export function GridCard({ href, id, title, courseId, badge }: { href: string; i
     <Link href={href} className="group flex flex-col overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white transition hover:shadow-[0_0_0_2px_var(--c)]" style={{ ["--c" as string]: color }}>
       <span className="relative block">
         <MiniCover id={id} title={title} courseId={courseId} className="aspect-[16/10] w-full" />
-        <span className="absolute start-2 top-2 max-w-[85%] truncate rounded-lg px-2 py-0.5 text-[11.5px] font-bold text-white shadow-sm" style={{ background: color }}>{badge}</span>
+        <span className="absolute end-1.5 top-1.5 max-w-[80%] truncate rounded-md px-1.5 py-px text-[10px] font-bold leading-[18px] text-white shadow-sm" style={{ background: color }}>{badge}</span>
       </span>
       <span className="block flex-1 p-2.5"><span className="line-clamp-3 text-[14.5px] font-bold leading-6 text-[#14302A]">{title}</span></span>
     </Link>
