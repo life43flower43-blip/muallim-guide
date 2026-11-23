@@ -13,6 +13,7 @@ import { ad } from "@/lib/arabic";
 import { courseMeta } from "@/lib/site-nav";
 import { CatBadge, ConceptList, Crumbs, paragraphs, SectionTitle, ShareRow, TelegramCard, Thumb, WithSidebar } from "@/components/site/Blocks";
 import { photoFor } from "@/components/site/Cover";
+import { CONCEPT_CANONICAL } from "@/lib/concept-canonical";
 import depthData from "../../../../../../content/concept-depth.json";
 
 const DEPTH = depthData as Record<string, { h: string; p: string }[]>;
@@ -39,7 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<{ course: s
     title: t.length > 52 ? { absolute: t } : `${t} | ${SITE_NAME}`,
     description: desc,
     keywords: [c.title, `ما هو ${c.title}`, `شرح ${c.title}`, `تعريف ${c.title}`, chapterLabel(c.chapter), publicBank().courses[course], "اختبار الرخصة المهنية للمعلمين", "مفاهيم تربوية"],
-    alternates: { canonical: url },
+    alternates: { canonical: CONCEPT_CANONICAL[c.id] ? `${SITE_URL}/learn/${CONCEPT_CANONICAL[c.id][0]}/${CONCEPT_CANONICAL[c.id][1]}` : url },
     openGraph: { title: t, description: desc, url, siteName: SITE_NAME, locale: "ar_AR", type: "article", images: [{ url: "/og.jpg", width: 1200, height: 630 }] },
   };
 }
@@ -172,6 +173,16 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
             );
           })}
           </div>
+
+          {(() => {
+            const alias = CONCEPT_CANONICAL[c.id];
+            const main = alias && find(alias[0], alias[1]);
+            return main ? (
+              <Link href={`/learn/${alias[0]}/${alias[1]}`} className="block rounded-xl border border-[#C5E5DF] bg-[#EEF5F1] px-4 py-3 text-[15px] font-bold text-[#168477]">
+                شرح أوسع لهذا الموضوع: {main.title} ←
+              </Link>
+            ) : null;
+          })()}
 
           <ConceptDiagram conceptId={c.id} pageTitle={c.title} />
 
