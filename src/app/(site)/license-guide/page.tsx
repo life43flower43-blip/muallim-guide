@@ -5,6 +5,7 @@ import { CheckCircle2, ChevronLeft } from "lucide-react";
 import { SITE_URL } from "@/lib/public-bank";
 import { courseMeta } from "@/lib/site-nav";
 import { Crumbs, WithSidebar } from "@/components/site/Blocks";
+import AdSlot from "@/components/site/AdSlot";
 
 export const metadata: Metadata = {
   title: "دليل الاستعداد لاختبار الرخصة المهنية للمعلمين: المحاور وخطة المذاكرة | تربوي",
@@ -52,6 +53,7 @@ export default function LicenseGuide() {
           <p className="mt-2 text-[13px] font-bold text-[#136F5C]">دليل شامل</p>
           <p className="mt-2 max-w-3xl text-[16px] leading-8 text-[#4A6158]">ما الذي يقيسه الجزء التربوي، وكيف تذاكره بخطة واضحة، وكيف تتدرب عليه.</p>
         </header>
+      <AdSlot />
 
         <section className="rounded-2xl border border-[#E2ECE6] bg-white p-5 leading-8 text-[#3A5249]">
           <h2 className="font-display text-[21px] font-extrabold text-[#14302A]">ما اختبار الرخصة المهنية؟</h2>

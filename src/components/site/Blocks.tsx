@@ -270,15 +270,18 @@ export const conceptCard = (c: Concept) => (
 );
 
 /** رأس صفحة موحّد: خلفية متدرجة بلون القسم، وسطر صغير، وعنوان، ووصف */
-export function PageHero({ title, sub, kicker, children }: { title: string; sub?: string; kicker?: string; color?: string; children?: React.ReactNode }) {
-  // رأس موحد لكل صفحات الموقع: عنوان كبير ووصف على خلفية الصفحة، دون مربع ملون يختلف من صفحة لأخرى
+export function PageHero({ title, sub, kicker, children, noAd = false }: { title: string; sub?: string; kicker?: string; color?: string; children?: React.ReactNode; noAd?: boolean }) {
+  // رأس موحد لكل صفحات الموقع: عنوان كبير ووصف على خلفية الصفحة، دون مربع ملون يختلف من صفحة لأخرى، وتحته مساحة إعلان
   return (
+    <>
     <header className="rounded-2xl border border-[#D6E6DE] bg-gradient-to-l from-[#EEF5F1] to-white p-5 sm:p-7">
       <h1 className="font-display text-[26px] font-extrabold leading-[1.5] text-[#0E3B32] sm:text-[34px]">{title}</h1>
       {kicker && <p className="mt-2 inline-block rounded-full bg-[#136F5C] px-3 py-1 text-[12.5px] font-bold text-white">{kicker}</p>}
       {sub && <p className="mt-2 max-w-3xl text-[15.5px] leading-8 text-[#5B7268]">{sub}</p>}
       {children}
     </header>
+    {!noAd && <AdSlot />}
+    </>
   );
 }
 
