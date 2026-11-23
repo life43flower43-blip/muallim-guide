@@ -1,22 +1,31 @@
 "use client";
 
 // «هل كان المقال مفيدًا؟»: يُرسل الجواب حدثًا إلى التحليلات لمعرفة الصفحات الضعيفة، ويُحفظ في المتصفح حتى لا يتكرر السؤال
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
+
+const noop = () => () => {};
 
 export default function HelpfulVote({ id }: { id: string }) {
   const key = `helpful:${id}`;
-  const [done, setDone] = useState(false);
-  useEffect(() => {
-    try {
-      if (localStorage.getItem(key)) setDone(true);
-    } catch {}
-  }, [key]);
+  const saved = useSyncExternalStore(
+    noop,
+    () => {
+      try {
+        return !!localStorage.getItem(key);
+      } catch {
+        return false;
+      }
+    },
+    () => false,
+  );
+  const [voted, setVoted] = useState(false);
+  const done = saved || voted;
   const vote = (yes: boolean) => {
     (window as unknown as { gtag?: (...a: unknown[]) => void }).gtag?.("event", "page_helpful", { page_id: id, helpful: yes ? "yes" : "no" });
     try {
       localStorage.setItem(key, yes ? "yes" : "no");
     } catch {}
-    setDone(true);
+    setVoted(true);
   };
   return (
     <div className="mt-8 rounded-2xl bg-[#F4F8F6] p-4 text-center">
