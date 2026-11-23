@@ -18,7 +18,6 @@ import { Tile, Crumbs, SectionTitle, ShareRow, WithSidebar, TelegramCard } from 
 import AdSlot from "@/components/site/AdSlot";
 import { ARTICLE_COVERS } from "@/lib/article-covers";
 import ReadProgress from "@/components/site/ReadProgress";
-import ListenButton from "@/components/site/ListenButton";
 import { withConceptLinks } from "@/lib/concept-links";
 
 // المقالات المجدولة تظهر في موعدها دون إعادة بناء
@@ -107,7 +106,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-[#6B8077]">
             <Link href={`/articles/c/${CAT_SLUGS[a.category] ?? "issues"}`} className="rounded-md px-2 py-0.5 font-bold text-white" style={{ background: courseMeta(course).color }}>{a.category}</Link>
             <span>{arDate(a.date)}</span>
-            <ListenButton targetId="article-body" />
           </div>
           <p className="mt-3 border-s-4 ps-4 text-[17px] leading-8 text-[#3A5249]" style={{ borderColor: courseMeta(course).color }}>{a.description}</p>
 
