@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft, KeyRound } from "lucide-react";
-import { SITE_URL, SITE_NAME } from "@/lib/public-bank";
+import { SITE_URL, SITE_NAME, summary } from "@/lib/public-bank";
 import { COMPARISONS, comparisonBySlug } from "@/lib/comparisons";
 import { Crumbs, ShareRow, WithSidebar } from "@/components/site/Blocks";
 
@@ -19,7 +19,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const title = `الفرق بين ${c.a} و${c.b}`;
   return {
     title: `${title} | ${SITE_NAME}`,
-    description: `${title}: ${c.rows.map((r) => r.k).join("، ")}، مع أمثلة من الصف ومفتاح للتمييز في اختبارات المعلمين.`,
+    // الجواب المباشر أولًا: الفرق في أول بند من المقارنة
+    description: summary(`${c.a}: ${c.rows[0].a}، و${c.b}: ${c.rows[0].b}. مقارنة بأمثلة من الصف ومفتاح للتمييز في الاختبار.`),
     alternates: { canonical: `${SITE_URL}/comparisons/${slug}` },
   };
 }
