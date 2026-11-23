@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: a.description,
     keywords: a.tags,
     alternates: { canonical: url },
-    openGraph: { title: a.seoTitle ?? a.title, description: a.description, url, type: "article", locale: "ar_AR", siteName: "تربوي", publishedTime: a.date, tags: a.tags, images: [{ url: ARTICLE_COVERS.has(a.slug) ? `/covers/${a.slug}.jpg` : "/og.jpg" }] },
+    openGraph: { title: a.seoTitle ?? a.title, description: a.description, url, type: "article", locale: "ar_AR", siteName: "تربوي", publishedTime: a.date, modifiedTime: a.updated, tags: a.tags, images: [{ url: ARTICLE_COVERS.has(a.slug) ? `/covers/${a.slug}.jpg` : "/og.jpg" }] },
   };
 }
 
@@ -77,7 +77,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       headline: a.title,
       description: a.description,
       datePublished: a.date,
-      dateModified: a.date,
+      dateModified: a.updated,
       ...(ARTICLE_REFS[a.slug] ? { citation: ARTICLE_REFS[a.slug] } : {}),
       inLanguage: "ar",
       keywords: a.tags.join("، "),
@@ -113,6 +113,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-[#6B8077]">
             <Link href={`/articles/c/${CAT_SLUGS[a.category] ?? "issues"}`} className="rounded-md px-2 py-0.5 font-bold text-white" style={{ background: courseMeta(course).color }}>{a.category}</Link>
             <span>{arDate(a.date)}</span>
+            {a.updated !== a.date && <span>حُدّث {arDate(a.updated)}</span>}
           </div>
           <p className="mt-3 border-s-4 ps-4 text-[17px] leading-8 text-[#3A5249]" style={{ borderColor: courseMeta(course).color }}>{a.description}</p>
 

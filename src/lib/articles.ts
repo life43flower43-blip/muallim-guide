@@ -9,6 +9,8 @@ export type Article = {
   seoTitle?: string;
   description: string;
   date: string;
+  /** آخر تحديث فعلي للمحتوى، ويساوي تاريخ النشر إن لم يُحدَّث */
+  updated: string;
   category: string;
   tags: string[];
   body: string;
@@ -86,6 +88,7 @@ function parse(slug: string, raw: string): Article {
     seoTitle: meta.seoTitle || undefined,
     description: meta.description ?? "",
     date: meta.date ?? "",
+    updated: meta.updated && meta.updated > (meta.date ?? "") ? meta.updated : meta.date ?? "",
     category: meta.category ?? "قضايا تربوية",
     tags,
     body,
