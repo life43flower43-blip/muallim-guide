@@ -76,7 +76,7 @@ export default function LicenseQuestions() {
       <PageHero kicker="أسئلة محلولة" title="بنك أسئلة الرخصة المهنية للمعلمين محلول" sub={`${ad(total)} سؤالًا تدريبيًا على نمط الجزء التربوي العام، مقسمة حسب المحاور، ولكل سؤال الإجابة الصحيحة وسببها.`}>
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <PrintButton />
-          <Link href="/app?open=bank" className="inline-flex items-center rounded-full bg-[#136F5C] px-4 py-2 text-[14px] font-extrabold text-white print:hidden">تدرّب على ٧٥٠٠+ سؤال في التطبيق</Link>
+          <Link href="/app?open=bank" rel="nofollow" className="inline-flex items-center rounded-full bg-[#136F5C] px-4 py-2 text-[14px] font-extrabold text-white print:hidden">تدرّب على ٧٥٠٠+ سؤال في التطبيق</Link>
         </div>
       </PageHero>
 
@@ -123,7 +123,7 @@ export default function LicenseQuestions() {
       <section className="mt-9 rounded-2xl bg-[#0E3B32] p-6 text-white print:hidden">
         <h2 className="font-display text-[20px] font-extrabold">تريد أسئلة أكثر؟</h2>
         <p className="mt-2 text-[15px] leading-8 text-white/85">في التطبيق المجاني «اختبار محاكاة الرخصة المهنية»: أكثر من ٧٥٠٠ سؤال مرتبة بالمحاور، ومحاكي بوقت حقيقي، ومراجعة لأخطائك.</p>
-        <Link href="/app?open=bank" className="mt-4 inline-block rounded-full bg-[#F3DC8E] px-5 py-2.5 text-[15px] font-extrabold text-[#3a2c05]">افتح بنك الأسئلة</Link>
+        <Link href="/app?open=bank" rel="nofollow" className="mt-4 inline-block rounded-full bg-[#F3DC8E] px-5 py-2.5 text-[15px] font-extrabold text-[#3a2c05]">افتح بنك الأسئلة</Link>
       </section>
     </WithSidebar>
   );
