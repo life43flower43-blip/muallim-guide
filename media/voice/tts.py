@@ -1,5 +1,5 @@
 # توليد التعليق الصوتي لفيديو الموقع بنموذج النطق في جيميني: ملف صوت لكل جملة (إعادة تشغيل بعد إضافة المفتاح)
-import base64, json, os, sys, urllib.request, wave
+import base64, json, os, sys, time, urllib.error, urllib.request, wave
 
 KEY = os.environ["GEMINI_API_KEY"]
 MODELS = ["gemini-2.5-flash-preview-tts", "gemini-2.5-flash-tts", "gemini-2.5-pro-preview-tts"]
@@ -8,6 +8,17 @@ here = os.path.dirname(__file__)
 lines = json.load(open(os.path.join(here, "lines.json"), encoding="utf-8"))
 
 def call(model, text):
+    # الحد المجاني يسمح بطلبات قليلة في الدقيقة: انتظر وأعد المحاولة عند الرفض المؤقت
+    for wait in (0, 25, 45, 65):
+        time.sleep(wait)
+        try:
+            return call_once(model, text)
+        except urllib.error.HTTPError as e:
+            if e.code != 429:
+                raise
+    return call_once(model, text)
+
+def call_once(model, text):
     body = {
         "contents": [{"parts": [{"text": "اقرأ بالعربية الفصحى بصوت دافئ وحماسي وواضح، كإعلان قصير: " + text}]}],
         "generationConfig": {"responseModalities": ["AUDIO"], "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": VOICE}}}},
