@@ -13,6 +13,9 @@ import { ad } from "@/lib/arabic";
 import { courseMeta } from "@/lib/site-nav";
 import { CatBadge, ConceptList, Crumbs, paragraphs, SectionTitle, ShareRow, TelegramCard, Thumb, WithSidebar } from "@/components/site/Blocks";
 import { photoFor } from "@/components/site/Cover";
+import depthData from "../../../../../../content/concept-depth.json";
+
+const DEPTH = depthData as Record<string, { h: string; p: string }[]>;
 import { SITE_URL, SITE_NAME, chapterLabel, conceptQuestions, courseChapters, publicBank, summary } from "@/lib/public-bank";
 
 export const dynamicParams = false;
@@ -148,6 +151,25 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
               <p key={i} className="text-[17px] leading-[1.95] text-[#24403A]">{p}</p>
             ))}
           </section>
+          {(DEPTH[c.id] ?? []).map((s) => {
+            const lines = s.p.split("\n");
+            const items = lines.filter((l) => l.startsWith("• "));
+            const text = lines.filter((l) => !l.startsWith("• "));
+            const lead = items.length ? text.filter((_, i) => i < lines.indexOf(items[0])) : text;
+            const tail = items.length ? text.filter((l) => lines.indexOf(l) > lines.indexOf(items[items.length - 1])) : [];
+            return (
+              <section key={s.h} className="space-y-3">
+                <h2 className="font-display text-[21px] font-extrabold leading-[1.6] text-[#14302A]">{s.h}</h2>
+                {lead.map((l, i) => <p key={i} className="text-[17px] leading-[1.95] text-[#24403A]">{l}</p>)}
+                {items.length > 0 && (
+                  <ul className="space-y-2 ps-5 marker:text-[#168477] list-disc">
+                    {items.map((l, i) => <li key={i} className="text-[17px] leading-[1.9] text-[#24403A]">{l.slice(2)}</li>)}
+                  </ul>
+                )}
+                {tail.map((l, i) => <p key={i} className="text-[17px] leading-[1.95] text-[#24403A]">{l}</p>)}
+              </section>
+            );
+          })}
           </div>
 
           <ConceptDiagram conceptId={c.id} pageTitle={c.title} />
