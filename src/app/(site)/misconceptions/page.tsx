@@ -5,6 +5,7 @@ import { SITE_URL } from "@/lib/public-bank";
 import { MISCONCEPTIONS } from "@/lib/misconceptions";
 import { ad } from "@/lib/arabic";
 import { Crumbs, WithSidebar } from "@/components/site/Blocks";
+import AdSlot from "@/components/site/AdSlot";
 import MythCard from "@/components/site/MythCard";
 
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export default function Misconceptions() {
           {ad(MISCONCEPTIONS.length)} عبارة يتداولها المعلمون والطلاب عن التعلم والتدريس. احكم على كل عبارة أولًا، ثم اقرأ الصواب، ولماذا، وماذا يعني ذلك في صفك.
         </p>
       </header>
+      <AdSlot />
       <div className="mt-6 space-y-4">
         {MISCONCEPTIONS.map((m, i) => <MythCard key={m.id} m={m} n={ad(i + 1)} />)}
       </div>

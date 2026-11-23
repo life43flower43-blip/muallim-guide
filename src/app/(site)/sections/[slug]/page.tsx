@@ -6,6 +6,7 @@ import { CheckCircle2 } from "lucide-react";
 import { SITE_URL } from "@/lib/public-bank";
 import { APP_SECTIONS, sectionBySlug } from "@/lib/site-nav";
 import { Crumbs, ShareRow, WithSidebar } from "@/components/site/Blocks";
+import AdSlot from "@/components/site/AdSlot";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -30,6 +31,7 @@ export default async function SectionPage({ params }: { params: Promise<{ slug: 
         <div className="space-y-6 p-5 sm:p-7">
           <h1 className="font-display text-[30px] font-extrabold">{s.title}</h1>
           <p className="text-[18px] leading-9 text-[#24403A]">{s.lead}</p>
+          <AdSlot />
           <section>
             <h2 className="mb-3 font-display text-[20px] font-extrabold">ماذا تجد في هذا القسم؟</h2>
             <ul className="space-y-3">

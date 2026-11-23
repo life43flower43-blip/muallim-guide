@@ -20,7 +20,7 @@ export default function PracticeTest() {
   return (
     <WithSidebar>
       <Crumbs items={[{ label: "نموذج اختبار تربوي" }]} />
-      <PageHero kicker="اختبر نفسك" title="نموذج اختبار تربوي تفاعلي مع الحل" color="#1F6FA8" sub="عشرون سؤالًا من محاور الجزء التربوي العام في اختبارات الرخصة المهنية والتوظيف. اختر إجابتك، وسترى فورًا إن كانت صحيحة، ولماذا.">
+      <PageHero noAd kicker="اختبر نفسك" title="نموذج اختبار تربوي تفاعلي مع الحل" color="#1F6FA8" sub="عشرون سؤالًا من محاور الجزء التربوي العام في اختبارات الرخصة المهنية والتوظيف. اختر إجابتك، وسترى فورًا إن كانت صحيحة، ولماذا.">
         <ul className="mt-4 flex flex-wrap gap-2 text-[13px] font-bold">
           {["٢٠ سؤالًا", "تصحيح فوري", "تفسير لكل إجابة", "دون تسجيل"].map((t) => (
             <li key={t} className="rounded-full bg-[#EEF5F1] px-3 py-1 text-[#136F5C]">{t}</li>
