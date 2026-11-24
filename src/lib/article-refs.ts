@@ -182,6 +182,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "question-types": [ANDERSON, "Bloom, B. S. (Ed.). (1956). Taxonomy of Educational Objectives: Handbook I, Cognitive Domain. David McKay."],
   "math-manipulatives": ["Bruner, J. S. (1966). Toward a Theory of Instruction. Harvard University Press."],
   "token-economy": ["Ayllon, T., & Azrin, N. H. (1968). The Token Economy: A Motivational System for Therapy and Rehabilitation. Appleton-Century-Crofts.", "Skinner, B. F. (1953). Science and Human Behavior. Macmillan."],
+  "toys-sharing-children": ["Eisenberg, N., & Mussen, P. H. (1989). The Roots of Prosocial Behavior in Children. Cambridge University Press.", "Brownell, C. A., Svetlova, M., Anderson, R., Nichols, S. R., & Drummond, J. (2013). Socialization of Early Prosocial Behavior. Social Development, 22(4), 645–662."],
   "transfer-of-learning": ["Thorndike, E. L., & Woodworth, R. S. (1901). The Influence of Improvement in One Mental Function upon the Efficiency of Other Functions. Psychological Review, 8(3)."],
   "halo-effect-grading": ["Thorndike, E. L. (1920). A Constant Error in Psychological Ratings. Journal of Applied Psychology, 4(1)."],
   "concept-maps": ["Novak, J. D., & Gowin, D. B. (1984). Learning How to Learn. Cambridge University Press.", "Ausubel, D. P. (1968). Educational Psychology: A Cognitive View. Holt, Rinehart & Winston."],
