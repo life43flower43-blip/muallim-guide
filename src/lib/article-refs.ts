@@ -132,6 +132,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "reading-comprehension-strategies": [PALINCSAR, "Pearson, P. D., & Gallagher, M. C. (1983). The Instruction of Reading Comprehension. Contemporary Educational Psychology, 8(3)."],
   "reflective-teaching": [SCHON, "Gibbs, G. (1988). Learning by Doing: A Guide to Teaching and Learning Methods. Oxford Polytechnic."],
   "resilience-students": ["Werner, E. E., & Smith, R. S. (1982). Vulnerable but Invincible. McGraw-Hill.", "Masten, A. S. (2014). Ordinary Magic: Resilience in Development. Guilford Press."],
+  "responsibility-children": ["Damon, W. (1988). The Moral Child: Nurturing Children's Natural Sense of Right and Wrong. Free Press.", "Larson, R. W. (2000). Toward a Psychology of Positive Youth Development. American Psychologist, 55(1), 170–183."],
   "role-play-teaching": ["Joyce, B., Weil, M., & Calhoun, E. (2015). Models of Teaching (9th ed.). Pearson."],
   "rubric-design": [BROOKHART],
   "school-community-partnership": [EPSTEIN],
