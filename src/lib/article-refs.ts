@@ -59,6 +59,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "classroom-routines": [WONG, MARZANO],
   "classroom-seating": ["Adams, R. S., & Biddle, B. J. (1970). Realities of Teaching: Explorations with Video Tape. Holt, Rinehart & Winston.", "Wannarka, R., & Ruhl, K. (2008). Seating Arrangements That Promote Positive Academic and Behavioural Outcomes. Support for Learning, 23(2)."],
   "cognitive-load-theory": [SWELLER, "Sweller, J., van Merriënboer, J. J. G., & Paas, F. (1998). Cognitive Architecture and Instructional Design. Educational Psychology Review, 10(3).", MAYER],
+  "competition-children": ["Ames, C. (1992). Classrooms: Goals, Structures, and Student Motivation. Journal of Educational Psychology, 84(3), 261–271.", "Dweck, C. S. (2006). Mindset: The New Psychology of Success. Random House."],
   "constructivism-classroom": [PIAGET, VYGOTSKY, "Bybee, R. W., et al. (2006). The BSCS 5E Instructional Model. BSCS.", KIRSCHNER],
   "cooperative-learning": [JOHNSON, "Slavin, R. E. (1995). Cooperative Learning: Theory, Research, and Practice. Allyn & Bacon."],
   "critical-thinking": ["Ennis, R. H. (1987). A Taxonomy of Critical Thinking Dispositions and Abilities. In Teaching Thinking Skills. Freeman.", "Willingham, D. T. (2007). Critical Thinking: Why Is It So Hard to Teach? American Educator, 31(2)."],
