@@ -94,6 +94,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "information-processing": ["Atkinson, R. C., & Shiffrin, R. M. (1968). Human Memory: A Proposed System and Its Control Processes. In The Psychology of Learning and Motivation, Vol. 2. Academic Press.", "Miller, G. A. (1956). The Magical Number Seven, Plus or Minus Two. Psychological Review, 63(2)."],
   "inquiry-based-learning": ["Banchi, H., & Bell, R. (2008). The Many Levels of Inquiry. Science and Children, 46(2).", "National Research Council. (2000). Inquiry and the National Science Education Standards. National Academies Press."],
   "interpreting-scores": [GRONLUND, POPHAM],
+  "introvert-child": ["Cain, S. (2012). Quiet: The Power of Introverts in a World That Can't Stop Talking. Crown.", "Eysenck, H. J. (1967). The Biological Basis of Personality. Charles C. Thomas."],
   "jigsaw-strategy": ["Aronson, E., et al. (1978). The Jigsaw Classroom. SAGE.", JOHNSON],
   "kohlberg-moral": ["Kohlberg, L. (1981). The Philosophy of Moral Development. Harper & Row.", "Gilligan, C. (1982). In a Different Voice. Harvard University Press."],
   "language-skills-teacher-exam": [ETEC],
