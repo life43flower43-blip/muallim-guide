@@ -121,6 +121,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "pavlov-classical-conditioning": ["Pavlov, I. P. (1927). Conditioned Reflexes. Oxford University Press.", "Watson, J. B., & Rayner, R. (1920). Conditioned Emotional Reactions. Journal of Experimental Psychology, 3(1)."],
   "phones-in-class": ["UNESCO. (2023). Global Education Monitoring Report: Technology in Education."],
   "piaget-stages": [PIAGET],
+  "peer-pressure-teenagers": ["Steinberg, L., & Monahan, K. C. (2007). Age Differences in Resistance to Peer Influence. Developmental Psychology, 43(6), 1531–1543.", "Gardner, M., & Steinberg, L. (2005). Peer Influence on Risk Taking, Risk Preference, and Risky Decision Making in Adolescence and Adulthood: An Experimental Study. Developmental Psychology, 41(4), 625–635.", "Erikson, E. H. (1968). Identity: Youth and Crisis. Norton."],
   "play-based-learning": [VYGOTSKY, PIAGET, "Hirsh-Pasek, K., et al. (2009). A Mandate for Playful Learning in Preschool. Oxford University Press."],
   "portfolio-assessment": ["Paulson, F. L., Paulson, P. R., & Meyer, C. A. (1991). What Makes a Portfolio a Portfolio? Educational Leadership, 48(5).", POPHAM],
   "positive-discipline": [NELSEN, MARZANO],
