@@ -87,6 +87,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "gifted-identification",
   "gifted-students",
   "graphic-organizers",
+  "gratitude-children",
   "grief-student",
   "growth-mindset",
   "guidance-teacher-role",
