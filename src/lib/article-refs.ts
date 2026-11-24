@@ -58,6 +58,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "class-time-management": [KOUNIN, MARZANO],
   "classroom-routines": [WONG, MARZANO],
   "classroom-seating": ["Adams, R. S., & Biddle, B. J. (1970). Realities of Teaching: Explorations with Video Tape. Holt, Rinehart & Winston.", "Wannarka, R., & Ruhl, K. (2008). Seating Arrangements That Promote Positive Academic and Behavioural Outcomes. Support for Learning, 23(2)."],
+  "childhood-fears": ["Rachman, S. (1977). The Conditioning Theory of Fear-Acquisition: A Critical Examination. Behaviour Research and Therapy, 15(5), 375–387.", "Ollendick, T. H., & King, N. J. (1991). Origins of Childhood Fears: An Evaluation of the Rachman Model of Fear Acquisition. Behaviour Research and Therapy, 29(2), 117–123.", "Muris, P., & Merckelbach, H. (2000). How Serious Are Common Childhood Fears? Behaviour Research and Therapy, 38(3), 257–267."],
   "cognitive-load-theory": [SWELLER, "Sweller, J., van Merriënboer, J. J. G., & Paas, F. (1998). Cognitive Architecture and Instructional Design. Educational Psychology Review, 10(3).", MAYER],
   "constructivism-classroom": [PIAGET, VYGOTSKY, "Bybee, R. W., et al. (2006). The BSCS 5E Instructional Model. BSCS.", KIRSCHNER],
   "cooperative-learning": [JOHNSON, "Slavin, R. E. (1995). Cooperative Learning: Theory, Research, and Practice. Allyn & Bacon."],

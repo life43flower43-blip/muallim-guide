@@ -34,6 +34,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "class-time-management",
   "classroom-routines",
   "classroom-seating",
+  "childhood-fears",
   "cognitive-load-theory",
   "colleague-conflict",
   "computational-thinking",
