@@ -244,6 +244,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "values-education",
   "video-interview",
   "wait-time-questioning",
+  "whining-children",
   "writing-mcq",
   "writing-objectives",
   "writing-process",

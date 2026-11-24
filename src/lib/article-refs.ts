@@ -159,6 +159,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "thorndike-laws": ["Thorndike, E. L. (1911). Animal Intelligence. Macmillan.", "Thorndike, E. L. (1932). The Fundamentals of Learning. Teachers College."],
   "validity-reliability": ["American Educational Research Association, APA, & NCME. (2014). Standards for Educational and Psychological Testing.", GRONLUND],
   "wait-time-questioning": [ROWE, "Rowe, M. B. (1974). Wait-Time and Rewards as Instructional Variables. Journal of Research in Science Teaching, 11(2)."],
+  "whining-children": ["Sokol, R. I., Webster, K. L. E., & Thompson, N. S. (2005). Whining as Mother-Directed Speech. Infant and Child Development, 14(5), 475–485.", "Tronick, E. (2007). The Neurobehavioral and Social-Emotional Development of Infants and Children. W. W. Norton."],
   "writing-mcq": ["Haladyna, T. M., Downing, S. M., & Rodriguez, M. C. (2002). A Review of Multiple-Choice Item-Writing Guidelines. Applied Measurement in Education, 15(3).", GRONLUND],
   "writing-objectives": ["Mager, R. F. (1962). Preparing Instructional Objectives. Fearon.", ANDERSON],
   "zpd-scaffolding": [VYGOTSKY, "Wood, D., Bruner, J. S., & Ross, G. (1976). The Role of Tutoring in Problem Solving. Journal of Child Psychology and Psychiatry, 17(2)."],
