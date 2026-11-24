@@ -164,6 +164,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "prep-options-compared",
   "probing-questions",
   "problem-based-learning",
+  "procrastination-students",
   "professional-development-plan",
   "professional-knowledge-effective-practice",
   "professional-learning-communities",

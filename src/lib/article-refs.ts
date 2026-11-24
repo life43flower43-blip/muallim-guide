@@ -125,6 +125,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "portfolio-assessment": ["Paulson, F. L., Paulson, P. R., & Meyer, C. A. (1991). What Makes a Portfolio a Portfolio? Educational Leadership, 48(5).", POPHAM],
   "positive-discipline": [NELSEN, MARZANO],
   "problem-based-learning": ["Barrows, H. S., & Tamblyn, R. M. (1980). Problem-Based Learning: An Approach to Medical Education. Springer.", "Hmelo-Silver, C. E. (2004). Problem-Based Learning: What and How Do Students Learn? Educational Psychology Review, 16(3)."],
+  "procrastination-students": ["Steel, P. (2007). The Nature of Procrastination: A Meta-Analytic and Theoretical Review of Quintessential Self-Regulatory Failure. Psychological Bulletin, 133(1), 65–94.", "Sirois, F., & Pychyl, T. (2013). Procrastination and the Priority of Short-Term Mood Regulation: Consequences for Future Self. Social and Personality Psychology Compass, 7(2), 115–125."],
   "professional-development-plan": ["Guskey, T. R. (2000). Evaluating Professional Development. Corwin.", ETEC],
   "professional-learning-communities": [DUFOUR],
   "project-based-learning": [BOSS],
