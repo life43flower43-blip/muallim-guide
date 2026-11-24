@@ -52,6 +52,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "bandura-social-learning": [BANDURA, "Bandura, A., Ross, D., & Ross, S. A. (1961). Transmission of Aggression Through Imitation of Aggressive Models. Journal of Abnormal and Social Psychology, 63(3)."],
   "blended-learning": ["Horn, M. B., & Staker, H. (2014). Blended: Using Disruptive Innovation to Improve Schools. Jossey-Bass."],
   "bloom-taxonomy-revised": ["Bloom, B. S. (Ed.). (1956). Taxonomy of Educational Objectives: Handbook I, Cognitive Domain. David McKay.", ANDERSON],
+  "body-image-teens": ["Tylka, T. L., & Wood-Barcalow, N. L. (2015). What Is and What Is Not Positive Body Image? Body Image, 15, 118–129.", "Cash, T. F., & Pruzinsky, T. (2004). Body Image: A Handbook of Theory, Research, and Clinical Practice. Guilford Press."],
   "brainstorming-classroom": ["Osborn, A. F. (1953). Applied Imagination. Scribner.", "Diehl, M., & Stroebe, W. (1987). Productivity Loss in Brainstorming Groups. Journal of Personality and Social Psychology, 53(3)."],
   "bruner-discovery-learning": ["Bruner, J. S. (1960). The Process of Education. Harvard University Press.", "Bruner, J. S. (1966). Toward a Theory of Instruction. Harvard University Press.", KIRSCHNER],
   "bullying-teacher-plan": ["Olweus, D. (1993). Bullying at School: What We Know and What We Can Do. Blackwell."],
