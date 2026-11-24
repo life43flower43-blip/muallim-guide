@@ -139,6 +139,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "short-video-lessons": ["Guo, P. J., Kim, J., & Rubin, R. (2014). How Video Production Affects Student Engagement. Proceedings of the ACM Conference on Learning at Scale.", MAYER],
   "shy-students": ["Coplan, R. J., & Rudasill, K. M. (2016). Quiet at School: An Educator's Guide to Shy Children. Teachers College Press."],
   "skinner-operant-conditioning": ["Skinner, B. F. (1938). The Behavior of Organisms. Appleton-Century.", SKINNER, "Ferster, C. B., & Skinner, B. F. (1957). Schedules of Reinforcement. Appleton-Century-Crofts."],
+  "sleep-children": ["Paruthi, S., et al. (2016). Recommended Amount of Sleep for Pediatric Populations: A Consensus Statement of the American Academy of Sleep Medicine. Journal of Clinical Sleep Medicine, 12(6), 785–786.", "Mindell, J. A., & Owens, J. A. (2015). A Clinical Guide to Pediatric Sleep: Diagnosis and Management of Sleep Problems (3rd ed.). Wolters Kluwer.", "Gregory, A. M., & Sadeh, A. (2012). Sleep, Emotional and Behavioral Difficulties in Children and Adolescents. Sleep Medicine Reviews, 16(2), 129–136."],
   "slow-learners": [TOMLINSON, ROSENSHINE],
   "stem-education": ["National Research Council. (2011). Successful K-12 STEM Education. National Academies Press.", "Bybee, R. W. (2013). The Case for STEM Education. NSTA Press."],
   "storytelling-teaching": ["Willingham, D. T. (2009). Why Don't Students Like School? Jossey-Bass.", "Egan, K. (1986). Teaching as Story Telling. University of Chicago Press."],

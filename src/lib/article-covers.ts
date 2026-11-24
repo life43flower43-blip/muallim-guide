@@ -200,6 +200,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "situational-judgment-questions",
   "six-thinking-hats",
   "skinner-operant-conditioning",
+  "sleep-children",
   "sleep-memory",
   "slow-learners",
   "spatial-reasoning-guide",
