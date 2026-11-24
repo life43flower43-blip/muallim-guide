@@ -172,6 +172,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "quantitative-skills-teacher-exam",
   "question-bank",
   "question-types",
+  "quiet-child-school",
   "quizzes-design",
   "reading-aloud-assessment",
   "reading-comprehension-strategies",
