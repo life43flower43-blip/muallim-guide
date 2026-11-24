@@ -114,6 +114,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "national-identity-classroom": ["رؤية المملكة العربية السعودية 2030: برنامج تنمية القدرات البشرية، vision2030.gov.sa"],
   "negative-reinforcement": [SKINNER],
   "nonverbal-communication-teacher": ["Mehrabian, A. (1971). Silent Messages. Wadsworth.", KOUNIN],
+  "parent-preference-children": ["Lamb, M. E. (Ed.). (2010). The Role of the Father in Child Development (5th ed.). Wiley.", "Buchanan, C. M., Maccoby, E. E., & Dornbusch, S. M. (1996). Adolescents After Divorce. Harvard University Press."],
   "norm-criterion-referenced": [GRONLUND, POPHAM],
   "observation-assessment": [GRONLUND, "Brookhart, S. M., & Nitko, A. J. (2019). Educational Assessment of Students (8th ed.). Pearson."],
   "online-teaching": ["Guo, P. J., Kim, J., & Rubin, R. (2014). How Video Production Affects Student Engagement. Proceedings of the ACM Conference on Learning at Scale.", MAYER],
