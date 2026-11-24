@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/public-bank";
-import { allArticles, articleCourse } from "@/lib/articles";
+import { STANDALONE_CATS, allArticles, articleCourse } from "@/lib/articles";
 import { ArticleCard, Crumbs, GridCard, GridWithAds, WithSidebar, PageHero } from "@/components/site/Blocks";
 import CatChips from "@/components/site/CatChips";
 
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default function ArticlesIndex() {
-  const [first, ...rest] = allArticles();
+  const [first, ...rest] = allArticles().filter((a) => !STANDALONE_CATS.has(a.category));
   return (
     <WithSidebar>
       <Crumbs items={[{ label: "مقالات تربوية" }]} />

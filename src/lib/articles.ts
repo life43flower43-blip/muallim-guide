@@ -46,9 +46,18 @@ export const CAT_SLUGS: Record<string, string> = {
 };
 export const catBySlug = (slug: string) => Object.keys(CAT_SLUGS).find((k) => CAT_SLUGS[k] === slug);
 /** التصنيفات التي فيها مقالات، مرتبة بعددها */
-export function articleCats() {
+/** أقسام مستقلة عن المقالات التربوية: لها صفحتها ومسارها، ولا تظهر بين تصنيفات المقالات التربوية */
+export const STANDALONE_CATS = new Set(["علم النفس"]);
+
+export function allArticleCats() {
   const n = new Map<string, number>();
   for (const a of allArticles()) n.set(a.category, (n.get(a.category) ?? 0) + 1);
+  return [...n.entries()].map(([name, count]) => ({ name, count, slug: CAT_SLUGS[name] ?? "issues" }));
+}
+
+export function articleCats() {
+  const n = new Map<string, number>();
+  for (const a of allArticles()) if (!STANDALONE_CATS.has(a.category)) n.set(a.category, (n.get(a.category) ?? 0) + 1);
   return [...n.entries()].sort((a, b) => b[1] - a[1]).map(([name, count]) => ({ name, count, slug: CAT_SLUGS[name] ?? "issues" }));
 }
 
