@@ -85,6 +85,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "gestalt-insight-learning": ["Köhler, W. (1925). The Mentality of Apes. Harcourt Brace.", "Wertheimer, M. (1945). Productive Thinking. Harper."],
   "gifted-students": ["Renzulli, J. S. (1978). What Makes Giftedness? Re-examining a Definition. Phi Delta Kappan, 60(3).", TOMLINSON],
   "graphic-organizers": ["Novak, J. D., & Gowin, D. B. (1984). Learning How to Learn. Cambridge University Press.", "Hyerle, D. (2009). Visual Tools for Transforming Information into Knowledge. Corwin."],
+  "gratitude-children": ["Froh, J. J., Sefick, W. J., & Emmons, R. A. (2008). Counting Blessings in Early Adolescents. Journal of School Psychology, 46(2), 213–233.", "Emmons, R. A., & McCullough, M. E. (2003). Counting Blessings Versus Burdens. Journal of Personality and Social Psychology, 84(2), 377–389."],
   "growth-mindset": ["Dweck, C. S. (2006). Mindset: The New Psychology of Success. Random House.", "Sisk, V. F., et al. (2018). To What Extent and Under Which Circumstances Are Growth Mind-Sets Important to Academic Achievement? Psychological Science, 29(4).", "Yeager, D. S., et al. (2019). A National Experiment Reveals Where a Growth Mindset Improves Achievement. Nature, 573."],
   "higher-order-questions": [ANDERSON, ROWE],
   "homework-research": ["Cooper, H., Robinson, J. C., & Patall, E. A. (2006). Does Homework Improve Academic Achievement? Review of Educational Research, 76(1)."],
