@@ -55,6 +55,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "brainstorming-classroom": ["Osborn, A. F. (1953). Applied Imagination. Scribner.", "Diehl, M., & Stroebe, W. (1987). Productivity Loss in Brainstorming Groups. Journal of Personality and Social Psychology, 53(3)."],
   "bruner-discovery-learning": ["Bruner, J. S. (1960). The Process of Education. Harvard University Press.", "Bruner, J. S. (1966). Toward a Theory of Instruction. Harvard University Press.", KIRSCHNER],
   "bullying-teacher-plan": ["Olweus, D. (1993). Bullying at School: What We Know and What We Can Do. Blackwell."],
+  "child-problem-solving": ["Shure, M. B. (1992). I Can Problem Solve: An Interpersonal Cognitive Problem-Solving Program. Research Press.", "Vygotsky, L. S. (1978). Mind in Society. Harvard University Press."],
   "class-time-management": [KOUNIN, MARZANO],
   "classroom-routines": [WONG, MARZANO],
   "classroom-seating": ["Adams, R. S., & Biddle, B. J. (1970). Realities of Teaching: Explorations with Video Tape. Holt, Rinehart & Winston.", "Wannarka, R., & Ruhl, K. (2008). Seating Arrangements That Promote Positive Academic and Behavioural Outcomes. Support for Learning, 23(2)."],
