@@ -61,6 +61,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "cognitive-load-theory": [SWELLER, "Sweller, J., van Merriënboer, J. J. G., & Paas, F. (1998). Cognitive Architecture and Instructional Design. Educational Psychology Review, 10(3).", MAYER],
   "constructivism-classroom": [PIAGET, VYGOTSKY, "Bybee, R. W., et al. (2006). The BSCS 5E Instructional Model. BSCS.", KIRSCHNER],
   "cooperative-learning": [JOHNSON, "Slavin, R. E. (1995). Cooperative Learning: Theory, Research, and Practice. Allyn & Bacon."],
+  "creativity-children": ["Guilford, J. P. (1967). The Nature of Human Intelligence. McGraw-Hill.", "Sternberg, R. J., & Lubart, T. I. (1996). Investing in Creativity. American Psychologist, 51(7), 677–688."],
   "critical-thinking": ["Ennis, R. H. (1987). A Taxonomy of Critical Thinking Dispositions and Abilities. In Teaching Thinking Skills. Freeman.", "Willingham, D. T. (2007). Critical Thinking: Why Is It So Hard to Teach? American Educator, 31(2)."],
   "dealing-with-cheating": ["Anderman, E. M., & Murdock, T. B. (Eds.). (2007). Psychology of Academic Cheating. Academic Press.", "McCabe, D. L., Butterfield, K. D., & Treviño, L. K. (2012). Cheating in College. Johns Hopkins University Press."],
   "demo-lesson": [ROSENSHINE],
