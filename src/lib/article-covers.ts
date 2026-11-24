@@ -71,6 +71,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "feedback-student-to-teacher",
   "finland-singapore",
   "first-day-teacher",
+  "first-days-anxiety",
   "first-week-class",
   "first-year-classroom",
   "fishbowl",
