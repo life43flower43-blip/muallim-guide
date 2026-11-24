@@ -196,6 +196,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "learning-styles-myth": ["Pashler, H., McDaniel, M., Rohrer, D., & Bjork, R. (2008). Learning Styles: Concepts and Evidence. Psychological Science in the Public Interest, 9(3)."],
   "connectivism": ["Siemens, G. (2005). Connectivism: A Learning Theory for the Digital Age. International Journal of Instructional Technology and Distance Learning, 2(1)."],
   "dale-cone": ["Dale, E. (1946). Audio-Visual Methods in Teaching. Dryden Press."],
+  "daydreaming-children": ["Singer, J. L. (1975). The Inner World of Daydreaming. Harper & Row.", "Smallwood, J., & Schooler, J. W. (2006). The Restless Mind. Psychological Bulletin, 132(6), 946–958."],
   "kwl-strategy": ["Ogle, D. M. (1986). K-W-L: A Teaching Model That Develops Active Reading of Expository Text. The Reading Teacher, 39(6)."],
   "timss-pisa": ["OECD: Programme for International Student Assessment (PISA), oecd.org/pisa", "IEA: Trends in International Mathematics and Science Study (TIMSS), timssandpirls.bc.edu"],
 };
