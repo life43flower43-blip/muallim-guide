@@ -87,6 +87,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "graphic-organizers": ["Novak, J. D., & Gowin, D. B. (1984). Learning How to Learn. Cambridge University Press.", "Hyerle, D. (2009). Visual Tools for Transforming Information into Knowledge. Corwin."],
   "growth-mindset": ["Dweck, C. S. (2006). Mindset: The New Psychology of Success. Random House.", "Sisk, V. F., et al. (2018). To What Extent and Under Which Circumstances Are Growth Mind-Sets Important to Academic Achievement? Psychological Science, 29(4).", "Yeager, D. S., et al. (2019). A National Experiment Reveals Where a Growth Mindset Improves Achievement. Nature, 573."],
   "higher-order-questions": [ANDERSON, ROWE],
+  "homework-battles-children": ["Cooper, H., Lindsay, J. J., Nye, B., & Greathouse, S. (1998). Relationships Among Attitudes About Homework, Amount of Homework Assigned. Journal of Educational Psychology, 90(1), 70–83.", "Hoover-Dempsey, K. V., Battiato, A. C., Walker, J. M., et al. (2001). Parental Involvement in Homework. Educational Psychologist, 36(3), 195–209."],
   "homework-research": ["Cooper, H., Robinson, J. C., & Patall, E. A. (2006). Does Homework Improve Academic Achievement? Review of Educational Research, 76(1)."],
   "iep-individual-plan": ["Bateman, B. D., & Linden, M. A. (2012). Better IEPs (5th ed.). Attainment Company."],
   "inattentive-active-student": [DSM5, KOUNIN],
