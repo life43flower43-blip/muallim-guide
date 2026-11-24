@@ -131,6 +131,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "mastery-learning",
   "math-manipulatives",
   "mcq-test-taking",
+  "meetings-family-children",
   "mentor-teacher",
   "metacognition-students",
   "microlearning",

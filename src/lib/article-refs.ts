@@ -181,6 +181,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "score-calculation-formula": [ETEC, ETEC_RULES],
   "question-types": [ANDERSON, "Bloom, B. S. (Ed.). (1956). Taxonomy of Educational Objectives: Handbook I, Cognitive Domain. David McKay."],
   "math-manipulatives": ["Bruner, J. S. (1966). Toward a Theory of Instruction. Harvard University Press."],
+  "meetings-family-children": ["Dreikurs, R., & Soltz, V. (1964). Children: The Challenge. Hawthorn Books.", "Popkin, M. H. (1993). Active Parenting. HarperPerennial."],
   "token-economy": ["Ayllon, T., & Azrin, N. H. (1968). The Token Economy: A Motivational System for Therapy and Rehabilitation. Appleton-Century-Crofts.", "Skinner, B. F. (1953). Science and Human Behavior. Macmillan."],
   "transfer-of-learning": ["Thorndike, E. L., & Woodworth, R. S. (1901). The Influence of Improvement in One Mental Function upon the Efficiency of Other Functions. Psychological Review, 8(3)."],
   "halo-effect-grading": ["Thorndike, E. L. (1920). A Constant Error in Psychological Ratings. Journal of Applied Psychology, 4(1)."],
