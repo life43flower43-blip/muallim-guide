@@ -18,6 +18,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "ausubel-meaningful-learning",
   "authentic-assessment",
   "autism-classroom",
+  "autonomy-children",
   "backward-design",
   "bandura-social-learning",
   "behavior-contract",

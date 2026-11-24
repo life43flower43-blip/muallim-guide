@@ -48,6 +48,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "ai-lesson-prep": [UNESCO_AI, "U.S. Department of Education. (2023). Artificial Intelligence and the Future of Teaching and Learning."],
   "ausubel-meaningful-learning": ["Ausubel, D. P. (1968). Educational Psychology: A Cognitive View. Holt, Rinehart & Winston.", "Novak, J. D., & Gowin, D. B. (1984). Learning How to Learn. Cambridge University Press."],
   "authentic-assessment": ["Wiggins, G. (1990). The Case for Authentic Assessment. Practical Assessment, Research & Evaluation, 2(2).", POPHAM],
+  "autonomy-children": ["Deci, E. L., & Ryan, R. M. (1985). Intrinsic Motivation and Self-Determination in Human Behavior. Plenum.", "Ryan, R. M., & Deci, E. L. (2000). Self-Determination Theory and the Facilitation of Intrinsic Motivation, Social Development, and Well-Being. American Psychologist, 55(1), 68–78.", "Grolnick, W. S. (2003). The Psychology of Parental Control: How Well-Meaning Parenting Backfires. Erlbaum."],
   "autism-classroom": [DSM5, "National Autistic Society. Autism: A Guide for Education Professionals. autism.org.uk"],
   "bandura-social-learning": [BANDURA, "Bandura, A., Ross, D., & Ross, S. A. (1961). Transmission of Aggression Through Imitation of Aggressive Models. Journal of Abnormal and Social Psychology, 63(3)."],
   "blended-learning": ["Horn, M. B., & Staker, H. (2014). Blended: Using Disruptive Innovation to Improve Schools. Jossey-Bass."],
