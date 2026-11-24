@@ -140,6 +140,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "shy-students": ["Coplan, R. J., & Rudasill, K. M. (2016). Quiet at School: An Educator's Guide to Shy Children. Teachers College Press."],
   "skinner-operant-conditioning": ["Skinner, B. F. (1938). The Behavior of Organisms. Appleton-Century.", SKINNER, "Ferster, C. B., & Skinner, B. F. (1957). Schedules of Reinforcement. Appleton-Century-Crofts."],
   "slow-learners": [TOMLINSON, ROSENSHINE],
+  "social-media-teens": ["Twenge, J. M., & Campbell, W. K. (2018). Associations Between Screen Time and Lower Psychological Well-Being Among Children and Adolescents. Preventive Medicine Reports, 12, 271–283.", "Przybylski, A. K., & Weinstein, N. (2017). A Large-Scale Test of the Goldilocks Hypothesis. Psychological Science, 28(2), 204–215."],
   "stem-education": ["National Research Council. (2011). Successful K-12 STEM Education. National Academies Press.", "Bybee, R. W. (2013). The Case for STEM Education. NSTA Press."],
   "storytelling-teaching": ["Willingham, D. T. (2009). Why Don't Students Like School? Jossey-Bass.", "Egan, K. (1986). Teaching as Story Telling. University of Chicago Press."],
   "student-absenteeism": ["Kearney, C. A. (2008). School Absenteeism and School Refusal Behavior in Youth. Clinical Psychology Review, 28(3)."],
