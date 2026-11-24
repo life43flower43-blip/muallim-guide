@@ -89,6 +89,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "higher-order-questions": [ANDERSON, ROWE],
   "homework-research": ["Cooper, H., Robinson, J. C., & Patall, E. A. (2006). Does Homework Improve Academic Achievement? Review of Educational Research, 76(1)."],
   "iep-individual-plan": ["Bateman, B. D., & Linden, M. A. (2012). Better IEPs (5th ed.). Attainment Company."],
+  "imaginary-friend-children": ["Taylor, M., Cartwright, B. S., & Carlson, S. M. (1993). A Developmental Investigation of Children's Imaginary Companions. Developmental Psychology, 29(2), 276–287.", "Taylor, M. (1999). Imaginary Companions and the Children Who Create Them. Oxford University Press."],
   "inattentive-active-student": [DSM5, KOUNIN],
   "inclusive-classroom": ["UNESCO. (2009). Policy Guidelines on Inclusion in Education.", "CAST. (2018). Universal Design for Learning Guidelines. udlguidelines.cast.org"],
   "information-processing": ["Atkinson, R. C., & Shiffrin, R. M. (1968). Human Memory: A Proposed System and Its Control Processes. In The Psychology of Learning and Motivation, Vol. 2. Academic Press.", "Miller, G. A. (1956). The Magical Number Seven, Plus or Minus Two. Psychological Review, 63(2)."],

@@ -95,6 +95,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "homework-research",
   "hot-seat",
   "iep-individual-plan",
+  "imaginary-friend-children",
   "inattentive-active-student",
   "inclusive-classroom",
   "infographic-teaching",
