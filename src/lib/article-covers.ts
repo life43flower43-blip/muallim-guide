@@ -138,6 +138,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "mind-maps-lesson",
   "modern-teaching-strategies",
   "multiple-intelligences-gardner",
+  "music-children",
   "national-identity-classroom",
   "negative-reinforcement",
   "non-arabic-speakers",
