@@ -63,6 +63,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "effective-feedback",
   "emotion-regulation-children",
   "emotional-intelligence-students",
+  "entitlement-child",
   "erikson-stages",
   "essay-questions",
   "exam-dates-registration-steps",
