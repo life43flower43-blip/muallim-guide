@@ -84,6 +84,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "gamification-classroom": ["Deterding, S., et al. (2011). From Game Design Elements to Gamefulness: Defining Gamification. Proceedings of MindTrek.", DECI],
   "gestalt-insight-learning": ["Köhler, W. (1925). The Mentality of Apes. Harcourt Brace.", "Wertheimer, M. (1945). Productive Thinking. Harper."],
   "gifted-students": ["Renzulli, J. S. (1978). What Makes Giftedness? Re-examining a Definition. Phi Delta Kappan, 60(3).", TOMLINSON],
+  "grandparents-children": ["Attar-Schwartz, S., Tan, J. P., Buchanan, A., Flouri, E., & Griggs, J. (2009). Grandparenting and Adolescent Adjustment in Two-Parent Biological, Lone-Parent, and Step-Families. Journal of Family Psychology, 23(5), 671–680.", "Bengtson, V. L. (2001). Beyond the Nuclear Family: The Increasing Importance of Multigenerational Bonds. Journal of Marriage and Family, 63(1), 1–16."],
   "graphic-organizers": ["Novak, J. D., & Gowin, D. B. (1984). Learning How to Learn. Cambridge University Press.", "Hyerle, D. (2009). Visual Tools for Transforming Information into Knowledge. Corwin."],
   "growth-mindset": ["Dweck, C. S. (2006). Mindset: The New Psychology of Success. Random House.", "Sisk, V. F., et al. (2018). To What Extent and Under Which Circumstances Are Growth Mind-Sets Important to Academic Achievement? Psychological Science, 29(4).", "Yeager, D. S., et al. (2019). A National Experiment Reveals Where a Growth Mindset Improves Achievement. Nature, 573."],
   "higher-order-questions": [ANDERSON, ROWE],
