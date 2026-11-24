@@ -123,6 +123,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "piaget-stages": [PIAGET],
   "play-based-learning": [VYGOTSKY, PIAGET, "Hirsh-Pasek, K., et al. (2009). A Mandate for Playful Learning in Preschool. Oxford University Press."],
   "portfolio-assessment": ["Paulson, F. L., Paulson, P. R., & Meyer, C. A. (1991). What Makes a Portfolio a Portfolio? Educational Leadership, 48(5).", POPHAM],
+  "praise-vs-rewards": ["Lepper, M. R., Greene, D., & Nisbett, R. E. (1973). Undermining Children's Intrinsic Interest with Extrinsic Reward: A Test of the Overjustification Hypothesis. Journal of Personality and Social Psychology, 28(1), 129–137.", "Mueller, C. M., & Dweck, C. S. (1998). Praise for Intelligence Can Undermine Children's Motivation and Performance. Journal of Personality and Social Psychology, 75(1), 33–52."],
   "positive-discipline": [NELSEN, MARZANO],
   "problem-based-learning": ["Barrows, H. S., & Tamblyn, R. M. (1980). Problem-Based Learning: An Approach to Medical Education. Springer.", "Hmelo-Silver, C. E. (2004). Problem-Based Learning: What and How Do Students Learn? Educational Psychology Review, 16(3)."],
   "professional-development-plan": ["Guskey, T. R. (2000). Evaluating Professional Development. Corwin.", ETEC],

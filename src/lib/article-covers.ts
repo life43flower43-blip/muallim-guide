@@ -160,6 +160,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "play-based-learning",
   "pomodoro-study",
   "portfolio-assessment",
+  "praise-vs-rewards",
   "positive-discipline",
   "prep-options-compared",
   "probing-questions",
