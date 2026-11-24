@@ -238,6 +238,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "thorndike-laws",
   "timss-pisa",
   "token-economy",
+  "toys-sharing-children",
   "transfer-of-learning",
   "transformational-situational-leadership",
   "validity-reliability",
