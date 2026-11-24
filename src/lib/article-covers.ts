@@ -248,6 +248,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "writing-objectives",
   "writing-process",
   "year-end-reflection",
+  "yelling-parents",
   "zpd-scaffolding",
   "academic-failure",
   "attention-seeking-children",
