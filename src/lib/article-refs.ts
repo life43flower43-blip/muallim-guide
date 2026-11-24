@@ -129,6 +129,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "professional-learning-communities": [DUFOUR],
   "project-based-learning": [BOSS],
   "quantitative-skills-teacher-exam": [ETEC],
+  "quarrels-siblings": ["McHale, S. M., Updegraff, K. A., & Whiteman, S. D. (2012). Sibling Relationships and Influences in Lifespan Development. Journal of Marriage and Family, 74(5), 913–930.", "Brody, G. H. (2004). Siblings' Direct and Indirect Contributions to Child Development. Current Directions in Psychological Science, 13(3), 124–126."],
   "reading-comprehension-strategies": [PALINCSAR, "Pearson, P. D., & Gallagher, M. C. (1983). The Instruction of Reading Comprehension. Contemporary Educational Psychology, 8(3)."],
   "reflective-teaching": [SCHON, "Gibbs, G. (1988). Learning by Doing: A Guide to Teaching and Learning Methods. Oxford Polytechnic."],
   "resilience-students": ["Werner, E. E., & Smith, R. S. (1982). Vulnerable but Invincible. McGraw-Hill.", "Masten, A. S. (2014). Ordinary Magic: Resilience in Development. Guilford Press."],
