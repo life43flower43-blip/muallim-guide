@@ -44,6 +44,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "adolescent-students": ["Steinberg, L. (2014). Age of Opportunity: Lessons from the New Science of Adolescence. Houghton Mifflin Harcourt.", "Erikson, E. H. (1968). Identity: Youth and Crisis. Norton."],
   "teen-stress": ["Selye, H. (1956). The Stress of Life. McGraw-Hill.", "Lazarus, R. S., & Folkman, S. (1984). Stress, Appraisal, and Coping. Springer.", "Yerkes, R. M., & Dodson, J. D. (1908). The Relation of Strength of Stimulus to Rapidity of Habit-Formation. Journal of Comparative Neurology and Psychology, 18(5), 459–482.", "World Health Organization. (2021). Adolescent Mental Health. who.int", "Paruthi, S., et al. (2016). Recommended Amount of Sleep for Pediatric Populations: A Consensus Statement of the American Academy of Sleep Medicine. Journal of Clinical Sleep Medicine, 12(6), 785–786."],
   "aggressive-behavior": [BANDURA, "Greene, R. W. (2014). Lost at School. Scribner.", MARZANO],
+  "attachment-children": ["Bowlby, J. (1969). Attachment and Loss: Vol. 1. Attachment. Basic Books.", "Ainsworth, M. D. S., Blehar, M. C., Waters, E., & Wall, S. (1978). Patterns of Attachment. Erlbaum."],
   "ai-homework-design": [UNESCO_AI],
   "ai-lesson-prep": [UNESCO_AI, "U.S. Department of Education. (2023). Artificial Intelligence and the Future of Teaching and Learning."],
   "ausubel-meaningful-learning": ["Ausubel, D. P. (1968). Educational Psychology: A Cognitive View. Holt, Rinehart & Winston.", "Novak, J. D., & Gowin, D. B. (1984). Learning How to Learn. Cambridge University Press."],
