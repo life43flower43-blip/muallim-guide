@@ -43,6 +43,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "content-analysis",
   "cooperative-learning",
   "critical-thinking",
+  "crying-children",
   "cyber-safety",
   "dale-cone",
   "dealing-with-cheating",

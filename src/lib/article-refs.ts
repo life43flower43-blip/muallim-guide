@@ -62,6 +62,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "constructivism-classroom": [PIAGET, VYGOTSKY, "Bybee, R. W., et al. (2006). The BSCS 5E Instructional Model. BSCS.", KIRSCHNER],
   "cooperative-learning": [JOHNSON, "Slavin, R. E. (1995). Cooperative Learning: Theory, Research, and Practice. Allyn & Bacon."],
   "critical-thinking": ["Ennis, R. H. (1987). A Taxonomy of Critical Thinking Dispositions and Abilities. In Teaching Thinking Skills. Freeman.", "Willingham, D. T. (2007). Critical Thinking: Why Is It So Hard to Teach? American Educator, 31(2)."],
+  "crying-children": ["Bowlby, J. (1969). Attachment and Loss: Vol. 1. Attachment. Basic Books.", "Zeifman, D. M. (2001). An Ethological Analysis of Human Infant Crying. Aggression and Violent Behavior, 6(6), 537–559."],
   "dealing-with-cheating": ["Anderman, E. M., & Murdock, T. B. (Eds.). (2007). Psychology of Academic Cheating. Academic Press.", "McCabe, D. L., Butterfield, K. D., & Treviño, L. K. (2012). Cheating in College. Johns Hopkins University Press."],
   "demo-lesson": [ROSENSHINE],
   "diagnostic-assessment": [GRONLUND, POPHAM],
