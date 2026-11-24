@@ -75,6 +75,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "effective-feedback": ["Hattie, J., & Timperley, H. (2007). The Power of Feedback. Review of Educational Research, 77(1).", BLACK_WILIAM],
   "emotional-intelligence-students": ["Salovey, P., & Mayer, J. D. (1990). Emotional Intelligence. Imagination, Cognition and Personality, 9(3).", "Goleman, D. (1995). Emotional Intelligence. Bantam Books.", DURLAK],
   "erikson-stages": ["Erikson, E. H. (1950). Childhood and Society. Norton.", "Erikson, E. H. (1968). Identity: Youth and Crisis. Norton."],
+  "fear-of-doctors-children": ["Blount, R. L., Cohen, L. L., Frank, N. C., et al. (1997). The Child-Adult Medical Procedure Interaction Scale-Revised. Journal of Pediatric Psychology, 22(4), 439–458.", "McGrath, P. A., & de Veber, L. L. (1986). The Management of Acute Pain Evoked by Medical Procedures in Children with Cancer. Journal of Pain and Symptom Management, 1(2), 74–90."],
   "essay-questions": [GRONLUND, "Reiner, C. M., et al. (2002). Preparing Effective Essay Questions. New Forums Press."],
   "first-year-classroom": [WONG, MARZANO],
   "flipped-classroom": ["Bergmann, J., & Sams, A. (2012). Flip Your Classroom. ISTE.", "van Alten, D. C. D., Phielix, C., Janssen, J., & Kester, L. (2019). Effects of Flipping the Classroom on Learning Outcomes and Satisfaction: A Meta-Analysis. Educational Research Review, 28.", "Guo, P. J., Kim, J., & Rubin, R. (2014). How Video Production Affects Student Engagement. Proceedings of the ACM Conference on Learning at Scale."],
