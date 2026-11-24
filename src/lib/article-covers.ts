@@ -21,6 +21,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "backward-design",
   "bandura-social-learning",
   "behavior-contract",
+  "biting-children",
   "blended-learning",
   "bloom-taxonomy-revised",
   "brainstorming-classroom",
