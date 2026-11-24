@@ -178,6 +178,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "reading-culture",
   "reciprocal-teaching",
   "reflective-teaching",
+  "relocation-adjust-children",
   "report-card-comments",
   "resilience-students",
   "resource-room",

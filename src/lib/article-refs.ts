@@ -131,6 +131,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "quantitative-skills-teacher-exam": [ETEC],
   "reading-comprehension-strategies": [PALINCSAR, "Pearson, P. D., & Gallagher, M. C. (1983). The Instruction of Reading Comprehension. Contemporary Educational Psychology, 8(3)."],
   "reflective-teaching": [SCHON, "Gibbs, G. (1988). Learning by Doing: A Guide to Teaching and Learning Methods. Oxford Polytechnic."],
+  "relocation-adjust-children": ["Adam, E. K., & Chase-Lansdale, P. L. (2002). Home Sweet Home(s): Parental Separations, Residential Moves, and Adjustment Problems. Developmental Psychology, 38(5), 792–805.", "Gruman, D. H., Harachi, T. W., Abbott, R. D., Catalano, R. F., & Fleming, C. B. (2008). Longitudinal Effects of Student Mobility on Three Dimensions of Elementary School Engagement. Child Development, 79(6), 1833–1852."],
   "resilience-students": ["Werner, E. E., & Smith, R. S. (1982). Vulnerable but Invincible. McGraw-Hill.", "Masten, A. S. (2014). Ordinary Magic: Resilience in Development. Guilford Press."],
   "role-play-teaching": ["Joyce, B., Weil, M., & Calhoun, E. (2015). Models of Teaching (9th ed.). Pearson."],
   "rubric-design": [BROOKHART],
