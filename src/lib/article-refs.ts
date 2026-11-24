@@ -119,6 +119,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "online-teaching": ["Guo, P. J., Kim, J., & Rubin, R. (2014). How Video Production Affects Student Engagement. Proceedings of the ACM Conference on Learning at Scale.", MAYER],
   "parents-communication": [EPSTEIN],
   "pavlov-classical-conditioning": ["Pavlov, I. P. (1927). Conditioned Reflexes. Oxford University Press.", "Watson, J. B., & Rayner, R. (1920). Conditioned Emotional Reactions. Journal of Experimental Psychology, 3(1)."],
+  "perfectionism-students": ["Hamachek, D. E. (1978). Psychodynamics of Normal and Neurotic Perfectionism. Psychology: A Journal of Human Behavior, 15(1), 16–26.", "Frost, R. O., Marten, P., Lahart, C., & Rosenblate, R. (1990). The Dimensions of Perfectionism. Cognitive Therapy and Research, 14(5), 449–468."],
   "phones-in-class": ["UNESCO. (2023). Global Education Monitoring Report: Technology in Education."],
   "piaget-stages": [PIAGET],
   "play-based-learning": [VYGOTSKY, PIAGET, "Hirsh-Pasek, K., et al. (2009). A Mandate for Playful Learning in Preschool. Oxford University Press."],

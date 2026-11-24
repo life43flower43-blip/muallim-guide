@@ -154,6 +154,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "passing-score-cutoffs",
   "pavlov-classical-conditioning",
   "peer-tutoring",
+  "perfectionism-students",
   "personality-traits-test",
   "phones-in-class",
   "piaget-stages",
