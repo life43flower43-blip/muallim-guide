@@ -42,6 +42,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "active-learning-crowded-class": ["Bonwell, C. C., & Eison, J. A. (1991). Active Learning: Creating Excitement in the Classroom. ASHE-ERIC Report.", "Freeman, S., et al. (2014). Active Learning Increases Student Performance in Science, Engineering, and Mathematics. PNAS, 111(23)."],
   "adhd-classroom": [DSM5, "Barkley, R. A. (2013). Taking Charge of ADHD (3rd ed.). Guilford Press."],
   "adolescent-students": ["Steinberg, L. (2014). Age of Opportunity: Lessons from the New Science of Adolescence. Houghton Mifflin Harcourt.", "Erikson, E. H. (1968). Identity: Youth and Crisis. Norton."],
+  "teen-stress": ["Selye, H. (1956). The Stress of Life. McGraw-Hill.", "Lazarus, R. S., & Folkman, S. (1984). Stress, Appraisal, and Coping. Springer.", "Yerkes, R. M., & Dodson, J. D. (1908). The Relation of Strength of Stimulus to Rapidity of Habit-Formation. Journal of Comparative Neurology and Psychology, 18(5), 459–482.", "World Health Organization. (2021). Adolescent Mental Health. who.int", "Paruthi, S., et al. (2016). Recommended Amount of Sleep for Pediatric Populations: A Consensus Statement of the American Academy of Sleep Medicine. Journal of Clinical Sleep Medicine, 12(6), 785–786."],
   "aggressive-behavior": [BANDURA, "Greene, R. W. (2014). Lost at School. Scribner.", MARZANO],
   "ai-homework-design": [UNESCO_AI],
   "ai-lesson-prep": [UNESCO_AI, "U.S. Department of Education. (2023). Artificial Intelligence and the Future of Teaching and Learning."],

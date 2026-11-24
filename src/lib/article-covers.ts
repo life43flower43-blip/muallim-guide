@@ -219,6 +219,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "tarbawi-domains-weights",
   "teacher-appraisal",
   "teacher-burnout",
+  "teen-stress",
   "teacher-cv",
   "teacher-ethics-situations",
   "teacher-evidence-file",
