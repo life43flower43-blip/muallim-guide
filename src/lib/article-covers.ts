@@ -240,6 +240,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "token-economy",
   "transfer-of-learning",
   "transformational-situational-leadership",
+  "transition-resistance-children",
   "validity-reliability",
   "values-education",
   "video-interview",
