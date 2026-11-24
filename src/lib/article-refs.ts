@@ -133,6 +133,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "reflective-teaching": [SCHON, "Gibbs, G. (1988). Learning by Doing: A Guide to Teaching and Learning Methods. Oxford Polytechnic."],
   "resilience-students": ["Werner, E. E., & Smith, R. S. (1982). Vulnerable but Invincible. McGraw-Hill.", "Masten, A. S. (2014). Ordinary Magic: Resilience in Development. Guilford Press."],
   "role-play-teaching": ["Joyce, B., Weil, M., & Calhoun, E. (2015). Models of Teaching (9th ed.). Pearson."],
+  "routines-children": ["Fiese, B. H., Tomcho, T. J., Douglas, M., Josephs, K., Poltrock, S., & Baker, T. (2002). A Review of 50 Years of Research on Naturally Occurring Family Routines and Rituals. Journal of Family Psychology, 16(4), 381–390.", "Mindell, J. A., & Owens, J. A. (2015). A Clinical Guide to Pediatric Sleep: Diagnosis and Management of Sleep Problems (3rd ed.). Wolters Kluwer."],
   "rubric-design": [BROOKHART],
   "school-community-partnership": [EPSTEIN],
   "sensory-impairments": ["UNESCO. (2009). Policy Guidelines on Inclusion in Education.", "CAST. (2018). Universal Design for Learning Guidelines. udlguidelines.cast.org"],
