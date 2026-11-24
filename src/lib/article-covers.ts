@@ -220,6 +220,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "teacher-appraisal",
   "teacher-burnout",
   "teen-stress",
+  "teen-loneliness",
   "teacher-cv",
   "teacher-ethics-situations",
   "teacher-evidence-file",
