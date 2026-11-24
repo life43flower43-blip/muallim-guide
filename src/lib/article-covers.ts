@@ -237,6 +237,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "thinking-skills-in-exam",
   "thorndike-laws",
   "timss-pisa",
+  "toilet-training-children",
   "token-economy",
   "transfer-of-learning",
   "transformational-situational-leadership",
