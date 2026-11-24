@@ -147,6 +147,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "observation-assessment",
   "online-quizzes",
   "online-teaching",
+  "only-child-children",
   "oppositional-behavior",
   "oral-assessment",
   "parent-teacher-meeting",

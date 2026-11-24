@@ -116,6 +116,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "nonverbal-communication-teacher": ["Mehrabian, A. (1971). Silent Messages. Wadsworth.", KOUNIN],
   "norm-criterion-referenced": [GRONLUND, POPHAM],
   "observation-assessment": [GRONLUND, "Brookhart, S. M., & Nitko, A. J. (2019). Educational Assessment of Students (8th ed.). Pearson."],
+  "only-child-children": ["Falbo, T., & Polit, D. F. (1986). Quantitative Review of the Only Child Literature: Research Evidence and Myth. Developmental Psychology, 22(2), 148–161.", "Mancillas, A. (2006). Rethinking Our Assumptions About Only Children. Journal of Counseling & Development, 84(3), 268–275."],
   "online-teaching": ["Guo, P. J., Kim, J., & Rubin, R. (2014). How Video Production Affects Student Engagement. Proceedings of the ACM Conference on Learning at Scale.", MAYER],
   "parents-communication": [EPSTEIN],
   "pavlov-classical-conditioning": ["Pavlov, I. P. (1927). Conditioned Reflexes. Oxford University Press.", "Watson, J. B., & Rayner, R. (1920). Conditioned Emotional Reactions. Journal of Experimental Psychology, 3(1)."],
