@@ -195,6 +195,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "explicit-instruction": [ROSENSHINE, "Kirschner, P. A., Sweller, J., & Clark, R. E. (2006). Why Minimal Guidance During Instruction Does Not Work. Educational Psychologist, 41(2)."],
   "learning-styles-myth": ["Pashler, H., McDaniel, M., Rohrer, D., & Bjork, R. (2008). Learning Styles: Concepts and Evidence. Psychological Science in the Public Interest, 9(3)."],
   "connectivism": ["Siemens, G. (2005). Connectivism: A Learning Theory for the Digital Age. International Journal of Instructional Technology and Distance Learning, 2(1)."],
+  "controlling-child-friends": ["Hawley, P. H. (1999). The Ontogenesis of Social Dominance: A Strategy-Based Evolutionary Perspective. Developmental Review, 19(1), 97–132.", "Dodge, K. A., & Coie, J. D. (1987). Social-Information-Processing Factors in Reactive and Proactive Aggression. Child Development, 58(5), 1267–1278."],
   "dale-cone": ["Dale, E. (1946). Audio-Visual Methods in Teaching. Dryden Press."],
   "kwl-strategy": ["Ogle, D. M. (1986). K-W-L: A Teaching Model That Develops Active Reading of Expository Text. The Reading Teacher, 39(6)."],
   "timss-pisa": ["OECD: Programme for International Student Assessment (PISA), oecd.org/pisa", "IEA: Trends in International Mathematics and Science Study (TIMSS), timssandpirls.bc.edu"],
