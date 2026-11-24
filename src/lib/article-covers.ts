@@ -170,6 +170,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "project-based-learning",
   "quality-education",
   "quantitative-skills-teacher-exam",
+  "quarrels-siblings",
   "question-bank",
   "question-types",
   "quizzes-design",
