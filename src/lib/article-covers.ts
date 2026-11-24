@@ -23,6 +23,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "behavior-contract",
   "blended-learning",
   "bloom-taxonomy-revised",
+  "body-image-teens",
   "brainstorming-classroom",
   "bruner-discovery-learning",
   "bullying-teacher-plan",
