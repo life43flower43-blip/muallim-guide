@@ -4,7 +4,7 @@ import type { MetadataRoute } from "next";
 import { SPECIALTIES } from "@/lib/specialties";
 import { SITE_URL, publicBank } from "@/lib/public-bank";
 import { APP_SECTIONS } from "@/lib/site-nav";
-import { allArticles, articleCats } from "@/lib/articles";
+import { allArticles, allArticleCats } from "@/lib/articles";
 import { TOPICS } from "@/lib/topics";
 import { PROBLEMS } from "@/lib/site-problems";
 
@@ -23,7 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const courses = Object.keys(b.courses).map((id) => ({ url: `${SITE_URL}/learn/${id}`, lastModified: CONTENT_UPDATED, changeFrequency: "monthly" as const, priority: 0.8 }));
   const concepts = b.concepts.filter((c) => !CONCEPT_CANONICAL[c.id]).map((c) => ({ url: `${SITE_URL}/learn/${c.courseId}/${c.id}`, lastModified: CONCEPTS_UPDATED, changeFrequency: "monthly" as const, priority: 0.7 }));
   const articles = allArticles().map((a) => ({ url: `${SITE_URL}/articles/${a.slug}`, lastModified: a.updated, changeFrequency: "monthly" as const, priority: 0.8 }));
-  const cats = articleCats().map((c) => ({ url: `${SITE_URL}/articles/c/${c.slug}`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly" as const, priority: 0.6 }));
+  const cats = allArticleCats().map((c) => ({ url: `${SITE_URL}/articles/c/${c.slug}`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly" as const, priority: 0.6 }));
   const problems = PROBLEMS.map((x) => ({ url: `${SITE_URL}/classroom-problems/${x.slug}`, lastModified: CONTENT_UPDATED, changeFrequency: "monthly" as const, priority: 0.7 }));
   const topics = [{ url: `${SITE_URL}/topics`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly" as const, priority: 0.8 }, ...TOPICS.map((t) => ({ url: `${SITE_URL}/topics/${t.slug}`, lastModified: CONTENT_UPDATED, changeFrequency: "weekly" as const, priority: 0.8 }))];
   return [...fixed, ...topics, ...articles, ...cats, ...problems, ...courses, ...concepts, ...comparisons];

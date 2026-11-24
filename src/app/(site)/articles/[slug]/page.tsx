@@ -9,7 +9,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Tag } from "lucide-react";
 import { SITE_URL } from "@/lib/public-bank";
-import { CAT_SLUGS, allArticles, arDate, articleBySlug, articleCourse } from "@/lib/articles";
+import { CAT_SLUGS, STANDALONE_CATS, allArticles, arDate, articleBySlug, articleCourse } from "@/lib/articles";
 import { withInternalLinks } from "@/lib/internal-links";
 import { courseMeta } from "@/lib/site-nav";
 import { ad } from "@/lib/arabic";
@@ -112,7 +112,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "الرئيسية", item: `${SITE_URL}/` },
-        { "@type": "ListItem", position: 2, name: "مقالات تربوية", item: `${SITE_URL}/articles` },
+        STANDALONE_CATS.has(a.category)
+          ? { "@type": "ListItem", position: 2, name: a.category, item: `${SITE_URL}/articles/c/${CAT_SLUGS[a.category]}` }
+          : { "@type": "ListItem", position: 2, name: "مقالات تربوية", item: `${SITE_URL}/articles` },
         { "@type": "ListItem", position: 3, name: a.title, item: `${SITE_URL}${path}` },
       ],
     },
@@ -122,7 +124,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     <WithSidebar>
       <ReadProgress color={courseMeta(course).color} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <Crumbs items={[{ href: "/articles", label: "مقالات تربوية" }, { href: `/articles/c/${CAT_SLUGS[a.category] ?? "issues"}`, label: a.category }]} />
+      <Crumbs items={[...(STANDALONE_CATS.has(a.category) ? [] : [{ href: "/articles", label: "مقالات تربوية" }]), { href: `/articles/c/${CAT_SLUGS[a.category] ?? "issues"}`, label: a.category }]} />
 
       <article className="overflow-hidden rounded-2xl border border-[#E2ECE6] bg-white">
         <div className="p-5 sm:p-8">
