@@ -128,6 +128,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "professional-development-plan": ["Guskey, T. R. (2000). Evaluating Professional Development. Corwin.", ETEC],
   "professional-learning-communities": [DUFOUR],
   "project-based-learning": [BOSS],
+  "quiet-child-school": ["Cohan, S. L., Chavira, D. A., & Stein, M. B. (2006). Practitioner Review: Psychosocial Interventions for Children with Selective Mutism. Journal of Child Psychology and Psychiatry, 47(10), 1075–1089.", "American Psychiatric Association. (2013). Diagnostic and Statistical Manual of Mental Disorders (5th ed.)."],
   "quantitative-skills-teacher-exam": [ETEC],
   "reading-comprehension-strategies": [PALINCSAR, "Pearson, P. D., & Gallagher, M. C. (1983). The Instruction of Reading Comprehension. Contemporary Educational Psychology, 8(3)."],
   "reflective-teaching": [SCHON, "Gibbs, G. (1988). Learning by Doing: A Guide to Teaching and Learning Methods. Oxford Polytechnic."],
