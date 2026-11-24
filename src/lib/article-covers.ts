@@ -144,6 +144,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "nonverbal-communication-teacher",
   "norm-criterion-referenced",
   "numbered-heads",
+  "nursery-stranger-fear",
   "observation-assessment",
   "online-quizzes",
   "online-teaching",
