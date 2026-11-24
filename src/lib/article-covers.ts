@@ -216,6 +216,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "study-methods-research",
   "study-schedule-license",
   "summative-assessment",
+  "tantrums-children",
   "tarbawi-domains-weights",
   "teacher-appraisal",
   "teacher-burnout",

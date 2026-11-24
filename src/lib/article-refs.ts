@@ -146,6 +146,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "student-motivation": ["Ryan, R. M., & Deci, E. L. (2000). Self-Determination Theory and the Facilitation of Intrinsic Motivation. American Psychologist, 55(1).", DECI],
   "student-self-assessment": [BLACK_WILIAM, "Andrade, H. L. (2019). A Critical Review of Research on Student Self-Assessment. Frontiers in Education, 4."],
   "study-methods-research": [DUNLOSKY, "Roediger, H. L., & Karpicke, J. D. (2006). Test-Enhanced Learning. Psychological Science, 17(3)."],
+  "tantrums-children": ["Potegal, M., & Davidson, R. J. (2013). Temper Tantrums in Young Children: 1. Behavioral Composition. Journal of Developmental & Behavioral Pediatrics, 34(4), 271–277.", "Baumrind, D. (1966). Effects of Authoritative Parental Control on Child Behavior. Child Development, 37(4), 887–907."],
   "teacher-burnout": ["Maslach, C., & Jackson, S. E. (1981). The Measurement of Experienced Burnout. Journal of Occupational Behaviour, 2(2).", "World Health Organization. (2019). Burn-out an 'Occupational Phenomenon': ICD-11."],
   "teacher-cv": [ETEC],
   "teacher-ethics-situations": ["Campbell, E. (2003). The Ethical Teacher. Open University Press.", ETEC],
