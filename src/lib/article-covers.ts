@@ -137,6 +137,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "microteaching",
   "mind-maps-lesson",
   "modern-teaching-strategies",
+  "moods-temperament",
   "multiple-intelligences-gardner",
   "national-identity-classroom",
   "negative-reinforcement",
