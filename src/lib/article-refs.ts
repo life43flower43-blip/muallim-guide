@@ -112,6 +112,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "modern-teaching-strategies": [HATTIE, ROSENSHINE],
   "multiple-intelligences-gardner": ["Gardner, H. (1983). Frames of Mind: The Theory of Multiple Intelligences. Basic Books.", "Gardner, H. (2013). 'Multiple Intelligences' Are Not 'Learning Styles'. The Washington Post."],
   "national-identity-classroom": ["رؤية المملكة العربية السعودية 2030: برنامج تنمية القدرات البشرية، vision2030.gov.sa"],
+  "nature-children": ["Louv, R. (2008). Last Child in the Woods: Saving Our Children from Nature-Deficit Disorder. Algonquin Books.", "Kuo, F. E., & Faber Taylor, A. (2004). A Potential Natural Treatment for ADHD: Evidence from a National Study. American Journal of Public Health, 94(9), 1580–1586."],
   "negative-reinforcement": [SKINNER],
   "nonverbal-communication-teacher": ["Mehrabian, A. (1971). Silent Messages. Wadsworth.", KOUNIN],
   "norm-criterion-referenced": [GRONLUND, POPHAM],
