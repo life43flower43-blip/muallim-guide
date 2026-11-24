@@ -158,6 +158,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "phones-in-class",
   "piaget-stages",
   "play-based-learning",
+  "play-unstructured-children",
   "pomodoro-study",
   "portfolio-assessment",
   "positive-discipline",
