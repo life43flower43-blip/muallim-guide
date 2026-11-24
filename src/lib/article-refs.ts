@@ -115,6 +115,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "negative-reinforcement": [SKINNER],
   "nonverbal-communication-teacher": ["Mehrabian, A. (1971). Silent Messages. Wadsworth.", KOUNIN],
   "norm-criterion-referenced": [GRONLUND, POPHAM],
+  "nursery-stranger-fear": ["Ainsworth, M. D. S., Blehar, M. C., Waters, E., & Wall, S. (1978). Patterns of Attachment. Erlbaum.", "Kagan, J. (1994). Galen's Prophecy: Temperament in Human Nature. Basic Books."],
   "observation-assessment": [GRONLUND, "Brookhart, S. M., & Nitko, A. J. (2019). Educational Assessment of Students (8th ed.). Pearson."],
   "online-teaching": ["Guo, P. J., Kim, J., & Rubin, R. (2014). How Video Production Affects Student Engagement. Proceedings of the ACM Conference on Learning at Scale.", MAYER],
   "parents-communication": [EPSTEIN],
