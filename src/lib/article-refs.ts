@@ -113,6 +113,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "multiple-intelligences-gardner": ["Gardner, H. (1983). Frames of Mind: The Theory of Multiple Intelligences. Basic Books.", "Gardner, H. (2013). 'Multiple Intelligences' Are Not 'Learning Styles'. The Washington Post."],
   "national-identity-classroom": ["رؤية المملكة العربية السعودية 2030: برنامج تنمية القدرات البشرية، vision2030.gov.sa"],
   "negative-reinforcement": [SKINNER],
+  "nervous-habits-children": ["Leung, A. K. C., & Robson, W. L. M. (1990). Nailbiting. Clinical Pediatrics, 29(12), 690–692.", "Miltenberger, R. G. (2001). Behavior Modification: Principles and Procedures. Wadsworth."],
   "nonverbal-communication-teacher": ["Mehrabian, A. (1971). Silent Messages. Wadsworth.", KOUNIN],
   "norm-criterion-referenced": [GRONLUND, POPHAM],
   "observation-assessment": [GRONLUND, "Brookhart, S. M., & Nitko, A. J. (2019). Educational Assessment of Students (8th ed.). Pearson."],

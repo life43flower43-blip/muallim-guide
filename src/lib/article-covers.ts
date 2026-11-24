@@ -140,6 +140,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "multiple-intelligences-gardner",
   "national-identity-classroom",
   "negative-reinforcement",
+  "nervous-habits-children",
   "non-arabic-speakers",
   "nonverbal-communication-teacher",
   "norm-criterion-referenced",
