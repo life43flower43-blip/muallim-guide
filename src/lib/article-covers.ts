@@ -184,6 +184,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "rogers-humanistic",
   "role-play-teaching",
   "rubric-design",
+  "rude-child-respect",
   "school-community-partnership",
   "school-leadership-styles",
   "school-safety",

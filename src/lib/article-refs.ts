@@ -134,6 +134,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "resilience-students": ["Werner, E. E., & Smith, R. S. (1982). Vulnerable but Invincible. McGraw-Hill.", "Masten, A. S. (2014). Ordinary Magic: Resilience in Development. Guilford Press."],
   "role-play-teaching": ["Joyce, B., Weil, M., & Calhoun, E. (2015). Models of Teaching (9th ed.). Pearson."],
   "rubric-design": [BROOKHART],
+  "rude-child-respect": ["Baumrind, D. (1966). Effects of Authoritative Parental Control on Child Behavior. Child Development, 37(4), 887–907.", "Dreikurs, R., & Cassel, P. (1972). Discipline Without Tears: How to Reduce Conflict and Establish Cooperation in the Classroom. Hawthorn Books."],
   "school-community-partnership": [EPSTEIN],
   "sensory-impairments": ["UNESCO. (2009). Policy Guidelines on Inclusion in Education.", "CAST. (2018). Universal Design for Learning Guidelines. udlguidelines.cast.org"],
   "short-video-lessons": ["Guo, P. J., Kim, J., & Rubin, R. (2014). How Video Production Affects Student Engagement. Proceedings of the ACM Conference on Learning at Scale.", MAYER],
