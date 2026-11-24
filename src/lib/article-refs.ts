@@ -88,6 +88,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "growth-mindset": ["Dweck, C. S. (2006). Mindset: The New Psychology of Success. Random House.", "Sisk, V. F., et al. (2018). To What Extent and Under Which Circumstances Are Growth Mind-Sets Important to Academic Achievement? Psychological Science, 29(4).", "Yeager, D. S., et al. (2019). A National Experiment Reveals Where a Growth Mindset Improves Achievement. Nature, 573."],
   "higher-order-questions": [ANDERSON, ROWE],
   "homework-research": ["Cooper, H., Robinson, J. C., & Patall, E. A. (2006). Does Homework Improve Academic Achievement? Review of Educational Research, 76(1)."],
+  "identity-teens": ["Erikson, E. H. (1968). Identity: Youth and Crisis. W. W. Norton.", "Marcia, J. E. (1966). Development and Validation of Ego-Identity Status. Journal of Personality and Social Psychology, 3(5), 551–558."],
   "iep-individual-plan": ["Bateman, B. D., & Linden, M. A. (2012). Better IEPs (5th ed.). Attainment Company."],
   "inattentive-active-student": [DSM5, KOUNIN],
   "inclusive-classroom": ["UNESCO. (2009). Policy Guidelines on Inclusion in Education.", "CAST. (2018). Universal Design for Learning Guidelines. udlguidelines.cast.org"],
