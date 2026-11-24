@@ -157,6 +157,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "personality-traits-test",
   "phones-in-class",
   "piaget-stages",
+  "picky-eating-children",
   "play-based-learning",
   "pomodoro-study",
   "portfolio-assessment",
