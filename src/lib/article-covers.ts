@@ -2,6 +2,7 @@
 export const ARTICLE_COVERS = new Set<string>([
   "21st-century-skills",
   "5e-learning-cycle",
+  "academic-failure",
   "action-research",
   "active-learning-crowded-class",
   "adhd-classroom",

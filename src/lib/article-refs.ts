@@ -38,6 +38,7 @@ const UNESCO_AI = "UNESCO. (2023). Guidance for Generative AI in Education and R
 
 export const ARTICLE_REFS: Record<string, string[]> = {
   "21st-century-skills": ["Trilling, B., & Fadel, C. (2009). 21st Century Skills: Learning for Life in Our Times. Jossey-Bass.", "OECD. (2018). The Future of Education and Skills: Education 2030."],
+  "academic-failure": ["Weiner, B. (1985). An Attributional Theory of Achievement Motivation and Emotion. Psychological Review, 92(4), 548–573.", "Covington, M. V. (1992). Making the Grade: A Self-Worth Perspective on Motivation and School Reform. Cambridge University Press.", "Dweck, C. S. (2006). Mindset: The New Psychology of Success. Random House."],
   "action-research": ["Mertler, C. A. (2019). Action Research: Improving Schools and Empowering Educators. SAGE.", "Kemmis, S., & McTaggart, R. (1988). The Action Research Planner. Deakin University Press."],
   "active-learning-crowded-class": ["Bonwell, C. C., & Eison, J. A. (1991). Active Learning: Creating Excitement in the Classroom. ASHE-ERIC Report.", "Freeman, S., et al. (2014). Active Learning Increases Student Performance in Science, Engineering, and Mathematics. PNAS, 111(23)."],
   "adhd-classroom": [DSM5, "Barkley, R. A. (2013). Taking Charge of ADHD (3rd ed.). Guilford Press."],
