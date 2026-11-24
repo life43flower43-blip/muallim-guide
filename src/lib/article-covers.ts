@@ -5,6 +5,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "action-research",
   "active-learning-crowded-class",
   "adhd-classroom",
+  "adolescent-rebellion",
   "adolescent-students",
   "aggressive-behavior",
   "ai-grading",
