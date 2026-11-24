@@ -97,6 +97,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "jigsaw-strategy": ["Aronson, E., et al. (1978). The Jigsaw Classroom. SAGE.", JOHNSON],
   "kohlberg-moral": ["Kohlberg, L. (1981). The Philosophy of Moral Development. Harper & Row.", "Gilligan, C. (1982). In a Different Voice. Harvard University Press."],
   "language-skills-teacher-exam": [ETEC],
+  "learned-helplessness": ["Maier, S. F., & Seligman, M. E. P. (1967). Failure to Escape Traumatic Shock. Journal of Experimental Psychology, 74(1), 1–9.", "Seligman, M. E. P. (1975). Helplessness: On Depression, Development, and Death. W. H. Freeman."],
   "learning-stations": [TOMLINSON, "Horn, M. B., & Staker, H. (2014). Blended: Using Disruptive Innovation to Improve Schools. Jossey-Bass."],
   "lesson-closure": [ROSENSHINE, "Wiliam, D. (2011). Embedded Formative Assessment. Solution Tree."],
   "lesson-opening-hooks": ["Gagné, R. M. (1965). The Conditions of Learning. Holt, Rinehart & Winston.", "Loewenstein, G. (1994). The Psychology of Curiosity: A Review and Reinterpretation. Psychological Bulletin, 116(1).", ROSENSHINE],

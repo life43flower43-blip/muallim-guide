@@ -109,6 +109,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "kolb-experiential",
   "kwl-strategy",
   "language-skills-teacher-exam",
+  "learned-helplessness",
   "learning-disabilities-intro",
   "learning-stations",
   "learning-styles-myth",
