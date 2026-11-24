@@ -110,6 +110,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "mentor-teacher": ["Ingersoll, R. M., & Strong, M. (2011). The Impact of Induction and Mentoring Programs for Beginning Teachers. Review of Educational Research, 81(2)."],
   "metacognition-students": ["Flavell, J. H. (1979). Metacognition and Cognitive Monitoring. American Psychologist, 34(10).", "Education Endowment Foundation. (2018). Metacognition and Self-Regulated Learning: Guidance Report."],
   "modern-teaching-strategies": [HATTIE, ROSENSHINE],
+  "moods-temperament": ["Thomas, A., & Chess, S. (1977). Temperament and Development. Brunner/Mazel.", "Rothbart, M. K., & Bates, J. E. (2006). Temperament. In Handbook of Child Psychology (6th ed.). Wiley."],
   "multiple-intelligences-gardner": ["Gardner, H. (1983). Frames of Mind: The Theory of Multiple Intelligences. Basic Books.", "Gardner, H. (2013). 'Multiple Intelligences' Are Not 'Learning Styles'. The Washington Post."],
   "national-identity-classroom": ["رؤية المملكة العربية السعودية 2030: برنامج تنمية القدرات البشرية، vision2030.gov.sa"],
   "negative-reinforcement": [SKINNER],
