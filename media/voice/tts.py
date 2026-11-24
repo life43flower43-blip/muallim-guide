@@ -5,7 +5,7 @@ KEY = os.environ["GEMINI_API_KEY"]
 MODELS = ["gemini-2.5-flash-preview-tts", "gemini-2.5-flash-tts", "gemini-2.5-pro-preview-tts"]
 VOICE = os.environ.get("VOICE", "Kore")
 here = os.path.dirname(__file__)
-lines = json.load(open(os.path.join(here, "lines.json"), encoding="utf-8"))
+lines = json.load(open(os.path.join(here, os.environ.get("LINES", "lines.json")), encoding="utf-8"))
 
 def call(model, text):
     # الحد المجاني يسمح بطلبات قليلة في الدقيقة: انتظر وأعد المحاولة عند الرفض المؤقت
@@ -20,7 +20,7 @@ def call(model, text):
 
 def call_once(model, text):
     body = {
-        "contents": [{"parts": [{"text": "اقرأ بالعربية الفصحى بصوت دافئ وحماسي وواضح، كإعلان قصير: " + text}]}],
+        "contents": [{"parts": [{"text": os.environ.get("STYLE", "اقرأ بالعربية الفصحى بصوت دافئ وحماسي وواضح، كإعلان قصير: ") + text}]}],
         "generationConfig": {"responseModalities": ["AUDIO"], "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": VOICE}}}},
     }
     req = urllib.request.Request(
@@ -32,7 +32,7 @@ def call_once(model, text):
     return base64.b64decode(part["data"]), part.get("mimeType", "")
 
 # طلب واحد للنص كله (الحد المجاني للطلبات قليل)، مع وقفة قصيرة بين الجمل
-full = " ... ".join(t for _, t in lines)
+full = os.environ.get("SEP", " ... ").join(t for _, t in lines)
 for m in MODELS:
     try:
         pcm, mime = call(m, full)
@@ -41,6 +41,6 @@ for m in MODELS:
         print("فشل", m, e, file=sys.stderr)
 else:
     raise SystemExit("تعذر توليد الصوت")
-with wave.open(os.path.join(here, "voice.wav"), "wb") as w:
+with wave.open(os.path.join(here, os.environ.get("OUT", "voice.wav")), "wb") as w:
     w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(pcm)
 print("voice", m, mime, len(pcm) / 48000, "ثانية")
