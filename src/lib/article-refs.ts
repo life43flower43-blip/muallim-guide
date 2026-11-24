@@ -83,6 +83,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "gagne-nine-events": ["Gagné, R. M. (1965). The Conditions of Learning. Holt, Rinehart & Winston.", "Gagné, R. M., Briggs, L. J., & Wager, W. W. (1992). Principles of Instructional Design (4th ed.). Harcourt Brace."],
   "gamification-classroom": ["Deterding, S., et al. (2011). From Game Design Elements to Gamefulness: Defining Gamification. Proceedings of MindTrek.", DECI],
   "gestalt-insight-learning": ["Köhler, W. (1925). The Mentality of Apes. Harcourt Brace.", "Wertheimer, M. (1945). Productive Thinking. Harper."],
+  "gifted-child": ["Renzulli, J. S. (1978). What Makes Giftedness? Reexamining a Definition. Phi Delta Kappan, 60(3), 180–184.", "Webb, J. T., Meckstroth, E. A., & Tolan, S. S. (1982). Guiding the Gifted Child. Great Potential Press."],
   "gifted-students": ["Renzulli, J. S. (1978). What Makes Giftedness? Re-examining a Definition. Phi Delta Kappan, 60(3).", TOMLINSON],
   "graphic-organizers": ["Novak, J. D., & Gowin, D. B. (1984). Learning How to Learn. Cambridge University Press.", "Hyerle, D. (2009). Visual Tools for Transforming Information into Knowledge. Corwin."],
   "growth-mindset": ["Dweck, C. S. (2006). Mindset: The New Psychology of Success. Random House.", "Sisk, V. F., et al. (2018). To What Extent and Under Which Circumstances Are Growth Mind-Sets Important to Academic Achievement? Psychological Science, 29(4).", "Yeager, D. S., et al. (2019). A National Experiment Reveals Where a Growth Mindset Improves Achievement. Nature, 573."],
