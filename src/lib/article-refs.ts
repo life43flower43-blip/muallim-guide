@@ -179,6 +179,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "passing-score-cutoffs": [ETEC, ETEC_RULES],
   "exam-dates-registration-steps": [ETEC],
   "score-calculation-formula": [ETEC, ETEC_RULES],
+  "self-talk-children": ["Berk, L. E. (1992). Children's Private Speech: An Overview of Theory and the Role of Self-Regulation. In Private Speech. Erlbaum.", "Meichenbaum, D. (1977). Cognitive-Behavior Modification. Plenum."],
   "question-types": [ANDERSON, "Bloom, B. S. (Ed.). (1956). Taxonomy of Educational Objectives: Handbook I, Cognitive Domain. David McKay."],
   "math-manipulatives": ["Bruner, J. S. (1966). Toward a Theory of Instruction. Harvard University Press."],
   "token-economy": ["Ayllon, T., & Azrin, N. H. (1968). The Token Economy: A Motivational System for Therapy and Rehabilitation. Appleton-Century-Crofts.", "Skinner, B. F. (1953). Science and Human Behavior. Macmillan."],
