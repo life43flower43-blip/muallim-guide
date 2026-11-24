@@ -42,6 +42,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "constructivism-classroom",
   "content-analysis",
   "cooperative-learning",
+  "creativity-children",
   "critical-thinking",
   "cyber-safety",
   "dale-cone",
