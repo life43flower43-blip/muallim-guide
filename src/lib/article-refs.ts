@@ -117,6 +117,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "norm-criterion-referenced": [GRONLUND, POPHAM],
   "observation-assessment": [GRONLUND, "Brookhart, S. M., & Nitko, A. J. (2019). Educational Assessment of Students (8th ed.). Pearson."],
   "online-teaching": ["Guo, P. J., Kim, J., & Rubin, R. (2014). How Video Production Affects Student Engagement. Proceedings of the ACM Conference on Learning at Scale.", MAYER],
+  "parent-teen-dialogue": ["Kerr, M., & Stattin, H. (2000). What Parents Know, How They Know It, and Several Forms of Adolescent Adjustment: Developmental Psychology, 36(3), 366–380.", "Steinberg, L. (2014). Age of Opportunity: Lessons from the New Science of Adolescence. Houghton Mifflin Harcourt."],
   "parents-communication": [EPSTEIN],
   "pavlov-classical-conditioning": ["Pavlov, I. P. (1927). Conditioned Reflexes. Oxford University Press.", "Watson, J. B., & Rayner, R. (1920). Conditioned Emotional Reactions. Journal of Experimental Psychology, 3(1)."],
   "phones-in-class": ["UNESCO. (2023). Global Education Monitoring Report: Technology in Education."],

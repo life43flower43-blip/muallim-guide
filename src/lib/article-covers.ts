@@ -150,6 +150,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "oppositional-behavior",
   "oral-assessment",
   "parent-teacher-meeting",
+  "parent-teen-dialogue",
   "parents-communication",
   "passing-score-cutoffs",
   "pavlov-classical-conditioning",
