@@ -176,6 +176,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "special-education-inclusion-exam": [TOMLINSON, "UNESCO. (1994). The Salamanca Statement and Framework for Action on Special Needs Education."],
   "thinking-skills-in-exam": [ANDERSON],
   "prep-options-compared": [DUNLOSKY],
+  "privacy-teens": ["Steinberg, L. (2005). The Ten Basic Principles of Good Parenting. Simon & Schuster.", "Smetana, J. G. (1988). Adolescents' and Parents' Conceptions of Parental Authority. Child Development, 59(2), 321–335."],
   "passing-score-cutoffs": [ETEC, ETEC_RULES],
   "exam-dates-registration-steps": [ETEC],
   "score-calculation-formula": [ETEC, ETEC_RULES],
