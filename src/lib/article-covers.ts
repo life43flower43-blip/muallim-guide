@@ -193,6 +193,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "self-efficacy",
   "self-esteem",
   "sensory-impairments",
+  "separation-anxiety-children",
   "short-video-lessons",
   "shy-students",
   "simulation-learning",
