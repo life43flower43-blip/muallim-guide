@@ -64,6 +64,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "critical-thinking": ["Ennis, R. H. (1987). A Taxonomy of Critical Thinking Dispositions and Abilities. In Teaching Thinking Skills. Freeman.", "Willingham, D. T. (2007). Critical Thinking: Why Is It So Hard to Teach? American Educator, 31(2)."],
   "dealing-with-cheating": ["Anderman, E. M., & Murdock, T. B. (Eds.). (2007). Psychology of Academic Cheating. Academic Press.", "McCabe, D. L., Butterfield, K. D., & Treviño, L. K. (2012). Cheating in College. Johns Hopkins University Press."],
   "demo-lesson": [ROSENSHINE],
+  "depression-teens": ["Thapar, A., Collishaw, S., Pine, D. S., & Thapar, A. K. (2012). Depression in Adolescence. The Lancet, 379(9820), 1056–1067.", "TADS Team. (2004). Fluoxetine, Cognitive-Behavioral Therapy, and Their Combination for Adolescents with Depression. JAMA, 292(7), 807–820."],
   "diagnostic-assessment": [GRONLUND, POPHAM],
   "differentiated-instruction": [TOMLINSON],
   "digital-citizenship": ["Ribble, M. (2015). Digital Citizenship in Schools (3rd ed.). ISTE."],
