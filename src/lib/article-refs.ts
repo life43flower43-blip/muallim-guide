@@ -105,6 +105,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "license-exam-day": [ETEC],
   "license-exam-plan": [ETEC, DUNLOSKY],
   "license-exam-situational-questions": [ETEC],
+  "marital-conflict-children": ["Grych, J. H., & Fincham, F. D. (1990). Marital Conflict and Children's Adjustment: A Cognitive-Contextual Framework. Psychological Bulletin, 108(2), 267–290.", "Cummings, E. M., & Davies, P. T. (2010). Marital Conflict and Children: An Emotional Security Perspective. Guilford Press."],
   "maslow-hierarchy-classroom": ["Maslow, A. H. (1943). A Theory of Human Motivation. Psychological Review, 50(4).", "Maslow, A. H. (1954). Motivation and Personality. Harper."],
   "mastery-learning": ["Bloom, B. S. (1968). Learning for Mastery. Evaluation Comment, 1(2).", "Carroll, J. B. (1963). A Model of School Learning. Teachers College Record, 64.", "Guskey, T. R. (2007). Closing Achievement Gaps: Revisiting Benjamin S. Bloom's Learning for Mastery. Journal of Advanced Academics, 19(1)."],
   "mentor-teacher": ["Ingersoll, R. M., & Strong, M. (2011). The Impact of Induction and Mentoring Programs for Beginning Teachers. Review of Educational Research, 81(2)."],

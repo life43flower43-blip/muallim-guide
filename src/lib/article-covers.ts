@@ -127,6 +127,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "lms-teacher",
   "logical-reasoning-guide",
   "lying-children",
+  "marital-conflict-children",
   "maslow-hierarchy-classroom",
   "mastery-learning",
   "math-manipulatives",
