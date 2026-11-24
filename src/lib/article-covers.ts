@@ -31,6 +31,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "chatty-student",
   "child-anxiety-school",
   "child-protection",
+  "child-sensitivity",
   "class-time-management",
   "classroom-routines",
   "classroom-seating",
