@@ -52,6 +52,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "differentiated-instruction",
   "digital-citizenship",
   "discussion-method",
+  "divorce-children",
   "dual-coding",
   "dyscalculia",
   "dysgraphia",

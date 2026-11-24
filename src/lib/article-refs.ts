@@ -68,6 +68,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "differentiated-instruction": [TOMLINSON],
   "digital-citizenship": ["Ribble, M. (2015). Digital Citizenship in Schools (3rd ed.). ISTE."],
   "discussion-method": ["Brookfield, S. D., & Preskill, S. (2005). Discussion as a Way of Teaching (2nd ed.). Jossey-Bass."],
+  "divorce-children": ["Amato, P. R. (2001). Children of Divorce in the 1990s: An Update of the Amato and Keith (1991) Meta-Analysis. Journal of Family Psychology, 15(3), 355–370.", "Kelly, J. B., & Emery, R. E. (2003). Children's Adjustment Following Divorce: Risk and Resilience Perspectives. Family Relations, 52(4), 352–362."],
   "dyscalculia": ["Butterworth, B. (2003). Dyscalculia Screener. nferNelson.", DSM5],
   "dyslexia-classroom": [IDA, "Shaywitz, S. (2003). Overcoming Dyslexia. Knopf."],
   "education-myths": ["Pashler, H., McDaniel, M., Rohrer, D., & Bjork, R. (2008). Learning Styles: Concepts and Evidence. Psychological Science in the Public Interest, 9(3).", DUNLOSKY],
