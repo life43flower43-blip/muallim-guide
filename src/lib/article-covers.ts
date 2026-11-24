@@ -78,6 +78,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "focus-while-studying",
   "forgetting-curve",
   "formative-assessment-tools",
+  "friendship-skills-children",
   "free-edtech-tools",
   "gagne-nine-events",
   "gamification-classroom",

@@ -78,6 +78,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "essay-questions": [GRONLUND, "Reiner, C. M., et al. (2002). Preparing Effective Essay Questions. New Forums Press."],
   "first-year-classroom": [WONG, MARZANO],
   "flipped-classroom": ["Bergmann, J., & Sams, A. (2012). Flip Your Classroom. ISTE.", "van Alten, D. C. D., Phielix, C., Janssen, J., & Kester, L. (2019). Effects of Flipping the Classroom on Learning Outcomes and Satisfaction: A Meta-Analysis. Educational Research Review, 28.", "Guo, P. J., Kim, J., & Rubin, R. (2014). How Video Production Affects Student Engagement. Proceedings of the ACM Conference on Learning at Scale."],
+  "friendship-skills-children": ["Bukowski, W. M., & Hoza, B. (1989). Popularity and Friendship: Issues in Theory, Measurement, and Outcome. In T. J. Berndt & G. W. Ladd (Eds.), Peer Relationships in Child Development. Wiley.", "Rubin, K. H., Bukowski, W., & Parker, J. G. (2006). Peer Interactions, Relationships, and Groups. In Handbook of Child Psychology (6th ed.). Wiley."],
   "formative-assessment-tools": [BLACK_WILIAM, "Wiliam, D. (2011). Embedded Formative Assessment. Solution Tree."],
   "free-edtech-tools": ["Puentedura, R. R. (2006). Transformation, Technology, and Education (the SAMR model). hippasus.com"],
   "gagne-nine-events": ["Gagné, R. M. (1965). The Conditions of Learning. Holt, Rinehart & Winston.", "Gagné, R. M., Briggs, L. J., & Wager, W. W. (1992). Principles of Instructional Design (4th ed.). Harcourt Brace."],
