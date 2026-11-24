@@ -33,11 +33,20 @@ def call_once(model, text):
 
 if os.environ.get("PER_LINE"):
     # ملف لكل جملة، مع انتظار بين الطلبات حتى لا يتجاوز الحد المجاني
-    for k, (name, text) in enumerate(lines):
-        if k:
+    done = 0
+    for name, text in lines:
+        out = os.path.join(here, f"{os.environ.get('PREFIX', 'c_')}{name}.wav")
+        if os.path.exists(out):
+            continue  # وُلِّد سابقًا
+        if done:
             time.sleep(22)
-        pcm, mime = call(MODELS[0], text)
-        with wave.open(os.path.join(here, f"{os.environ.get('PREFIX', 'c_')}{name}.wav"), "wb") as w:
+        try:
+            pcm, mime = call(MODELS[0], text)
+        except urllib.error.HTTPError as e:
+            print("توقف عند", name, e)  # الحد اليومي: تُحفظ الملفات الجاهزة ويُكمل غدًا
+            break
+        done += 1
+        with wave.open(out, "wb") as w:
             w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(pcm)
         print(name, len(pcm) / 48000, "ثانية")
     raise SystemExit(0)
