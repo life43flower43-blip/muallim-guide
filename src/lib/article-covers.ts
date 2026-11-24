@@ -105,6 +105,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "interpreting-scores",
   "intrinsic-motivation",
   "jigsaw-strategy",
+  "kindness-children",
   "kohlberg-moral",
   "kolb-experiential",
   "kwl-strategy",
