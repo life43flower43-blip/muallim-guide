@@ -68,6 +68,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "exam-review-week",
   "explicit-instruction",
   "extracurricular",
+  "fear-of-doctors-children",
   "feedback-student-to-teacher",
   "finland-singapore",
   "first-day-teacher",
