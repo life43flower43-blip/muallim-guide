@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Fragment } from "react";
 import QuizRunner from "@/components/site/QuizRunner";
 import type { SiteQ } from "@/lib/site-nav";
 import { ConceptDiagram } from "@/components/app/Diagrams";
@@ -14,6 +15,7 @@ import { courseMeta } from "@/lib/site-nav";
 import { CatBadge, ConceptList, Crumbs, paragraphs, SectionTitle, ShareRow, TelegramCard, Thumb, WithSidebar } from "@/components/site/Blocks";
 import { photoFor } from "@/components/site/Cover";
 import { CONCEPT_CANONICAL } from "@/lib/concept-canonical";
+import { conceptImage2 } from "@/lib/concept-images-2";
 import depthData from "../../../../../../content/concept-depth.json";
 
 const DEPTH = depthData as Record<string, { h: string; p: string }[]>;
@@ -100,6 +102,20 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
 
   const m = courseMeta(course);
   const path = `/learn/${course}/${c.id}`;
+  // الصورة الثانية للمفهوم تُدرج في منتصف أقسام الشرح (أو بعد الشرح إن لم توجد أقسام)
+  const depthSections = DEPTH[c.id] ?? [];
+  const depthMid = Math.floor(depthSections.length / 2);
+  const img2 = conceptImage2(c.id);
+  const secondImg = img2 ? (
+    <img
+      src={img2}
+      alt={`صورة إضافية: ${c.title}`}
+      width={1200}
+      height={675}
+      loading="lazy"
+      className="w-full rounded-xl border border-[#E2ECE6] object-cover"
+    />
+  ) : null;
 
   return (
     <WithSidebar>
@@ -154,25 +170,29 @@ export default async function ConceptPage({ params }: { params: Promise<{ course
               <p key={i} className="text-[17px] leading-[1.95] text-[#24403A]">{p}</p>
             ))}
           </section>
-          {(DEPTH[c.id] ?? []).map((s) => {
+          {depthSections.map((s, di) => {
             const lines = s.p.split("\n");
             const items = lines.filter((l) => l.startsWith("• "));
             const text = lines.filter((l) => !l.startsWith("• "));
             const lead = items.length ? text.filter((_, i) => i < lines.indexOf(items[0])) : text;
             const tail = items.length ? text.filter((l) => lines.indexOf(l) > lines.indexOf(items[items.length - 1])) : [];
             return (
-              <section key={s.h} className="space-y-3">
-                <h2 className="font-display text-[21px] font-extrabold leading-[1.6] text-[#14302A]">{s.h}</h2>
-                {lead.map((l, i) => <p key={i} className="text-[17px] leading-[1.95] text-[#24403A]">{l}</p>)}
-                {items.length > 0 && (
-                  <ul className="space-y-2 ps-5 marker:text-[#168477] list-disc">
-                    {items.map((l, i) => <li key={i} className="text-[17px] leading-[1.9] text-[#24403A]">{l.slice(2)}</li>)}
-                  </ul>
-                )}
-                {tail.map((l, i) => <p key={i} className="text-[17px] leading-[1.95] text-[#24403A]">{l}</p>)}
-              </section>
+              <Fragment key={s.h}>
+                <section className="space-y-3">
+                  <h2 className="font-display text-[21px] font-extrabold leading-[1.6] text-[#14302A]">{s.h}</h2>
+                  {lead.map((l, i) => <p key={i} className="text-[17px] leading-[1.95] text-[#24403A]">{l}</p>)}
+                  {items.length > 0 && (
+                    <ul className="space-y-2 ps-5 marker:text-[#168477] list-disc">
+                      {items.map((l, i) => <li key={i} className="text-[17px] leading-[1.9] text-[#24403A]">{l.slice(2)}</li>)}
+                    </ul>
+                  )}
+                  {tail.map((l, i) => <p key={i} className="text-[17px] leading-[1.95] text-[#24403A]">{l}</p>)}
+                </section>
+                {di === depthMid && secondImg}
+              </Fragment>
             );
           })}
+          {!depthSections.length && secondImg}
           </div>
 
           {(() => {
