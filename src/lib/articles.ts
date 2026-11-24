@@ -27,6 +27,7 @@ export const ARTICLE_CATS: Record<string, string> = {
   "التقويم والقياس": "M4",
   "المذاكرة والاختبارات": "G1",
   "الصحة النفسية والسلوك": "M2",
+  "علم النفس": "M2",
   "التعليم والتقنية": "AI1",
   "التربية الخاصة": "SE1",
 };
@@ -38,6 +39,7 @@ export const CAT_SLUGS: Record<string, string> = {
   "التقويم والقياس": "assessment",
   "المذاكرة والاختبارات": "exams",
   "الصحة النفسية والسلوك": "wellbeing",
+  "علم النفس": "psychology",
   "التعليم والتقنية": "edtech",
   "التربية الخاصة": "special-education",
   "قضايا تربوية": "issues",

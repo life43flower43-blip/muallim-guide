@@ -143,6 +143,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "storytelling-teaching": ["Willingham, D. T. (2009). Why Don't Students Like School? Jossey-Bass.", "Egan, K. (1986). Teaching as Story Telling. University of Chicago Press."],
   "student-absenteeism": ["Kearney, C. A. (2008). School Absenteeism and School Refusal Behavior in Youth. Clinical Psychology Review, 28(3)."],
   "student-motivation": ["Ryan, R. M., & Deci, E. L. (2000). Self-Determination Theory and the Facilitation of Intrinsic Motivation. American Psychologist, 55(1).", DECI],
+  "sibling-jealousy": ["Dunn, J., & Kendrick, C. (1982). Siblings: Love, Envy, and Understanding. Harvard University Press.", "Adler, A. (1927). Understanding Human Nature. Greenberg."],
   "student-self-assessment": [BLACK_WILIAM, "Andrade, H. L. (2019). A Critical Review of Research on Student Self-Assessment. Frontiers in Education, 4."],
   "study-methods-research": [DUNLOSKY, "Roediger, H. L., & Karpicke, J. D. (2006). Test-Enhanced Learning. Psychological Science, 17(3)."],
   "teacher-burnout": ["Maslach, C., & Jackson, S. E. (1981). The Measurement of Experienced Burnout. Journal of Occupational Behaviour, 2(2).", "World Health Organization. (2019). Burn-out an 'Occupational Phenomenon': ICD-11."],

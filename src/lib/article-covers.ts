@@ -195,6 +195,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "sensory-impairments",
   "short-video-lessons",
   "shy-students",
+  "sibling-jealousy",
   "simulation-learning",
   "situated-learning",
   "situational-judgment-questions",
