@@ -188,6 +188,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "school-leadership-styles",
   "school-safety",
   "score-calculation-formula",
+  "self-control-children",
   "self-determination",
   "self-directed-learning",
   "self-efficacy",
