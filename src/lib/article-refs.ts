@@ -95,6 +95,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "inquiry-based-learning": ["Banchi, H., & Bell, R. (2008). The Many Levels of Inquiry. Science and Children, 46(2).", "National Research Council. (2000). Inquiry and the National Science Education Standards. National Academies Press."],
   "interpreting-scores": [GRONLUND, POPHAM],
   "jigsaw-strategy": ["Aronson, E., et al. (1978). The Jigsaw Classroom. SAGE.", JOHNSON],
+  "kindness-children": ["Hoffman, M. L. (2000). Empathy and Moral Development: Implications for Caring and Justice. Cambridge University Press.", "Eisenberg, N., Spinrad, T. L., & Eggum, N. D. (2010). Emotion-Related Self-Regulation and Its Relation to Children's Maladjustment. Annual Review of Clinical Psychology, 6, 495–525."],
   "kohlberg-moral": ["Kohlberg, L. (1981). The Philosophy of Moral Development. Harper & Row.", "Gilligan, C. (1982). In a Different Voice. Harvard University Press."],
   "language-skills-teacher-exam": [ETEC],
   "learning-stations": [TOMLINSON, "Horn, M. B., & Staker, H. (2014). Blended: Using Disruptive Innovation to Improve Schools. Jossey-Bass."],
