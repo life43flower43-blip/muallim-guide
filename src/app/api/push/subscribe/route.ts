@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
   })
   // جهاز جديد: إشعار ترحيب فوري يؤكد لصاحبه أن الإشعارات تعمل
   if (isNew && pushConfigured()) {
-    await sendPush(saved, { title: 'تم تفعيل الإشعارات ✅', body: 'سيصلك من تربوي تذكير واحد كل يوم بما تراجعه.', url: '/app', tag: 'welcome' }).catch(() => null)
+    await sendPush(saved, { title: 'أهلًا بك في رحلتك نحو الرخصة 🎯', body: 'خطوتك الأولى تبدأ الآن: افتح تربوي وحلّ سؤال اليوم في دقيقة.', url: '/app', tag: 'welcome' }).catch(() => null)
   }
   return NextResponse.json({ ok: true })
 }
