@@ -16,10 +16,11 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           LINES: lines-chalk.json
           OUT: chalk.wav
+          PER_LINE: "1"
           SEP: " ،،، "
-          STYLE: "اقرأ هذا النص المشكول حرفيًا كما هو بالعربية الفصحى الصحيحة، بصوت معلم دافئ وواضح وهادئ، مع وقفة قصيرة بين الجمل، ووقفة أطول بعد عبارة فكر قليلا: "
+          STYLE: "اقرأ هذه الجملة المشكولة حرفيًا كما هي بالعربية الفصحى الصحيحة، بصوت معلم دافئ وواضح، ولا تضف شيئًا: "
       - run: |
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git add media/voice/chalk.wav
+          git add media/voice/c_*.wav
           git commit -m "التعليق الصوتي للفيديو" && git push
