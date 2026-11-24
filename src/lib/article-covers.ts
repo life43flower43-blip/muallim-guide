@@ -26,6 +26,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "brainstorming-classroom",
   "bruner-discovery-learning",
   "bullying-teacher-plan",
+  "calming-corner-children",
   "career-guidance",
   "case-based-learning",
   "chatty-student",
