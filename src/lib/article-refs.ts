@@ -45,6 +45,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "teen-stress": ["Selye, H. (1956). The Stress of Life. McGraw-Hill.", "Lazarus, R. S., & Folkman, S. (1984). Stress, Appraisal, and Coping. Springer.", "Yerkes, R. M., & Dodson, J. D. (1908). The Relation of Strength of Stimulus to Rapidity of Habit-Formation. Journal of Comparative Neurology and Psychology, 18(5), 459–482.", "World Health Organization. (2021). Adolescent Mental Health. who.int", "Paruthi, S., et al. (2016). Recommended Amount of Sleep for Pediatric Populations: A Consensus Statement of the American Academy of Sleep Medicine. Journal of Clinical Sleep Medicine, 12(6), 785–786."],
   "aggressive-behavior": [BANDURA, "Greene, R. W. (2014). Lost at School. Scribner.", MARZANO],
   "ai-homework-design": [UNESCO_AI],
+  "apologizing-child": ["Damon, W. (1988). The Moral Child: Nurturing Children's Natural Sense of Right and Wrong. Free Press.", "Kochanska, G. (1991). Socialization and Temperament in the Development of Guilt and Conscience. Child Development, 62(6), 1379–1392."],
   "ai-lesson-prep": [UNESCO_AI, "U.S. Department of Education. (2023). Artificial Intelligence and the Future of Teaching and Learning."],
   "ausubel-meaningful-learning": ["Ausubel, D. P. (1968). Educational Psychology: A Cognitive View. Holt, Rinehart & Winston.", "Novak, J. D., & Gowin, D. B. (1984). Learning How to Learn. Cambridge University Press."],
   "authentic-assessment": ["Wiggins, G. (1990). The Case for Authentic Assessment. Practical Assessment, Research & Evaluation, 2(2).", POPHAM],

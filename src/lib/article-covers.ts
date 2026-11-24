@@ -11,6 +11,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "ai-homework-design",
   "ai-lesson-prep",
   "annual-plan",
+  "apologizing-child",
   "ar-vr-education",
   "arab-teacher-hiring-exams",
   "attention-perception",
