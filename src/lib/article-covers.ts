@@ -75,6 +75,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "first-year-classroom",
   "fishbowl",
   "flipped-classroom",
+  "focus-children",
   "focus-while-studying",
   "forgetting-curve",
   "formative-assessment-tools",
