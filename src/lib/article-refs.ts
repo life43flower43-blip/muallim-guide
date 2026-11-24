@@ -178,6 +178,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "prep-options-compared": [DUNLOSKY],
   "passing-score-cutoffs": [ETEC, ETEC_RULES],
   "exam-dates-registration-steps": [ETEC],
+  "feelings-vocabulary-children": ["Denham, S. A. (1998). Emotional Development in Young Children. Guilford Press.", "Izard, C. E. (1971). The Face of Emotion. Appleton-Century-Crofts."],
   "score-calculation-formula": [ETEC, ETEC_RULES],
   "question-types": [ANDERSON, "Bloom, B. S. (Ed.). (1956). Taxonomy of Educational Objectives: Handbook I, Cognitive Domain. David McKay."],
   "math-manipulatives": ["Bruner, J. S. (1966). Toward a Theory of Instruction. Harvard University Press."],
