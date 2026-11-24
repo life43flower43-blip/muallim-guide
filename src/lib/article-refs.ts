@@ -137,6 +137,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "sensory-impairments": ["UNESCO. (2009). Policy Guidelines on Inclusion in Education.", "CAST. (2018). Universal Design for Learning Guidelines. udlguidelines.cast.org"],
   "short-video-lessons": ["Guo, P. J., Kim, J., & Rubin, R. (2014). How Video Production Affects Student Engagement. Proceedings of the ACM Conference on Learning at Scale.", MAYER],
   "shy-students": ["Coplan, R. J., & Rudasill, K. M. (2016). Quiet at School: An Educator's Guide to Shy Children. Teachers College Press."],
+  "stubborn-children": ["Erikson, E. H. (1963). Childhood and Society (2nd ed.). Norton.", "Baumrind, D. (1966). Effects of Authoritative Parental Control on Child Behavior. Child Development, 37(4), 887–907.", "Sege, R. D., & Siegel, B. M. (2018). Effective Discipline to Raise Healthy Children. Pediatrics, 142(6), e20183112."],
   "skinner-operant-conditioning": ["Skinner, B. F. (1938). The Behavior of Organisms. Appleton-Century.", SKINNER, "Ferster, C. B., & Skinner, B. F. (1957). Schedules of Reinforcement. Appleton-Century-Crofts."],
   "slow-learners": [TOMLINSON, ROSENSHINE],
   "stem-education": ["National Research Council. (2011). Successful K-12 STEM Education. National Academies Press.", "Bybee, R. W. (2013). The Case for STEM Education. NSTA Press."],

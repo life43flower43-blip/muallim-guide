@@ -209,6 +209,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "speed-reading",
   "stem-education",
   "storytelling-teaching",
+  "stubborn-children",
   "student-absenteeism",
   "student-motivation",
   "student-self-assessment",
