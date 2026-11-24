@@ -162,6 +162,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "portfolio-assessment",
   "positive-discipline",
   "prep-options-compared",
+  "privacy-teens",
   "probing-questions",
   "problem-based-learning",
   "professional-development-plan",
