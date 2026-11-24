@@ -170,6 +170,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "spatial-reasoning-guide": ["Shepard, R. N., & Metzler, J. (1971). Mental Rotation of Three-Dimensional Objects. Science, 171(3972).", "Uttal, D. H., et al. (2013). The Malleability of Spatial Skills: A Meta-Analysis of Training Studies. Psychological Bulletin, 139(2)."],
   "inquiry-types-activity-selection": ["Banchi, H., & Bell, R. (2008). The Many Levels of Inquiry. Science and Children, 46(2).", KIRSCHNER],
   "general-vs-specialized-exam": [ETEC],
+  "guests-events-children": ["Rubin, K. H., Coplan, R. J., & Bowker, J. C. (2009). Social Withdrawal in Childhood. Annual Review of Psychology, 60, 141–171.", "Fox, N. A., Henderson, H. A., Marshall, P. J., Nichols, K. E., & Ghera, M. M. (2005). Behavioral Inhibition: Linking Biology and Behavior Within a Developmental Framework. Annual Review of Psychology, 56, 235–262."],
   "license-faq": [ETEC],
   "professional-knowledge-effective-practice": ["Shulman, L. S. (1986). Those Who Understand: Knowledge Growth in Teaching. Educational Researcher, 15(2)."],
   "edtech-in-teacher-exam": [MAYER, "Mishra, P., & Koehler, M. J. (2006). Technological Pedagogical Content Knowledge: A Framework for Teacher Knowledge. Teachers College Record, 108(6)."],
