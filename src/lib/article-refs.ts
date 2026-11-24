@@ -141,6 +141,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "skinner-operant-conditioning": ["Skinner, B. F. (1938). The Behavior of Organisms. Appleton-Century.", SKINNER, "Ferster, C. B., & Skinner, B. F. (1957). Schedules of Reinforcement. Appleton-Century-Crofts."],
   "slow-learners": [TOMLINSON, ROSENSHINE],
   "stem-education": ["National Research Council. (2011). Successful K-12 STEM Education. National Academies Press.", "Bybee, R. W. (2013). The Case for STEM Education. NSTA Press."],
+  "stepfamily-children": ["Hetherington, E. M., & Kelly, J. (2002). For Better or For Worse: Divorce Reconsidered. W. W. Norton.", "Bray, J. H., & Kelly, J. (1998). Stepfamilies: Love, Marriage, and Parenting in the First Decade. Broadway Books."],
   "storytelling-teaching": ["Willingham, D. T. (2009). Why Don't Students Like School? Jossey-Bass.", "Egan, K. (1986). Teaching as Story Telling. University of Chicago Press."],
   "student-absenteeism": ["Kearney, C. A. (2008). School Absenteeism and School Refusal Behavior in Youth. Clinical Psychology Review, 28(3)."],
   "student-motivation": ["Ryan, R. M., & Deci, E. L. (2000). Self-Determination Theory and the Facilitation of Intrinsic Motivation. American Psychologist, 55(1).", DECI],
