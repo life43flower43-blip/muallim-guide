@@ -14,6 +14,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "ar-vr-education",
   "arab-teacher-hiring-exams",
   "attention-perception",
+  "attention-seeking-children",
   "attribution-theory",
   "ausubel-meaningful-learning",
   "authentic-assessment",

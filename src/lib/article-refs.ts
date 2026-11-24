@@ -46,6 +46,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "aggressive-behavior": [BANDURA, "Greene, R. W. (2014). Lost at School. Scribner.", MARZANO],
   "ai-homework-design": [UNESCO_AI],
   "ai-lesson-prep": [UNESCO_AI, "U.S. Department of Education. (2023). Artificial Intelligence and the Future of Teaching and Learning."],
+  "attention-seeking-children": ["Dreikurs, R., & Cassel, P. (1972). Discipline Without Tears: How to Reduce Conflict and Establish Cooperation in the Classroom. Hawthorn Books.", "Cooper, J. O., Heron, T. E., & Heward, W. L. (2007). Applied Behavior Analysis (2nd ed.). Pearson."],
   "ausubel-meaningful-learning": ["Ausubel, D. P. (1968). Educational Psychology: A Cognitive View. Holt, Rinehart & Winston.", "Novak, J. D., & Gowin, D. B. (1984). Learning How to Learn. Cambridge University Press."],
   "authentic-assessment": ["Wiggins, G. (1990). The Case for Authentic Assessment. Practical Assessment, Research & Evaluation, 2(2).", POPHAM],
   "autism-classroom": [DSM5, "National Autistic Society. Autism: A Guide for Education Professionals. autism.org.uk"],
