@@ -111,6 +111,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "metacognition-students": ["Flavell, J. H. (1979). Metacognition and Cognitive Monitoring. American Psychologist, 34(10).", "Education Endowment Foundation. (2018). Metacognition and Self-Regulated Learning: Guidance Report."],
   "modern-teaching-strategies": [HATTIE, ROSENSHINE],
   "multiple-intelligences-gardner": ["Gardner, H. (1983). Frames of Mind: The Theory of Multiple Intelligences. Basic Books.", "Gardner, H. (2013). 'Multiple Intelligences' Are Not 'Learning Styles'. The Washington Post."],
+  "music-children": ["Hallam, S. (2010). The Power of Music: Its Impact on the Intellectual, Social and Personal Development of Children and Young People. International Journal of Music Education, 28(3), 269–289.", "Schellenberg, E. G. (2004). Music Lessons Enhance IQ. Psychological Science, 15(8), 511–514."],
   "national-identity-classroom": ["رؤية المملكة العربية السعودية 2030: برنامج تنمية القدرات البشرية، vision2030.gov.sa"],
   "negative-reinforcement": [SKINNER],
   "nonverbal-communication-teacher": ["Mehrabian, A. (1971). Silent Messages. Wadsworth.", KOUNIN],
