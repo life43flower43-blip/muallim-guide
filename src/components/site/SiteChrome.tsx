@@ -35,6 +35,7 @@ export const RESOURCES = [
 const MAIN_NAV: { href: string; label: string; drop?: "courses" | "license" | "resources" }[] = [
   { href: "/", label: "الرئيسية" },
   { href: "/articles", label: "المقالات" },
+  { href: "/articles/c/psychology", label: "علم النفس" },
   { href: "/learn", label: "المحاور", drop: "courses" },
   { href: "/license-guide", label: "الرخصة المهنية", drop: "license" },
   { href: "/classroom-problems", label: "مصادر التعلم", drop: "resources" },
@@ -75,7 +76,7 @@ export function SiteHeader() {
           </Link>
           {/* أزرار الهاتف: بحث وقائمة */}
           <MobileBar
-            nav={[{ href: "/", label: "الرئيسية" }, { href: "/articles", label: "المقالات" }, { href: "/learn", label: "المحاور" }, { href: "/tatbeeq", label: "التطبيق" }]}
+            nav={[{ href: "/", label: "الرئيسية" }, { href: "/articles", label: "المقالات" }, { href: "/articles/c/psychology", label: "علم النفس" }, { href: "/learn", label: "المحاور" }, { href: "/tatbeeq", label: "التطبيق" }]}
             groups={[{ title: "الرخصة المهنية", items: LICENSE }, { title: "مصادر التعلم", items: RESOURCES }, { title: "عن تربوي", items: [{ href: "/about", label: "من نحن" }, { href: "/contact", label: "اتصل بنا" }] }]}
             courses={courses.map((c) => ({ href: `/learn/${c.id}`, label: courseMeta(c.id).short }))}
           />
@@ -90,7 +91,7 @@ export function SiteHeader() {
         </Link>
         <div className="min-w-0 flex-1"><SearchBox /></div>
         <MobileBar
-          nav={[{ href: "/", label: "الرئيسية" }, { href: "/articles", label: "المقالات" }, { href: "/learn", label: "المحاور" }, { href: "/tatbeeq", label: "التطبيق" }]}
+          nav={[{ href: "/", label: "الرئيسية" }, { href: "/articles", label: "المقالات" }, { href: "/articles/c/psychology", label: "علم النفس" }, { href: "/learn", label: "المحاور" }, { href: "/tatbeeq", label: "التطبيق" }]}
           groups={[{ title: "الرخصة المهنية", items: LICENSE }, { title: "مصادر التعلم", items: RESOURCES }, { title: "عن تربوي", items: [{ href: "/about", label: "من نحن" }, { href: "/contact", label: "اتصل بنا" }] }]}
           courses={courses.map((c) => ({ href: `/learn/${c.id}`, label: courseMeta(c.id).short }))}
           menuOnly
