@@ -122,6 +122,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "phones-in-class": ["UNESCO. (2023). Global Education Monitoring Report: Technology in Education."],
   "piaget-stages": [PIAGET],
   "play-based-learning": [VYGOTSKY, PIAGET, "Hirsh-Pasek, K., et al. (2009). A Mandate for Playful Learning in Preschool. Oxford University Press."],
+  "play-unstructured-children": ["Hirsh-Pasek, K., Golinkoff, R. M., Berk, L. E., & Singer, D. G. (2009). Einstein Never Used Flash Cards. Rodale.", "Chudacoff, H. P. (2007). Children at Play: An American History. New York University Press."],
   "portfolio-assessment": ["Paulson, F. L., Paulson, P. R., & Meyer, C. A. (1991). What Makes a Portfolio a Portfolio? Educational Leadership, 48(5).", POPHAM],
   "positive-discipline": [NELSEN, MARZANO],
   "problem-based-learning": ["Barrows, H. S., & Tamblyn, R. M. (1980). Problem-Based Learning: An Approach to Medical Education. Springer.", "Hmelo-Silver, C. E. (2004). Problem-Based Learning: What and How Do Students Learn? Educational Psychology Review, 16(3)."],
