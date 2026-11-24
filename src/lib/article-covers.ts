@@ -104,6 +104,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "intellectual-disability-inclusion",
   "interpreting-scores",
   "intrinsic-motivation",
+  "introvert-child",
   "jigsaw-strategy",
   "kohlberg-moral",
   "kolb-experiential",
