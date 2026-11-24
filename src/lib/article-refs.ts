@@ -120,6 +120,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "parents-communication": [EPSTEIN],
   "pavlov-classical-conditioning": ["Pavlov, I. P. (1927). Conditioned Reflexes. Oxford University Press.", "Watson, J. B., & Rayner, R. (1920). Conditioned Emotional Reactions. Journal of Experimental Psychology, 3(1)."],
   "phones-in-class": ["UNESCO. (2023). Global Education Monitoring Report: Technology in Education."],
+  "picky-eating-children": ["Pelchat, M. L., & Pliner, P. (1995). 'Try It. You'll Like It': Effects of Social Modeling on Children's Food Acceptance. Appetite, 24(2), 153–166.", "Addessi, E., Galloway, A. T., Visalberghi, E., & Birch, L. L. (2005). Specific Social Influences on the Acceptance of Novel Foods in 2-5-Year-Old Children. Appetite, 45(3), 264–271."],
   "piaget-stages": [PIAGET],
   "play-based-learning": [VYGOTSKY, PIAGET, "Hirsh-Pasek, K., et al. (2009). A Mandate for Playful Learning in Preschool. Oxford University Press."],
   "portfolio-assessment": ["Paulson, F. L., Paulson, P. R., & Meyer, C. A. (1991). What Makes a Portfolio a Portfolio? Educational Leadership, 48(5).", POPHAM],
