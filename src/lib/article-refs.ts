@@ -180,6 +180,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "exam-dates-registration-steps": [ETEC],
   "score-calculation-formula": [ETEC, ETEC_RULES],
   "question-types": [ANDERSON, "Bloom, B. S. (Ed.). (1956). Taxonomy of Educational Objectives: Handbook I, Cognitive Domain. David McKay."],
+  "reading-joy-children": ["Trelease, J. (2013). The Read-Aloud Handbook (7th ed.). Penguin.", "Gambrell, L. B. (1996). Creating Classroom Cultures That Foster Reading Motivation. The Reading Teacher, 50(1), 14–25."],
   "math-manipulatives": ["Bruner, J. S. (1966). Toward a Theory of Instruction. Harvard University Press."],
   "token-economy": ["Ayllon, T., & Azrin, N. H. (1968). The Token Economy: A Motivational System for Therapy and Rehabilitation. Appleton-Century-Crofts.", "Skinner, B. F. (1953). Science and Human Behavior. Macmillan."],
   "transfer-of-learning": ["Thorndike, E. L., & Woodworth, R. S. (1901). The Influence of Improvement in One Mental Function upon the Efficiency of Other Functions. Psychological Review, 8(3)."],
