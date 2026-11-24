@@ -74,6 +74,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "educational-supervision": ["Glickman, C. D., Gordon, S. P., & Ross-Gordon, J. M. (2018). SuperVision and Instructional Leadership (10th ed.). Pearson.", "Goldhammer, R. (1969). Clinical Supervision. Holt, Rinehart & Winston."],
   "effective-feedback": ["Hattie, J., & Timperley, H. (2007). The Power of Feedback. Review of Educational Research, 77(1).", BLACK_WILIAM],
   "emotional-intelligence-students": ["Salovey, P., & Mayer, J. D. (1990). Emotional Intelligence. Imagination, Cognition and Personality, 9(3).", "Goleman, D. (1995). Emotional Intelligence. Bantam Books.", DURLAK],
+  "emotion-regulation-children": ["Gross, J. J. (1998). The Emerging Field of Emotion Regulation: An Integrative Review. Review of General Psychology, 2(3), 271–299.", "Thompson, R. A. (1994). Emotion Regulation: A Theme in Search of Definition. Monographs of the Society for Research in Child Development, 59(2–3), 25–52.", "Eisenberg, N., Spinrad, T. L., & Eggum, N. D. (2010). Emotion-Related Self-Regulation and Its Relation to Children's Maladjustment. Annual Review of Clinical Psychology, 6, 495–525."],
   "erikson-stages": ["Erikson, E. H. (1950). Childhood and Society. Norton.", "Erikson, E. H. (1968). Identity: Youth and Crisis. Norton."],
   "essay-questions": [GRONLUND, "Reiner, C. M., et al. (2002). Preparing Effective Essay Questions. New Forums Press."],
   "first-year-classroom": [WONG, MARZANO],

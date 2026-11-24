@@ -61,6 +61,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "education-myths",
   "educational-supervision",
   "effective-feedback",
+  "emotion-regulation-children",
   "emotional-intelligence-students",
   "erikson-stages",
   "essay-questions",
