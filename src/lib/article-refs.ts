@@ -174,6 +174,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "professional-knowledge-effective-practice": ["Shulman, L. S. (1986). Those Who Understand: Knowledge Growth in Teaching. Educational Researcher, 15(2)."],
   "edtech-in-teacher-exam": [MAYER, "Mishra, P., & Koehler, M. J. (2006). Technological Pedagogical Content Knowledge: A Framework for Teacher Knowledge. Teachers College Record, 108(6)."],
   "special-education-inclusion-exam": [TOMLINSON, "UNESCO. (1994). The Salamanca Statement and Framework for Action on Special Needs Education."],
+  "stealing-children": ["Kochanska, G. (1991). Socialization and Temperament in the Development of Guilt and Conscience. Child Development, 62(6), 1379–1392.", "Piaget, J. (1932). The Moral Judgment of the Child. Kegan Paul."],
   "thinking-skills-in-exam": [ANDERSON],
   "prep-options-compared": [DUNLOSKY],
   "passing-score-cutoffs": [ETEC, ETEC_RULES],
