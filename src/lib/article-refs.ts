@@ -54,6 +54,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "bloom-taxonomy-revised": ["Bloom, B. S. (Ed.). (1956). Taxonomy of Educational Objectives: Handbook I, Cognitive Domain. David McKay.", ANDERSON],
   "brainstorming-classroom": ["Osborn, A. F. (1953). Applied Imagination. Scribner.", "Diehl, M., & Stroebe, W. (1987). Productivity Loss in Brainstorming Groups. Journal of Personality and Social Psychology, 53(3)."],
   "bruner-discovery-learning": ["Bruner, J. S. (1960). The Process of Education. Harvard University Press.", "Bruner, J. S. (1966). Toward a Theory of Instruction. Harvard University Press.", KIRSCHNER],
+  "calming-corner-children": ["Webster-Stratton, C. (1992). The Incredible Years: A Troubleshooting Guide for Parents of Children Aged 3-8. Umbrella Press.", "Gottman, J., & DeClaire, J. (1997). The Heart of Parenting: Raising an Emotionally Intelligent Child. Simon & Schuster."],
   "bullying-teacher-plan": ["Olweus, D. (1993). Bullying at School: What We Know and What We Can Do. Blackwell."],
   "class-time-management": [KOUNIN, MARZANO],
   "classroom-routines": [WONG, MARZANO],
