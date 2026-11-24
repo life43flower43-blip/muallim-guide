@@ -186,6 +186,7 @@ export const ARTICLE_COVERS = new Set<string>([
   "rubric-design",
   "school-community-partnership",
   "school-leadership-styles",
+  "school-refusal",
   "school-safety",
   "score-calculation-formula",
   "self-determination",

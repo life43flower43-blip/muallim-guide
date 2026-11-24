@@ -130,6 +130,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "project-based-learning": [BOSS],
   "quantitative-skills-teacher-exam": [ETEC],
   "reading-comprehension-strategies": [PALINCSAR, "Pearson, P. D., & Gallagher, M. C. (1983). The Instruction of Reading Comprehension. Contemporary Educational Psychology, 8(3)."],
+  "school-refusal": ["Kearney, C. A. (2008). School Absenteeism and School Refusal Behavior in Youth: A Contemporary Review. Clinical Psychology: Science and Practice, 15(1), 3–17.", "Heyne, D., Gren-Landell, M., Melvin, G., & Gentle-Genitty, C. (2019). Differentiation Between School Attendance Problems: Why and How? Cognitive and Behavioral Practice, 26(1), 5–11.", "Pina, A. A., Zerr, A. A., González, N. A., & Ortiz, C. D. (2009). Psychosocial Interventions for School Refusal Behavior in Children and Adolescents. Child and Youth Care Forum, 38(5–6), 237–271."],
   "reflective-teaching": [SCHON, "Gibbs, G. (1988). Learning by Doing: A Guide to Teaching and Learning Methods. Oxford Polytechnic."],
   "resilience-students": ["Werner, E. E., & Smith, R. S. (1982). Vulnerable but Invincible. McGraw-Hill.", "Masten, A. S. (2014). Ordinary Magic: Resilience in Development. Guilford Press."],
   "role-play-teaching": ["Joyce, B., Weil, M., & Calhoun, E. (2015). Models of Teaching (9th ed.). Pearson."],
