@@ -50,6 +50,7 @@ export const ARTICLE_REFS: Record<string, string[]> = {
   "authentic-assessment": ["Wiggins, G. (1990). The Case for Authentic Assessment. Practical Assessment, Research & Evaluation, 2(2).", POPHAM],
   "autism-classroom": [DSM5, "National Autistic Society. Autism: A Guide for Education Professionals. autism.org.uk"],
   "bandura-social-learning": [BANDURA, "Bandura, A., Ross, D., & Ross, S. A. (1961). Transmission of Aggression Through Imitation of Aggressive Models. Journal of Abnormal and Social Psychology, 63(3)."],
+  "biting-children": ["Tremblay, R. E. (2000). The Development of Aggressive Behaviour During Childhood: What Have We Learned in the Past Century? International Journal of Behavioral Development, 24(2), 129–141.", "Coie, J. D., & Dodge, K. A. (1998). Aggression and Antisocial Behavior. In Handbook of Child Psychology (5th ed.). Wiley."],
   "blended-learning": ["Horn, M. B., & Staker, H. (2014). Blended: Using Disruptive Innovation to Improve Schools. Jossey-Bass."],
   "bloom-taxonomy-revised": ["Bloom, B. S. (Ed.). (1956). Taxonomy of Educational Objectives: Handbook I, Cognitive Domain. David McKay.", ANDERSON],
   "brainstorming-classroom": ["Osborn, A. F. (1953). Applied Imagination. Scribner.", "Diehl, M., & Stroebe, W. (1987). Productivity Loss in Brainstorming Groups. Journal of Personality and Social Psychology, 53(3)."],
