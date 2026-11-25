@@ -19,6 +19,7 @@ import HelpfulVote from "@/components/site/HelpfulVote";
 import { publicBank } from "@/lib/public-bank";
 import AdSlot from "@/components/site/AdSlot";
 import { ARTICLE_COVERS } from "@/lib/article-covers";
+import { ARTICLE_VIDEOS } from "@/lib/article-videos";
 import ReadProgress from "@/components/site/ReadProgress";
 import { withConceptLinks, conceptIdsInText } from "@/lib/concept-links";
 
@@ -86,6 +87,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const h2At = [...fullMd.matchAll(/\n## /g)].map((m) => m.index!);
   // إعلان بعد كل ثلاثة أقسام من المقال
   const cuts = h2At.filter((_, i) => i > 0 && i % 3 === 0);
+  const video = ARTICLE_VIDEOS[a.slug];
   const parts = [0, ...cuts].map((at, i, arr) => fullMd.slice(at, arr[i + 1] ?? fullMd.length));
   const jsonLd = [
     {
@@ -106,6 +108,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     },
     ...(faqOf(a.body).length
       ? [{ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqOf(a.body).map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) }]
+      : []),
+    ...(video
+      ? [{ "@context": "https://schema.org", "@type": "VideoObject", name: video.title, description: video.description, thumbnailUrl: `${SITE_URL}${video.poster}`, contentUrl: `${SITE_URL}${video.src}`, uploadDate: video.uploadDate, duration: video.duration, inLanguage: "ar" }]
       : []),
     {
       "@context": "https://schema.org",
@@ -165,6 +170,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <div key={k}>
                 {k > 0 && <AdSlot />}
                 <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ table: ({ children }) => <div className="md-table"><table>{children}</table></div>, h2: ({ children }) => <h2 id={`s-${++hi}`} className="scroll-mt-20">{children}</h2>, img: ({ src, alt }) => <img src={typeof src === "string" ? src : ""} alt={alt ?? ""} loading="lazy" width={1200} height={675} /> }}>{md}</ReactMarkdown>
+                {k === 0 && video && (
+                  <figure className="mx-auto my-8 max-w-[340px]">
+                    <p className="mb-3 text-center font-display text-[18px] font-extrabold text-[#14302A]">{video.title}</p>
+                    <video src={video.src} poster={video.poster} controls playsInline preload="none" width={720} height={1280} className="h-auto w-full rounded-2xl border border-[#C5E5DF] bg-[#fbfbf8]" />
+                  </figure>
+                )}
               </div>
             ))}
           </div>
