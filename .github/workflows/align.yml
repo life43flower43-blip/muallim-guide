@@ -1,0 +1,19 @@
+# توقيت كلمات التعليق الصوتي لمزامنة الفيديو (فرع media-voice فقط)
+name: align
+on:
+  push:
+    branches: [media-voice]
+    paths: ["media/voice/align.py"]
+permissions:
+  contents: write
+jobs:
+  align:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -q faster-whisper && python3 media/voice/align.py
+      - run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add media/voice/q1-words.txt
+          git commit -m "توقيت الكلمات" && git push || echo "لا جديد"
