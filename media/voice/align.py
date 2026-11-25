@@ -13,3 +13,4 @@ with open("media/voice/q2-words.txt", "w", encoding="utf-8") as f:
     for s in segs:
         for wd in s.words:
             f.write("%.2f %.2f %s\n" % (wd.start, wd.end, wd.word.strip()))
+# 1795601034
