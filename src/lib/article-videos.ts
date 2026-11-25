@@ -10,4 +10,12 @@ export const ARTICLE_VIDEOS: Record<string, ArticleVideo> = {
     uploadDate: "2026-11-25",
     duration: "PT49S",
   },
+  "zpd-scaffolding": {
+    src: "/videos/zpd-scaffolding-q1.mp4",
+    poster: "/videos/zpd-scaffolding-q1.jpg",
+    title: "سؤال محلول: منطقة النمو القريبة عند فيجوتسكي",
+    description: "طالبة لا تستطيع حل المسألة وحدها لكنها تحلها بمساعدة معلمتها. في أي منطقة تقع المهارة بحسب فيجوتسكي؟ الإجابة مع سبب خطأ كل خيار.",
+    uploadDate: "2026-11-25",
+    duration: "PT51S",
+  },
 };
