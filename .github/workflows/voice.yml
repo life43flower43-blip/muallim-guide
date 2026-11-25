@@ -3,7 +3,7 @@ name: voice
 on:
   push:
     branches: [media-voice]
-    paths: ["media/voice/lines-chalk.json", "media/voice/run.txt"]
+    paths: ["media/voice/lines-chalk.json", "media/voice/lines-q1.json", "media/voice/run.txt"]
 permissions:
   contents: write
 jobs:
@@ -14,13 +14,12 @@ jobs:
       - run: python3 media/voice/tts.py
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          LINES: lines-chalk.json
-          OUT: chalk.wav
-          PER_LINE: "1"
-          SEP: " ،،، "
-          STYLE: "اقرأ هذه الجملة المشكولة حرفيًا كما هي بالعربية الفصحى الصحيحة، بصوت معلم دافئ وواضح، ولا تضف شيئًا: "
+          LINES: lines-q1.json
+          OUT: q1.wav
+          SEP: " ... "
+          STYLE: "اقرأ بالعربية الفصحى بصوت دافئ وحماسي وواضح، كإعلان قصير، بإيقاع سريع ونشيط: "
       - run: |
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git add media/voice/c_*.wav
+          git add media/voice/c_*.wav media/voice/q1.wav
           git commit -m "التعليق الصوتي للفيديو" && git push || echo "لا جديد"
