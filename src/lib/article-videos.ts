@@ -5,7 +5,7 @@ export const ARTICLE_VIDEOS: Record<string, ArticleVideo> = {
   "negative-reinforcement": {
     src: "/videos/negative-reinforcement-q1.mp4",
     poster: "/videos/negative-reinforcement-q1.jpg",
-    title: "سؤال محلول بالفيديو",
+    title: "سؤال محلول: تعزيز سلبي أم عقاب سلبي؟",
     description: "معلم وعد طلابه بإعفائهم من الواجب إذا أنهوا مهامهم في وقتها، فزاد التزامهم. ما المبدأ الذي طبّقه؟ الإجابة مع سبب خطأ كل خيار.",
     uploadDate: "2026-11-25",
     duration: "PT49S",
