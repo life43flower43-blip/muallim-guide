@@ -1,2 +1,2 @@
 // رقم الإصدار الظاهر في «حسابي»؛ يُرفع مع كل تحديث للواجهة
-export const APP_VERSION = "400";
+export const APP_VERSION = "401";
