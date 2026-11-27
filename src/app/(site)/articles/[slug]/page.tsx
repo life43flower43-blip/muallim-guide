@@ -169,7 +169,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             {parts.map((md, k) => (
               <div key={k}>
                 {k > 0 && <AdSlot />}
-                <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ table: ({ children }) => <div className="md-table"><table>{children}</table></div>, h2: ({ children }) => <h2 id={`s-${++hi}`} className="scroll-mt-20">{children}</h2>, img: ({ src, alt }) => <img src={typeof src === "string" ? src : ""} alt={alt ?? ""} loading="lazy" width={1200} height={675} /> }}>{md}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ table: ({ children }) => <div className="md-table"><table>{children}</table></div>, h2: ({ children }) => <h2 id={`s-${++hi}`} className="scroll-mt-20">{children}</h2>, img: ({ src, alt }) => <img src={typeof src === "string" ? src : ""} alt={alt ?? ""} loading="lazy" width={1200} height={typeof src === "string" && src.startsWith("/summaries/") ? 1500 : 675} /> }}>{md}</ReactMarkdown>
                 {k === 0 && video && (
                   <figure className="mx-auto my-8 max-w-[340px]">
                     <p className="mb-3 text-center font-display text-[18px] font-extrabold text-[#14302A]">سؤال محلول بالفيديو</p>
